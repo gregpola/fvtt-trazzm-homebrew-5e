@@ -1,0 +1,121 @@
+{
+    "name": "fvtt-trazzm-homebrew-5e",
+    "title": "Trazzm 5e Homebrew",
+    "description": "A collection of homebrew for dnd5e",
+    "version": "0.0.1",
+    "author": "Trazzm",
+    "minimumCoreVersion": "0.8.6",
+    "compatibleCoreVersion": "9",
+	"systems": ["dnd5e"],
+    "packs": [
+        {
+            "name": "homebrew-creatures",
+            "label": "Homebrew Creatures",
+            "path": "./packs/creatures.db",
+            "entity": "Actor",
+            "type": "Actor"
+        },
+        {
+            "name": "homebrew-items",
+            "label": "Homebrew Items",
+            "path": "./packs/items.db",
+            "entity": "Item",
+            "type": "Item"
+        },
+        {
+            "name": "homebrew-backgrounds",
+            "label": "Homebrew Backgrounds",
+            "path": "./packs/backgrounds.db",
+            "entity": "Item",
+            "type": "Item"
+        },
+        {
+            "name": "homebrew-classes",
+            "label": "Homebrew Classes",
+            "path": "./packs/classes.db",
+            "entity": "Item",
+            "type": "Item"
+        },
+        {
+            "name": "homebrew-class-features",
+            "label": "Homebrew Class Features",
+            "path": "./packs/class-features.db",
+            "entity": "Item",
+            "type": "Item"
+        },
+        {
+            "name": "homebrew-subclasses",
+            "label": "Homebrew Subclasses",
+            "path": "./packs/subclasses.db",
+            "entity": "Item",
+            "type": "Item"
+        },
+        {
+            "name": "homebrew-feats",
+            "label": "Homebrew Feats",
+            "path": "./packs/feats.db",
+            "entity": "Item",
+            "type": "Item"
+        },
+        {
+            "name": "homebrew-races",
+            "label": "Homebrew Races",
+            "path": "./packs/races.db",
+            "entity": "Item",
+            "type": "Item"
+        },
+        {
+            "name": "homebrew-racial-traits",
+            "label": "Homebrew Racial Traits",
+            "path": "./packs/racial-traits.db",
+            "entity": "Item",
+            "type": "Item"
+        },
+        {
+            "name": "homebrew-spells",
+            "label": "Homebrew Spells",
+            "path": "./packs/spells.db",
+            "entity": "Item",
+            "type": "Item"
+        },
+        {
+            "name": "homebrew-journal-entries",
+            "label": "Homebrew Journal Entries",
+            "path": "./packs/journal-entries.db",
+            "entity": "JournalEntry",
+            "type": "JournalEntry"
+        },
+        {
+            "name": "homebrew-macros",
+            "label": "Homebrew Macros",
+            "path": "./packs/macros.db",
+            "entity": "Macro",
+            "type": "Macro"
+        },
+        {
+            "name": "homebrew-roll-tables",
+            "label": "Homebrew Roll Tables",
+            "path": "./packs/roll-tables.db",
+            "entity": "RollTable",
+            "type": "RollTable"
+        },
+        {
+            "name": "homebrew-playlists",
+            "label": "Homebrew Playlists",
+            "path": "./packs/playlists.db",
+            "entity": "Playlist",
+            "type": "Playlist"
+        }
+    ],
+	"socket": false,
+	"flags": {
+		"allowBugReporter": true
+	},
+	"url": "https://github.com/gregpola/fvtt-trazzm-homebrew-5e",
+	"license": "https://raw.githubusercontent.com/gregpola/fvtt-trazzm-homebrew-5e/main/LICENSE",
+	"manifest": "https://github.com/gregpola/fvtt-trazzm-homebrew-5e/releases/latest/download/module.json",
+	"changelog": "https://raw.githubusercontent.com/gregpola/fvtt-trazzm-homebrew-5e/main/changelog.md",
+	"readme": "https://raw.githubusercontent.com/gregpola/fvtt-trazzm-homebrew-5e/main/README.md",
+	"bugs": "https://github.com/gregpola/fvtt-trazzm-homebrew-5e/issues",
+	"download": "https://github.com/gregpola/fvtt-trazzm-homebrew-5e/releases/latest/download/module.zip"
+  }

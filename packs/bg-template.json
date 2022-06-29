@@ -1,0 +1,23 @@
+{
+	"_id": "pYn8MnLz3XxSWVod",
+	"name": "Acolyte",
+	"type": "background",
+	"img": "icons/equipment/neck/necklace-runed-white-red.webp",
+	"data": {
+		"description": {
+			"value": "<p></p>",
+			"chat": "",
+			"unidentified": ""
+		},
+		"source": "Homebrew",
+		"advancement": [],
+	},
+	"effects": [],
+	"folder": null,
+	"sort": 0,
+	"permission": {
+		"default": 0,
+		"5vlmE3uiS7OIQTEf": 3
+	},
+	"flags": {}
+}
