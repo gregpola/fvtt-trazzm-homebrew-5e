@@ -1,0 +1,94 @@
+{
+  "_id": "00LyR8zJYu33Gwsx",
+  "name": "Background: Outlander - Baldur’s Gate: Ideal",
+  "img": "icons/svg/d20-grey.svg",
+  "results": [
+    {
+      "flags": {},
+      "type": 0,
+      "text": "<span class=\"Sans-Serif-Character-Styles_Bold-Sans-Serif\">Change.</span> Life is like the seasons, in constant change, and we must change with it. (Chaotic)",
+      "img": "icons/svg/d20-black.svg",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "_id": "pbf73qnkn1o7x8ug"
+    },
+    {
+      "flags": {},
+      "type": 0,
+      "text": "<span class=\"Sans-Serif-Character-Styles_Bold-Sans-Serif\">Greater Good.</span> It is each person’s responsibility to make the most happiness for the whole tribe. (Good)",
+      "img": "icons/svg/d20-black.svg",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "_id": "4i5390rrpbjt3ri7"
+    },
+    {
+      "flags": {},
+      "type": 0,
+      "text": "<span class=\"Sans-Serif-Character-Styles_Bold-Sans-Serif\">Honor.</span> If I dishonor myself, I dishonor my whole clan. (Lawful)",
+      "img": "icons/svg/d20-black.svg",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "_id": "9qjbium7rdbk2ygd"
+    },
+    {
+      "flags": {},
+      "type": 0,
+      "text": "<span class=\"Sans-Serif-Character-Styles_Bold-Sans-Serif\">Might.</span> The strongest are meant to rule. (Evil)",
+      "img": "icons/svg/d20-black.svg",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "_id": "tbpikwxuh9f75hhy"
+    },
+    {
+      "flags": {},
+      "type": 0,
+      "text": "<span class=\"Sans-Serif-Character-Styles_Bold-Sans-Serif\">@Compendium[dnd5e.rules.Using Each Ability]{Nature}.</span> The natural world is more important than all the constructs of civilization. (Neutral)",
+      "img": "icons/svg/d20-black.svg",
+      "weight": 1,
+      "range": [
+        5,
+        5
+      ],
+      "drawn": false,
+      "_id": "618y91qnwfw3ktxi"
+    },
+    {
+      "flags": {},
+      "type": 0,
+      "text": "<span class=\"Sans-Serif-Character-Styles_Bold-Sans-Serif\">Glory.</span> I must earn glory in battle, for myself and my clan. (Any)",
+      "img": "icons/svg/d20-black.svg",
+      "weight": 1,
+      "range": [
+        6,
+        6
+      ],
+      "drawn": false,
+      "_id": "jrua2fljnj2rbsal"
+    }
+  ],
+  "formula": "d6",
+  "replacement": true,
+  "displayRoll": true,
+  "folder": null,
+  "sort": 0,
+  "permission": {
+    "default": 0
+  },
+  "flags": {}
+}

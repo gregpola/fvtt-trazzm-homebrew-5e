@@ -1,0 +1,53 @@
+// ALL
+"permission":{"default":0,"5vlmE3uiS7OIQTEf":3}  --> "permission":{"default":0}
+   -->
+
+// Backgrounds
+@Compendium[world.ddb-test-5e-tables. --> @Compendium[fvtt-trazzm-homebrew-5e.homebrew-roll-tables.
+"flags":\{"ddbimporter":(?:[^}]*}){5}  -->  "flags":{}
+
+
+// Class Features, Feats
+"flags":\{"ddbimporter".*\}  --> "flags":\{}}
+
+// Creatures
+"ddb-images/other/npc-Duergar-Spy.webp" --> "modules/fvtt-trazzm-homebrew-5e/assets/monsters/npc-Duergar.webp"
+"ddb-images/other/ --> "modules/fvtt-trazzm-homebrew-5e/assets/monsters/
+
+// Items
+"flags":\{"ddbimporter".*"magicitems"  --> "flags":\{"magicitems"
+"ddb-images/other/ --> "modules/fvtt-trazzm-homebrew-5e/assets/magic-items/
+"ddbimporter":(?:[^}]*}),  -->
+@Compendium[world.ddb-test-5e-tables.  --> @Compendium[modules.fvtt-trazzm-homebrew-5e.homebrew-roll-tables.
+
+// Races
+"flags":\{"ddbimporter".*"magicitems"  --> "flags":\{"magicitems"
+"flags":\{"ddbimporter".*\}  --> "flags":\{}}
+"ddb-images/other/ --> "modules/fvtt-trazzm-homebrew-5e/assets/races/
+@Compendium[world.ddb-test-5e-racial-traits.  --> @Compendium[fvtt-trazzm-homebrew-5e.homebrew-racial-traits.
+
+--TODO
+@Compendium[world.ddb-test-5e-racial-traits.  --> @Compendium[fvtt-trazzm-homebrew-5e.homebrew-racial-traits.
+
+// Racial Traits
+"flags":\{"ddbimporter".*\}  --> "flags":\{}}
+-- TODO
+
+// Spells
+"ddbimporter":{"disabled":false},  -->
+@Compendium[world.ddb-test-5e-tables.  --> @Compendium[fvtt-trazzm-homebrew-5e.homebrew-roll-tables.
+"permission":{"default":0,"5vlmE3uiS7OIQTEf":3}  --> "permission":{"default":0}
+"flags":\{"ddbimporter":(?:[^}]*}){3}, --> "flags":{
+"flags":\{"ddbimporter":(.*?),"core": --> "flags":\{"core":
+"core":\{"sourceId":(?:[^}]*}){2}  --> "core":{}}
+"ddbimporter":(?:[^}]*}){2}, -->
+"ddb-images/other/ --> "modules/fvtt-trazzm-homebrew-5e/assets/other/
+
+
+// Subclasses
+"flags":\{"ddbimporter".*\}  --> "flags":\{}}
+"ddb-images/other/ --> "modules/fvtt-trazzm-homebrew-5e/assets/other/
+
+
+// SCRATCH
+(?:[^"]*"){3}
