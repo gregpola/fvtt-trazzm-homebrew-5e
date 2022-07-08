@@ -2,10 +2,14 @@
     "name": "fvtt-trazzm-homebrew-5e",
     "title": "Trazzm 5e Homebrew",
     "description": "A collection of homebrew for dnd5e",
-    "version": "0.0.2",
-    "author": "Trazzm",
+    "version": "0.0.3",
     "minimumCoreVersion": "0.8.6",
     "compatibleCoreVersion": "9",
+    "authors": [{
+        "name": "Greg Pola | Trazzm",
+        "url": "https://github.com/gregpola",
+        "discord": "Trazzm#1390"
+    }],
 	"systems": ["dnd5e"],
     "packs": [
         {
