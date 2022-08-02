@@ -1,3 +1,6 @@
+# 0.0.5
+* Cleanup of creatures
+
 # v0.0.4
 * Cleanup of classes, subclasses, class-features, and backgrounds. Started cleaning up creatures.
 
