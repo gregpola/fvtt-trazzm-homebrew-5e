@@ -1,3 +1,6 @@
+# 0.1.0
+* Completed initial cleanup of content.
+
 # 0.0.5
 * Cleanup of creatures
 
