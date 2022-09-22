@@ -11,6 +11,26 @@
         "discord": "Trazzm#1390"
     }],
 	"systems": ["dnd5e"],
+	"dependencies": [
+		{
+			"name": "midi-qol", "type": "module"
+		},
+		{
+			"name": "dfreds-convenient-effects", "type": "module"
+		},
+		{
+			"name": "ActiveAuras", "type": "module"
+		},
+		{
+			"name": "dae", "type": "module"
+		},
+		{
+			"name": "socketlib", "type": "module"
+		},
+		{
+			"name": "lib-wrapper", "type": "module"
+		}
+	],
     "packs": [
         {
             "name": "homebrew-creatures",
