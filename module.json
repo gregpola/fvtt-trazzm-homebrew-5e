@@ -23,6 +23,9 @@
 		},
 		{
 			"name": "dae", "type": "module"
+		},
+		{
+			"name": "warpgate", "type": "module"
 		}
 	],
     "packs": [
