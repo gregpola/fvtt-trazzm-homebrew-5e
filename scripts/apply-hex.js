@@ -1,0 +1,129 @@
+const version = "0.1.0";
+let workflow = MidiQOL.Workflow.getWorkflow(args[0].uuid);
+let actor = workflow?.actor;
+
+try {
+	// verify needed data
+	if (!game.combat || !actor) {
+		console.error("Missing data for applying Hex");
+		return;
+	}
+	
+	if (args[0].macroPass === "preambleComplete") {
+		// Check if changing target
+	
+		// Ask which ability they want to hex
+		let targetUuid = args[0].targets[0].uuid;
+		let target = args[0].targets[0];
+		let tactor = target?.actor;
+		if (!actor || !targetUuid) {
+		  console.error("apply Hex: no token/target selected");
+		  return;
+		}
+	 
+		new Dialog({
+			title: 'Choose which ability the target will have disadvantage:',
+			content: `
+			  <form class="flexcol">
+				<div class="form-group">
+				  <select id="stat">
+					<option value="str">Strength</option>
+					<option value="dex">Dexterity</option>
+					<option value="con">Constitution</option>
+					<option value="int">Intelligence</option>
+					<option value="wis">Wisdom</option>
+					<option value="cha">Charisma</option>
+				  </select>
+				</div>
+			  </form>
+			`,
+			buttons: {
+				yes: {
+					icon: '<i class="fas fa-bolt"></i>',
+					label: 'Select',
+					callback: async (html) => {
+						let stat = html.find('#stat').val();
+						// Getting Hex effect from actor
+						let effect = actor.effects.find(i => i.data.label === "Hex" && i.data.changes[0].key === "flags.midi-qol.Hexcurse");
+						if (effect == null){ //If Hex (from caster) is not active on caster
+							if (args[0].item.type !== "spell") {
+								ui.notifications.warn("You don't have an active Hex to curse a new target.");
+								return{};
+							}
+							// Define duration based on spell level
+							let seconds = (args[0].spellLevel >= 5) ? 86400 :
+										   (args[0].spellLevel >= 3) ? 28800 : 3600;
+							// Define effect on caster
+							const effectData = {
+							  changes: [
+								{key: "flags.midi-qol.Hexcurse", mode: 5, value: targetUuid, priority: 20}, // who is marked
+							  ],
+							  origin: args[0].itemUuid, //flag the effect as associated to the spell being cast
+							  disabled: false,
+							  duration: {startTime: game.time.worldTime, seconds: seconds},
+							  icon: args[0].item.img,
+							  label: args[0].item.name
+							}
+							await actor.createEmbeddedDocuments("ActiveEffect", [effectData]);
+							// Define effect on target
+							const teffectData = {
+							  changes: [{key: `flags.midi-qol.disadvantage.ability.check.${stat}`, mode: 5,value: true, priority: 50}],
+							  origin: args[0].itemUuid, //flag the effect as associated to the spell being cast
+							  disabled: false,
+							  duration: {startTime: game.time.worldTime, seconds: seconds},
+							  icon: args[0].item.img,
+							  label: args[0].item.name
+							}
+							await tactor.createEmbeddedDocuments("ActiveEffect", [teffectData]);
+							// Update concentration duration
+							let effectcon = actor.effects.find(i => i.data.label === "Concentrating");
+							let duration = effectcon.data.duration;
+							duration.seconds = seconds;
+							await effectcon.update({duration});
+						} else {
+							// Clear effect on last target if 0 HP or stop
+							let oldtarget;
+							try{
+								oldtarget = await fromUuid(effect.data.changes[0].value)
+							} catch(err) {
+							}
+							if (oldtarget != null && oldtarget != undefined){
+								if (oldtarget.actor.data.data.attributes.hp.value > 0) {
+									ui.notifications.warn("You can only curse a new creature after the current one drops to 0 HP.");
+									return{};
+								} else {
+									let toldeffect = oldtarget.actor.effects.find(i => i.data.label === "Hex" && i.data.origin.includes(actor.id));
+									toldeffect.delete();
+								}
+							}
+							// Update link (copied from changelog on midiqol documentation, I didn't really understand what this is doing but it is working (as of testing)
+							let cd = getProperty(actor.data, "flags.midi-qol.concentration-data");
+							let targets = duplicate(cd.targets || [])
+							targets[targets.findIndex(i => i.tokenUuid === effect.data.changes[0].value)] = {tokenUuid: targetUuid, actorUuid: tactor.uuid}
+							targets.push({"actorUuid": args[0].actorUuid, "tokenUuid": args[0].tokenUuid});
+							actor.setFlag("midi-qol", "concentration-data.targets", targets);
+							// Update targetUuid on actor effect
+							let changes = effect.data.changes;
+							changes[0] = {key: "flags.midi-qol.Hexcurse", mode: 5, value: targetUuid, priority: 20} //who is marked
+							await effect.update({changes});
+							// Define effect on target
+							const teffectData = {
+							  changes: [{key: `flags.midi-qol.disadvantage.ability.check.${stat}`, mode: 5,value: true, priority: 50}],
+							  origin: effect.data.origin, //flag the effect as associated to the original spell that was cast
+							  disabled: false,
+							  duration: {startTime: game.time.worldTime, seconds: effect.data.duration.seconds - (game.time.worldTime - effect.data.duration.startTime) },
+							  icon: effect.data.icon,
+							  label: effect.data.label
+							}
+							await tactor.createEmbeddedDocuments("ActiveEffect", [teffectData]);
+						}
+					},
+				},
+			}
+		}).render(true);
+	
+	}
+	
+} catch (err) {
+    console.error(`Apply Hex spell ${version}`, err);
+}
