@@ -3,8 +3,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class RemoveDamageFlavor extends JPanel implements ActionListener {
 
@@ -15,18 +15,17 @@ public class RemoveDamageFlavor extends JPanel implements ActionListener {
             throw new RuntimeException(e);
         }
     }
+    static private final Path currentRelativePath = Paths.get("");
 
-    private static String[] damageTypes = {"[acid]","[bludgeoning]","[cold]","[fire]","[force]","[lightning]","[necrotic]","[piercing]","[physical]","[poison]","[psychic]","[radiant]","[slashing]","[thunder]"};
+    private static final String[] damageTypes = {"[acid]","[bludgeoning]","[cold]","[fire]","[force]","[lightning]","[necrotic]","[piercing]","[physical]","[poison]","[psychic]","[radiant]","[slashing]","[thunder]"};
     static private final String newline = "\n";
-    static private final Charset _charset = StandardCharsets.UTF_8;
 
-    private JButton openButton, replaceButton;
-    private JTextArea log;
+    private final JButton openButton, replaceButton;
+    private final JTextArea log;
 
-    private JFileChooser fileChooser;
+    private final JFileChooser fileChooser;
 
     private File selectedFile;
-    private String fileContent;
 
     public RemoveDamageFlavor() {
         super(new BorderLayout());
@@ -39,7 +38,7 @@ public class RemoveDamageFlavor extends JPanel implements ActionListener {
         JScrollPane logScrollPane = new JScrollPane(log);
 
         // Create a file chooser
-        fileChooser = new JFileChooser();
+        fileChooser = new JFileChooser(currentRelativePath.toAbsolutePath().toString());
         openButton = new JButton("Open a File...");
         openButton.addActionListener(this);
 
@@ -57,10 +56,6 @@ public class RemoveDamageFlavor extends JPanel implements ActionListener {
         //Add the buttons and the log to this panel.
         add(buttonPanel, BorderLayout.PAGE_START);
         add(logScrollPane, BorderLayout.CENTER);
-
-        setSize(400, 400);
-        setLocation(400, 400);
-
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -103,15 +98,13 @@ public class RemoveDamageFlavor extends JPanel implements ActionListener {
 
                 String currentLine;
                 while ((currentLine = reader.readLine()) != null) {
-                    System.out.println(currentLine);
+                    //System.out.println(currentLine);
                     for (String flavor : damageTypes) {
                         if (currentLine.contains(flavor)) {
                             log.append(String.format("Found '%s' in the file, replacing it...", flavor) + newline);
                             log.setCaretPosition(log.getDocument().getLength());
                             currentLine = removeAll(currentLine, flavor);
-                            System.out.println(currentLine);
-                        }
-                        else {
+                            //System.out.println(currentLine);
                         }
                     }
 
@@ -166,6 +159,8 @@ public class RemoveDamageFlavor extends JPanel implements ActionListener {
 
         //Display the window.
         frame.pack();
+        frame.setSize(800, 600);
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
 
@@ -175,27 +170,4 @@ public class RemoveDamageFlavor extends JPanel implements ActionListener {
             createAndShowGUI();
         });
     }
-
-    /*
-    public static void main(String[] args) throws IOException {
-        String filepath = "";
-        if ((args != null) && (args.length > 0) ) {
-            filepath = args[0];
-        }
-        else {
-            fileChooser.showOpenDialog()
-
-        }
-
-        if ((filepath != null) && !filepath.isEmpty()) {
-            // read the file
-            Path path = Paths.get(filepath);
-            Charset charset = StandardCharsets.UTF_8;
-            String content = Files.readString(path, charset);
-
-            content = content.replaceAll("foo", "bar");
-            Files.writeString(path, content, charset);
-        }
-    }
-    */
 }
