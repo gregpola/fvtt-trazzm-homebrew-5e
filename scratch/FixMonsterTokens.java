@@ -94,15 +94,18 @@ public class FixMonsterTokens extends JPanel implements ActionListener {
         } else if (e.getSource() == replaceButton) {
             log.append("Starting token repair..." + newline);
             log.setCaretPosition(log.getDocument().getLength());
-            boolean found = false;
 
             // create the new file
             File newFile = new File(selectedFile.getParentFile(), "f-" + selectedFile.getName());
             if (newFile.exists()) {
-                newFile.delete();
+                if (!newFile.delete()) {
+                    System.err.println("Unable to delete the old f- file");
+                }
             }
             try {
-                newFile.createNewFile();
+                if (!newFile.createNewFile()) {
+                    System.err.println("Unable to create the new f- file");
+                }
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
@@ -110,10 +113,14 @@ public class FixMonsterTokens extends JPanel implements ActionListener {
             // create a need to fix file
             File fixFile = new File(selectedFile.getParentFile(), "fixes-" + selectedFile.getName() + ".txt");
             if (fixFile.exists()) {
-                fixFile.delete();
+                if (!fixFile.delete()) {
+                    System.err.println("Unable to delete the old unfixed file");
+                }
             }
             try {
-                fixFile.createNewFile();
+                if (!fixFile.createNewFile()) {
+                    System.err.println("Unable to create the new unfixed file");
+                }
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
@@ -131,26 +138,39 @@ public class FixMonsterTokens extends JPanel implements ActionListener {
                         JsonObject tokenObject = jsonObject.getAsJsonObject("token");
                         JsonPrimitive nameObj = tokenObject.getAsJsonPrimitive("name");
                         JsonPrimitive imageObj = tokenObject.getAsJsonPrimitive("img");
-                        Path updatedPath = findImage(imageObj.getAsString());
 
-                        if (updatedPath != null) {
-                            String newPath = updatedPath.toString().replaceAll("\\\\", "/");
-                            tokenObject.addProperty("img", newPath);
-                            tokenObject.addProperty("vision", true);
-                            String monster = _gson.toJson(jsonObject);
-                            writer.write(monster);
-                            writer.write("\r\n");
+                        // only repair those pointing to the tokenizer
+                        String tokenPath = imageObj.getAsString();
+                        if (tokenPath.toLowerCase().startsWith(_tokenPrefix) || tokenPath.isBlank()) {
+                            Path updatedPath = findImage(tokenPath);
+
+                            if (updatedPath != null) {
+                                String newPath = updatedPath.toString().replaceAll("\\\\", "/");
+                                tokenObject.addProperty("img", newPath);
+                                tokenObject.addProperty("vision", true);
+
+                            } else {
+                                System.out.println("No token found for: '" + nameObj.getAsString() + "' using the portrait");
+                                // just use the portrait image
+                                JsonPrimitive portraitImage = jsonObject.getAsJsonPrimitive("img");
+                                String portraitPath = portraitImage.getAsString();
+                                if ((portraitPath != null ) && !portraitPath.isBlank()) {
+                                    tokenObject.addProperty("img", portraitPath);
+
+                                }
+                                else {
+                                    fixWriter.write(nameObj.getAsString());
+                                    fixWriter.write("\r\n");
+                                }
+                                tokenObject.addProperty("vision", true);
+                            }
                         }
-                        else {
-                            System.out.println("No token found for: " + nameObj.getAsString());
-                            // still fix the vision
-                            tokenObject.addProperty("vision", true);
-                            String monster = _gson.toJson(jsonObject);
-                            writer.write(monster);
-                            writer.write("\r\n");
-                            fixWriter.write(nameObj.getAsString());
-                            fixWriter.write("\r\n");
-                        }
+
+                        // Write out the entry
+                        String monster = _gson.toJson(jsonObject);
+                        writer.write(monster);
+                        writer.write("\r\n");
+
                     }
                     catch (Exception jse) {
                         jse.printStackTrace(System.err);
@@ -169,9 +189,6 @@ public class FixMonsterTokens extends JPanel implements ActionListener {
 
     // _tokenImagesPath
     private Path findImage(String oldImage) {
-        if (!oldImage.toLowerCase().startsWith(_tokenPrefix))
-            return null;
-
         String base = oldImage.substring(_tokenPrefix.length()).toLowerCase();
 
         // first check the name as is
@@ -220,7 +237,7 @@ public class FixMonsterTokens extends JPanel implements ActionListener {
             return results.get(0);
         }
 
-        // finally, just try by the base name, this will be a fallback option
+        // just try by the base name, this will be a fallback option
         if (name.contains("_")) {
             String name4 = _imageFilePrefix + name.substring(0, name.indexOf("_"));
             try {
@@ -258,7 +275,7 @@ public class FixMonsterTokens extends JPanel implements ActionListener {
      */
     private static void createAndShowGUI() {
         //Create and set up the window.
-        JFrame frame = new JFrame("RemoveDamageFlavor");
+        JFrame frame = new JFrame("Fix Monster Tokens");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         //Add content to the window.
