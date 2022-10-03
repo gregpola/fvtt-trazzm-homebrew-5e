@@ -14,21 +14,26 @@ try {
 		// check resources
 		let resKey = findResource(tactor);
 		if (!resKey) {
-			ui.notifications.error(`${resourceName} - wild shape resource found`);
-			return false;
+			return ui.notifications.error(`${resourceName} - wild shape resource found`);
 		}
 
 		const points = tactor.data.data.resources[resKey].value;
 		if (!points) {
-			ui.notifications.error(`${resourceName} - No wild shape uses left`);
-			return false;
+			return ui.notifications.error(`${resourceName} - no wild shape uses left`);
 		}
 		
 		await consumeResource(tactor, resKey, cost);
 
 		const folderName = `Wildshape (${tactor.name})`;
-		const getFolder = game.folders.getName(folderName).content;
-		const folderContents = getFolder.reduce((acc, target) => acc += `<option value="${target.id}">${target.name} CR: ${target.data.data.details.cr}</option>`, ``);
+		const theFolder = game.folders.getName(folderName);
+		if (!theFolder) {
+			return ui.notifications.error(`${resourceName} - unable to locate the folder: ${folderName}`);
+		}
+		if (!theFolder.content) {
+			return ui.notifications.error(`${resourceName} - the folder is empty`);
+		}
+		
+		const folderContents = theFolder.content.reduce((acc, target) => acc += `<option value="${target.id}">${target.name} CR: ${target.data.data.details.cr}</option>`, ``);
 		const the_content = `<p>Pick a beast</p><form><div class="form-group"><label for="beast">Beast:</label><select id="beast">${folderContents}</select></div></form>`;
 		const druidItems = tactor.items.filter(i => i.data.type === "feat" && i.data.data.activation?.type != "bonus" && (i.data.data.requirements.toLowerCase().includes("druid") || i.data.data.requirements.toLowerCase().includes("circle"))).map(i => i.data);
 		
@@ -40,7 +45,7 @@ try {
 				change: {
 					label: "Change", callback: async (html) => {
 						let polyId = html.find('#beast')[0].value;
-						let findToken = getFolder.find(i => i.id === polyId);
+						let findToken = theFolder.content.find(i => i.id === polyId);
 						const getToken = duplicate(target.data);
 						if ((!(game.modules.get("jb2a_patreon")?.active) && !(game.modules.get("sequencer")?.active))) {
 							await tactor.transformInto(findToken, { keepBio: true, keepClass: true, keepMental: true, mergeSaves: true, mergeSkills: true, transformTokens: true });
