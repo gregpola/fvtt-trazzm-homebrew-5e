@@ -47,18 +47,13 @@ try {
 		
 		let useOption = await dialog;
 		if (useOption) {
-			// todo check the target's size, must be Large or smaller
+			// check the target's size, must be Large or smaller
 			const tsize = tactor.data.data.traits.size;
 			if (!["tiny","sm","med","lg"].includes(tsize)) {
 				ui.notifications.info(`${resourceName} - target is too large to push`);
 			}
 			else {
-				const dc = 8 + actor.data.data.attributes.prof + actor.data.data.abilities.wis.mod;
-				const flavor = `${CONFIG.DND5E.abilities["str"]} DC${dc} ${optionName || ""}`;
-				let saveRoll = (await tactor.rollAbilitySave("str", {flavor})).total;
-				if (saveRoll < dc) { 
-					await pushTarget(pusher, ttoken);
-				}
+				await pushTarget(pusher, ttoken);
 			}
 		}
 		

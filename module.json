@@ -2,9 +2,9 @@
     "name": "fvtt-trazzm-homebrew-5e",
     "title": "Trazzm 5e Homebrew",
     "description": "A collection of homebrew for dnd5e",
-    "version": "0.1.0",
+    "version": "This is auto replaced",
     "minimumCoreVersion": "0.8.6",
-    "compatibleCoreVersion": "9",
+    "compatibleCoreVersion": "9.280",
     "authors": [{
         "name": "Greg Pola | Trazzm",
         "url": "https://github.com/gregpola",
@@ -154,11 +154,11 @@
 	"flags": {
 		"allowBugReporter": true
 	},
-	"url": "https://github.com/gregpola/fvtt-trazzm-homebrew-5e",
+    "url": "This is auto replaced",
+    "manifest": "This is auto replaced",
+    "download": "This is auto replaced",
 	"license": "https://raw.githubusercontent.com/gregpola/fvtt-trazzm-homebrew-5e/main/LICENSE",
-	"manifest": "https://github.com/gregpola/fvtt-trazzm-homebrew-5e/releases/latest/download/module.json",
 	"changelog": "https://raw.githubusercontent.com/gregpola/fvtt-trazzm-homebrew-5e/main/changelog.md",
 	"readme": "https://raw.githubusercontent.com/gregpola/fvtt-trazzm-homebrew-5e/main/README.md",
 	"bugs": "https://github.com/gregpola/fvtt-trazzm-homebrew-5e/issues",
-	"download": "https://github.com/gregpola/fvtt-trazzm-homebrew-5e/releases/latest/download/module.zip"
   }
