@@ -154,11 +154,11 @@
 	"flags": {
 		"allowBugReporter": true
 	},
-    "url": "This is auto replaced",
-    "manifest": "This is auto replaced",
-    "download": "This is auto replaced",
+	"url": "This is auto replaced",
+	"manifest": "This is auto replaced",
+	"download": "This is auto replaced",
 	"license": "https://raw.githubusercontent.com/gregpola/fvtt-trazzm-homebrew-5e/main/LICENSE",
 	"changelog": "https://raw.githubusercontent.com/gregpola/fvtt-trazzm-homebrew-5e/main/changelog.md",
 	"readme": "https://raw.githubusercontent.com/gregpola/fvtt-trazzm-homebrew-5e/main/README.md",
-	"bugs": "https://github.com/gregpola/fvtt-trazzm-homebrew-5e/issues",
+	"bugs": "https://github.com/gregpola/fvtt-trazzm-homebrew-5e/issues"
   }
