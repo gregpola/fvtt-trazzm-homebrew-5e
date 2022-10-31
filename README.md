@@ -1,3 +1,4 @@
+[![Github All Releases](https://img.shields.io/github/downloads/gregpola/fvtt-trazzm-homebrew-5e/total.svg)]() 
 # fvtt-trazzm-homebrew-5e
 A collection of homebrew content for dnd5e in FoundryVTT
 
