@@ -36,7 +36,8 @@ try {
 		
 		// Add superiority die to the damage
 		let damageType = args[0].item.data.damage.parts[0][1];
-		const supDie = actor.data.data.scale["battle-master"]["superiority-die"];
+		const fullSupDie = actor.data.data.scale["battle-master"]["superiority-die"];
+		const supDie = fullSupDie.substr(fullSupDie.indexOf('d'));
 		return {damageRoll: `${supDie}[${damageType}]`, flavor: "Brace Maneuver Damage"};		
 	}
 

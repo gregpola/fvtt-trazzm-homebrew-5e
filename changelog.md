@@ -1,3 +1,20 @@
+# 0.2.6
+* Added missing features:
+  * Oath of Glory: Peerless Athlete, Inspiring Smite
+  
+* Fixed/Updated:
+  * Disarming Strike
+  * Damage application of all the maneuvers that add the superiority die to damage
+  * Broken item generic image links
+  * Spell: Absorb Elements
+  * Monster: all swarms' damage rolls
+
+* Added automation to:
+  * Spell: Conjure Animals (requires importing the tables and giving players perms to add actors and tokens) 
+  * Elegant Maneuver
+  * Oath of Glory features except 'Living Legend'
+  * Path of the Ancestral Guardian
+
 # 0.1.0
 * Completed initial cleanup of content.
 

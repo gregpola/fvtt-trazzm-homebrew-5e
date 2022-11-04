@@ -78,7 +78,7 @@ try {
 			}
 		}
 		
-		// TODO enable enhanced bond
+		// enable enhanced bond
 		let enhancedBond = actor.items.getName("Enhanced Bond");
 		if (enhancedBond) {
 			await enhancedBond.roll();

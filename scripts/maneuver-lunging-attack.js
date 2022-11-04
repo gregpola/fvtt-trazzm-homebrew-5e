@@ -60,7 +60,8 @@ try {
 							range : copy_item.data.range
 						});
 						let damage = copy_item.data.damage.parts[0][0];
-						const supDie = actor.data.data.scale["battle-master"]["superiority-die"];
+						const fullSupDie = actor.data.data.scale["battle-master"]["superiority-die"];
+						const supDie = fullSupDie.substr(fullSupDie.indexOf('d'));
 						var newdamage = damage + " + " + supDie;
 						copy_item.data.damage.parts[0][0] = newdamage;
 						copy_item.data.range += 5;

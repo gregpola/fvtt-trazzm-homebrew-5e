@@ -54,7 +54,8 @@ try {
 		let useManeuver = await dialog;
 		if (useManeuver) {
 			consumeResource(actor, resKey, 1);
-			const supDie = actor.data.data.scale["battle-master"]["superiority-die"];
+			const fullSupDie = actor.data.data.scale["battle-master"]["superiority-die"];
+			const supDie = fullSupDie.substr(fullSupDie.indexOf('d'));
 			
 			// find nearby foes
 			const potentialTargets = MidiQOL.findNearby(null, ttoken, 5, null);
