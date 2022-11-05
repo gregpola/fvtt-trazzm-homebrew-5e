@@ -1,3 +1,16 @@
+# 0.2.7
+* Added automation to:
+  * Aasimar racial features
+  * Empowered Cantrips
+  * Potent Cantrip
+  * Potent Cantrips
+  * Deadly Caster
+
+* Fixed/Updated:
+  * Fixed the Sorcerer proficiencies, so you can now select your spellcasting ability
+  * Reckless Attack
+  * Vicious Mockery
+  
 # 0.2.6
 * Added missing features:
   * Oath of Glory: Peerless Athlete, Inspiring Smite

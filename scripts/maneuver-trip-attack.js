@@ -61,7 +61,8 @@ try {
 				ui.notifications.info(`${resourceName} - target is too large to trip`);
 			}
 			else {
-				const dc = 8 + actor.data.data.attributes.prof + actor.data.data.abilities.str.mod; // or dex
+				const abilityBonus = Math.max(actor.data.data.abilities.str.mod, actor.data.data.abilities.dex.mod);
+				const dc = 8 + actor.data.data.attributes.prof + abilityBonus;
 				const flavor = `${CONFIG.DND5E.abilities["str"]} DC${dc} ${optionName || ""}`;
 				let saveRoll = (await tactor.rollAbilitySave("str", {flavor})).total;
 				if (saveRoll < dc) { 

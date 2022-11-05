@@ -59,8 +59,9 @@ try {
 		let useGA = await dialog;
 		if (useGA) {
 			let used = await decrimentSuperiorityDice(actor, resKey);
+			const abilityBonus = Math.max(actor.data.data.abilities.str.mod, actor.data.data.abilities.dex.mod);
 			const supDie = actor.data.data.scale["battle-master"]["superiority-die"].substr(1);
-			const dc = 8 + actor.data.data.attributes.prof + actor.data.data.abilities.str.mod; // or dex
+			const dc = 8 + actor.data.data.attributes.prof + abilityBonus;
 			const flavor = `${CONFIG.DND5E.abilities["wis"]} DC${dc} Goading Attack`;
 			let saveRoll = (await tactor.rollAbilitySave("wis", {flavor})).total;
 			if (saveRoll < dc) {
