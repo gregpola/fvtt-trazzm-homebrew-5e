@@ -93,8 +93,10 @@ function decrimentSuperiorityDice(actor, resKey) {
 }
 
 async function markAsFrightened(targetId, actorId) {
+    let condition = game.i18n.localize("Frightened");
+
 	const effectData = {
-		label: "Frightened",
+		label: condition,
 		icon: "icons/magic/control/fear-fright-monster-green.webp",
 		origin: actorId,
 		changes: [

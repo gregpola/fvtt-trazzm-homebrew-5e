@@ -1,3 +1,17 @@
+# 0.2.8
+* Added automation to:
+  * Kobold racial features
+  * Oath of Vengeance features
+
+* Fixed/Updated:
+  * Spell: Darkness
+  * Detect Magic
+  * Divine Favor
+  * Thunderous Smite
+  * Wrathful Smite
+  * Branding Smite
+  * Searing Smite
+
 # 0.2.7
 * Added automation to:
   * Aasimar racial features

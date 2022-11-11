@@ -1,0 +1,67 @@
+const version = "0.1.0";
+const optionName = "Searing Smite";
+const gameRound = game.combat ? game.combat.round : 0;
+
+try {
+	if (args[0].macroPass === "DamageBonus") {	
+		let workflow = MidiQOL.Workflow.getWorkflow(args[0].uuid);
+		let actor = workflow?.actor;
+		const target = args[0].hitTargets[0];
+		let tactor = target?.actor;
+		const ttoken = canvas.tokens.get(args[0].hitTargets[0].object.id);
+		let pusher = canvas.tokens.get(args[0].tokenId);
+
+		// validate targeting
+		if (!actor || !target) {
+		  console.log(`${optionName}: no target selected`);
+		  return {};
+		}
+
+		// make sure it's an allowed attack
+		const at = args[0].item?.data?.actionType;
+		if (!at || !["mwak"].includes(at)) {
+			console.log(`${optionName}: not an eligible attack: ${at}`);
+			return {};
+		}
+
+		// get the spell level prior to removing the effect
+		const spellLevel = actor.data.flags["midi-qol"]?.searingSmite?.level ?? 2;
+		
+		// remove the effect, since it is one-time
+		let effect = actor.effects?.find(i=>i.data.label === optionName);
+		if (effect) {
+			await MidiQOL.socket().executeAsGM("removeEffects", { actorUuid: actor.uuid, effects: [effect.id] });
+		}
+		
+		// add burning effect
+		const ability = actor.data.data.attributes.spellcasting;
+		const abilityBonus = actor.data.data.abilities[ability].mod;
+		const dc = 8 + actor.data.data.attributes.prof + abilityBonus;
+		let damageType = game.i18n.localize("fire");
+		
+        let effectData = new ActiveEffect( 
+		{
+			label: optionName, 
+			icon: "icons/magic/fire/dagger-rune-enchant-flame-strong-red.webp", 
+			changes: [
+			{
+				key:"flags.midi-qol.OverTime",
+				value: `"turn=start,saveAbility=con,saveDC=${dc},damageRoll=1d6,damageType=${damageType},label=${optionName}" `, 
+				mode: 0, 
+				priority: 20
+			}], 
+			duration: {seconds: 60}});
+		await MidiQOL.socket().executeAsGM("createEffects", {actorUuid: tactor.uuid, effects: [effectData.toObject()]})
+		await ChatMessage.create({content: `${target.name} is set on fire and begins to burn!`});
+
+		// add damage bonus
+		const levelMulti = Math.max(spellLevel, 1);
+		const critMulti = args[0].isCritical ? 2: 1;
+		const totalDice = levelMulti * critMulti;
+		return {damageRoll: `${totalDice}d6[${damageType}]`, flavor: optionName};
+	}
+
+
+} catch (err) {
+    console.error(`${optionName}:  ${version}`, err);
+}

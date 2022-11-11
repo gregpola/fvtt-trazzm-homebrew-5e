@@ -5,7 +5,7 @@ try {
 	let workflow = MidiQOL.Workflow.getWorkflow(args[0].uuid);
 	let actor = workflow?.actor;
 		
-	if (args[0].macroPass === "preItemRoll") {
+	if (args[0].macroPass === "templatePlaced") {
 		// find nearby enemies
 		const enemies = MidiQOL.findNearby(-1, token, 10, 0);
 
