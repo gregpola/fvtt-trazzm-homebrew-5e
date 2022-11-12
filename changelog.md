@@ -1,3 +1,7 @@
+# 0.2.9
+* Updated readme
+* Added transparent webp letter and number tokens
+
 # 0.2.8
 * Added automation to:
   * Kobold racial features
