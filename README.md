@@ -19,5 +19,5 @@ To install a module, follow these instructions:
 * dae
 * item-macro
 * midi-qol
-  * 
+  * Use the import file found in the config folder to ensure you have the settings required to support automation
 * transient dependencies
