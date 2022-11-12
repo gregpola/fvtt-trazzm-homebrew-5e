@@ -11,6 +11,7 @@
   * Wrathful Smite
   * Branding Smite
   * Searing Smite
+  * Spiritual Weapon
 
 # 0.2.7
 * Added automation to:

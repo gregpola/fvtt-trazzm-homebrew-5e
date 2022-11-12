@@ -3,11 +3,12 @@ if (origin) {
     const removeList = actor.effects.filter(ae => ae.data.origin === origin && getProperty(ae.data, "flags.dae.transfer") !== 3).map(ae=>ae.id);
     await actor.deleteEmbeddedDocuments("ActiveEffect", removeList)
 }
+
 const updates = {
     Item: {
     "Spiritual Weapon Attack": {
       "type": "weapon",
-      "img": "systems/dnd5e/icons/spells/enchant-magenta-2.jpg", 
+      "img": "icons/magic/fire/dagger-rune-enchant-flame-blue-yellow.webp", 
       "data.actionType" : "msak",
       "data.properties.mgc": true,
       "data.attackBonus": `${Number(args[0].actor.data.abilities[args[0].actor.data.attributes.spellcasting]?.mod) + Number(args[0].actor.data.attributes.prof) + Number(args[0].actor.data.bonuses.msak.attack)}`,
@@ -16,7 +17,9 @@ const updates = {
     }
   }
 }
-const result = await warpgate.spawn("Spiritual Weapon",  {embedded: updates}, {}, {});
+
+const actorsWeapon = "Spiritual Weapon (" + actor.name + ")";
+const result = await warpgate.spawn(actorsWeapon,  {embedded: updates}, {}, {});
 if (result.length !== 1) return;
 const createdToken = game.canvas.tokens.get(result[0]);
 await createdToken.actor.items.getName("Spiritual Weapon Attack").update({"data.proficient": false});

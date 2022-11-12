@@ -42,7 +42,7 @@ try {
         let effectData = new ActiveEffect( 
 		{
 			label: optionName, 
-			icon: "icons/magic/fire/dagger-rune-enchant-flame-strong-red.webp", 
+			icon: "icons/magic/fire/dagger-rune-enchant-flame-blue-yellow.webp", 
 			changes: [
 			{
 				key:"flags.midi-qol.OverTime",
