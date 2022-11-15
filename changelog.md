@@ -1,3 +1,18 @@
+# 0.3.0
+* Added automation to:
+  * Forge Domain: Blessing of the Forge, Soul of the Forge, Divine Strike, Saint of Forge and Fire
+  * Protection from Evil and Good (requires world script)
+  * Alchemist's Fire
+  * Holy Water
+  * Antitoxin
+  * Healer's Kit
+  * Spare the Dying
+
+* Fixed/Updated:
+  * Added back in the Divine Domain feature for Clerics
+  * Word of Radiance
+  * Acid Vial
+
 # 0.2.9
 * Updated readme
 * Added transparent webp letter and number tokens
