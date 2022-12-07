@@ -1,4 +1,4 @@
-const version = "0.1.0";
+const version = "0.1.1";
 const resourceName = "Lay on Hands";
 let workflow = MidiQOL.Workflow.getWorkflow(args[0].uuid);
 let actor = workflow.actor;
@@ -27,20 +27,21 @@ try {
 		// calculate the maximum heal possible
 		const maxhp = Number(tactor?.data.data.attributes.hp.max);
 		const currenthp = Number(tactor?.data.data.attributes.hp.value);
-		const maxHeal = Math.min(maxhp - currenthp, available);
+		const targetDamage = maxhp - currenthp;
+		const maxHeal = Math.min(targetDamage, available);
 		
 		// ask which type of healing
 		new Dialog({
 		  title: "Lay on Hands",
 		  content: `<p>Which <strong>Action</strong> would you like to do? (${available} points remaining)</p>
-			<p>If Heal, how many hp to heal?<input id="mqlohpoints" type="number" min="0" step="1.0" max="${maxHeal}"></input></p>`,
+			<p>If Heal, how many hp to heal? (target is off ${targetDamage})<input id="mqlohpoints" type="number" min="0" step="1.0" max="${maxHeal}"></input></p>`,
 		  buttons: {
 			heal: {
 				label: "<p>Heal</p>",
 				icon: '<img src = "icons/magic/life/cross-flared-green.webp" width="50" height="50"></>',
 				callback: async (html) => {
 					const pts = Math.clamped(Math.floor(Number(html.find('#mqlohpoints')[0].value)), 0, maxHeal);
-					const damageRoll = await new Roll(`${pts}d1`).evaluate({ async: true });
+					const damageRoll = await new Roll(`${pts}`).evaluate({ async: true });
 					await new MidiQOL.DamageOnlyWorkflow(actor, token, damageRoll.total, "healing", [target], damageRoll, {flavor: "Lay on Hands", itemCardId: args[0].itemCardId});
 					await consumeResource(actor, resKey, pts);
 				}

@@ -75,7 +75,7 @@ try {
 					{
 						label: `Ok`,
 						callback: async (html) => {
-							// TODO count the cost of the selections
+							// count the cost of the selections
 							let recoveredData = new Set();
 							let spent = 0;
 							var grid = document.getElementById("slotRows");

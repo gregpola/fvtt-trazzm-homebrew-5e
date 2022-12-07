@@ -24,9 +24,12 @@
 		{
 			"name": "dae", "type": "module"
 		},
-		{
-			"name": "warpgate", "type": "module"
-		}
+        {
+            "name": "warpgate", "type": "module"
+        },
+        {
+            "name": "autoanimations", "type": "module"
+        }
 	],
     "packs": [
         {

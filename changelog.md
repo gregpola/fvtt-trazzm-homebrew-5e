@@ -1,3 +1,14 @@
+# 0.3.1
+* Added automation to:
+  * Divine Soul
+  * Bladesinging
+  * College of Valor - need to improve combat inspiration
+  * Life Domain
+  * Tempest Domain - in progress
+
+* Fixed/Updated:
+  * Lay on Hands
+
 # 0.3.0
 * Added automation to:
   * Forge Domain: Blessing of the Forge, Soul of the Forge, Divine Strike, Saint of Forge and Fire
