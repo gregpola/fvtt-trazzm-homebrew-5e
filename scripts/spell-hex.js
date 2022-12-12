@@ -1,17 +1,9 @@
-const version = "0.1.0";
+const version = "0.2.0";
 let workflow = MidiQOL.Workflow.getWorkflow(args[0].uuid);
 let actor = workflow?.actor;
 
 try {
-	// verify needed data
-	if (!game.combat || !actor) {
-		console.error("Missing data for Hex");
-		return;
-	}
-	
 	if (args[0].macroPass === "preambleComplete") {
-		// Check if changing target
-	
 		// Ask which ability they want to hex
 		let targetUuid = args[0].targets[0].uuid;
 		let target = args[0].targets[0];
@@ -22,7 +14,7 @@ try {
 		}
 	 
 		new Dialog({
-			title: 'Choose which ability the target will have disadvantage:',
+			title: 'Choose which ability the target will have disadvantage for:',
 			content: `
 			  <form class="flexcol">
 				<div class="form-group">
@@ -45,7 +37,7 @@ try {
 						let stat = html.find('#stat').val();
 						// Getting Hex effect from actor
 						let effect = actor.effects.find(i => i.data.label === "Hex" && i.data.changes[0].key === "flags.midi-qol.Hexcurse");
-						if (effect == null){ //If Hex (from caster) is not active on caster
+						if (effect == null) { //If Hex (from caster) is not active on caster
 							if (args[0].item.type !== "spell") {
 								ui.notifications.warn("You don't have an active Hex to curse a new target.");
 								return{};

@@ -1,3 +1,23 @@
+# 0.3.2
+* Added automation to:
+  * Spell: Gift of Alacrity
+  * Spell: Tasha's Caustic Brew
+  * The Hexblade
+
+* Fixed/Updated:
+  * Air Genasi movement trait
+  * Dual Wielder feat armor class bonus
+  * Spell: Shield
+  * Spell: Hex
+  * Spell: Chill Touch
+  * Heavy Armor Master
+  * Cloak of Displacement
+
+* Added:
+  * Variant Tiefling
+  * Hooded cloak
+  * Bard College of Shadows
+
 # 0.3.1
 * Added automation to:
   * Divine Soul
