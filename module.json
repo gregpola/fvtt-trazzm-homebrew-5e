@@ -41,6 +41,14 @@
             "system": "dnd5e"
         },
         {
+            "name": "homebrew-creature-features",
+            "label": "Homebrew Creature Features",
+            "path": "./packs/creature-features.db",
+            "entity": "Item",
+            "type": "Item",
+            "system": "dnd5e"
+        },
+        {
             "name": "homebrew-items",
             "label": "Homebrew Items",
             "path": "./packs/items.db",

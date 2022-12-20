@@ -1,3 +1,27 @@
+# 0.3.3
+* Added automation to:
+  * Swashbuckler 
+  * all Eldritch Invocations
+
+* Fixed/Updated:
+  * Healing Hands
+  * Rage
+  * World Protection from Evil script
+  * Spell: Chill Touch
+
+* Added:
+  * Creature Features compendium
+    * Pack Tactics
+  * Items:
+    * Silvered arrows and crossbow bolts
+    * Reszur
+    * Poisonous Snake Venom (injury)
+    * Spider Poison (injury)
+    * Drow Poison (injury)
+    * Purple Worm Poison (Injury)
+    * Serpent Venom (Injury)
+    * Wyvern Poison (Injury)
+
 # 0.3.2
 * Added automation to:
   * Spell: Gift of Alacrity
