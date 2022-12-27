@@ -1,6 +1,20 @@
+# 0.3.4
+* Added automation to:
+  * Spell: Mind Sliver
+
+* Fixed/Updated:
+  * Forge Domain: Blessing of the Forge
+
+* Added:
+  * Items: 
+    * Wooden Shield and magical variants
+    
+* Notes
+  * You must configure permissions to allow players to create actors and items for some automation to work correctly 
+
 # 0.3.3
 * Added automation to:
-  * Swashbuckler 
+  * Swashbuckler
   * all Eldritch Invocations
 
 * Fixed/Updated:

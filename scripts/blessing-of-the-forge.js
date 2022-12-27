@@ -7,7 +7,14 @@ try {
 	let actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
 	const target = canvas.tokens.get(lastArg.tokenId);
 
-	if (args[0] === "on") {
+	if (args[0].macroPass === "preItemRoll") {
+		// first check if there are any uses remaining
+		let uses = lastArg.item?.data?.uses?.value ?? 0;
+		if (uses < 1) {
+			ui.notifications.error(`${optionName} - no uses remaining`);
+			return false;
+		}
+		
 		let tactor = actor;
 		let targetChoices = new Set();
 		targetChoices.add({ type: "radio", label: actor.name, value: actor.uuid, options: "blessingTarget" });
@@ -35,11 +42,18 @@ try {
 		let blessingChoices = choices.inputs.filter(Boolean);
 		let targetId = blessingChoices[0];
 		tactor = MidiQOL.MQfromActorUuid(targetId);
+		// get target token
+		let ttoken = allies.find(i => i.data.actorId === tactor.data._id);
 
 		// find the target actor's weapons & armor that are not magical
 		let weapons = tactor.items.filter(i => ((i.data.type === `weapon`) && !i.data.data.properties?.mgc));
 		let armor = tactor.items.filter(i => ((i.data.type === `equipment`) && i.data.data.armor?.type && !i.data.data.properties?.mgc));
-		let targetItems = weapons.concat(armor);		
+		let targetItems = weapons.concat(armor);
+		if (targetItems.length < 1) {
+			ui.notifications.error(`${optionName} - ${tactor.name} has no eligible items`);
+			return false;
+		}
+		
 		let target_content = ``;
 		for (let ti of targetItems) {
 			target_content += `<option value=${ti.id}>${ti.name}</option>`;
@@ -56,7 +70,7 @@ try {
 			</div>`;
 
 		new Dialog({
-			title: "Choose the equipment to bless",
+			title: `⚔️ Choose the item to bless`,
 			content,
 			buttons:
 			{
@@ -66,81 +80,76 @@ try {
 					callback: async (html) => {
 						let itemId = html.find('[name=titem]')[0].value;
 						let selectedItem = tactor.items.get(itemId);
-						let copy_item = duplicate(selectedItem.toObject());
-						let isWeapon = copy_item.type === `weapon`;
-						const copyItemName = copy_item.name;
-						var armorClass = Number(copy_item.data?.armor?.value);
-						var attackBonus = Number(copy_item.data.attackBonus);
-						var damageParts = isWeapon ? copy_item.data.damage.parts[0][0] : null;
-						
-						DAE.setFlag(actor, flagName, {
-							id : itemId,
-							actorId : tactor.uuid,
-							itemName: copyItemName,
-							ac: armorClass,
-							attack: attackBonus,
-							damage : damageParts,
-							props : copy_item.data.properties
-						});
-						
+						const itemName = selectedItem.name;
+						let isWeapon = selectedItem.type === `weapon`;
+						var armorClass = isWeapon ? 0 : ((version > 9) ? Number(selectedItem.system.armor.value || 0) : Number(selectedItem.data.data.armor.value || 0));
+						var attackBonus = isWeapon ? ((version > 9) ? Number(selectedItem.system.attackBonus || 0) : Number(selectedItem.data.data.attackBonus || 0)) : 0;
+						var damageParts = isWeapon ? ((version > 9) ? selectedItem.system.damage.parts : selectedItem.data.data.damage.parts) : null;
+
 						// apply the blessing
+						let mutations = {};
+						const newName = itemName + ` (${optionName})`;
+
 						if (isWeapon) {
-							var newdamage = damageParts + " + 1";
-							copy_item.data.damage.parts[0][0] = newdamage;
-							copy_item.data.attackBonus = attackBonus + 1;
-							copy_item.data.properties.mgc = true;
+							damageParts[0][0] = damageParts[0][0] + " + 1";
+							
+							mutations[selectedItem.name] = {
+								"name": newName,
+								"data.properties.mgc": true,
+								"data.attackBonus": attackBonus + 1,
+								"data.damage.parts": damageParts
+							};
 						}
 						else {
-							var newAC = armorClass + 1;
-							copy_item.data.armor.value = newAC;
-							if (copy_item.data.properties) {
-								copy_item.data.properties.mgc = true;
-							}
-							else {
-								copy_item.data.properties = {
-									mgc: true
-								};
-							}
+							mutations[selectedItem.name] = {
+								"name": newName,
+								"data.properties.mgc": true,
+								"data.armor.value": armorClass + 1
+							};
 						}
 						
-						copy_item.name = "Blessed " + copyItemName;
-						tactor.updateEmbeddedDocuments("Item", [copy_item]);
-						ChatMessage.create({content: copyItemName + " received the Blessing of the Forge from " + actor.name});
+						const updates = {
+							embedded: {
+								Item: mutations
+							}
+						};
+						
+						// mutate the selected item
+						await warpgate.mutate(ttoken.document, updates, {}, { name: itemName });
+						
+						// track target info on the source actor
+						DAE.setFlag(actor, `blessing-of-the-forge`, {
+							ttoken: ttoken.id,
+							itemName : itemName
+						});
+
+						ChatMessage.create({content: tactor.name + "'s " + itemName + " received the Blessing of the Forge from <b>" + actor.name + "</b>"});
+						return true;
 					}
 				},
 				Cancel:
 				{
-					label: `Cancel`
+					label: `Cancel`,
+					callback: async (html) => {
+						return false;
+					}
 				}
 			}
 		}).render(true);
 	}
 	else if (args[0] === "off") {
-		let flag = DAE.getFlag(actor, flagName);
+		// TODO need to store the target token data for use here
+		let flag = DAE.getFlag(actor, `blessing-of-the-forge`);
 		if (flag) {
-			let tactor = MidiQOL.MQfromActorUuid(flag.actorId);
-			if (!tactor) {
-				tactor = actor;
-			}
+			const ttoken = canvas.tokens.get(flag.ttoken);
+			const itemName = flag.itemName;
+			let restore = await warpgate.revert(ttoken.document, itemName);
+			console.log(`${optionName} - restore is: ${restore}`);
 			
-			let blessedItem = tactor.items.get(flag.id);
-			let copy_item = duplicate(blessedItem.toObject());
-
-			if (copy_item.type === `weapon`) {
-				copy_item.data.damage.parts[0][0] = flag.damage;
-				copy_item.data.attackBonus = flag.attack;
-				copy_item.data.properties.mgc = false;
-			}
-			else {
-				copy_item.data.armor.value = flag.ac;
-				//copy_item.data.properties = flag.props;
-				copy_item.data.properties.mgc = false;
-			}
-			
-			copy_item.name = flag.itemName;
-			await tactor.updateEmbeddedDocuments("Item", [copy_item]);
-			DAE.unsetFlag(actor, flagName);
-			ChatMessage.create({content: copy_item.name + " returns to normal"});
+			DAE.unsetFlag(actor, `blessing-of-the-forge`);
+			ChatMessage.create({
+				content: `${ttoken.name}'s ${itemName} returns to normal.`,
+				speaker: ChatMessage.getSpeaker({ actor: actor })});
 		}
 	}
 	
