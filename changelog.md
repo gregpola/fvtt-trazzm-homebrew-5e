@@ -1,3 +1,7 @@
+# 0.3.5
+* Fixed/Updated:
+  * Forge Domain: Blessing of the Forge
+
 # 0.3.4
 * Added automation to:
   * Spell: Mind Sliver

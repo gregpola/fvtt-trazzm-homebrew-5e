@@ -1,6 +1,7 @@
-const version = "0.1.0";
+const version = "0.2.0";
 const optionName = "Blessing of the Forge";
 const flagName = "blessing-of-the-forge";
+const gameVersion = Math.floor(game.version);
 
 try {
 	const lastArg = args[args.length - 1];
@@ -46,8 +47,18 @@ try {
 		let ttoken = allies.find(i => i.data.actorId === tactor.data._id);
 
 		// find the target actor's weapons & armor that are not magical
-		let weapons = tactor.items.filter(i => ((i.data.type === `weapon`) && !i.data.data.properties?.mgc));
-		let armor = tactor.items.filter(i => ((i.data.type === `equipment`) && i.data.data.armor?.type && !i.data.data.properties?.mgc));
+		let weapons;
+		let armor;
+		
+		if (gameVersion > 9) {
+			weapons = tactor.items.filter(i => ((i.data.type === `weapon`) && !i.data.system.properties?.mgc));
+			armor = tactor.items.filter(i => ((i.data.type === `equipment`) && i.data.system.armor?.type && !i.data.system.properties?.mgc));
+		}
+		else {
+			weapons = tactor.items.filter(i => ((i.data.type === `weapon`) && !i.data.data.properties?.mgc));
+			armor = tactor.items.filter(i => ((i.data.type === `equipment`) && i.data.data.armor?.type && !i.data.data.properties?.mgc));
+		}
+
 		let targetItems = weapons.concat(armor);
 		if (targetItems.length < 1) {
 			ui.notifications.error(`${optionName} - ${tactor.name} has no eligible items`);
@@ -82,9 +93,9 @@ try {
 						let selectedItem = tactor.items.get(itemId);
 						const itemName = selectedItem.name;
 						let isWeapon = selectedItem.type === `weapon`;
-						var armorClass = isWeapon ? 0 : ((version > 9) ? Number(selectedItem.system.armor.value || 0) : Number(selectedItem.data.data.armor.value || 0));
-						var attackBonus = isWeapon ? ((version > 9) ? Number(selectedItem.system.attackBonus || 0) : Number(selectedItem.data.data.attackBonus || 0)) : 0;
-						var damageParts = isWeapon ? ((version > 9) ? selectedItem.system.damage.parts : selectedItem.data.data.damage.parts) : null;
+						var armorClass = isWeapon ? 0 : ((gameVersion > 9) ? Number(selectedItem.system.armor.value || 0) : Number(selectedItem.data.data.armor.value || 0));
+						var attackBonus = isWeapon ? ((gameVersion > 9) ? Number(selectedItem.system.attackBonus || 0) : Number(selectedItem.data.data.attackBonus || 0)) : 0;
+						var damageParts = isWeapon ? ((gameVersion > 9) ? selectedItem.system.damage.parts : selectedItem.data.data.damage.parts) : null;
 
 						// apply the blessing
 						let mutations = {};
@@ -93,19 +104,38 @@ try {
 						if (isWeapon) {
 							damageParts[0][0] = damageParts[0][0] + " + 1";
 							
-							mutations[selectedItem.name] = {
-								"name": newName,
-								"data.properties.mgc": true,
-								"data.attackBonus": attackBonus + 1,
-								"data.damage.parts": damageParts
-							};
+							if (gameVersion > 9) {
+								mutations[selectedItem.name] = {
+									"name": newName,
+									"system.properties.mgc": true,
+									"system.attackBonus": attackBonus + 1,
+									"system.damage.parts": damageParts
+								};
+							}
+							else {
+								mutations[selectedItem.name] = {
+									"name": newName,
+									"data.properties.mgc": true,
+									"data.attackBonus": attackBonus + 1,
+									"data.damage.parts": damageParts
+								};
+							}
 						}
 						else {
-							mutations[selectedItem.name] = {
-								"name": newName,
-								"data.properties.mgc": true,
-								"data.armor.value": armorClass + 1
-							};
+							if (gameVersion > 9) {
+								mutations[selectedItem.name] = {
+									"name": newName,
+									"system.properties.mgc": true,
+									"system.armor.value": armorClass + 1
+								};
+							}
+							else {
+								mutations[selectedItem.name] = {
+									"name": newName,
+									"data.properties.mgc": true,
+									"data.armor.value": armorClass + 1
+								};
+							}
 						}
 						
 						const updates = {
