@@ -1,4 +1,4 @@
-const version = "0.1.0";
+const version = "10.0";
 const optionName = "Potion of Greater Healing";
 
 try {
@@ -38,7 +38,7 @@ try {
 					three: {
 						label: "<p>Self</p><p>During Rest</p><p>(Max + Con)</p>",
 						callback: async (html) => {
-							const conMod = actor.data.data.abilities.con.mod;
+							const conMod = actor.system.abilities.con.mod;
 							let healDamage = new Roll(`20+${conMod}`).evaluate({ async: false });
 							await new MidiQOL.DamageOnlyWorkflow(tactor, token, healDamage.total, healingType, [target], healDamage, { flavor: `(${CONFIG.DND5E.healingTypes[healingType]})`, itemCardId: args[0].itemCardId, useOther: false });
 						}
@@ -70,7 +70,7 @@ try {
 					two: {
 						label: "<p>Other</p>During Rest</p><p>(Max + Con)</p>",
 						callback: async (html) => {
-							const conMod = tactor.data.data.abilities.con.mod;
+							const conMod = tactor.system.abilities.con.mod;
 							let healDamage = new Roll(`20+${conMod}`).evaluate({ async: false });
 							await new MidiQOL.DamageOnlyWorkflow(tactor, token, healDamage.total, healingType, [target], healDamage, { flavor: `(${CONFIG.DND5E.healingTypes[healingType]})`, itemCardId: args[0].itemCardId, useOther: false });
 						}

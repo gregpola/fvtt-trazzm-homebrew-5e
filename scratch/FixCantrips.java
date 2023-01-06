@@ -154,7 +154,7 @@ public class FixCantrips extends JPanel implements ActionListener {
         JFrame frame = new JFrame("Fix Cantrips");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        //Add content to the window.
+        //Add content to the window.FixCantrips
         frame.add(new FixCantrips());
 
         //Display the window.

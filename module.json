@@ -3,165 +3,208 @@
     "title": "Trazzm 5e Homebrew",
     "description": "A collection of homebrew for dnd5e",
     "version": "This is auto replaced",
-    "minimumCoreVersion": "0.8.6",
-    "compatibleCoreVersion": "9.280",
-    "authors": [{
-        "name": "Greg Pola | Trazzm",
-        "url": "https://github.com/gregpola",
-        "discord": "Trazzm#1390"
-    }],
-	"systems": ["dnd5e"],
-	"dependencies": [
+	"authors": [
 		{
-			"name": "midi-qol", "type": "module"
-		},
-		{
-			"name": "dfreds-convenient-effects", "type": "module"
-		},
-		{
-			"name": "ActiveAuras", "type": "module"
-		},
-		{
-			"name": "dae", "type": "module"
-		},
-        {
-            "name": "warpgate", "type": "module"
-        },
-        {
-            "name": "autoanimations", "type": "module"
-        }
+		  "name": "Greg Pola | Trazzm",
+		  "url": "https://github.com/gregpola",
+		  "discord": "Trazzm#1390",
+		  "flags": {}
+		}
 	],
-    "packs": [
-        {
-            "name": "homebrew-creatures",
-            "label": "Homebrew Creatures",
-            "path": "./packs/creatures.db",
-            "entity": "Actor",
-            "type": "Actor",
-            "system": "dnd5e"
-        },
-        {
-            "name": "homebrew-creature-features",
-            "label": "Homebrew Creature Features",
-            "path": "./packs/creature-features.db",
-            "entity": "Item",
-            "type": "Item",
-            "system": "dnd5e"
-        },
-        {
-            "name": "homebrew-items",
-            "label": "Homebrew Items",
-            "path": "./packs/items.db",
-            "entity": "Item",
-            "type": "Item",
-            "system": "dnd5e"
-        },
-        {
-            "name": "homebrew-backgrounds",
-            "label": "Homebrew Backgrounds",
-            "path": "./packs/backgrounds.db",
-            "entity": "Item",
-            "type": "Item",
-            "system": "dnd5e"
-        },
-        {
-            "name": "homebrew-background-features",
-            "label": "Homebrew Background Features",
-            "path": "./packs/background-features.db",
-            "entity": "Item",
-            "type": "Item",
-            "system": "dnd5e"
-        },
-        {
-            "name": "homebrew-classes",
-            "label": "Homebrew Classes",
-            "path": "./packs/classes.db",
-            "entity": "Item",
-            "type": "Item",
-            "system": "dnd5e"
-        },
-        {
-            "name": "homebrew-class-features",
-            "label": "Homebrew Class Features",
-            "path": "./packs/class-features.db",
-            "entity": "Item",
-            "type": "Item",
-            "system": "dnd5e"
-        },
-        {
-            "name": "homebrew-subclasses",
-            "label": "Homebrew Subclasses",
-            "path": "./packs/subclasses.db",
-            "entity": "Item",
-            "type": "Item",
-            "system": "dnd5e"
-        },
-        {
-            "name": "homebrew-feats",
-            "label": "Homebrew Feats",
-            "path": "./packs/feats.db",
-            "entity": "Item",
-            "type": "Item",
-            "system": "dnd5e"
-        },
-        {
-            "name": "homebrew-races",
-            "label": "Homebrew Races",
-            "path": "./packs/races.db",
-            "entity": "Item",
-            "type": "Item",
-            "system": "dnd5e"
-        },
-        {
-            "name": "homebrew-racial-traits",
-            "label": "Homebrew Racial Traits",
-            "path": "./packs/racial-traits.db",
-            "entity": "Item",
-            "type": "Item",
-            "system": "dnd5e"
-        },
-        {
-            "name": "homebrew-spells",
-            "label": "Homebrew Spells",
-            "path": "./packs/spells.db",
-            "entity": "Item",
-            "type": "Item",
-            "system": "dnd5e"
-        },
-        {
-            "name": "homebrew-journal-entries",
-            "label": "Homebrew Journal Entries",
-            "path": "./packs/journal-entries.db",
-            "entity": "JournalEntry",
-            "type": "JournalEntry",
-            "system": "dnd5e"
-        },
-        {
-            "name": "homebrew-macros",
-            "label": "Homebrew Macros",
-            "path": "./packs/macros.db",
-            "entity": "Macro",
-            "type": "Macro",
-            "system": "dnd5e"
-        },
-        {
-            "name": "homebrew-roll-tables",
-            "label": "Homebrew Roll Tables",
-            "path": "./packs/roll-tables.db",
-            "entity": "RollTable",
-            "type": "RollTable",
-            "system": "dnd5e"
-        },
-        {
-            "name": "homebrew-playlists",
-            "label": "Homebrew Playlists",
-            "path": "./packs/playlists.db",
-            "entity": "Playlist",
-            "type": "Playlist",
-            "system": "dnd5e"
-        }
-    ],
-	"socket": false,
+	"packs": [
+	{
+	  "name": "homebrew-backgrounds",
+	  "label": "Homebrew Backgrounds",
+	  "path": "packs/backgrounds.db",
+	  "private": false,
+	  "type": "Item",
+	  "system": "dnd5e",
+	  "flags": {}
+	},
+	{
+	  "name": "homebrew-background-features",
+	  "label": "Homebrew Background Features",
+	  "path": "packs/background-features.db",
+	  "private": false,
+	  "type": "Item",
+	  "system": "dnd5e",
+	  "flags": {}
+	},
+	{
+	  "name": "homebrew-classes",
+	  "label": "Homebrew Classes",
+	  "path": "packs/classes.db",
+	  "private": false,
+	  "type": "Item",
+	  "system": "dnd5e",
+	  "flags": {}
+	},
+	{
+	  "name": "homebrew-class-features",
+	  "label": "Homebrew Class Features",
+	  "path": "packs/class-features.db",
+	  "private": false,
+	  "type": "Item",
+	  "system": "dnd5e",
+	  "flags": {}
+	},
+	{
+	  "name": "homebrew-creatures",
+	  "label": "Homebrew Creatures",
+	  "path": "packs/creatures.db",
+	  "private": false,
+	  "type": "Actor",
+	  "system": "dnd5e",
+	  "flags": {}
+	},
+	{
+	  "name": "homebrew-creature-features",
+	  "label": "Homebrew Creature Features",
+	  "path": "packs/creature-features.db",
+	  "private": false,
+	  "type": "Item",
+	  "system": "dnd5e",
+	  "flags": {}
+	},
+	{
+	  "name": "homebrew-feats",
+	  "label": "Homebrew Feats",
+	  "path": "packs/feats.db",
+	  "private": false,
+	  "type": "Item",
+	  "system": "dnd5e",
+	  "flags": {}
+	},
+	{
+	  "name": "homebrew-items",
+	  "label": "Homebrew Items",
+	  "path": "packs/items.db",
+	  "private": false,
+	  "type": "Item",
+	  "system": "dnd5e",
+	  "flags": {}
+	},
+	{
+	  "name": "homebrew-journal-entries",
+	  "label": "Homebrew Journal Entries",
+	  "path": "packs/journal-entries.db",
+	  "private": false,
+	  "type": "JournalEntry",
+	  "system": "dnd5e",
+	  "flags": {}
+	},
+	{
+	  "name": "homebrew-macros",
+	  "label": "Homebrew Macros",
+	  "path": "packs/macros.db",
+	  "private": false,
+	  "type": "Macro",
+	  "system": "dnd5e",
+	  "flags": {}
+	},
+	{
+	  "name": "homebrew-playlists",
+	  "label": "Homebrew Playlists",
+	  "path": "packs/playlists.db",
+	  "private": false,
+	  "type": "Playlist",
+	  "system": "dnd5e",
+	  "flags": {}
+	},
+	{
+	  "name": "homebrew-races",
+	  "label": "Homebrew Races",
+	  "path": "packs/races.db",
+	  "private": false,
+	  "type": "Item",
+	  "system": "dnd5e",
+	  "flags": {}
+	},
+	{
+	  "name": "homebrew-racial-traits",
+	  "label": "Homebrew Racial Traits",
+	  "path": "packs/racial-traits.db",
+	  "private": false,
+	  "type": "Item",
+	  "system": "dnd5e",
+	  "flags": {}
+	},
+	{
+	  "name": "homebrew-roll-tables",
+	  "label": "Homebrew Roll Tables",
+	  "path": "packs/roll-tables.db",
+	  "private": false,
+	  "type": "RollTable",
+	  "system": "dnd5e",
+	  "flags": {}
+	},
+	{
+	  "name": "homebrew-spells",
+	  "label": "Homebrew Spells",
+	  "path": "packs/spells.db",
+	  "private": false,
+	  "type": "Item",
+	  "system": "dnd5e",
+	  "flags": {}
+	},
+	{
+	  "name": "homebrew-subclasses",
+	  "label": "Homebrew Subclasses",
+	  "path": "packs/subclasses.db",
+	  "private": false,
+	  "type": "Item",
+	  "system": "dnd5e",
+	  "flags": {}
+	}
+	],
+	"compatibility": {
+	"minimum": "10.286",
+	"verified": "10",
+	"maximum": "10"
+	},
+	"relationships": {
+	"requires": [
+	  {
+		"id": "midi-qol",
+		"type": "module",
+		"compatibility": {}
+	  },
+	  {
+		"id": "dfreds-convenient-effects",
+		"type": "module",
+		"compatibility": {}
+	  },
+	  {
+		"id": "ActiveAuras",
+		"type": "module",
+		"compatibility": {}
+	  },
+	  {
+		"id": "dae",
+		"type": "module",
+		"compatibility": {}
+	  },
+	  {
+		"id": "warpgate",
+		"type": "module",
+		"compatibility": {}
+	  },
+	  {
+		"id": "autoanimations",
+		"type": "module",
+		"compatibility": {}
+	  }
+	],
+	"systems": [
+	  {
+		"id": "dnd5e",
+		"type": "system",
+		"compatibility": {
+		  "minimum": "2.0.3"
+		}
+	  }
+	]
+	},
 	"flags": {
 		"allowBugReporter": true
 	},

@@ -1,3 +1,17 @@
+# 10.0.0
+#### The main focus of this release is to migrate to V10
+
+* V10 Fixed/Updated:
+  * All spell icons
+  * All item icons
+  * Consolidation & resize of many item images
+  * Channel Divinity: Turn Undead
+  * Spell: Word of Radiance
+  * Spell: Earthbind
+  * Spell: Intellect Fortress
+  * Spell: Invulnerability
+  * Potions of healing
+
 # 0.3.5
 * Fixed/Updated:
   * Forge Domain: Blessing of the Forge
