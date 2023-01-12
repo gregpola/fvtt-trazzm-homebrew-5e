@@ -1,3 +1,34 @@
+# 10.0.1
+* Fixed/Updated for v10:
+  * Sneak Attack
+  * Rakish Audacity
+  * Uncanny Dodge
+  * Indomitable
+  * Panache
+  * Variant Tiefling
+  * Bardic Inspiration
+  * Wand of Magic Missiles
+  * Metallic Dragonborn features
+  * Lay on Hands
+  * Divine Smite
+  * Oath of Vengeance features
+  * Spell: Arms of Hadar
+  * Spell: Faerie Fire
+  * Spell: Green-Flame Blade
+  * Spell: Heat Metal
+  * Spell: Hellish Rebuke
+  * Spell: Heroism
+  * Spell: Hex
+  * Spell: Hold Person
+  * Spell: Hunter's Mark
+  * Spell: Invisibility
+  * Spell: Lesser Restoration
+  * Spell: Magic Missile
+  * Spell: Misty Step
+  * Spell: Searing Smite
+  * Spell: Thunderous Smite
+  * Spell: Wrathful Smite
+
 # 10.0.0
 #### The main focus of this release is to migrate to V10
 

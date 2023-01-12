@@ -1,4 +1,4 @@
-const version = "0.1.1";
+const version = "10.0.0";
 const resourceName = "Lay on Hands";
 let workflow = MidiQOL.Workflow.getWorkflow(args[0].uuid);
 let actor = workflow.actor;
@@ -10,7 +10,7 @@ try {
 	
 	if (args[0].macroPass === "preambleComplete") {
 		// check valid target
-		if (!target || ["undead", "construct"].some(type => (tactor?.data.data.details.type?.value || "").toLowerCase().includes(type))) {
+		if (!target || ["undead", "construct"].some(type => (tactor?.system.details.type?.value || "").toLowerCase().includes(type))) {
 			return ui.notifications.error(`Please select a valid target.`);
 		}
 		
@@ -19,14 +19,14 @@ try {
 			return ui.notifications.error(`${resourceName} - no resource found`);
 		}
 
-		const available = actor.data.data.resources[resKey].value;
+		const available = actor.system.resources[resKey].value;
 		if (!available) {
 			return ui.notifications.error(`${resourceName} - resource pool is empty`);
 		}
 		
 		// calculate the maximum heal possible
-		const maxhp = Number(tactor?.data.data.attributes.hp.max);
-		const currenthp = Number(tactor?.data.data.attributes.hp.value);
+		const maxhp = Number(tactor?.system.attributes.hp.max);
+		const currenthp = Number(tactor?.system.attributes.hp.value);
 		const targetDamage = maxhp - currenthp;
 		const maxHeal = Math.min(targetDamage, available);
 		
@@ -50,9 +50,9 @@ try {
 				label: "Cure Disease",
 				icon: '<img src = "icons/skills/wounds/blood-cells-disease-green.webp" width="50" height="50"></>',
 				callback: async (html) => {
-					let effect = tactor.effects.find( i=> i.data.label === "Diseased");
+					let effect = tactor.effects.find( i=> i.label === "Diseased");
 					if (effect) {
-						let newEffects = tactor.effects.filter( i=> i.data.label !== "Diseased");
+						let newEffects = tactor.effects.filter( i=> i.label !== "Diseased");
 						await tactor.update({"effects": newEffects});
 						await consumeResource(actor, resKey, 5);
 					}
@@ -65,9 +65,9 @@ try {
 				label: "Neutralize Poison",
 				icon: '<img src = "icons/skills/toxins/symbol-poison-drop-skull-green.webp" width="50" height="50"></>',
 				callback: async (html) => {
-					let effect = tactor.effects.find( i=> i.data.label === "Poisoned");
+					let effect = tactor.effects.find( i=> i.label === "Poisoned");
 					if (effect) {
-						let newEffects = tactor.effects.filter( i=> i.data.label !== "Poisoned");
+						let newEffects = tactor.effects.filter( i=> i.label !== "Poisoned");
 						await tactor.update({"effects": newEffects});
 						await consumeResource(actor, resKey, 5);
 					}
@@ -93,8 +93,8 @@ try {
 // find the resource
 function findResource(actor) {
 	if (actor) {
-		for (let res in actor.data.data.resources) {
-			if (actor.data.data.resources[res].label === resourceName) {
+		for (let res in actor.system.resources) {
+			if (actor.system.resources[res].label === resourceName) {
 			  return res;
 			}
 		}
@@ -106,14 +106,16 @@ function findResource(actor) {
 // handle resource consumption
 async function consumeResource(actor, resKey, cost) {
 	if (actor && resKey && cost) {
-		const points = actor.data.data.resources[resKey].value;
-		if (!points) {
+		const {value, max} = actor.system.resources[resKey];
+		if (!value) {
 			ChatMessage.create({'content': '${resourceName} : Out of resources'});
-			return;
+			return false;
 		}
-		const pointsMax = actor.data.data.resources[resKey].max;
-		let resources = duplicate(actor.data.data.resources); // makes a duplicate of the resources object for adjustments.
-		resources[resKey].value = Math.clamped(points - cost, 0, pointsMax);
-		await actor.update({"data.resources": resources});    // do the update to the actor.
+		
+		const resources = foundry.utils.duplicate(actor.system.resources);
+		const resourcePath = `system.resources.${resKey}`;
+		resources[resKey].value = Math.clamped(value - cost, 0, max);
+		await actor.update({ "system.resources": resources });
+		return true;
 	}
 }

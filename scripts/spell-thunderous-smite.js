@@ -1,4 +1,4 @@
-const version = "0.1.0";
+const version = "10.0.0";
 const optionName = "Thunderous Smite";
 const squaresPushed = 2;
 
@@ -18,26 +18,22 @@ try {
 		}
 
 		// make sure it's an allowed attack
-		const at = args[0].item?.data?.actionType;
+		const at = args[0].item?.system?.actionType;
 		if (!at || !["mwak"].includes(at)) {
 			console.log(`${optionName}: not an eligible attack: ${at}`);
 			return {};
 		}
 		
-		// TODO check target type is a creature ???
-		
 		// remove the effect, since it is one-time
-		let effect = actor.effects?.find(i=>i.data.label === optionName);
-		let conc = actor.effects?.find(i=>i.data.label === game.i18n.localize("Concentrating"));
+		let effect = actor.effects?.find(i=>i.label === optionName);
 		if (effect) {
 			await MidiQOL.socket().executeAsGM("removeEffects", { actorUuid: actor.uuid, effects: [effect.id] });
-			if (conc) await MidiQOL.socket().executeAsGM("removeEffects", { actorUuid: actor.uuid, effects: [conc.id] });
 		}
 
 		// push the target logic
-		const ability = actor.data.data.attributes.spellcasting;
-		const abilityBonus = actor.data.data.abilities[ability].mod;
-		const dc = 8 + actor.data.data.attributes.prof + abilityBonus;
+		const ability = actor.system.attributes.spellcasting;
+		const abilityBonus = actor.system.abilities[ability].mod;
+		const dc = 8 + actor.system.attributes.prof + abilityBonus;
 		let saveType = game.i18n.localize("str");
 		let save = await MidiQOL.socket().executeAsGM("rollAbility", { request: "save", targetUuid: tactor.uuid, ability: saveType, 
 			options: { chatMessage: true, fastForward: false } });
@@ -77,7 +73,7 @@ function getAllowedPushLocation(sourceToken, targetToken, maxSquares) {
 		const knockbackPixels = i * canvas.grid.size;
 		const ray = new Ray(sourceToken.center, targetToken.center);
 		const newCenter = ray.project((ray.distance + knockbackPixels)/ray.distance);
-		const isAllowedLocation = canvas.sight.testVisibility({x: newCenter.x, y: newCenter.y}, {object: targetToken.Object});
+		const isAllowedLocation = canvas.effects.visibility.testVisibility({x: newCenter.x, y: newCenter.y}, {object: targetToken.Object});
 		if(isAllowedLocation) {
 			return newCenter;
 		}

@@ -1,4 +1,4 @@
-const version = "0.1.0";
+const version = "10.0.0";
 const optionName = "Panache";
 
 //#############################################################################
@@ -46,8 +46,7 @@ try {
 			const targetTotal = results.tokenresults[1].roll.total;
 			
 			if (attackerTotal >= targetTotal) {
-				//if hostile
-				if (target.data.disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE) {
+				if (target.disposition !== attacker.document.disposition) {
 					const hasHostileEffect = findEffect(targetActor, effectNameHostile, sourceOrigin);
 					if (hasHostileEffect) {
 						await MidiQOL.socket().executeAsGM("removeEffects", { actorUuid: targetId, effects: [hasHostileEffect.id] });
@@ -131,7 +130,7 @@ try {
 
 async function findEffect(actor, effectName, origin) {
     let effectUuid = null;
-    effectUuid = actor?.effects?.find(ef => ef.data.label === effectName && ef.data.origin === origin);
+    effectUuid = actor?.effects?.find(ef => ef.label === effectName && ef.origin === origin);
     return effectUuid;
 }
 

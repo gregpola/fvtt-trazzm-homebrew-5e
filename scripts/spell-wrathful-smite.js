@@ -1,4 +1,4 @@
-const version = "0.1.0";
+const version = "10.0.0";
 const optionName = "Wrathful Smite";
 const gameRound = game.combat ? game.combat.round : 0;
 
@@ -18,22 +18,22 @@ try {
 		}
 
 		// make sure it's an allowed attack
-		const at = args[0].item?.data?.actionType;
+		const at = args[0].item?.system?.actionType;
 		if (!at || !["mwak"].includes(at)) {
 			console.log(`${optionName}: not an eligible attack: ${at}`);
 			return {};
 		}
 		
 		// remove the effect, since it is one-time
-		let effect = actor.effects?.find(i=>i.data.label === optionName);
+		let effect = actor.effects?.find(i=>i.label === optionName);
 		if (effect) {
 			await MidiQOL.socket().executeAsGM("removeEffects", { actorUuid: actor.uuid, effects: [effect.id] });
 		}
 
 		// save versus frightened
-		const ability = actor.data.data.attributes.spellcasting;
-		const abilityBonus = actor.data.data.abilities[ability].mod;
-		const dc = 8 + actor.data.data.attributes.prof + abilityBonus;
+		const ability = actor.system.attributes.spellcasting;
+		const abilityBonus = actor.system.abilities[ability].mod;
+		const dc = 8 + actor.system.attributes.prof + abilityBonus;
 		let saveType = game.i18n.localize("wis");
 		let save = await MidiQOL.socket().executeAsGM("rollAbility", { request: "save", targetUuid: tactor.uuid, ability: saveType, 
 			options: { chatMessage: true, fastForward: false } });
@@ -43,7 +43,7 @@ try {
 		}
 		else {
 			// if it saves, just drop the concentration
-			let conc = actor.effects?.find(i=>i.data.label === game.i18n.localize("Concentrating"));
+			let conc = actor.effects?.find(i=>i.label === game.i18n.localize("Concentrating"));
 			if (conc) {
 				await MidiQOL.socket().executeAsGM("removeEffects", { actorUuid: actor.uuid, effects: [conc.id] });
 			}

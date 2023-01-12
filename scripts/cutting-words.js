@@ -1,4 +1,4 @@
-const version = "0.1.0";
+const version = "10.0.0";
 const resourceName = "Bardic Inspiration";
 const optionName = "Cutting Words";
 const cost = 1;
@@ -6,37 +6,59 @@ const cost = 1;
 try {
 	let workflow = MidiQOL.Workflow.getWorkflow(args[0].uuid);
 	
-	if (args[0].macroPass === "preActiveEffects") {
-		// check resources
+	if (args[0].macroPass === "preItemRoll") {
 		let actor = workflow.actor;
+		let target = args[0].targets[0];
+		let tactor = target?.actor;
+
+		// check resources
 		let resKey = findResource(actor);
-			if (!resKey) {
-			ChatMessage.create(`${optionName} - no resource found`);
-			return;
+		if (!resKey) {
+			ui.notifications.error(`${resourceName} - no resource found`);
+			return false;
 		}
 
 		// handle resource consumption
-		const points = actor.data.data.resources[resKey].value;
-		if (!points) {
-			ChatMessage.create({'content': '${optionName} : Out of resources'});
-			return;
+		if (!await consumeResource(actor, resKey, 1)) {
+			return false;
 		}
-		const pointsMax = actor.data.data.resources[resKey].max;
-		let resources = duplicate(actor.data.data.resources); // makes a duplicate of the resources object for adjustments.
-		resources[resKey].value = Math.clamped(points - cost, 0, pointsMax);
-		await actor.update({"data.resources": resources});    // do the update to the actor.
+		
+		// get the actor scale value
+		const inspirationDie = actor.system.scale["bard"]["inspiration"];
+		const cuttingWordsRoll = await new Roll(`${inspirationDie}`).evaluate({ async: true });
+		if (game.dice3d) game.dice3d.showForRoll(cuttingWordsRoll);
+		ChatMessage.create({content: `${optionName} - ${actor.name} applies cutting words debuff of ${cuttingWordsRoll.total} to ${tactor.name}`});
+		return true;		
 	}
 	
 } catch (err)  {
     console.error(`${optionName} ${version}`, err);
 }
 
+// find the resource matching this feature
 function findResource(actor) {
-	for (let res in actor.data.data.resources) {
-		if (actor.data.data.resources[res].label === resourceName) {
+	for (let res in actor.system.resources) {
+		if (actor.system.resources[res].label === resourceName) {
 		  return res;
 		}
     }
 	
 	return null;
+}
+
+// handle resource consumption
+async function consumeResource(actor, resKey, cost) {
+	if (actor && resKey && cost) {
+		const {value, max} = actor.system.resources[resKey];
+		if (!value) {
+			ChatMessage.create({'content': '${resourceName} : Out of resources'});
+			return false;
+		}
+		
+		const resources = foundry.utils.duplicate(actor.system.resources);
+		const resourcePath = `system.resources.${resKey}`;
+		resources[resKey].value = Math.clamped(value - cost, 0, max);
+		await actor.update({ "system.resources": resources });
+		return true;
+	}
 }

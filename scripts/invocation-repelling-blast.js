@@ -1,4 +1,4 @@
-const version = "0.1.0";
+const version = "10.0.0";
 const optionName = "Repelling Blast";
 
 try {
@@ -6,14 +6,6 @@ try {
 		const lastArg = args[args.length - 1];
 		const attacker = canvas.tokens.get(args[0].tokenId);
 		let ttoken = canvas.tokens.get(args[0].hitTargets[0].object.id);
-		/*
-		let workflow = MidiQOL.Workflow.getWorkflow(args[0].uuid);
-		let actor = workflow?.actor;
-		let target = args[0].hitTargets[0];
-		let tactor = target?.actor;
-		let ttoken = canvas.tokens.get(args[0].hitTargets[0].object.id);
-		let pusher = canvas.tokens.get(args[0].tokenId);
-		*/
 		
 		// make sure it's an allowed attack
 		if (lastArg.item.name !== "Eldritch Blast") {
@@ -72,7 +64,7 @@ function getAllowedPushLocation(sourceToken, targetToken, maxSquares) {
 		const knockbackPixels = i * canvas.grid.size;
 		const ray = new Ray(sourceToken.center, targetToken.center);
 		const newCenter = ray.project((ray.distance + knockbackPixels)/ray.distance);
-		const isAllowedLocation = canvas.sight.testVisibility({x: newCenter.x, y: newCenter.y}, {object: targetToken.Object});
+		const isAllowedLocation = canvas.effects.visibility.testVisibility({x: newCenter.x, y: newCenter.y}, {object: targetToken.Object});
 		if(isAllowedLocation) {
 			return newCenter;
 		}

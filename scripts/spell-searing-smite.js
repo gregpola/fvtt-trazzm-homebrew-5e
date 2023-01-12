@@ -1,4 +1,4 @@
-const version = "0.1.0";
+const version = "10.0.0";
 const optionName = "Searing Smite";
 const gameRound = game.combat ? game.combat.round : 0;
 
@@ -6,10 +6,11 @@ try {
 	if (args[0].macroPass === "DamageBonus") {	
 		let workflow = MidiQOL.Workflow.getWorkflow(args[0].uuid);
 		let actor = workflow?.actor;
-		const target = args[0].hitTargets[0];
+		const lastArg = args[args.length - 1];
+		const target = lastArg.hitTargets[0];
 		let tactor = target?.actor;
-		const ttoken = canvas.tokens.get(args[0].hitTargets[0].object.id);
-		let pusher = canvas.tokens.get(args[0].tokenId);
+		const ttoken = canvas.tokens.get(lastArg.hitTargets[0].object.id);
+		let pusher = canvas.tokens.get(lastArg.tokenId);
 
 		// validate targeting
 		if (!actor || !target) {
@@ -18,35 +19,36 @@ try {
 		}
 
 		// make sure it's an allowed attack
-		const at = args[0].item?.data?.actionType;
+		const at = args[0].item?.system?.actionType;
 		if (!at || !["mwak"].includes(at)) {
 			console.log(`${optionName}: not an eligible attack: ${at}`);
 			return {};
 		}
 
 		// get the spell level prior to removing the effect
-		const spellLevel = actor.data.flags["midi-qol"]?.searingSmite?.level ?? 2;
+		const spellLevel = actor.flags["midi-qol"]?.searingSmite?.level ?? 1;
 		
 		// remove the effect, since it is one-time
-		let effect = actor.effects?.find(i=>i.data.label === optionName);
+		let effect = actor.effects?.find(i=>i.label === optionName);
 		if (effect) {
 			await MidiQOL.socket().executeAsGM("removeEffects", { actorUuid: actor.uuid, effects: [effect.id] });
 		}
 		
 		// add burning effect
-		const ability = actor.data.data.attributes.spellcasting;
-		const abilityBonus = actor.data.data.abilities[ability].mod;
-		const dc = 8 + actor.data.data.attributes.prof + abilityBonus;
+		const ability = actor.system.attributes.spellcasting;
+		const abilityBonus = actor.system.abilities[ability].mod;
+		const dc = 8 + actor.system.attributes.prof + abilityBonus;
 		let damageType = game.i18n.localize("fire");
 		
         let effectData = new ActiveEffect( 
 		{
 			label: optionName, 
 			icon: "icons/magic/fire/dagger-rune-enchant-flame-blue-yellow.webp", 
+			origin: lastArg.item.uuid,
 			changes: [
 			{
 				key:"flags.midi-qol.OverTime",
-				value: `"turn=start,saveAbility=con,saveDC=${dc},damageRoll=1d6,damageType=${damageType},label=${optionName}" `, 
+				value: `"turn=start,saveAbility=con,saveDC=${dc},damageRoll=${spellLevel}d6,damageType=${damageType},label=${optionName}" `, 
 				mode: 0, 
 				priority: 20
 			}], 

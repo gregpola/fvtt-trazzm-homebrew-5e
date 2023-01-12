@@ -22,7 +22,6 @@ async function PushToken(sourceToken, targetDoc) {
 	const isAllowedLocation = canvas.sight.testVisibility({x: newCenter.x, y: newCenter.y}, {object: targetDoc.Object});
 	if(!isAllowedLocation) {
 		// too far, check for 5-feet
-		const shorterRay = new Ray(sourceToken.center, targetDoc.object.center);
 		let shorterCenter = ray.project((ray.distance + (knockbackPixels/2))/ray.distance);
 		const isShorterAllowed = canvas.sight.testVisibility({x: shorterCenter.x, y: shorterCenter.y}, {object: targetDoc.Object});
 		

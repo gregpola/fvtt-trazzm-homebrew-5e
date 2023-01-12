@@ -1,7 +1,7 @@
-const version = "0.9.52"
+const version = "10.0.13"
 try {
-    if (!["mwak","rwak"].includes(args[0].itemData.data.actionType)) return {}; // weapon attack
-    if (args[0].itemData.data.actionType === "mwak" && !args[0].itemData.data.properties?.fin) 
+    if (!["mwak","rwak"].includes(args[0].itemData.system.actionType)) return {}; // weapon attack
+    if (args[0].itemData.system.actionType === "mwak" && !args[0].itemData.system.properties?.fin) 
       return {}; // ranged or finesse
     if (args[0].hitTargets.length < 1) return {};
     token = canvas.tokens.get(args[0].tokenId);
@@ -32,11 +32,11 @@ try {
         let nearby = (t.actor &&
              t.actor?.id !== args[0].actor._id && // not me
              t.id !== target.id && // not the target
-             t.actor?.data.data.attributes?.hp?.value > 0 && // not incapacitated
-             t.data.disposition !== target.data.disposition && // not an ally
+             t.actor?.system.attributes?.hp?.value > 0 && // not incapacitated
+             t.document.disposition !== target.document.disposition && // not an ally
              MidiQOL.getDistance(t, target, false) <= 5 // close to the target
          );
-        foundEnemy = foundEnemy || (nearby && t.data.disposition === -target.data.disposition)
+        foundEnemy = foundEnemy || (nearby && t.document.disposition === -target.document.disposition)
         return nearby;
       });
       isSneak = nearbyEnemy.length > 0;
