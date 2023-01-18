@@ -1,3 +1,27 @@
+# 10.0.2
+* Fixed/Updated for v10:
+  * Champion subclass features
+  * Circle of the Elements subclass features
+  * Druid class features
+  * Fighting Style: Great Weapon Fighting
+  * Item: Storm Boomerang
+  * Item: Seeker Dart
+  * Race: Custom Lineage
+  * Spell: Call Lightning
+  * Spell: Chill Touch
+  * Spell: Conjure Animals
+  * Spell: Fire Shield
+  * Spell: Flaming Sphere
+  * Spell: Goodberry
+  * Spell: Healing Spirit
+  * Spell: Maximilian's Earthen Grasp
+  * Spell: Moonbeam
+  * Spell: Shocking Grasp
+  * Spell: Spike Growth
+  * Spell: Wysard's Snowball
+  * Wildshape
+  * World Protection from Evil script
+
 # 10.0.1
 * Fixed/Updated for v10:
   * Sneak Attack

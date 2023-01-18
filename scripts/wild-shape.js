@@ -1,4 +1,4 @@
-const version = "0.1.0";
+const version = "10.0.0";
 const resourceName = "Wild Shape";
 const cost = 1;
 
@@ -8,22 +8,19 @@ try {
 	if (lastArg.tokenId) tactor = canvas.tokens.get(lastArg.tokenId).actor;
 	else tactor = game.actors.get(lastArg.actorId);
 	const target = canvas.tokens.get(lastArg.tokenId);
-	const itemD = lastArg.efData.flags.dae.itemData;
 	
-	if ((args[0] === "on") && (!tactor.isPolymorphed)) {
+	if (args[0].macroPass === "preItemRoll") {
 		// check resources
 		let resKey = findResource(tactor);
 		if (!resKey) {
-			return ui.notifications.error(`${resourceName} - wild shape resource found`);
+			ui.notifications.error(`${resourceName} - no resource found`);
+			return false;
 		}
 
-		const points = tactor.data.data.resources[resKey].value;
-		if (!points) {
-			return ui.notifications.error(`${resourceName} - no wild shape uses left`);
-		}
-		
-		await consumeResource(tactor, resKey, cost);
-
+		// handle resource consumption
+		return await consumeResource(tactor, resKey, 1);
+	}	
+	else if ((args[0] === "on") && (!tactor.isPolymorphed)) {
 		const folderName = `Wildshape (${tactor.name})`;
 		const theFolder = game.folders.getName(folderName);
 		if (!theFolder) {
@@ -33,13 +30,17 @@ try {
 			return ui.notifications.error(`${resourceName} - the folder is empty`);
 		}
 		
-		const folderContents = theFolder.content.reduce((acc, target) => acc += `<option value="${target.id}">${target.name} CR: ${target.data.data.details.cr}</option>`, ``);
-		const the_content = `<p>Pick a beast</p><form><div class="form-group"><label for="beast">Beast:</label><select id="beast">${folderContents}</select></div></form>`;
-		const druidItems = tactor.items.filter(i => i.data.type === "feat" && i.data.data.activation?.type != "bonus" && (i.data.data.requirements.toLowerCase().includes("druid") || i.data.data.requirements.toLowerCase().includes("circle"))).map(i => i.data);
+		const folderContents = theFolder.content.reduce((acc, target) => acc += `<option value="${target.id}">${target.name} CR: ${target.system.details.cr}</option>`, ``);
+		if (folderContents.length === 0) {
+			return ui.notifications.error(`${resourceName} - the actor has no options defined`);
+		}
+		
+		const the_content = `<form><div class="form-group"><label for="beast">Beast:</label><br /><select id="beast">${folderContents}</select></div></form>`;
+		const druidItems = tactor.items.filter(i => i.type === "feat" && i.system.activation?.type != "bonus" && (i.system.requirements.toLowerCase().includes("druid") || i.system.requirements.toLowerCase().includes("circle"))).map(i => i.data);
 		
 		// Ask for the form
 		new Dialog({
-			title: itemD.name,
+			title: resourceName,
 			content: the_content,
 			buttons: {
 				change: {
@@ -66,13 +67,13 @@ try {
 						await canvas.scene.updateEmbeddedDocuments("Token", [{ "_id": getToken._id, "displayBars": CONST.TOKEN_DISPLAY_MODES.ALWAYS, "mirrorX": getToken.mirrorX, "mirrorY": getToken.mirrorY, "rotation": getToken.rotation, "elevation": getToken.elevation }]);
 						let wsRevert = findPoly.items.find(i => i.name === "Wild Shape (Revert)");
 						let wsHealing = findPoly.items.find(i => i.name === "Wild Shape Healing");
-						let keys = Object.keys(tactor.data.data.spells);
+						let keys = Object.keys(tactor.system.spells);
 						let updates = keys.reduce((acc, values, i) => {
-							let spellMin = `data.spells.${values}.value`;
-							let spellMax = `data.spells.${values}.max`;
+							let spellMin = `system.spells.${values}.value`;
+							let spellMax = `system.spells.${values}.max`;
 							if (combatWildShape) {
-								acc[spellMin] = Object.values(tactor.data.data.spells)[i].value;
-								acc[spellMax] = Object.values(tactor.data.data.spells)[i].max;
+								acc[spellMin] = Object.values(tactor.system.spells)[i].value;
+								acc[spellMax] = Object.values(tactor.system.spells)[i].max;
 							}
 							return acc;
 						}, {});
@@ -87,7 +88,7 @@ try {
 		}).render(true);
 	}
 	else if ((args[0] === "on") && (tactor.isPolymorphed)) {
-		let effect = tactor.effects.find(i => i.data.label === itemD.name);
+		let effect = tactor.effects.find(i => i.label === resourceName);
 		if (effect) await MidiQOL.socket().executeAsGM("removeEffects", { actorUuid: tactor.uuid, effects: [effect.id] });
 	}
 	else if (args[0] === "off") {
@@ -203,7 +204,7 @@ const wildshapeRevert = [{
                     "author": "Tyd5yiqWrRZMvG30",
                     "img": "icons/svg/dice-target.svg",
                     "scope": "global",
-                    "command": "async function wait(ms) { return new Promise(resolve => { setTimeout(resolve, ms); }); }\nconst lastArg = args[args.length - 1];\nlet tactor;\nif (lastArg.tokenId) tactor = canvas.tokens.get(lastArg.tokenId).actor;\nelse tactor = game.actors.get(lastArg.actor._id);\nlet target = canvas.tokens.get(lastArg.tokenId);\nlet getEffect = tactor.effects.find(i => i.data.label === \"Wild Shape\");\nlet effectActor = await game.actors.get(getEffect.data.changes[0].value);\nlet keys = Object.keys(tactor.data.data.spells);\nlet updates = keys.reduce((acc, values, i) => {\n    let spellMin = `data.spells.${values}.value`;\n    let spellMax = `data.spells.${values}.max`;\n    acc[spellMin] = Object.values(tactor.data.data.spells)[i].value;\n    acc[spellMax] = Object.values(tactor.data.data.spells)[i].max;\n    return acc;\n}, {});\nawait effectActor.update(updates);\nawait wait(500);\nconst getToken = duplicate(target.data);\nif ((!(game.modules.get(\"jb2a_patreon\")?.active) && !(game.modules.get(\"sequencer\")?.active))){\n    await tactor.revertOriginalForm();    \n    await effectActor.revertOriginalForm();        \n    await MidiQOL.socket().executeAsGM(\"removeEffects\", { actorUuid: effectActor.uuid, effects: [getEffect.id] });\n    await canvas.scene.updateEmbeddedDocuments(\"Token\", [{\"_id\": getToken._id, \"displayBars\" : CONST.TOKEN_DISPLAY_MODES.ALWAYS, \"mirrorX\" : getToken.mirrorX, \"mirrorY\" : getToken.mirrorY, \"rotation\" : getToken.rotation, \"elevation\": getToken.elevation}]);\n    await game.actors.get(tactor.id).delete();\n} else {\n    new Sequence()\n        .effect()\n        .atLocation(target)\n        .file(\"jb2a.misty_step.02.green\")\n        .scaleToObject(1.5)\n        .wait(1000)\n        .thenDo(async function(){            \n            await tactor.revertOriginalForm();            \n            await effectActor.revertOriginalForm();\n            await MidiQOL.socket().executeAsGM(\"removeEffects\", { actorUuid: effectActor.uuid, effects: [getEffect.id] });                       \n            await canvas.scene.updateEmbeddedDocuments(\"Token\", [{\"_id\": getToken._id, \"displayBars\" : CONST.TOKEN_DISPLAY_MODES.ALWAYS, \"mirrorX\" : getToken.mirrorX, \"mirrorY\" : getToken.mirrorY, \"rotation\" : getToken.rotation, \"elevation\": getToken.elevation}]);\n            await game.actors.get(tactor.id).delete();\n        })\n    .play()\n}",
+                    "command": "async function wait(ms) { return new Promise(resolve => { setTimeout(resolve, ms); }); }\nconst lastArg = args[args.length - 1];\nlet tactor;\nif (lastArg.tokenId) tactor = canvas.tokens.get(lastArg.tokenId).actor;\nelse tactor = game.actors.get(lastArg.actor._id);\nlet target = canvas.tokens.get(lastArg.tokenId);\nlet getEffect = tactor.effects.find(i => i.label === \"Wild Shape\");\nlet effectActor = await game.actors.get(getEffect.changes[0].value);\nlet keys = Object.keys(tactor.system.spells);\nlet updates = keys.reduce((acc, values, i) => {\n    let spellMin = `system.spells.${values}.value`;\n    let spellMax = `system.spells.${values}.max`;\n    acc[spellMin] = Object.values(tactor.system.spells)[i].value;\n    acc[spellMax] = Object.values(tactor.system.spells)[i].max;\n    return acc;\n}, {});\nawait effectActor.update(updates);\nawait wait(500);\nconst getToken = duplicate(target.data);\nif ((!(game.modules.get(\"jb2a_patreon\")?.active) && !(game.modules.get(\"sequencer\")?.active))){\n    await tactor.revertOriginalForm();    \n    await effectActor.revertOriginalForm();        \n    await MidiQOL.socket().executeAsGM(\"removeEffects\", { actorUuid: effectActor.uuid, effects: [getEffect.id] });\n    await canvas.scene.updateEmbeddedDocuments(\"Token\", [{\"_id\": getToken._id, \"displayBars\" : CONST.TOKEN_DISPLAY_MODES.ALWAYS, \"mirrorX\" : getToken.mirrorX, \"mirrorY\" : getToken.mirrorY, \"rotation\" : getToken.rotation, \"elevation\": getToken.elevation}]);\n    await game.actors.get(tactor.id).delete();\n} else {\n    new Sequence()\n        .effect()\n        .atLocation(target)\n        .file(\"jb2a.misty_step.02.green\")\n        .scaleToObject(1.5)\n        .wait(1000)\n        .thenDo(async function(){            \n            await tactor.revertOriginalForm();            \n            await effectActor.revertOriginalForm();\n            await MidiQOL.socket().executeAsGM(\"removeEffects\", { actorUuid: effectActor.uuid, effects: [getEffect.id] });                       \n            await canvas.scene.updateEmbeddedDocuments(\"Token\", [{\"_id\": getToken._id, \"displayBars\" : CONST.TOKEN_DISPLAY_MODES.ALWAYS, \"mirrorX\" : getToken.mirrorX, \"mirrorY\" : getToken.mirrorY, \"rotation\" : getToken.rotation, \"elevation\": getToken.elevation}]);\n            await game.actors.get(tactor.id).delete();\n        })\n    .play()\n}",
                     "folder": null,
                     "sort": 0,
                     "permission": {
@@ -223,12 +224,15 @@ const wildshapeRevert = [{
     }
 }];
 
+// find the resource matching this feature
 function findResource(actor) {
-	for (let res in actor.data.data.resources) {
-		if (actor.data.data.resources[res].label === resourceName) {
-		  return res;
+	if (actor) {
+		for (let res in actor.system.resources) {
+			if (actor.system.resources[res].label === resourceName) {
+			  return res;
+			}
 		}
-    }
+	}
 	
 	return null;
 }
@@ -236,10 +240,16 @@ function findResource(actor) {
 // handle resource consumption
 async function consumeResource(actor, resKey, cost) {
 	if (actor && resKey && cost) {
-		const points = actor.data.data.resources[resKey].value;
-		const pointsMax = actor.data.data.resources[resKey].max;
-		let resources = duplicate(actor.data.data.resources);
-		resources[resKey].value = Math.clamped(points - cost, 0, pointsMax);
-		await actor.update({"data.resources": resources});
+		const {value, max} = actor.system.resources[resKey];
+		if (!value) {
+			ChatMessage.create({'content': '${resourceName} : Out of resources'});
+			return false;
+		}
+		
+		const resources = foundry.utils.duplicate(actor.system.resources);
+		const resourcePath = `system.resources.${resKey}`;
+		resources[resKey].value = Math.clamped(value - cost, 0, max);
+		await actor.update({ "system.resources": resources });
+		return true;
 	}
 }

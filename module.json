@@ -163,47 +163,47 @@
 	"maximum": "10"
 	},
 	"relationships": {
-	"requires": [
-	  {
-		"id": "midi-qol",
-		"type": "module",
-		"compatibility": {}
-	  },
-	  {
-		"id": "dfreds-convenient-effects",
-		"type": "module",
-		"compatibility": {}
-	  },
-	  {
-		"id": "ActiveAuras",
-		"type": "module",
-		"compatibility": {}
-	  },
-	  {
-		"id": "dae",
-		"type": "module",
-		"compatibility": {}
-	  },
-	  {
-		"id": "warpgate",
-		"type": "module",
-		"compatibility": {}
-	  },
-	  {
-		"id": "autoanimations",
-		"type": "module",
-		"compatibility": {}
-	  }
-	],
-	"systems": [
-	  {
-		"id": "dnd5e",
-		"type": "system",
-		"compatibility": {
-		  "minimum": "2.0.3"
-		}
-	  }
-	]
+		"requires": [
+		  {
+			"id": "midi-qol",
+			"type": "module",
+			"compatibility": {}
+		  },
+		  {
+			"id": "dfreds-convenient-effects",
+			"type": "module",
+			"compatibility": {}
+		  },
+		  {
+			"id": "ActiveAuras",
+			"type": "module",
+			"compatibility": {}
+		  },
+		  {
+			"id": "dae",
+			"type": "module",
+			"compatibility": {}
+		  },
+		  {
+			"id": "warpgate",
+			"type": "module",
+			"compatibility": {}
+		  },
+		  {
+			"id": "autoanimations",
+			"type": "module",
+			"compatibility": {}
+		  }
+		],
+		"systems": [
+		  {
+			"id": "dnd5e",
+			"type": "system",
+			"compatibility": {
+			  "minimum": "2.0.3"
+			}
+		  }
+		]
 	},
 	"flags": {
 		"allowBugReporter": true

@@ -1,11 +1,11 @@
-const version = "0.1.0";
+const version = "10.0.0";
 const optionName = "Absorb Elements";
 const elements = { acid: "acid", cold: "cold", fire: "fire", lightning: "lightning", poison: "poison" };
 
 try {
 	const lastArg = args[args.length - 1];
 	let msgHistory = game.messages.reduce((list, message) => {
-		let damage = message.data.flags?.midiqol?.undoDamage;
+		let damage = message.flags?.midiqol?.undoDamage;
 		if (damage) list.push(damage);
 		return list;
 	}, []);
@@ -27,14 +27,14 @@ try {
 		let spellLevel = lastArg.spellLevel;
 		let gameRound = game.combat ? game.combat.rounds : 0;
 		let itemD = lastArg.item;
-		let timeD = itemD.data.duration.value;
+		let timeD = itemD.duration.value;
 		
 		let effectDataAttack = [{
 			label: itemD.name,
 			icon: itemD.img,
 			changes: [
-				{ key: `data.bonuses.mwak.damage`, mode: 2, value: `${spellLevel}d6[${damageType}]`, priority: 20 },
-				{ key: `data.bonuses.msak.damage`, mode: 2, value: `${spellLevel}d6[${damageType}]`, priority: 20 }
+				{ key: `bonuses.mwak.damage`, mode: 2, value: `${spellLevel}d6[${damageType}]`, priority: 20 },
+				{ key: `bonuses.msak.damage`, mode: 2, value: `${spellLevel}d6[${damageType}]`, priority: 20 }
 			],
 			origin: lastArg.uuid,
 			disabled: false,
@@ -47,7 +47,7 @@ try {
 			label: itemD.name,
 			icon: itemD.img,
 			changes: [
-				{ key: `data.traits.dr.value`, mode: 2, value: `${damageType}`, priority: 20 }
+				{ key: `traits.dr.value`, mode: 2, value: `${damageType}`, priority: 20 }
 			],
 			origin: lastArg.uuid,
 			disabled: false,
