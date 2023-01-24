@@ -1,36 +1,36 @@
-const version = "0.1.0";
+const version = "10.0.0";
 const resourceName = "Superiority Dice";
 const optionName = "Tactical Assessment";
 
 try {
-	if (args[0] === "on") {
-		let grappler = canvas.tokens.get(args[1].tokenId);
-		let defender = Array.from(game.user.targets)[0];
-		
+	const lastArg = args[args.length - 1];
+	let tactor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
+	
+	if (args[0].macroPass === "preItemRoll") {
 		// check resources
-		let resKey = findResource(grappler.actor);
+		let resKey = findResource(tactor);
 		if (!resKey) {
-			return ui.notifications.error(`${resourceName} - no resource found`);
+			ui.notifications.error(`${resourceName} - no resource found`);
+			return false;
 		}
 
-		const points = grappler.actor.data.data.resources[resKey].value;
-		if (!points) {
-			console.log(`${resourceName} - resource pool is empty`);
-			return;
-		}		
-		consumeResource(grappler.actor, resKey, 1);		
+		// handle resource consumption
+		return await consumeResource(tactor, resKey, 1);
 	}
 
 } catch (err) {
-    console.error(`Combat Maneuver: ${optionName} ${version}`, err);
+    console.error(`${resourceName}: ${optionName} - ${version}`, err);
 }
 
+// find the resource matching this feature
 function findResource(actor) {
-	for (let res in actor.data.data.resources) {
-		if (actor.data.data.resources[res].label === resourceName) {
-		  return res;
+	if (actor) {
+		for (let res in actor.system.resources) {
+			if (actor.system.resources[res].label === resourceName) {
+			  return res;
+			}
 		}
-    }
+	}
 	
 	return null;
 }
@@ -38,10 +38,16 @@ function findResource(actor) {
 // handle resource consumption
 async function consumeResource(actor, resKey, cost) {
 	if (actor && resKey && cost) {
-		const points = actor.data.data.resources[resKey].value;
-		const pointsMax = actor.data.data.resources[resKey].max;
-		let resources = duplicate(actor.data.data.resources);
-		resources[resKey].value = Math.clamped(points - cost, 0, pointsMax);
-		await actor.update({"data.resources": resources});
+		const {value, max} = actor.system.resources[resKey];
+		if (!value) {
+			ChatMessage.create({'content': '${resourceName} : Out of resources'});
+			return false;
+		}
+		
+		const resources = foundry.utils.duplicate(actor.system.resources);
+		const resourcePath = `system.resources.${resKey}`;
+		resources[resKey].value = Math.clamped(value - cost, 0, max);
+		await actor.update({ "system.resources": resources });
+		return true;
 	}
 }

@@ -13,6 +13,10 @@
 
 
 
+@UUID[Compendium.dnd5e.rules.eVtpEGXjA2tamEIJ.JournalEntryPage.I6ABWHBYwGl55dLY]{Blindsight}
 @UUID[Compendium.dnd5e.rules.eVtpEGXjA2tamEIJ.JournalEntryPage.0RBamBThjzeAdMSt]{Darkvision}
+@UUID[Compendium.dnd5e.rules.eVtpEGXjA2tamEIJ.JournalEntryPage.8iC24otVX4n1yrYw]{Truesight}
+
+
 
 @UUID[Compendium.dnd5e.rules.eVtpEGXjA2tamEIJ.JournalEntryPage.X2CTP455Zpr7Shs9]{Fly}

@@ -54,7 +54,7 @@ try {
 							new Sequence()
 								.effect()
 								.atLocation(target)
-								.file("jb2a.misty_step.01.green")
+								.file("jb2a.misty_step.02.blue")
 								.scaleToObject(1.5)
 								.thenDo(async function () {
 									await tactor.transformInto(findToken, { keepBio: true, keepClass: true, keepMental: true, mergeSaves: true, mergeSkills: true, transformTokens: true });

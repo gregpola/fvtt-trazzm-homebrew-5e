@@ -15,18 +15,16 @@ try {
 			return ui.notifications.error(`${resourceName} - no resource found`);
 		}
 
-		const points = actor.data.data.resources[resKey].value;
+		const points = actor.system.resources[resKey].value;
 		if (!points) {
 			return ui.notifications.error(`${resourceName} - resource pool is empty`);
 		}
 		
 		// find the actor's thrown weapons
-		let weapons = actor.items.filter(i => i.data.type === `weapon`);
+		let weapons = actor.items.filter(i => i.type === `weapon` && i.system.properties.thr);
 		let weapon_content = ``;
 		for (let weapon of weapons) {
-			if (weapon.data.data.properties.thr) {
-				weapon_content += `<option value=${weapon.id}>${weapon.name}</option>`;
-			}
+			weapon_content += `<option value=${weapon.id}>${weapon.name}</option>`;
 		}
 		
 		if (weapon_content.length === 0) {
@@ -39,6 +37,7 @@ try {
 			  <select name="weapons">
 				${weapon_content}
 			  </select>
+			  <br />
 			</div>`;
 
 		new Dialog({
@@ -56,13 +55,12 @@ try {
 						let copy_item = duplicate(weaponItem.toObject());
 						DAE.setFlag(actor, flagName, {
 							id : itemId,
-							damage : copy_item.data.damage.parts[0][0]
+							damage : copy_item.system.damage.parts[0][0]
 						});
-						let damage = copy_item.data.damage.parts[0][0];
-						const fullSupDie = actor.data.data.scale["battle-master"]["superiority-die"];
-						const supDie = fullSupDie.substr(fullSupDie.indexOf('d'));
-						var newdamage = damage + " + " + supDie;
-						copy_item.data.damage.parts[0][0] = newdamage;
+						let damage = copy_item.system.damage.parts[0][0];
+						const fullSupDie = actor.system.scale["battle-master"]["superiority-die"];
+						var newdamage = damage + " + " + fullSupDie.die;
+						copy_item.system.damage.parts[0][0] = newdamage;
 						actor.updateEmbeddedDocuments("Item", [copy_item]);
 
 						let theItem = actor.items.get(itemId);
@@ -82,7 +80,7 @@ try {
 		if (flag) {
 			let weaponItem = actor.items.get(flag.id);
 			let copy_item = duplicate(weaponItem.toObject());
-			copy_item.data.damage.parts[0][0] = flag.damage;
+			copy_item.system.damage.parts[0][0] = flag.damage;
 			await actor.updateEmbeddedDocuments("Item", [copy_item]);
 			DAE.unsetFlag(actor, flagName);
 		}
@@ -92,12 +90,15 @@ try {
     console.error(`${resourceName}: ${optionName} - ${version}`, err);
 }
 
+// find the resource matching this feature
 function findResource(actor) {
-	for (let res in actor.data.data.resources) {
-		if (actor.data.data.resources[res].label === resourceName) {
-		  return res;
+	if (actor) {
+		for (let res in actor.system.resources) {
+			if (actor.system.resources[res].label === resourceName) {
+			  return res;
+			}
 		}
-    }
+	}
 	
 	return null;
 }
@@ -105,10 +106,16 @@ function findResource(actor) {
 // handle resource consumption
 async function consumeResource(actor, resKey, cost) {
 	if (actor && resKey && cost) {
-		const points = actor.data.data.resources[resKey].value;
-		const pointsMax = actor.data.data.resources[resKey].max;
-		let resources = duplicate(actor.data.data.resources);
-		resources[resKey].value = Math.clamped(points - cost, 0, pointsMax);
-		await actor.update({"data.resources": resources});
+		const {value, max} = actor.system.resources[resKey];
+		if (!value) {
+			ChatMessage.create({'content': '${resourceName} : Out of resources'});
+			return false;
+		}
+		
+		const resources = foundry.utils.duplicate(actor.system.resources);
+		const resourcePath = `system.resources.${resKey}`;
+		resources[resKey].value = Math.clamped(value - cost, 0, max);
+		await actor.update({ "system.resources": resources });
+		return true;
 	}
 }

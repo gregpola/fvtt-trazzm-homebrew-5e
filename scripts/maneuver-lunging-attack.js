@@ -1,27 +1,27 @@
-const version = "0.1.0";
+const version = "10.0.0";
 const resourceName = "Superiority Dice";
 const optionName = "Lunging Attack";
 
 try {
-	let actor = MidiQOL.MQfromActorUuid(args[1].actorUuid);
-		
-	if (args[0] === "on") {
-		const target = Array.from(game.user.targets)[0];
-
+	const lastArg = args[args.length - 1];
+	let tactor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
+	
+	if (args[0].macroPass === "preItemRoll") {
 		// check resources
-		let resKey = findResource(actor);
+		let resKey = findResource(tactor);
 		if (!resKey) {
-			return ui.notifications.error(`${resourceName} - no resource found`);
+			ui.notifications.error(`${resourceName} - no resource found`);
+			return false;
 		}
 
-		const points = actor.data.data.resources[resKey].value;
-		if (!points) {
-			return ui.notifications.error(`${resourceName} - resource pool is empty`);
-		}
+		// handle resource consumption
+		return await consumeResource(tactor, resKey, 1);
+	}
+	else if (args[0] === "on") {
+		const target = Array.from(game.user.targets)[0];
 		
 		// find the actor's weapons
-		// TODO filter to only mw
-		let weapons = actor.items.filter(i => i.data.type === `weapon`);
+		let weapons = tactor.items.filter(i => i.data.type === `weapon`);
 		let weapon_content = ``;
 		for (let weapon of weapons) {
 			if (weapon.data.data.actionType === "mwak") {
@@ -51,25 +51,22 @@ try {
 					label: `Ok`,
 					callback: async (html) => {
 						let itemId = html.find('[name=weapons]')[0].value;
-						let weaponItem = actor.items.get(itemId);
+						let weaponItem = tactor.items.get(itemId);
 
 						let copy_item = duplicate(weaponItem.toObject());
-						DAE.setFlag(actor, `lunging-attack-weapon`, {
+						DAE.setFlag(tactor, `lunging-attack-weapon`, {
 							id : itemId,
-							damage : copy_item.data.damage.parts[0][0],
-							range : copy_item.data.range
+							damage : copy_item.system.damage.parts[0][0],
+							range : copy_item.system.range.value
 						});
-						let damage = copy_item.data.damage.parts[0][0];
-						const fullSupDie = actor.data.data.scale["battle-master"]["superiority-die"];
-						const supDie = fullSupDie.substr(fullSupDie.indexOf('d'));
-						var newdamage = damage + " + " + supDie;
-						copy_item.data.damage.parts[0][0] = newdamage;
-						copy_item.data.range += 5;
-						actor.updateEmbeddedDocuments("Item", [copy_item]);
-
+						let damage = copy_item.system.damage.parts[0][0];
+						const fullSupDie = tactor.system.scale["battle-master"]["superiority-die"];
+						var newdamage = damage + " + " + fullSupDie.die;
+						copy_item.system.damage.parts[0][0] = newdamage;
+						copy_item.system.range.value += 5;
+						await tactor.updateEmbeddedDocuments("Item", [copy_item]);
 						let theItem = actor.items.get(itemId);
 						await theItem.roll();
-						await consumeResource(actor, resKey, 1);
 					}
 				},
 				Cancel:
@@ -80,14 +77,14 @@ try {
 		}).render(true);
 	}
 	else if (args[0] === "off") {
-		let flag = DAE.getFlag(actor, `lunging-attack-weapon`);
+		let flag = DAE.getFlag(tactor, `lunging-attack-weapon`);
 		if (flag) {
-			let weaponItem = actor.items.get(flag.id);
+			let weaponItem = tactor.items.get(flag.id);
 			let copy_item = duplicate(weaponItem.toObject());
-			copy_item.data.damage.parts[0][0] = flag.damage;
-			copy_item.data.range = flag.range;
-			await actor.updateEmbeddedDocuments("Item", [copy_item]);
-			DAE.unsetFlag(actor, `lunging-attack-weapon`);
+			copy_item.system.damage.parts[0][0] = flag.damage;
+			copy_item.system.range.value = flag.range;
+			await tactor.updateEmbeddedDocuments("Item", [copy_item]);
+			DAE.unsetFlag(tactor, `lunging-attack-weapon`);
 		}
 	}
 
@@ -95,12 +92,15 @@ try {
     console.error(`${resourceName}: ${optionName} - ${version}`, err);
 }
 
+// find the resource matching this feature
 function findResource(actor) {
-	for (let res in actor.data.data.resources) {
-		if (actor.data.data.resources[res].label === resourceName) {
-		  return res;
+	if (actor) {
+		for (let res in actor.system.resources) {
+			if (actor.system.resources[res].label === resourceName) {
+			  return res;
+			}
 		}
-    }
+	}
 	
 	return null;
 }
@@ -108,10 +108,16 @@ function findResource(actor) {
 // handle resource consumption
 async function consumeResource(actor, resKey, cost) {
 	if (actor && resKey && cost) {
-		const points = actor.data.data.resources[resKey].value;
-		const pointsMax = actor.data.data.resources[resKey].max;
-		let resources = duplicate(actor.data.data.resources);
-		resources[resKey].value = Math.clamped(points - cost, 0, pointsMax);
-		await actor.update({"data.resources": resources});
+		const {value, max} = actor.system.resources[resKey];
+		if (!value) {
+			ChatMessage.create({'content': '${resourceName} : Out of resources'});
+			return false;
+		}
+		
+		const resources = foundry.utils.duplicate(actor.system.resources);
+		const resourcePath = `system.resources.${resKey}`;
+		resources[resKey].value = Math.clamped(value - cost, 0, max);
+		await actor.update({ "system.resources": resources });
+		return true;
 	}
 }

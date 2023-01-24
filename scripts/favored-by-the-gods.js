@@ -1,10 +1,10 @@
-const version = "0.1.0";
+const version = "10.0.0";
 const optionName = "Favored by the Gods";
 
 try {
 	//let workflow = await MidiQOL.Workflow.getWorkflow(args[0].uuid);
 	const feature = token.actor.items.getName(optionName);
-	const available = feature.data.data.uses.value; //check for available uses
+	const available = feature.system.uses.value; //check for available uses
 	if(!available)
 		return {};
 
@@ -40,7 +40,7 @@ try {
 			if (useFeature) {
 				let attackRoll = new Roll(`${attackTotal} + 2d4`).roll({async:false});
 				this.setAttackRoll(attackRoll);
-				return await feature.update({"data.uses.value": available - 1});
+				return await feature.update({"system.uses.value": available - 1});
 			}
 		}
 	}

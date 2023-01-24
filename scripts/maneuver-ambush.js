@@ -4,16 +4,18 @@ const optionName = "Ambush";
 
 try {
 	const lastArg = args[args.length - 1];
-	let actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
+	let tactor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
 	
-	if (args[0] === "on") {
+	if (args[0].macroPass === "preItemRoll") {
 		// check resources
-		let resKey = findResource(actor);
+		let resKey = findResource(tactor);
 		if (!resKey) {
-			return ui.notifications.error(`${resourceName} - no resource found`);
+			ui.notifications.error(`${resourceName} - no resource found`);
+			return false;
 		}
-		
-		consumeResource(actor, resKey, 1);
+
+		// handle resource consumption
+		return await consumeResource(tactor, resKey, 1);
 	}
 
 } catch (err) {
@@ -22,11 +24,13 @@ try {
 
 // find the resource matching this feature
 function findResource(actor) {
-	for (let res in actor.system.resources) {
-		if (actor.system.resources[res].label === resourceName) {
-		  return res;
+	if (actor) {
+		for (let res in actor.system.resources) {
+			if (actor.system.resources[res].label === resourceName) {
+			  return res;
+			}
 		}
-    }
+	}
 	
 	return null;
 }
@@ -37,12 +41,13 @@ async function consumeResource(actor, resKey, cost) {
 		const {value, max} = actor.system.resources[resKey];
 		if (!value) {
 			ChatMessage.create({'content': '${resourceName} : Out of resources'});
-			return;
+			return false;
 		}
 		
 		const resources = foundry.utils.duplicate(actor.system.resources);
 		const resourcePath = `system.resources.${resKey}`;
 		resources[resKey].value = Math.clamped(value - cost, 0, max);
 		await actor.update({ "system.resources": resources });
+		return true;
 	}
 }

@@ -16,7 +16,6 @@ try {
         }
 		
 		const spellLevel = lastArg.efData.flags["midi-qol"].castData.castLevel;
-		// attributes.spelldc
 				
         const overTimeValue = `turn=start,saveDC=${caster.system.attributes.spelldc ?? 10},saveAbility=con,damageRoll=${spellLevel}d10,damageType=radiant,saveDamage=halfdamage,saveRemove=false`;
 

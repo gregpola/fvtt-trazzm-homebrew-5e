@@ -1,3 +1,49 @@
+# 10.0.3
+* Fixed/Updated for v10:
+  * Arcane Recovery
+  * Blessing of the Forge
+  * Elegant Maneuver
+  * Favored by the Gods
+  * Font of Magic
+  * Hexblade's Curse - need to test
+  * Rakish Audacity
+  * Combat Maneuver: Ambush
+  * Combat Maneuver: Brace
+  * Combat Maneuver: Commander's Strike
+  * Combat Maneuver: Commanding Presence
+  * Combat Maneuver: Disarming Attack
+  * Combat Maneuver: Distracting Strike
+  * Combat Maneuver: Evasive Footwork
+  * Combat Maneuver: Feinting Attack
+  * Combat Maneuver: Goading Attack
+  * Combat Maneuver: Grappling Strike
+  * Combat Maneuver: Lunging Attack
+  * Combat Maneuver: Maneuvering Attack
+  * Combat Maneuver: Menacing Attack
+  * Combat Maneuver: Parry
+  * Combat Maneuver: Precision Attack
+  * Combat Maneuver: Pushing Attack
+  * Combat Maneuver: Quick Toss
+  * Combat Maneuver: Rally
+  * Combat Maneuver: Riposte
+  * Combat Maneuver: Sweeping Attack
+  * Combat Maneuver: Tactical Assessment
+  * Combat Maneuver: Trip Attack
+  * Feat: Great Weapon Master - prompt on attacks
+  * Feat: Sharpshooter - prompt on attacks
+  * Feat: Added Draconic Breath which replaces the homebrew feat 'Breath of the Dragon'
+  * Item: Adamantine Armor critical immunity
+  * Item: Bracers of Archery
+  * Item: Figurine of Wondrous Power (Silver Raven)
+  * Spell: Conjure Minor Elementals
+  * Spell: Dimension Door
+  * Spell: Mage Hand
+  * Spell: Melf's Acid Arrow
+  * Spell: Mirror Image
+  * Spell: Misty Step
+  * Spell: Spiritual Weapon
+  * Spell: Thunderwave
+
 # 10.0.2
 * Fixed/Updated for v10:
   * Champion subclass features

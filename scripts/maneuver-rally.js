@@ -1,4 +1,4 @@
-const version = "0.1.0";
+const version = "10.0.0";
 const resourceName = "Superiority Dice";
 const optionName = "Rally";
 
@@ -18,19 +18,22 @@ try {
 			return ui.notifications.error(`${resourceName} - resource pool is empty`);
 		}
 		
-		consumeResource(actor, resKey, 1);
+		await consumeResource(actor, resKey, 1);
 	}
 
 } catch (err) {
     console.error(`${resourceName}: ${optionName} - ${version}`, err);
 }
 
+// find the resource matching this feature
 function findResource(actor) {
-	for (let res in actor.data.data.resources) {
-		if (actor.data.data.resources[res].label === resourceName) {
-		  return res;
+	if (actor) {
+		for (let res in actor.system.resources) {
+			if (actor.system.resources[res].label === resourceName) {
+			  return res;
+			}
 		}
-    }
+	}
 	
 	return null;
 }
@@ -38,10 +41,16 @@ function findResource(actor) {
 // handle resource consumption
 async function consumeResource(actor, resKey, cost) {
 	if (actor && resKey && cost) {
-		const points = actor.data.data.resources[resKey].value;
-		const pointsMax = actor.data.data.resources[resKey].max;
-		let resources = duplicate(actor.data.data.resources);
-		resources[resKey].value = Math.clamped(points - cost, 0, pointsMax);
-		await actor.update({"data.resources": resources});
+		const {value, max} = actor.system.resources[resKey];
+		if (!value) {
+			ChatMessage.create({'content': '${resourceName} : Out of resources'});
+			return false;
+		}
+		
+		const resources = foundry.utils.duplicate(actor.system.resources);
+		const resourcePath = `system.resources.${resKey}`;
+		resources[resKey].value = Math.clamped(value - cost, 0, max);
+		await actor.update({ "system.resources": resources });
+		return true;
 	}
 }

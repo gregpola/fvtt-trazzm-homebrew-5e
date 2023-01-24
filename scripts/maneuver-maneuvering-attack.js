@@ -1,36 +1,28 @@
-const version = "0.1.0";
+const version = "10.0.0";
 const resourceName = "Superiority Dice";
 const optionName = "Maneuvering Attack";
 
 try {
+	const lastArg = args[args.length - 1];
+	let tactor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
+	
 	if (args[0].macroPass === "DamageBonus") {
-		let workflow = MidiQOL.Workflow.getWorkflow(args[0].uuid);
-		let actor = workflow?.actor;
-		let target = args[0].targets[0];
-		let tactor = target?.actor;
-		
-		// validate targeting
-		if (!actor || !target) {
-		  console.log(`${optionName}: no target selected`);
-		  return {};
+		// make sure it's an allowed attack
+		if (!["mwak", "rwak"].includes(lastArg.itemData.system.actionType)) {
+			console.log(`${optionName}: not an eligible attack`);
+			return {};
 		}
 
-		// make sure it's an allowed attack
-		const at = args[0].item?.data?.actionType;
-		if (!at || !["mwak","rwak"].includes(at)) {
-			console.log(`${optionName}: not an eligible attack: ${at}`);
-			return {};
-		}
-		
-		// make sure they have superiority dice remaining
-		let resKey = findResource(actor);
+		// check resources
+		let resKey = findResource(tactor);
 		if (!resKey) {
-			console.log(`${optionName}: no resource found`);
+			console.log(`${optionName} : ${resourceName} - no resource found`);
 			return {};
 		}
-		const points = actor.data.data.resources[resKey].value;
+
+		const points = tactor.system.resources[resKey].value;
 		if (!points) {
-			console.log(`${optionName}: out of resource`);
+			console.log(`${optionName} : ${resourceName} - resource pool is empty`);
 			return {};
 		}
 		
@@ -42,12 +34,12 @@ try {
 				content: `<p>Use ${optionName}? (${points} superiority dice remaining)</p>`,
 				buttons: {
 					one: {
-						icon: '<p> </p><img src = "icons/skills/movement/arrows-up-trio-red.webp" width="50" height="50"></>',
+						icon: '<p> </p><img src = "icons/skills/movement/arrows-up-trio-red.webp" width="30" height="30"></>',
 						label: "<p>Yes</p>",
 						callback: () => resolve(true)
 					},
 					two: {
-						icon: '<p> </p><img src = "icons/skills/melee/weapons-crossed-swords-yellow.webp" width="50" height="50"></>',
+						icon: '<p> </p><img src = "icons/skills/melee/weapons-crossed-swords-yellow.webp" width="30" height="30"></>',
 						label: "<p>No</p>",
 						callback: () => { resolve(false) }
 					}
@@ -58,13 +50,13 @@ try {
 		
 		let useGA = await dialog;
 		if (useGA) {
-			await decrimentSuperiorityDice(actor, resKey);
-			const supDie = actor.data.data.scale["battle-master"]["superiority-die"].substr(1);
+			await consumeResource(tactor, resKey, 1);
+			const fullSupDie = tactor.system.scale["battle-master"]["superiority-die"];
 
 			// add damage bonus
-			const diceMult = args[0].isCritical ? 2: 1;
-			let damageType = args[0].item.data.damage.parts[0][1];
-			return {damageRoll: `${diceMult}${supDie}[${damageType}]`, flavor: optionName};
+			const diceMult = lastArg.isCritical ? 2: 1;
+			let damageType = lastArg.itemData.system.damage.parts[0][1];
+			return {damageRoll: `${diceMult}${fullSupDie.die}[${damageType}]`, flavor: optionName};
 		}
 		
 	}
@@ -73,53 +65,15 @@ try {
     console.error(`${resourceName}: ${optionName} - ${version}`, err);
 }
 
-function decrimentSuperiorityDice(actor, resKey) {
-	const points = actor.data.data.resources[resKey].value;
-	if (!points) {
-		ui.notifications.error(`${resourceName} - resource pool is empty`);
-		return false;
-	}
-	
-	consumeResource(actor, resKey, 1);
-	return true;
-}
-
-async function markAsGoaded(targetId, actorId) {
-	const effectData = {
-		label: "Goaded",
-		icon: "icons/magic/control/silhouette-grow-shrink-blue.webp",
-		origin: actorId,
-		changes: [
-			{
-				key: 'flags.midi-qol.disadvantage.attack.all',
-				mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-				value: 1,
-				priority: 20
-			}
-		],
-		flags: {
-			dae: {
-				selfTarget: false,
-				stackable: "none",
-				durationExpression: "",
-				macroRepeat: "none",
-				specialDuration: [
-					"turnEndSource"
-				],
-				transfer: false
-			}
-		},
-		disabled: false
-	};
-    await MidiQOL.socket().executeAsGM("createEffects", { actorUuid: targetId, effects: [effectData] });
-}
-
+// find the resource matching this feature
 function findResource(actor) {
-	for (let res in actor.data.data.resources) {
-		if (actor.data.data.resources[res].label === resourceName) {
-		  return res;
+	if (actor) {
+		for (let res in actor.system.resources) {
+			if (actor.system.resources[res].label === resourceName) {
+			  return res;
+			}
 		}
-    }
+	}
 	
 	return null;
 }
@@ -127,10 +81,16 @@ function findResource(actor) {
 // handle resource consumption
 async function consumeResource(actor, resKey, cost) {
 	if (actor && resKey && cost) {
-		const points = actor.data.data.resources[resKey].value;
-		const pointsMax = actor.data.data.resources[resKey].max;
-		let resources = duplicate(actor.data.data.resources);
-		resources[resKey].value = Math.clamped(points - cost, 0, pointsMax);
-		await actor.update({"data.resources": resources});
+		const {value, max} = actor.system.resources[resKey];
+		if (!value) {
+			ChatMessage.create({'content': '${resourceName} : Out of resources'});
+			return false;
+		}
+		
+		const resources = foundry.utils.duplicate(actor.system.resources);
+		const resourcePath = `system.resources.${resKey}`;
+		resources[resKey].value = Math.clamped(value - cost, 0, max);
+		await actor.update({ "system.resources": resources });
+		return true;
 	}
 }

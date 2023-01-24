@@ -1,4 +1,4 @@
-const version = "0.2.0";
+const version = "10.0.0";
 const optionName = "Blessing of the Forge";
 const flagName = "blessing-of-the-forge";
 const gameVersion = Math.floor(game.version);
@@ -10,7 +10,7 @@ try {
 
 	if (args[0].macroPass === "preItemRoll") {
 		// first check if there are any uses remaining
-		let uses = lastArg.item?.data?.uses?.value ?? 0;
+		let uses = lastArg.item?.system?.uses?.value ?? 0;
 		if (uses < 1) {
 			ui.notifications.error(`${optionName} - no uses remaining`);
 			return false;
@@ -44,15 +44,18 @@ try {
 		let targetId = blessingChoices[0];
 		tactor = MidiQOL.MQfromActorUuid(targetId);
 		// get target token
-		let ttoken = allies.find(i => i.data.actorId === tactor.data._id);
+		let ttoken = allies.find(i => i.document.actorId === tactor._id);
+		if (!ttoken) {
+			ttoken = target;
+		}		
 
 		// find the target actor's weapons & armor that are not magical
 		let weapons;
 		let armor;
 		
 		if (gameVersion > 9) {
-			weapons = tactor.items.filter(i => ((i.data.type === `weapon`) && !i.data.system.properties?.mgc));
-			armor = tactor.items.filter(i => ((i.data.type === `equipment`) && i.data.system.armor?.type && !i.data.system.properties?.mgc));
+			weapons = tactor.items.filter(i => ((i.type === `weapon`) && !i.system.properties?.mgc));
+			armor = tactor.items.filter(i => ((i.type === `equipment`) && i.system.armor?.type && !i.system.properties?.mgc));
 		}
 		else {
 			weapons = tactor.items.filter(i => ((i.data.type === `weapon`) && !i.data.data.properties?.mgc));

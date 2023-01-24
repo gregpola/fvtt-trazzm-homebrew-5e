@@ -1,56 +1,54 @@
-const version = "0.1.0";
+const version = "10.0.0";
 const resourceName = "Superiority Dice";
 const optionName = "Brace";
 
 try {
-		
-	if (args[0] === "on") {
-		let actor = MidiQOL.MQfromActorUuid(args[1].actorUuid);
-
+	const lastArg = args[args.length - 1];
+	let tactor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
+	
+	if (args[0].macroPass === "preItemRoll") {
 		// check resources
-		let resKey = findResource(actor);
+		let resKey = findResource(tactor);
 		if (!resKey) {
-			return ui.notifications.error(`${resourceName} - no resource found`);
+			ui.notifications.error(`${resourceName} - no resource found`);
+			return false;
 		}
 
-		const points = actor.data.data.resources[resKey].value;
-		if (!points) {
-			return ui.notifications.error(`${resourceName} - resource pool is empty`);
-		}
-		consumeResource(actor, resKey, 1);
+		// handle resource consumption
+		return await consumeResource(tactor, resKey, 1);
 	}
 	else if (args[0].macroPass === "DamageBonus") {
-		let workflow = MidiQOL.Workflow.getWorkflow(args[0].uuid);
-		let actor = workflow.actor;
-		let target = args[0].targets[0];
+		let target = lastArg.targets[0];
 
-		if (!["mwak"].includes(args[0].item.data.actionType)) {
+		if (!["mwak"].includes(lastArg.itemData.system.actionType)) {
 			console.log('Not an allowed attack for ${optionName}');
 			return {};
 		}
 
-		if (!actor || !target) {
+		if (!tactor || !target) {
 		  console.log('${optionName} damage: no target selected');
 		  return;
 		}
 		
 		// Add superiority die to the damage
-		let damageType = args[0].item.data.damage.parts[0][1];
-		const fullSupDie = actor.data.data.scale["battle-master"]["superiority-die"];
-		const supDie = fullSupDie.substr(fullSupDie.indexOf('d'));
-		return {damageRoll: `${supDie}[${damageType}]`, flavor: "Brace Maneuver Damage"};		
+		let damageType = lastArg.itemData.system.damage.parts[0][1];
+		const fullSupDie = tactor.system.scale["battle-master"]["superiority-die"];
+		return {damageRoll: `${fullSupDie.die}[${damageType}]`, flavor: "Brace Maneuver Damage"};		
 	}
 
 } catch (err) {
     console.error(`${resourceName}: ${optionName} - ${version}`, err);
 }
 
+// find the resource matching this feature
 function findResource(actor) {
-	for (let res in actor.data.data.resources) {
-		if (actor.data.data.resources[res].label === resourceName) {
-		  return res;
+	if (actor) {
+		for (let res in actor.system.resources) {
+			if (actor.system.resources[res].label === resourceName) {
+			  return res;
+			}
 		}
-    }
+	}
 	
 	return null;
 }
@@ -58,10 +56,16 @@ function findResource(actor) {
 // handle resource consumption
 async function consumeResource(actor, resKey, cost) {
 	if (actor && resKey && cost) {
-		const points = actor.data.data.resources[resKey].value;
-		const pointsMax = actor.data.data.resources[resKey].max;
-		let resources = duplicate(actor.data.data.resources);
-		resources[resKey].value = Math.clamped(points - cost, 0, pointsMax);
-		await actor.update({"data.resources": resources});
+		const {value, max} = actor.system.resources[resKey];
+		if (!value) {
+			ChatMessage.create({'content': '${resourceName} : Out of resources'});
+			return false;
+		}
+		
+		const resources = foundry.utils.duplicate(actor.system.resources);
+		const resourcePath = `system.resources.${resKey}`;
+		resources[resKey].value = Math.clamped(value - cost, 0, max);
+		await actor.update({ "system.resources": resources });
+		return true;
 	}
 }

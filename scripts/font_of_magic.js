@@ -11,38 +11,39 @@
 	6 points => 4th-level
 	7 points => 5th-level
 */
-const version = "0.1.0";
+const version = "10.0.0";
+const optionName = "Trip Attack";
+const resourceName = "Sorcery Points";
+const lastArg = args[args.length - 1];
+
 try {
 	if (args[0] === "on") {
-		if (!args[1].tokenId) {
+		if (!lastArg.tokenId) {
 			console.error("Font of Magic - no token");
 			return {};
 		}
 		
 		// data init
-		const actor = canvas.tokens.get(args[1].tokenId).actor;
-		const item = actor.items.get(args[1].origin.substring(args[1].origin.lastIndexOf(".")+1));
+		const actor = canvas.tokens.get(lastArg.tokenId).actor;
+		const item = actor.items.get(lastArg.origin.substring(lastArg.origin.lastIndexOf(".")+1));
 		
 		// data validation
 		if (!actor) {
-			console.error("Font of Magic - no actor");
-			return {};
+			return ui.notifications.error(`${optionName} - no actor`);
 		}
-		if (!item) {
-			console.error("Font of Magic - no item");
-			return {};
-		}
-		if (!actor.data.data.resources.primary) {
-			console.error("Font of Magic - no resource found");
-			return {};
+		
+		// check resources
+		let resKey = findResource(actor);
+		if (!resKey) {
+			return ui.notifications.error(`${optionName}: ${resourceName} - no resource found`);
 		}
 
-		const points = actor.data.data.resources.primary.value;
-		const pointsMax = actor.data.data.resources.primary.max;
-		const spells = duplicate(actor.data.data.spells);
+		// get the actor resources
+		const points = actor.system.resources[resKey].value;
+		const pointsMax = actor.system.resources[resKey].max;
+		const spells = duplicate(actor.system.spells);
 		if (!spells) {
-			console.error("Font of Magic - no spells");
-			return {};
+			return ui.notifications.error(`${optionName}: ${resourceName} - no spells found`);
 		}
 
 		const is_missing_points = points < pointsMax;
@@ -61,7 +62,7 @@ try {
 		const can_convert_slot_to_points = has_available_spell_slots && is_missing_points;
 		const can_convert_points_to_slot = has_available_sorcery_points && is_missing_slots;
 		if(!can_convert_points_to_slot && !can_convert_slot_to_points){
-			return ui.notifications.warn("You have no options available.");
+			return ui.notifications.warn(`${optionName} - no conversion available`);
 		}
 
 		// set up available buttons.
@@ -115,9 +116,10 @@ try {
 			console.log(level);
 			
 			if(Number(level) > 0){
-				await actor.update({[`data.spells.spell${level}.value`]: getProperty(actor.data, `data.spells.spell${level}.value`) - 1});
-				await actor.update({"data.resources.primary.value": Math.clamped(points + Number(level), 0, pointsMax)});
-				return ui.notifications.info("Regained sorcery points!");
+				await actor.update({[`system.spells.spell${level}.value`]: getProperty(actor, `system.spells.spell${level}.value`) - 1});
+				await actor.update({"system.resources.primary.value": Math.clamped(points + Number(level), 0, pointsMax)});
+				ChatMessage.create({'content': `${actor.name} : regained sorcery points!`});
+				return;
 			}
 		}
 
@@ -157,12 +159,25 @@ try {
 			});
 			
 			if(Number(level) > 0){
-				await actor.update({[`data.spells.spell${level}.value`]: getProperty(actor.data, `data.spells.spell${level}.value`) + 1});
-				await actor.update({"data.resources.primary.value": Math.clamped(points - conversion_map[level], 0, pointsMax)});
-				return ui.notifications.info("Regained a spell slot!");
+				await actor.update({[`system.spells.spell${level}.value`]: getProperty(actor, `system.spells.spell${level}.value`) + 1});
+				await actor.update({"system.resources.primary.value": Math.clamped(points - conversion_map[level], 0, pointsMax)});
+				ChatMessage.create({'content': `${actor.name} : regained a spell slot!`});
 			}
 		}
 	}
 } catch (err)  {
-    console.error(`${args[1].efData.label} - Font of Magic ${version}`, err);
+    console.error(`${lastArg.effect.label} - Font of Magic ${version}`, err);
+}
+
+// find the resource matching this feature
+function findResource(actor) {
+	if (actor) {
+		for (let res in actor.system.resources) {
+			if (actor.system.resources[res].label === resourceName) {
+			  return res;
+			}
+		}
+	}
+	
+	return null;
 }

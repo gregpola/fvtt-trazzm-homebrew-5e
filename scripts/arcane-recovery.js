@@ -11,23 +11,23 @@
 	
 	*/
 
-const version = "0.1.0";
+const version = "10.0.0";
 const optionName = "Arcane Recovery";
+const lastArg = args[args.length - 1];
 
 try {
 
-	if (args[0].macroPass === "preambleComplete") {
-		let workflow = MidiQOL.Workflow.getWorkflow(args[0].uuid);
-		let actor = workflow?.actor;
+	if (args[0].macroPass === "preItemRoll") {
+		let actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
 
-		const spells = duplicate(actor.data.data.spells);
+		const spells = duplicate(actor.system.spells);
 		if (!spells) {
 			ui.notifications.error(`${optionName} - character has no spells`);
 			return false;
 		}
 		
 		// How many slot points an be recovered
-		const wizardLevel = actor.classes?.wizard?.data?.data?.levels ?? 0;
+		const wizardLevel = actor.classes?.wizard?.system?.levels ?? 0;
 		if (wizardLevel === 0){
 			ui.notifications.error(`${optionName} - character is not a Wizard`);
 			return false;
@@ -99,7 +99,7 @@ try {
 							else {
 								// recover the slots
 								for (let slot of recoveredData) {
-									await actor.update({[`data.spells.spell${slot}.value`]: getProperty(actor.data, `data.spells.spell${slot}.value`) + 1});
+									await actor.update({[`system.spells.spell${slot}.value`]: getProperty(actor, `system.spells.spell${slot}.value`) + 1});
 								}
 								await ChatMessage.create({ content: `${actor.name} recovered ${spent} spell slot levels` });
 							}
