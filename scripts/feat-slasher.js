@@ -7,19 +7,25 @@ or
 2b. Create an item for the Slasher feature with a DAE checking the box "Transfer to Actor on Item Equip" and an effect of:
 	flags.midi-qol.onUseMacroName | CUSTOM | (ItemMacro?) Slasher,postActiveEffects 
 */
-const version = "0.1.0";
+const version = "10.0.0";
+const optionName = "Slasher";
+const lastArg = args[args.length - 1];
 
 try {
-	if (args[0].hitTargets < 1 || args[0].damageDetail.filter(i=>i.type === "slashing").length < 1) return;
+	if (args[0].hitTargets < 1 || args[0].damageDetail.filter(i=>i.type === "slashing").length < 1)
+		return;
 	
 	const tactor = args[0].hitTargets[0].actor;
-	if(args[0].isCritical && !tactor.effects.find(i=>i.data.label==="Slasher feat - Disadvantage on all attacks")) await applyTargetDisadvantageEffect();
+	if(args[0].isCritical && !tactor.effects.find(i=>i.label==="Slasher feat - Disadvantage on all attacks"))
+		await applyTargetDisadvantageEffect();
 
-	if (actor.unsetFlag('world', 'SlasherUsed') && !game.combat) await actor.unsetFlag('world', 'SlasherUsed');
+	if (actor.unsetFlag('world', 'SlasherUsed') && !game.combat)
+		await actor.unsetFlag('world', 'SlasherUsed');
 
-	if (!game.combat && !tactor.effects.find(i=>i.data.label==="Slasher feat -10ft movement")) await applySpeedReduction();
+	if (!game.combat && !tactor.effects.find(i=>i.label==="Slasher feat -10ft movement"))
+		await applySpeedReduction();
 	
-	if (game.combat && !tactor.effects.find(i=>i.data.label==="Slasher feat -10ft movement")) {
+	if (game.combat && !tactor.effects.find(i=>i.label==="Slasher feat -10ft movement")) {
 		const combatTime = `${game.combat.id} - 100*${game.combat.round} + ${game.combat.turn}`;
 		const lastTime = actor.getFlag('world', 'SlasherUsed');
 		console.log(`Lasttime:${lastTime}, CombatTime:${combatTime}`);
@@ -52,7 +58,6 @@ try {
     console.error(`Slasher feat ${version}`, err);
 }
 
-
 async function applyTargetDisadvantageEffect(time) {
 	const effect_sourceData = {
 		changes: [
@@ -60,7 +65,7 @@ async function applyTargetDisadvantageEffect(time) {
 		],
 		origin: args[0].itemUuid,
 		duration: game.combat ? { rounds: 1, turns:0, startRound: `${game.combat.round}`, startTurn: `${game.combat.turn}`, startTime: `${game.time.worldTime}`} : {seconds: 6, startTime: `${game.time.worldTime}`},
-		icon: "systems/dnd5e/icons/skills/gray_04.jpg",
+		icon: "icons/skills/melee/strike-sword-gray.webp",
 		label: "Slasher feat - Disadvantage on all attacks",
 		flags: {dae: {specialDuration: ['turnStartSource']}},
 	}
@@ -71,11 +76,11 @@ async function applyTargetDisadvantageEffect(time) {
 async function applySpeedReduction(time) {
     const effect_sourceData = {
         changes: [
-            { key: "data.attributes.movement.all", mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM, value: -10, priority: 20 }
+            { key: "system.attributes.movement.all", mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM, value: -10, priority: 20 }
         ], 
         origin: args[0].itemUuid,
         duration: game.combat ? { rounds: 1, turns:0, startRound: `${game.combat.round}`, startTurn: `${game.combat.turn}`, startTime: `${game.time.worldTime}`} : {seconds: 6, startTime: `${game.time.worldTime}`},
-        icon: "systems/dnd5e/icons/skills/gray_04.jpg",
+        icon: "icons/skills/melee/strike-sword-gray.webp",
         label: "Slasher feat -10ft movement",
         flags: {dae: {specialDuration: ['turnStartSource']}},
     }
