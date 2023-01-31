@@ -1,7 +1,11 @@
 const version = "0.9.52";
+const optionName = "Favored Foe";
+const lastArg = args[args.length - 1];
+
 try {
-    const levels = args[0].rollData.classes?.barbarian?.levels ?? 0;
+    const levels = lastArg.rollData.classes?.barbarian?.levels ?? 0;
     if (!levels) return {};
+	
     if (!args[0].item) return {};
     const tactor = canvas.tokens.get(args[0].tokenId).actor;
     const titem = tactor.items.get(args[0].item._id);

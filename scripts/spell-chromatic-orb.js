@@ -89,5 +89,5 @@ async function anime(token, target, colorD) {
 		.fadeOut(300)
 		.atLocation(token)
 		.stretchTo(target)
-		.play();
+		.play();_validateLocation
 }

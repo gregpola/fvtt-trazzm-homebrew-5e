@@ -9,6 +9,8 @@
 */
 const version = "10.0.0";
 const optionName = "Flame Blade";
+const lightingFlagName = "flame-blade-lighting";
+
 const lastArg = args[args.length - 1];
 let actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
 let actorToken = canvas.tokens.get(lastArg.tokenId);
@@ -70,8 +72,22 @@ try {
 		}];
 		await actor.createEmbeddedDocuments("Item", itemData);
 		
+		// get and stash the current data
+		var tokenLighting = actorToken.document.light;
+		DAE.setFlag(actor, lightingFlagName, {
+			id : item.id,
+			name : "Flame Blade Lighting",
+			lightDim: tokenLighting.dim,
+			lightBright: tokenLighting.bright,
+			lightAngle: tokenLighting.angle,
+			lightAlpha: tokenLighting.alpha,
+			lightColor: tokenLighting.color,
+			lightAnimationIntensity: tokenLighting.animation.intensity,
+			lightAnimationSpeed: tokenLighting.animation.speed,
+			lightAnimationType: tokenLighting.animation.type
+		});
+
 		// set the token lighting
-		// TODO get and stash the current data
 		actorToken.document.update({
 			"light.dim": 20, 
 			"light.bright": 10, 
@@ -95,7 +111,23 @@ try {
 				speaker: ChatMessage.getSpeaker({ actor: actor })});
 		}
 		
-		// TODO reset the token lighting
+		// reset the token lighting
+		let flag = DAE.getFlag(actor, lightingFlagName);
+		if (flag) {
+			actorToken.document.update({
+				"light.dim": flag.lightDim, 
+				"light.bright": flag.lightBright, 
+				"light.angle": flag.lightAngle, 
+				"light.alpha": flag.lightAlpha,
+				"light.color": flag.lightColor,			
+				"light.animation": {
+					"type": flag.lightAnimationType,
+					"speed": flag.lightAnimationSpeed,
+					"intensity": flag.lightAnimationIntensity
+				}			
+			});
+			DAE.unsetFlag(actor, lightingFlagName);
+		}
 	}
 
 } catch (err) {

@@ -16,7 +16,7 @@ try {
 
 		const checkDistance = async(crosshairs) => {
 			while (crosshairs.inFlight) {
-				//wait for initial render
+				// wait for initial render
 				await warpgate.wait(100);
 				const ray = new Ray( tokenCenter, crosshairs );
 				const distance = canvas.grid.measureDistances([{ray}], {gridSpaces:true})[0]

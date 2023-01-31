@@ -1,77 +1,91 @@
-const version = "0.1.0";
+const version = "10.0.0";
+const optionName = "Crusher";
+const lastArg = args[args.length - 1];
+const effectLabel = "Crusher feat - Grants advantage on all attacks";
 
 try {
-	// Watch for a hit
-	if (args[0].hitTargets?.length === 0) return;
+	if (lastArg.macroPass === "DamageBonus") {
+		let workflow = MidiQOL.Workflow.getWorkflow(lastArg.uuid);
+		let actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
+		let pusher = canvas.tokens.get(lastArg.tokenId);
+		
+		const targetActor = lastArg.hitTargets[0].actor;
+		const targetToken = game.canvas.tokens.get(lastArg.hitTargets[0].id);
 
-	let workflow = MidiQOL.Workflow.getWorkflow(args[0].uuid);
-	let actor = workflow?.actor;
-	let ttoken = canvas.tokens.get(args[0].hitTargets[0].object.id);
-	const tactor = args[0].hitTargets[0].actor;
-	
-	// verify needed data
-	if (!actor || !ttoken || !tactor) {
-		console.error("Missing data for Crusher");
-		return;
-	}
-
-	// make sure it's an allowed attack
-	if (workflow.damageDetail.filter(i=>i.type === "bludgeoning").length < 1) {
-		console.log("Crusher not allowed: not bludgeoning");
-		return;
-	}
-	
-	// if a critical apply the debuff
-	if(workflow.isCritical) {
-		const effect_sourceData = {
-			changes: [{ key: "flags.midi-qol.grants.advantage.attack.all", mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM, value: 1, priority: 20 }
-			],
-			origin: args[0].itemUuid,
-			duration: game.combat ? { rounds: 1, turns:0, startRound: `${game.combat.round}`, startTurn: `${game.combat.turn}`, startTime: `${game.time.worldTime}`} : {seconds: 6, startTime: `${game.time.worldTime}`},
-			icon: "systems/dnd5e/icons/skills/weapon_42.jpg",
-			label: "Crusher feat - Grants advantage on all attacks",
-			flags: {dae: {specialDuration: ['turnStartSource']}},
+		// make sure it's an allowed attack
+		if (workflow.damageDetail.filter(i=>i.type === "bludgeoning").length < 1) {
+			console.log(`${optionName} not allowed: not a bludgeoning attack`);
+			return;
 		}
-		if (tactor.effects.find(i=>i.data.label==="Crusher feat - Grants advantage on all attacks")) {
-			let effect = tactor.effects.find(i=>i.data.label==="Crusher feat - Grants advantage on all attacks");
-			await MidiQOL.socket().executeAsGM("removeEffects", { actorUuid: args[0].hitTargetUuids[0], effects: [effect.id] });
-		}
-		await MidiQOL.socket().executeAsGM("createEffects", { actorUuid: args[0].hitTargetUuids[0], effects: [effect_sourceData] });
-	}
 	
-	// Check for availability i.e. once per actors turn
-	if (!isAvailableThisTurn() || !game.combat) {
-		return;
-	}
+		// if a critical apply the debuff
+		if (workflow.isCritical) {
+			const effect_sourceData = {
+				changes: [{ key: "flags.midi-qol.grants.advantage.attack.all", mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM, value: 1, priority: 2}],
+				origin: lastArg.itemUuid,
+				duration: game.combat ? { rounds: 1, turns:0, startRound: `${game.combat.round}`, startTurn: `${game.combat.turn}`, startTime: `${game.time.worldTime}`} : {seconds: 6, startTime: `${game.time.worldTime}`},
+				icon: "icons/weapons/hammers/hammer-double-stone.webp",
+				label: effectLabel,
+				flags: {dae: {specialDuration: ['turnStartSource']}},
+			}
+			
+			let effect = targetActor.effects.find(i=>i.data.label === effectLabel);
+			if (effect) {
+				await MidiQOL.socket().executeAsGM("removeEffects", { actorUuid: targetActor.uuid, effects: [effect.id] });
+			}
+			await MidiQOL.socket().executeAsGM("createEffects", { actorUuid: lastArg.hitTargetUuids[0], effects: [effect_sourceData] });
+		}
 
-	// Ask for move
-	const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn /100}`;
+		// Check for availability i.e. once per actors turn
+		if (!isAvailableThisTurn() || !game.combat) {
+			return;
+		}
 
-	let dialog = new Promise((resolve, reject) => {
-		new Dialog({
-			title: "Crusher's feat move target 5ft",
-			content: "Do you want to move the target 5ft in a direction of your choice?",
-			buttons: {
-				one: {
-					icon: '<i class="fas fa-check"></i>',
-					label: "Yes",
-					callback: () => resolve(true)
+		// Ask for move
+		const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn /100}`;
+
+		let dialog = new Promise((resolve, reject) => {
+			new Dialog({
+				title: "Crusher's feat move target 5ft",
+				content: "Do you want to move the target 5ft in a direction of your choice?",
+				buttons: {
+					one: {
+						icon: '<i class="fas fa-check"></i>',
+						label: "Yes",
+						callback: () => resolve(true)
+					},
+					two: {
+						icon: '<i class="fas fa-times"></i>',
+						label: "No",
+						callback: () => {resolve(false)}
+					}
 				},
-				two: {
-					icon: '<i class="fas fa-times"></i>',
-					label: "No",
-					callback: () => {resolve(false)}
+				default: "two"
+			}).render(true);
+		});
+
+		let result = await dialog;
+		if(result) {
+			let position = await getTokenMovePosition(targetToken, 5);
+			if (!position.cancelled) {
+				// check for collision
+				const isAllowedLocation = canvas.effects.visibility.testVisibility({x: position.x, y: position.y}, {object: targetToken});
+				if(!isAllowedLocation) {
+					ui.notifications.error(`${optionName} - Cannot move the ${targetToken.name} on top of another token`)
+					return;
 				}
-			},
-			default: "two"
-		}).render(true);
-	});
-
-	let result = await dialog;
-	if(result) { 
-		applyTargetMove(ttoken, combatTime) 
+				
+				// set the usage flag
+				await actor.setFlag('midi-qol', 'crusherTime', `${combatTime}`);
+				
+				// move the token
+				let newCenter = canvas.grid.getSnappedPosition(position.x - targetToken.width / 2, position.y - targetToken.height / 2, 1);
+				const mutationData = { token: {x: newCenter.x, y: newCenter.y}};
+				await warpgate.mutate(targetToken.document, mutationData, {}, {permanent: true});				
+			}
+		}
 	}
-
+	
 } catch (err) {
     console.error(`Crusher feat ${version}`, err);
 }
@@ -91,54 +105,55 @@ function isAvailableThisTurn() {
 	return false;
 }
 
-async function applyTargetMove(ttoken, time) {
-	const sourceCenter = args[0].hitTargets[0].object.center;
-	const maxRange = 5;
-	console.log(sourceCenter)
+async function getTokenMovePosition(token, maxRange) {
+	// Setup warpgate crosshairs
+	const tokenCenter = token.center;
 	let cachedDistance = 0;
-	let distance = 0;
-	let ray;
 	
-	const checkDistance = async (crosshairs) => {
-	   while (crosshairs.inFlight) {
-	       await warpgate.wait(100);
-	       ray = new Ray(sourceCenter, crosshairs);
-           distance = canvas.grid.measureDistances([{ ray }], { gridSpaces: true })[0]
-           if(canvas.grid.isNeighbor(ray.A.x/canvas.grid.w,ray.A.y/canvas.grid.w,ray.B.x/canvas.grid.w,ray.B.y/canvas.grid.w) === false || canvas.scene.tokens.filter(i=>i.object.center.x===ray.B.x).filter(t=>t.object.center.y===ray.B.y).length > 0) {
-                crosshairs.icon = 'icons/svg/hazard.svg'
-            } 
-            else {
-                crosshairs.icon = args[0].hitTargets[0].object.data.img
-            }
-            crosshairs.draw()
-            crosshairs.label = `${distance}/${maxRange} ft`
-	   }
-    }
-	
-	const callbacks = {
-            show: checkDistance
-        }
-    let {x,y,cancelled} = await warpgate.crosshairs.show({ size: args[0].hitTargets[0].data.width, icon: args[0].hitTargets[0].object.data.img, label: '0 ft.', interval: -1 }, callbacks);
-    
-	if (distance > 5) {
-        ui.notifications.error(`${name} has a maximum range of ${maxRange} ft. Pick another position`)
-        return cancelled;
-    }
-    if(canvas.scene.tokens.filter(i=>i.object.center.x===ray.B.x).filter(t=>t.object.center.y===ray.B.y).length > 0) {
-        ui.notifications.error(`Cannot move the ${args[0].hitTargets[0].object.name} on top of another token`)
-        return cancelled;
-    }
-    if(cancelled) return;
+	const checkDistance = async(crosshairs) => {
+		while (crosshairs.inFlight) {
+			// wait for initial render
+			await warpgate.wait(100);
+			const ray = new Ray( tokenCenter, crosshairs );
+			const distance = canvas.grid.measureDistances([{ray}], {gridSpaces:true})[0]
 
-	await actor.setFlag('midi-qol', 'crusherTime', `${time}`);
+			// only update if the distance has changed
+			if (cachedDistance !== distance) {
+			  cachedDistance = distance;     
+			  if (distance > maxRange) {
+				  crosshairs.icon = 'icons/svg/hazard.svg';
+			  } else {
+				  crosshairs.icon = token.document.texture.src;
+			  }
+
+			  crosshairs.draw();
+			  crosshairs.label = `${distance} ft`;				  
+			}
+		}
+	};
+
+	const callbacks = {
+		show: checkDistance
+	};
+		
+	const config = {
+		drawIcon: true,
+		interval: token.width % 2 === 0 ? 1 : -1,
+		size: token.w / canvas.grid.size
+	};
 	
-	// move the target
-	const targetDoc = ttoken.document;
-	let newCenter = ray.project(1);
-	newCenter = canvas.grid.getSnappedPosition(newCenter.x - targetDoc.object.w / 2, newCenter.y - targetDoc.object.h / 2, 1);
-	const isAllowedLocation = canvas.sight.testVisibility({x: newCenter.x, y: newCenter.y}, {object: targetDoc.Object});
-	if(!isAllowedLocation) return ChatMessage.create({content: `${targetDoc.name} hits a wall`});
-	console.log("Moving token to: " + newCenter);
-	const mutationData = { token: {x: newCenter.x, y: newCenter.y}};
-	await warpgate.mutate(targetDoc, mutationData, {}, {permanent: true});
+	if (typeof token.document !== 'undefined') {
+		config.drawIcon = true;
+		config.icon = token.document.texture.src;
+		config.label = token.name;
+	}
+
+	// Show warpgate crosshairs to pick desired destination
+	const position = await warpgate.crosshairs.show(config, callbacks);
+	if (cachedDistance > maxRange) {
+		console.log(`getTokenMovePosition() - exceeded maximum range of ${maxRange} ft`);
+		position.cancelled = true;
+	}
+	
+	return position;
 }

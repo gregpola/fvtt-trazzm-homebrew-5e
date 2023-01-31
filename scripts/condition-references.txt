@@ -1,4 +1,6 @@
+@UUID[JournalEntry.zkn7Vom9WAsQRNdo.JournalEntryPage.0b8N4FymGGfbZGpJ]{Blinded}
 @UUID[Compendium.dnd5e.rules.w7eitkpD7QQTB6j0.JournalEntryPage.zZaEBrKkr66OWJvD]{Charmed}
+@UUID[JournalEntry.zkn7Vom9WAsQRNdo.JournalEntryPage.6G8JSjhn701cBITY]{Deafened}
 @UUID[Compendium.dnd5e.rules.w7eitkpD7QQTB6j0.JournalEntryPage.cspWveykstnu3Zcv]{Exhaustion}
 @UUID[Compendium.dnd5e.rules.w7eitkpD7QQTB6j0.JournalEntryPage.oreoyaFKnvZCrgij]{Frightened}
 @UUID[Compendium.dnd5e.rules.w7eitkpD7QQTB6j0.JournalEntryPage.gYDAhd02ryUmtwZn]{Grappled}

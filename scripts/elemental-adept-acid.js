@@ -1,23 +1,29 @@
-/*****
-Elemental Adept 
-USAGE: This is fully automated, just place on the feat on the character
-*****/
-const version = "0.1.0";
+/*
+When you gain this feat, you gain the following benefits:
+
+Spells you cast ignore resistance to acid damage. In addition, when you roll damage for a spell you cast that deals acid damage, you can treat any 1 on a damage die as a 2.
+
+You can select this feat multiple times. Each time you do so, you must choose a different damage type.
+*/
+const version = "10.0.0";
+const optionName = "Elemental Adept";
 const damageType = "acid";
+const lastArg = args[args.length - 1];
 
 try {
 	// make sure the attempted hit was made with a spell attack of some type
-	if (!["msak", "rsak", "save"].includes(args[0].item.data.actionType)) return;
+	if (!["msak", "rsak", "save"].includes(lastArg.itemData.system.actionType)) return;
 	
-	if (args[0].macroPass === "DamageBonus") {
-		const theItem = MidiQOL.Workflow.getWorkflow(args[0].uuid).item;
-		let itemData = theItem.data.data;
-		const targets = args[0].targets;
-		
-		let dr = args[0].damageRoll;
+	if (lastArg.macroPass === "DamageBonus") {
+		let actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
+		const theItem = lastArg.item;
+		let itemData = lastArg.itemData;
+		let targets = lastArg.hitTargets;
+
+		let dr = lastArg.damageRoll;
 		if (!dr) return;
 		
-		// todo check the attacks damage type
+		// check the attacks damage type
 		let damageTypeResult = 0;
 		for (let term of dr.terms) {
 			if (term.options?.flavor?.includes(damageType)) {
@@ -37,7 +43,7 @@ try {
 
 		// find the resistant targets
 		for (let target of targets) {
-			let resistant = target?.actor.data.data.traits.dr?.value.includes(damageType);
+			let resistant = target.actor.system.traits.dr.value.has(damageType);
 			if (resistant)
 				resistantTargets.add(target);
 			else

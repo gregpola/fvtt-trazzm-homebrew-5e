@@ -1,4 +1,4 @@
-const version = "0.1.0";
+const version = "10.0.0";
 const optionName = "Wyvern Poison";
 const flagName = "wyvern-poison-weapon";
 const damageDice = "7d6";
@@ -14,7 +14,7 @@ try {
 	if (args[0].macroPass === "preItemRoll") {
 		// find the actor's items that can be poisoned
 		// must be piercing or slashing
-		let weapons = tactor.items.filter(i => i.data.type === `weapon` && (i.data.data.damage.parts[0][1] === `piercing` || i.data.data.damage.parts[0][1] === `slashing`));
+		let weapons = tactor.items.filter(i => i.type === `weapon` && (i.system.damage.parts[0][1] === `piercing` || i.system.damage.parts[0][1] === `slashing`));
 		if (!weapons || weapons.length < 1) {
 			ui.notifications.error(`${optionName} - no appropriate weapons available`);
 			return false;
@@ -90,8 +90,10 @@ try {
 			
 			// apply the poison damage
 			let targetActor = (await fromUuid(lastArg.hitTargetUuids[0]))?.actor;			
-			let saveRoll = (await targetActor.rollAbilitySave("con", {saveFlavor})).total;
-			if (saveRoll < saveDC) {
+			let saveRoll = await targetActor.rollAbilitySave("con", {saveFlavor});
+			await game.dice3d?.showForRoll(saveRoll);
+			
+			if (saveRoll.total < saveDC) {
 				return {damageRoll: `${damageDice}[poison]`, flavor: `${optionName} Damage`};		
 			}
 			else {
@@ -106,6 +108,6 @@ try {
 
 async function findEffect(actor, effectName) {
     let effectUuid = null;
-    effectUuid = actor?.data.effects.find(ef => ef.data.label === effectName);
+    effectUuid = actor?.effects.find(ef => ef.label === effectName);
     return effectUuid;
 }

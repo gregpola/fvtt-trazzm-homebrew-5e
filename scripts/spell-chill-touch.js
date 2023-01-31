@@ -1,4 +1,4 @@
-const version = "0.2.0";
+const version = "10.0.0";
 const optionName = "Chill Touch";
 
 //#############################################################################
@@ -72,50 +72,6 @@ try {
 
 async function findEffect(actor, effectName, origin) {
     let effectUuid = null;
-    effectUuid = actor?.data.effects.find(ef => ef.data.label === effectName && ef.data.origin === origin);
+    effectUuid = actor?.effects?.find(ef => ef.label === effectName && ef.origin === origin);
     return effectUuid;
 }
-
-/*
-const lastArg = args[args.length - 1];
-let targetActor;
-const creatureTypes = ["undead"];
-
-try {
-	if(args[0]==="on") {
-	}	
-	
-	else if (args[0].macroPass === "preAttackRoll") { //caster Attacking
-		targetActor = (await fromUuid(lastArg.hitTargetUuids[0]))?.actor;
-		if (targetActor?.data?.flags?.dae?.onUpdateTarget && lastArg.targets.length > 0) {
-			const isMarked = targetActor.data.flags.dae.onUpdateTarget.find(flag => flag.flagName === "Chill Touch" && flag.sourceTokenUuid === lastArg.tokenUuid);
-			const undead = creatureTypes.some(i => (targetActor.data.data.details?.type?.value || targetActor.data.data.details?.race).toLowerCase().includes(i));
-			
-			if (isMarked) {
-				const effectData = {
-					"changes":[
-						{ "key": "flags.midi-qol.disadvantage.attack.all", "mode": CONST.ACTIVE_EFFECT_MODES.CUSTOM, "value": 1, "priority": "20" }
-					],
-					"duration": {
-						"startTime": game.time.worldTime,
-					},
-					"icon": "icons/magic/unholy/hand-claw-fire-blue.webp",
-					"label": "Chilled Attack",
-					"flags": {
-						"core": { "statusId": "Chill Touch - Disadvantage Attack" },
-						"dae": { "specialDuration": [ "1Attack" ] }
-				}
-			}
-			await MidiQOL.socket().executeAsGM("createEffects", { actorUuid: targetActor.uuid, effects: [effectData] });
-			}
-		}
-		return;
-	}
-	
-	
-} catch (err) {
-    console.error(`${optionName} : ${version}`, err);
-}
-
-async function wait(ms) { return new Promise(resolve => { setTimeout(resolve, ms); }); }
-*/

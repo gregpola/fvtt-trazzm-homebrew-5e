@@ -1,3 +1,55 @@
+# 10.0.4
+* Fixed/Updated for v10:
+  * Barbarian: Brutal Critical
+  * Barbarian: Danger Sense
+  * Barbarian: Fast Movement
+  * Barbarian: Indomitable Might
+  * Barbarian: Persistent Rage
+  * Barbarian: Primal Path
+  * Barbarian: Rage
+  * Barbarian: Reckless Attack
+  * Barbarian: Relentless Rage
+  * College of Shadows: Dash through the Shadows
+  * Ranger: Deft Explorer
+  * Ranger: Favored Foe
+  * Rogue: Sneak Attack - Rakish Audacity and Insightful Fighting
+  * Shadowdancer: Shadow Dance
+  * Shadowdancer: Shadow Sight
+  * Shadowdancer: Shadow Veil
+  * Sorcerer: Shadow Walk
+  * Way of the Shadow: Shadow Step
+  * Creature: Fathomer
+  * Feat: Charger
+  * Feat: Crusher
+  * Feat: Healer
+  * Feat: Piercer
+  * Feat: Shield Master
+  * Feat: Slasher
+  * Feat: Telekinetic
+  * Item: Drow Poison
+  * Item: Poisonous Snake Venom
+  * Item: Purple Worm Poison
+  * Item: Serpent Venom
+  * Item: Spider Poison
+  * Item: Wyvern Poison
+  * Metamagic: Empowered Spell
+  * Spell: Chromatic Orb
+  * Spell: Flame Blade
+  * Spell: Frostbite
+  * Spell: Ray of Frost
+  * Spell: Shadow Blade
+  * Spell: Shillelagh
+  * Spell: Spirit Guardians
+
+* Added automation to:
+  * Item: Grapple Action
+  * Item: Driftglobe
+  * Spell: Bounding Boulder
+  * Spell: Thorn Whip
+  * Spell: Vampiric Touch
+  * Spell: Zephyr Strike
+
+
 # 10.0.3
 * Fixed/Updated for v10:
   * Arcane Recovery
@@ -6,7 +58,6 @@
   * Favored by the Gods
   * Font of Magic
   * Hexblade's Curse - need to test
-  * Rakish Audacity
   * Combat Maneuver: Ambush
   * Combat Maneuver: Brace
   * Combat Maneuver: Commander's Strike

@@ -81,8 +81,9 @@ try {
 			let usePiercerReroll = await dialog;
 			if (usePiercerReroll) {
 				await actor.setFlag('midi-qol', 'piercerTime', `${combatTime}`);
-				let newRoll = (new Roll(`1d${dieRolls[0].die}`).evaluate({ async: false })).total;
-				let damageDiff = (newRoll - dieRolls[0].result);
+				let newRoll = (new Roll(`1d${dieRolls[0].die}`).evaluate({ async: false }));
+				await game.dice3d?.showForRoll(newRoll);
+				let damageDiff = (newRoll.total - dieRolls[0].result);
 				rerollDamageTerm = `${damageDiff}`;
 			}
 		}

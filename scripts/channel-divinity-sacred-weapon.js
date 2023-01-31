@@ -117,7 +117,7 @@ async function consumeResource(actor, resKey, cost) {
 	}
 }
 
-// if the character has resistance to the new damage type, set vulnerability to negate it
+// Add the light effect to the actor
 async function addLightEffects(target, origin) {
     const effectData = {
         label: "sacred-weapon-light",

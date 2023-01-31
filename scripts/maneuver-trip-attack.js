@@ -66,7 +66,7 @@ try {
 				
 				const flavor = `${CONFIG.DND5E.abilities["str"]} DC${dc} ${optionName || ""}`;
 				let saveRoll = await target.actor.rollAbilitySave("str", {flavor});
-				await game.dice3d?.showForRoll(saveRoll);				
+				await game.dice3d?.showForRoll(saveRoll);
 
 				if (saveRoll.total < dc) { 
 					ChatMessage.create({'content': `${actor.name} trips ${target.name}!`});
