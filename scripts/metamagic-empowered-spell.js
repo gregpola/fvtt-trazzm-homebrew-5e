@@ -3,7 +3,7 @@ When you roll damage for a spell, you can spend 1 sorcery point to reroll a numb
 
 You can use Empowered Spell even if you have already used a different Metamagic option during the casting of the spell.
 */
-const version = "0.1.0";
+const version = "10.0.0";
 const optionName = "Empowered Spell";
 const resourceName = "Sorcery Points";
 const cost = 1;
@@ -92,7 +92,7 @@ try {
 						label: `Cancel`,
 						callback: () => { resolve(false) }
 					}
-						}
+				}
 			}).render(true);
 		});
 

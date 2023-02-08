@@ -1,32 +1,34 @@
-const version = "0.1.0";
+/*
+	Starting at 2nd level, you can use your Channel Divinity to wield the power of the storm with unchecked ferocity.
+
+	When you roll lightning or thunder damage, you can use your Channel Divinity to deal maximum damage, instead of rolling.
+*/
+const version = "10.0.0";
 const resourceName = "Channel Divinity";
 const optionName = "Destructive Wrath"
 const elements = { lightning: "lightning", thunder: "thunder" };
 
 try {
-	const lastArg = args[args.length - 1];
-	let tactor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-	let token = canvas.tokens.get(args[0].tokenId);
-	
 	if (args[0].macroPass === "DamageBonus") {
-		let workflow = MidiQOL.Workflow.getWorkflow(args[0].uuid);
-		let actor = workflow?.actor;
+		const lastArg = args[args.length - 1];
+		const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
+		const actorToken = canvas.tokens.get(lastArg.tokenId);
 		
 		// check resources
-		let resKey = findResource(tactor);
+		let resKey = findResource(actor);
 		if (!resKey) {
 			console.log(`${resourceName} - no resource found`);
 			return {};
 		}
 
-		const points = tactor.data.data.resources[resKey].value;
+		const points = actor.system.resources[resKey].value;
 		if (!points) {
 			console.log(`${resourceName} - resource pool is empty`);
 			return {};
 		}
 		
 		// check the damage type
-		if (workflow.damageDetail.filter(i=>i.type === "thunder" || i.type === "lightning").length < 1) {
+		if (lastArg.workflow.damageDetail.filter(i=>i.type === "thunder" || i.type === "lightning").length < 1) {
 			console.log(`${optionName} - not appropriate damage type`);
 			return {};
 		}
@@ -36,7 +38,7 @@ try {
 			new Dialog({
 				// localize this text
 				title: `${resourceName}: ${optionName}`,
-				content: `<p>Apply ${optionName} to ${workflow.item.name} damage?</p>`,
+				content: `<p>Apply ${optionName} to ${lastArg.workflow.item.name} damage?</p>`,
 				buttons: {
 					one: {
 						icon: '<p> </p><img src = "icons/magic/lightning/bolt-strike-blue-white.webp" width="30" height="30"></>',
@@ -59,8 +61,8 @@ try {
 
 			// Apply the damage bonus
 			let damageRoll = "";
-			const damageDetail = workflow.damageDetail;
-			let damageParts = workflow.item?.data?.data?.damage?.parts;
+			const damageDetail = lastArg.workflow.damageDetail;
+			let damageParts = lastArg.item.system.damage.parts;
 			const length = damageParts.length;
 			
 			for (let i = 0; i < length; i++) {
@@ -88,16 +90,11 @@ try {
 	console.error(`${resourceName}: ${optionName} ${version}`, err);
 }
 
-function termMax(part) {
-	return part[0][0];
-}
-
-
-// find the resource
+// find the resource matching this feature
 function findResource(actor) {
 	if (actor) {
-		for (let res in actor.data.data.resources) {
-			if (actor.data.data.resources[res].label === resourceName) {
+		for (let res in actor.system.resources) {
+			if (actor.system.resources[res].label === resourceName) {
 			  return res;
 			}
 		}
@@ -109,14 +106,16 @@ function findResource(actor) {
 // handle resource consumption
 async function consumeResource(actor, resKey, cost) {
 	if (actor && resKey && cost) {
-		const points = actor.data.data.resources[resKey].value;
-		if (!points) {
+		const {value, max} = actor.system.resources[resKey];
+		if (!value) {
 			ChatMessage.create({'content': '${resourceName} : Out of resources'});
-			return;
+			return false;
 		}
-		const pointsMax = actor.data.data.resources[resKey].max;
-		let resources = duplicate(actor.data.data.resources); // makes a duplicate of the resources object for adjustments.
-		resources[resKey].value = Math.clamped(points - cost, 0, pointsMax);
-		await actor.update({"data.resources": resources});    // do the update to the actor.
+		
+		const resources = foundry.utils.duplicate(actor.system.resources);
+		const resourcePath = `system.resources.${resKey}`;
+		resources[resKey].value = Math.clamped(value - cost, 0, max);
+		await actor.update({ "system.resources": resources });
+		return true;
 	}
 }

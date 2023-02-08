@@ -1,41 +1,49 @@
-const version = "0.1.0";
+/*
+	As an action, you present your holy symbol and speak a prayer censuring fiends and undead, using your Channel Divinity. Each fiend or undead that can see or hear you within 30 feet of you must make a Wisdom saving throw. If the creature fails its saving throw, it is turned for 1 minute or until it takes damage.
+
+	A turned creature must spend its turns trying to move as far away from you as it can, and it can’t willingly move to a space within 30 feet of you. It also can’t take reactions. For its action, it can use only the Dash action or try to escape from an effect that prevents it from moving. If there’s nowhere to move, the creature can use the Dodge action.
+*/
+const version = "10.0.0";
 const resourceName = "Channel Divinity";
 const optionName = "Turn the Unholy";
 const targetTypes = ["undead", "fiend"];
 const immunity = ["Turn Immunity"];
-	
-try {
-	let workflow = MidiQOL.Workflow.getWorkflow(args[0].uuid);
-	let actor = workflow.actor;
+const lastArg = args[args.length - 1];
 
-	if (args[0].macroPass === "templatePlaced") {
+try {
+	let actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
+	let actorToken = canvas.tokens.get(lastArg.tokenId);
+
+	if (args[0].macroPass === "preItemRoll") {
 		// check resources
 		let resKey = findResource(actor);
 		if (!resKey) {
-			return ui.notifications.error(`${resourceName}: ${option} - no resource found`);
+			ui.notifications.error(`${optionName}: ${resourceName}: - no resource found`);
+			return false;
 		}
 
 		// handle resource consumption
-		const points = actor.data.data.resources[resKey].value;
+		const points = actor.system.resources[resKey].value;
 		if (!points) {
-			if (workflow.targets) {
-				workflow.targets.clear();
-				game.user.updateTokenTargets(Array.from(workflow.targets).map(t => t.id));
-			}
-			return ui.notifications.error(`${resourceName}: ${optionName} - out of resources`);
+			ui.notifications.error(`${optionName}: ${resourceName}: - out of resources`);
+			return false;
 		}
 		await consumeResource(actor, resKey, 1);
+		
+	}
+	else if (args[0].macroPass === "preambleComplete") {
+		let workflow = MidiQOL.Workflow.getWorkflow(args[0].uuid);
 
 		// check target types
 		for (let target of workflow.targets) {
-			let creatureType = target.actor.data.data.details.type;
+			let creatureType = target.actor.system.details.type;
 
-			// remove targets that are not creatures (aka PCs etc)
+			// remove targets that are not applicable creatures (aka PCs etc)
 			if ((creatureType === null) || (creatureType === undefined)) {
 				workflow.targets.delete(target);
 			}
-			// remove creatures that are not undead 
-			else if (!targetTypes.some(type => (target?.actor.data.data.details.type?.value || "").toLowerCase().includes(type))) {
+			// remove creatures that are not undead or fiends
+			else if (!targetTypes.some(type => (target?.actor.system.details.type?.value || "").toLowerCase().includes(type))) {
 				workflow.targets.delete(target);
 			}
 			// remove creatures with turn immunity
@@ -47,10 +55,7 @@ try {
 		game.user.updateTokenTargets(Array.from(workflow.targets).map(t => t.id));
 	}
 	else if (args[0].macroPass === "postSave") {
-		let workflow = MidiQOL.Workflow.getWorkflow(args[0].uuid);
-		let actor = workflow.actor;
-
-		let targets = args[0].failedSaves;
+		let targets = lastArg.failedSaves;
 		if (targets && targets.length > 0) {
 			for (let target of targets) {
 				const hasEffectApplied = await game.dfreds.effectInterface.hasEffectApplied('Channel Divinity: Turn the Unholy', target.actor.uuid);
@@ -62,15 +67,18 @@ try {
 	}
 	
 } catch (err) {
-	console.error(`${args[0].itemData.name} - Turn Undead ${version}`, err);
+	console.error(`${optionName}: ${version}`, err);
 }
 
+// find the resource matching this feature
 function findResource(actor) {
-	for (let res in actor.data.data.resources) {
-		if (actor.data.data.resources[res].label === resourceName) {
-		  return res;
+	if (actor) {
+		for (let res in actor.system.resources) {
+			if (actor.system.resources[res].label === resourceName) {
+			  return res;
+			}
 		}
-    }
+	}
 	
 	return null;
 }
@@ -78,10 +86,16 @@ function findResource(actor) {
 // handle resource consumption
 async function consumeResource(actor, resKey, cost) {
 	if (actor && resKey && cost) {
-		const points = actor.data.data.resources[resKey].value;
-		const pointsMax = actor.data.data.resources[resKey].max;
-		let resources = duplicate(actor.data.data.resources); // makes a duplicate of the resources object for adjustments.
-		resources[resKey].value = Math.clamped(points - cost, 0, pointsMax);
-		await actor.update({"data.resources": resources});    // do the update to the actor.
+		const {value, max} = actor.system.resources[resKey];
+		if (!value) {
+			ChatMessage.create({'content': '${resourceName} : Out of resources'});
+			return false;
+		}
+		
+		const resources = foundry.utils.duplicate(actor.system.resources);
+		const resourcePath = `system.resources.${resKey}`;
+		resources[resKey].value = Math.clamped(value - cost, 0, max);
+		await actor.update({ "system.resources": resources });
+		return true;
 	}
 }

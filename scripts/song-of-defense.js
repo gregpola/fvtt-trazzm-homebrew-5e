@@ -1,22 +1,32 @@
-const version = "0.1.0";
+/*
+	You can direct your magic to absorb damage while your Bladesong is active. When you take damage, you can use your reaction to expend one spell slot and reduce that damage to you by an amount equal to five times the spell slot’s level.
+*/
+const version = "10.0.0";
 const optionName = "Song of Defense";
 
 try {
-	let workflow = MidiQOL.Workflow.getWorkflow(args[0].uuid);
-	let actor = workflow?.actor;
-	const lastArg = args[args.length - 1];
-	let itemD = lastArg.item;
 
 	if (args[0].macroPass === "preItemRoll") {
+		const lastArg = args[args.length - 1];
+		const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
+		const actorToken = canvas.tokens.get(lastArg.tokenId);
+		
 		// make sure the actor has Bladesong active
-		let effect = actor.data.effects.find(i=> i.data.label === "Bladesong");
+		let effect = actor.effects.find(i=> i.label === "Bladesong");
 		if (!effect) {
 			await ChatMessage.create({ content: `${actor.name} - unable to use ${optionName} because Bladesong is not active` });
 			return false;
-		}			
+		}
+		
+		// make sure damage is greater than 0
+		let damageReceived = lastArg.workflow.workflowOptions.damageTotal;
+		if (damageReceived < 1) {
+			await ChatMessage.create({ content: `${actor.name} - unable to use ${optionName} because they didn't take damage` });
+			return false;
+		}
 
 		// check for available spell slots
-		let spells = actor.data.data.spells;
+		let spells = actor.system.spells;
 		if (!spells) {
 			await ChatMessage.create({ content: `${actor.name} - unable to use ${optionName} because they have no spells` });
 			return false;
@@ -35,21 +45,12 @@ try {
 			return false;
 		}
 
-		// mae sure damage is greater than 0
-		let damageReceived = workflow.workflowOptions.damageTotal;
-		if (damageReceived < 1) {
-			await ChatMessage.create({ content: `${actor.name} - unable to use ${optionName} because they didn't take damage` });
-			return false;
-		}
-		const damageType = workflow.workflowOptions.damageDetail[0].type;
-				
 		// build the dialog content
-		// TODO show how much damage received
 		let content = `
 		  <form>
 			<div class="flexcol">
 				<div class="flexrow" style="margin-bottom: 5px;"><label>What spell level do you want to use?</label></div>
-				<div class="flexrow" style="margin-bottom: 10px;"><label>Received ${damageReceived} damage (damage is reduced by five times the spell level)?</label></div>
+				<div class="flexrow" style="margin-bottom: 10px;"><label>Received ${damageReceived} damage (reduced by five times the spell level)?</label></div>
 				<div id="slotRows" class="flexcol"style="margin-bottom: 10px;">
 					${rows}
 				</div>
@@ -65,8 +66,8 @@ try {
 				content,
 				buttons: {
 					ok: {
-						icon: '<p> </p><img src = "icons/equipment/shield/heater-crystal-blue.webp" width="50" height="50"></>',
-						label: `Use ${optionName}`,
+						icon: '<p> </p><img src = "icons/equipment/shield/heater-crystal-blue.webp" width="30" height="30"></>',
+						label: `${optionName}`,
 						callback: (html) => {
 							let checked = 0;
 							let slotLevel = 0;
@@ -108,23 +109,14 @@ try {
 		let slot = await dialog;
 		if (slot > 0) {
 			// burn the slot
-			await actor.update({[`data.spells.spell${slot}.value`]: getProperty(actor.data, `data.spells.spell${slot}.value`) - 1});
+			await actor.update({[`system.spells.spell${slot}.value`]: getProperty(actor, `system.spells.spell${slot}.value`) - 1});
 			
-			// apply the defense -- this is a hack until I can figure out a better way
-			let damageRemoved = slot * 5;
-			const tempHP = Math.min(damageReceived, damageRemoved);
-			//const newDamage = Math.max(damageReceived - damageRemoved, 0);
-			/*const newDamageDetail = [{
-				damage: newDamage,
-				type: damageType
-			}];
-			setProperty(workflow, "workflowOptions.damageDetail", newDamageDetail);
-			*/
-			if(!actor.data.data.attributes.hp.temp || (actor.data.data.attributes.hp.temp < tempHP)) {
-				await actor.update({ "data.attributes.hp.temp" : tempHP });
-			}
-			
-			await ChatMessage.create({ content: `${actor.name} - used ${optionName} to stop ${damageRemoved} damage` });			
+			// apply the defense
+			const damageRemoved = slot * 5;
+			await addDamageReduction(lastArg.itemId, actor.uuid, damageRemoved);
+			await ChatMessage.create({
+				content: `${actor.name} - used ${optionName} to stop ${damageRemoved} damage`,
+				speaker: ChatMessage.getSpeaker({ actor: actor })});
 			return true;
 		}
 		else
@@ -133,4 +125,34 @@ try {
 	
 } catch (err) {
     console.error(`${optionName} ${version}`, err);
+}
+
+async function addDamageReduction(origin, actorId, amount) {
+	const effectData = {
+		label: optionName,
+		icon: "icons/equipment/shield/heater-crystal-blue.webp",
+		origin: origin,
+		changes: [
+			{
+				key: 'flags.midi-qol.DR.all',
+				mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
+				value: `${amount}`,
+				priority: 20
+			}
+		],
+		flags: {
+			dae: {
+				selfTarget: false,
+				stackable: "none",
+				durationExpression: "",
+				macroRepeat: "none",
+				specialDuration: [
+					"isAttacked"
+				],
+				transfer: false
+			}
+		},
+		disabled: false
+	};
+    await MidiQOL.socket().executeAsGM("createEffects", { actorUuid: actorId, effects: [effectData] });
 }

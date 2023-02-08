@@ -1,3 +1,97 @@
+# 10.0.5
+* Fixed/Updated:
+  * Aasimar: Necrotic Shroud
+  * Aasimar: Radiant Consumption
+  * Aasimar: Radiant Soul
+  * Barbarian: Ancestral Protectors
+  * Barbarian: Divine Fury
+  * Barbarian: Zealous Presence
+  * Bard: Dash through the Shadows
+  * Channel Divinity: Destructive Wrath
+  * Channel Divinity: Inspiring Smite
+  * Channel Divinity: Preserve Life
+  * Channel Divinity: Sacred Weapon
+  * Channel Divinity: Turn the Unholy
+  * Cleric: All Divine Strike options
+  * Cleric: Blessed Healer
+  * Cleric: Disciple of Life
+  * Cleric: Thunderbolt Strike
+  * Creature: all with Pack Tactics
+  * Creature: Drow
+  * Creature: Drow Arachnomancer
+  * Creature Feature: Pack Tactics
+  * Druid: Blazing Revival
+  * Druid: Cauterizing Flames
+  * Druid: Enhanced Bond
+  * Druid: Wildfire Spirit
+  * Eladrin: all features
+  * Feat: All Elemental Adept's
+  * Feat: Empowered Cantrips
+  * Fighter: Relentless
+  * Item: Cloak of Displacement
+  * Item: Driftglobe
+  * Item: Figurine of Wondrous Power (Silver Raven)
+  * Item: Holy Water
+  * Kobold: Draconic Cry
+  * Lizardfolk: Hungry Jaws
+  * Metamagic: Careful Spell
+  * Metamagic: Distant Spell
+  * Metamagic: Extended Spell
+  * Metamagic: Quickened Spell
+  * Metamagic: Subtle Spell
+  * Metamagic: Transmuted Spell
+  * Metamagic: Twinned Spell
+  * Monk: Deflect Missiles
+  * Monk: Searing Arc Strike
+  * Monk: Shadow Step
+  * Monk: Stunning Strike
+  * Paladin: Divine Smite (eliminate thrown weapon attacks)
+  * Paladin: Glorious Defense
+  * Paladin: Purity of Spirit
+  * Rogue: Rakish Audacity
+  * Sorcerer: Empowered Healing
+  * Sorcerer: Hound of Ill Omen
+  * Sorcerer: Shadow Walk
+  * Sorcerer: Umbral Form
+  * Spell: Armor of Agathys
+  * Spell: Booming Blade
+  * Spell: Branding Smite
+  * Spell: Chaos Bolt
+  * Spell: Color Spray
+  * Spell: Conjure Animals
+  * Spell: Conjure Minor Elementals
+  * Spell: Dancing Lights 
+  * Spell: Darkness
+  * Spell: Dimension Door
+  * Spell: Flaming Sphere
+  * Spell: Healing Spirit
+  * Spell: Mage Hand
+  * Spell: Maximilian's Earthen Grasp
+  * Spell: Misty Step
+  * Spell: Moonbeam
+  * Spell: Protection from Evil - no longer need world script
+  * Spell: Sleep
+  * Spell: Spiritual Weapon
+  * Spell: Tasha's Caustic Brew
+  * Subclass: Bladesinging
+  * Warlock: Accursed Specter
+  * Warlock: Celestial Resilience
+  * Warlock: Genies Wrath
+  * Warlock: Healing Light
+  * Warlock: Hex Warrior
+  * Warlock: Genie Kind
+  * Wizard: Bladesong
+
+* Added automation to:
+  * Creature Feature: Change Shape (Large Spider) - can be easily modified for other forms
+  * Creature Feature: Keen Hearing and Smell
+  * Creature Feature: Keen Sight and Smell
+  * Creature Feature: Sunlight Sensitivity
+  * Creature Feature: Web attack
+  * Monk: Perfect Self
+  * Monk: Quickened Healing
+  * Rogue: Steady Aim
+
 # 10.0.4
 * Fixed/Updated for v10:
   * Barbarian: Brutal Critical
@@ -42,13 +136,13 @@
   * Spell: Spirit Guardians
 
 * Added automation to:
+  * Combat Maneuver: Bait and Switch
   * Item: Grapple Action
   * Item: Driftglobe
   * Spell: Bounding Boulder
   * Spell: Thorn Whip
   * Spell: Vampiric Touch
   * Spell: Zephyr Strike
-
 
 # 10.0.3
 * Fixed/Updated for v10:

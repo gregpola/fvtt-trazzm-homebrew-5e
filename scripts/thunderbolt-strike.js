@@ -1,29 +1,24 @@
-const version = "0.1.0";
+/*
+	At 6th level, when you deal lightning damage to a Large or smaller creature, you can also push it up to 10 feet away from you.
+*/
+const version = "10.0.0";
 const optionName = "Thunderbolt Strike";
 
 try {
 	if (args[0].macroPass === "DamageBonus") {	
-		let workflow = MidiQOL.Workflow.getWorkflow(args[0].uuid);
-		let actor = workflow?.actor;
-		const target = args[0].hitTargets[0];
-		let tactor = target?.actor;
-		const ttoken = canvas.tokens.get(args[0].hitTargets[0].object.id);
-		let pusher = canvas.tokens.get(args[0].tokenId);
-
-		// validate targeting
-		if (!actor || !target) {
-		  console.log(`${optionName}: no target selected`);
-		  return {};
-		}
+		const lastArg = args[args.length - 1];
+		const actorToken = canvas.tokens.get(lastArg.tokenId);
+		const targetActor = lastArg.hitTargets[0].actor;
+		const targetToken = game.canvas.tokens.get(lastArg.hitTargets[0].id);
 		
 		// check the damage type
-		if (workflow.damageDetail.filter(i=>i.type === "lightning").length < 1) {
+		if (lastArg.workflow.damageDetail.filter(i=>i.type === "lightning").length < 1) {
 			console.log(`${optionName} - not lightning damage`);
 			return {};
 		}
 			
 		// check the target's size, must be Large or smaller
-		const tsize = tactor.data.data.traits.size;
+		const tsize = targetActor.system.traits.size;
 		if (!["tiny","sm","med","lg"].includes(tsize)) {
 			console.log(`${resourceName} - target is too large to push`);
 			return {};
@@ -54,17 +49,16 @@ try {
 		let useFeature = await dialog;
 		if (useFeature) {
 			// Push the target
-			await pushTarget(pusher, ttoken);
+			await pushTarget(actorToken, targetToken);
 		}
 	}
-
 
 } catch (err) {
     console.error(`${optionName}:  ${version}`, err);
 }
 
 async function pushTarget(sourceToken, targetToken) {
-	let newCenter = getAllowedPushLocation(sourceToken, targetToken, 2);
+	let newCenter = getAllowedPushLocation(sourceToken, targetToken, 3);
 	if(!newCenter) {
 		return ui.notifications.error(`${resourceName} - no room to push ${targetToken.name}`);
 	}
@@ -79,7 +73,7 @@ function getAllowedPushLocation(sourceToken, targetToken, maxSquares) {
 		const knockbackPixels = i * canvas.grid.size;
 		const ray = new Ray(sourceToken.center, targetToken.center);
 		const newCenter = ray.project((ray.distance + knockbackPixels)/ray.distance);
-		const isAllowedLocation = canvas.sight.testVisibility({x: newCenter.x, y: newCenter.y}, {object: targetToken.Object});
+		const isAllowedLocation = canvas.effects.visibility.testVisibility({x: newCenter.x, y: newCenter.y}, {object: targetToken.Object});
 		if(isAllowedLocation) {
 			return newCenter;
 		}

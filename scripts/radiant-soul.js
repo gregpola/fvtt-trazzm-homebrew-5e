@@ -1,9 +1,11 @@
-const version = "0.1.0";
+const version = "10.0.0";
 const optionName = "Radiant Soul";
+const timeFlag = "radiantSoulTime";
 
 try {
-	let workflow = MidiQOL.Workflow.getWorkflow(args[0].uuid);
-	let actor = workflow?.actor;
+	const lastArg = args[args.length - 1];
+	const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
+	const actorToken = canvas.tokens.get(lastArg.tokenId);
 		
 	if (args[0].macroPass === "DamageBonus") {
 		// Check for availability i.e. once per actors turn
@@ -20,12 +22,12 @@ try {
 				content: `<p>Apply ${optionName} damage to this attack?</p>`,
 				buttons: {
 					one: {
-						icon: '<p> </p><img src = "icons/magic/holy/saint-glass-portrait-halo.webp" width="40" height="40"></>',
+						icon: '<p> </p><img src = "icons/magic/holy/saint-glass-portrait-halo.webp" width="30" height="30"></>',
 						label: "<p>Yes</p>",
 						callback: () => resolve(true)
 					},
 					two: {
-						icon: '<p> </p><img src = "icons/skills/melee/weapons-crossed-swords-yellow.webp" width="40" height="40"></>',
+						icon: '<p> </p><img src = "icons/skills/melee/weapons-crossed-swords-yellow.webp" width="30" height="30"></>',
 						label: "<p>No</p>",
 						callback: () => { resolve(false) }
 					}
@@ -41,32 +43,28 @@ try {
 		}
 
 		const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn /100}`;
-		const lastTime = actor.getFlag("midi-qol", "radiantSoulTime");
+		const lastTime = actor.getFlag("midi-qol", timeFlag);
 		if (combatTime !== lastTime) {
-			await actor.setFlag("midi-qol", "radiantSoulTime", combatTime)
+			await actor.setFlag("midi-qol", timeFlag, combatTime)
 		}
 
-		const pb = actor?.data?.data?.attributes?.prof ?? 2;
+		const pb = actor.system.attributes.prof ?? 2;
 		return {damageRoll: `${pb}[radiant]`, flavor: `${optionName} Damage`};
-		
 	}
 
 } catch (err) {
-    console.error(`${resourceName}: ${optionName} - ${version}`, err);
+    console.error(`${optionName}: ${version}`, err);
 }
 
 // Check to make sure the actor hasn't already applied the damage this turn
 function isAvailableThisTurn() {
 	if (game.combat) {
-	  const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn /100}`;
-	  const lastTime = actor.getFlag("midi-qol", "radiantSoulTime");
-	  if (combatTime === lastTime) {
-	   console.log(`${optionName}: Already used this turn`);
-	   return false;
-	  }
-	  
-	  return true;
-	}
-	
+		const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn /100}`;
+		const lastTime = actor.getFlag("midi-qol", timeFlag);
+		if (combatTime === lastTime) {
+			return false;
+		}
+		return true;
+	}	
 	return false;
 }

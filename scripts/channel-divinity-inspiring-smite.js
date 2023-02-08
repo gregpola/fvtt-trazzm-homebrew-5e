@@ -1,37 +1,39 @@
-const version = "0.1.0";
+/*
+	Immediately after you deal damage to a creature with your Divine Smite feature, you can use your Channel Divinity as a bonus action and distribute temporary hit points to creatures of your choice within 30 feet of you, which can include you. The total number of temporary hit points equals 2d8 + your level in this class, divided among the chosen creatures however you like.
+*/
+const version = "10.0.0";
 const resourceName = "Channel Divinity";
 const optionName = "Inspiring Smite"
+const lastArg = args[args.length - 1];
 
 try {
-	const lastArg = args[args.length - 1];
-	let tactor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-	let token = canvas.tokens.get(args[0].tokenId);
-	
 	if (args[0].macroPass === "preItemRoll") {
-		let workflow = MidiQOL.Workflow.getWorkflow(args[0].uuid);
-		let actor = workflow?.actor;
+		let actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
+		let actorToken = canvas.tokens.get(lastArg.tokenId);
 		
 		// check resources
-		let resKey = findResource(tactor);
+		let resKey = findResource(actor);
 		if (!resKey) {
-			ui.notifications.error(`${resourceName} - no resource found`);
+			ui.notifications.error(`${optionName}: ${resourceName} - no resource found`);
 			return false;
 		}
 
-		const points = tactor.data.data.resources[resKey].value;
+		const points = actor.system.resources[resKey].value;
 		if (!points) {
-			ui.notifications.error(`${resourceName} - resource pool is empty`);
+			ui.notifications.error(`${optionName}: ${resourceName} - resource pool is empty`);
 			return false;
 		}
 		
 		// find nearby allies
-		const friendlyTargets = MidiQOL.findNearby(1, token, 30, 0);
-		const neutralTargets = MidiQOL.findNearby(0, token, 30, 0);
-		let recipients = [token, ...friendlyTargets, ...neutralTargets];
+		const friendlyTargets = MidiQOL.findNearby(1, actorToken, 30, 0);
+		const neutralTargets = MidiQOL.findNearby(0, actorToken, 30, 0);
+		let recipients = [actorToken, ...friendlyTargets, ...neutralTargets];
 		
 		// roll the total temp HP to spend
-		const paladinLevel = actor.classes?.paladin?.data?.data?.levels ?? 0;
-		const totalTempHp = (await new Roll(`2d8 + ${paladinLevel}`).evaluate({ async: false })).total;
+		const paladinLevel = actor.classes.paladin?.system.levels ?? 0;
+		const tempHpRoll = await new Roll(`2d8 + ${paladinLevel}`).evaluate({ async: false });
+		await game.dice3d?.showForRoll(tempHpRoll);
+		const totalTempHp = tempHpRoll.total;
 		
 		// ask which ones to heal and how much
 		// One row per potential target
@@ -82,7 +84,7 @@ try {
 								resolve(false);
 							}
 							else if (spent > totalTempHp) {
-								ui.notifications.error(`${resourceName}: ${optionName} - too many temp hp assigned`);
+								ui.notifications.error(`$${optionName} - too many temp hp assigned`);
 								resolve(false);
 							}
 							else {
@@ -90,9 +92,9 @@ try {
 								for (let rd of recoveredData) {
 									let ttoken = recipients[rd[0]];
 									let pts = rd[1];
-									const damageRoll = await new Roll(`${pts}`).evaluate({ async: true });
-									await new MidiQOL.DamageOnlyWorkflow(actor, token, damageRoll.total, "temphp", [ttoken], damageRoll, 
-										{flavor: `${optionName}`, itemCardId: args[0].itemCardId});
+									const damageRoll = await new Roll(`${pts}`).evaluate({ async: false });
+									await new MidiQOL.DamageOnlyWorkflow(actor, actorToken, damageRoll.total, "temphp", [ttoken], damageRoll, 
+										{flavor: `${optionName}`, itemCardId: lastArg.itemCardId});
 								}
 								await consumeResource(actor, resKey, 1);
 							}
@@ -116,11 +118,11 @@ try {
 	console.error(`${resourceName}: ${optionName} ${version}`, err);
 }
 
-// find the resource
+// find the resource matching this feature
 function findResource(actor) {
 	if (actor) {
-		for (let res in actor.data.data.resources) {
-			if (actor.data.data.resources[res].label === resourceName) {
+		for (let res in actor.system.resources) {
+			if (actor.system.resources[res].label === resourceName) {
 			  return res;
 			}
 		}
@@ -132,14 +134,16 @@ function findResource(actor) {
 // handle resource consumption
 async function consumeResource(actor, resKey, cost) {
 	if (actor && resKey && cost) {
-		const points = actor.data.data.resources[resKey].value;
-		if (!points) {
+		const {value, max} = actor.system.resources[resKey];
+		if (!value) {
 			ChatMessage.create({'content': '${resourceName} : Out of resources'});
-			return;
+			return false;
 		}
-		const pointsMax = actor.data.data.resources[resKey].max;
-		let resources = duplicate(actor.data.data.resources); // makes a duplicate of the resources object for adjustments.
-		resources[resKey].value = Math.clamped(points - cost, 0, pointsMax);
-		await actor.update({"data.resources": resources});    // do the update to the actor.
+		
+		const resources = foundry.utils.duplicate(actor.system.resources);
+		const resourcePath = `system.resources.${resKey}`;
+		resources[resKey].value = Math.clamped(value - cost, 0, max);
+		await actor.update({ "system.resources": resources });
+		return true;
 	}
 }

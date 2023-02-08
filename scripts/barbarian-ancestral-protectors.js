@@ -1,117 +1,59 @@
-// This Macro was provided by @Elwin#1410 on Discord and is included with their permission
-// some modifications have been made for inclusion with DDB Importer
-
-// Description:
-// In the postAttackRoll phase, the macro validates that the actor initiating the item is in Rage,
-// that no target was already marked and if in combat that it's the combatant turn. If that's the case,
-// then an effect is added to the target to mark it and handle any attack from this marked target to any
-// other target than the one that marked it.
-// ###################################################################################################
-
-const sourceItemName = "Ancestral Protectors";
+/*
+	Starting when you choose this path at 3rd level, spectral warriors appear when you enter your rage. While you’re raging, the first creature you hit with an attack on your turn becomes the target of the warriors, which hinder its attacks. Until the start of your next turn, that target has disadvantage on any attack roll that isn’t against you, and when the target hits a creature other than you with an attack, that creature has resistance to the damage dealt by the attack. The effect on the target ends early if your rage ends.
+*/
+const version = "10.0.0";
+const optionName = "Ancestral Protectors";
 const rageEffectName = "Rage";
+const timeFlag = "ancestralProtectorsTime";
 
-if (args[0].tag === "OnUse" && args[0].macroPass === "preAttackRoll") {
-  const macroData = args[0];
-  let token = canvas.tokens.get(macroData.tokenId);
-  let actor = token.actor;
+try {
+	const lastArg = args[args.length - 1];
+	
+	// use damage bonus to make sure the actor hit
+	if (args[0].macroPass === "DamageBonus") {
+		let actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
+		let target = lastArg.hitTargets[0];
+		
+		// make sure the actor is raging
+		if (!hasEffectApplied(rageEffectName, actor)) {
+			console.log(`${optionName}: not raging`);
+			return {};
+		}
 
-  if (actor.getFlag("world", "ancestralProtectors.sourceTokenUuid")) {
-    // When the marked target makes an attack
-    handlePreAttackByMarkedTarget(macroData);
-  }
-  
-} else if (args[0].tag === "OnUse" && args[0].macroPass === "postAttackRoll") {
-  const macroData = args[0];
+		// make sure it's an attack
+		if (!["mwak", "rwak", "msak", "rsak"].includes(lastArg.itemData.system.actionType)) {
+			console.log(`${optionName}: not an eligible attack`);
+			return {};
+		}
+		
+		// Check for availability i.e. first hit on the actors turn
+		if (!isAvailableThisTurn() || !game.combat) {
+			console.log(`${optionName} - not available this attack`);
+			return;
+		}
+		
+		// set the time flag
+		const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn /100}`;
+		const lastTime = actor.getFlag("midi-qol", timeFlag);
+		if (combatTime !== lastTime) {
+			await actor.setFlag("midi-qol", timeFlag, combatTime)
+		}		
 
-  if (macroData.hitTargets.length < 1) return;
-  // The Barbarian must hit
+		// flag the target
+		await markAsTarget(target.actor, actor.uuid, lastArg);
+		
+	}
+	else if (args[0].tag === "OnUse" && args[0].macroPass === "postAttackRoll") {
+		let actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
+		
+		if (actor.getFlag("world", "ancestralProtectors.sourceTokenUuid")) {
+			// Damage was done by the marked target
+			await handlePreDamageByMarkedTarget(lastArg);
+		}
+	}
 
-  let token = canvas.tokens.get(macroData.tokenId);
-  let actor = token.actor;
-
-  if (!hasEffectApplied(rageEffectName, actor)) return;
-  // The Barbarian must be in Rage
-
-  if (actor.getFlag("world", "ancestralProtectors.targetUuid")) return;
-  // There is already a marked target
-
-  const inCombat = game.combat;
-  const combatantTurn = !inCombat || !token.combatant || game.combat.combatant.id === token.combatant.id;
-  if (!combatantTurn) return;
-  // Can only be activated on combatant turn's
-
-  console.log(`${sourceItemName}: Applied on target`, macroData);
-
-  const targetUuid = macroData.hitTargetUuids[0];
-  const target = await fromUuid(targetUuid);
-  const targetActor = target.actor;
-  const sourceItem = await fromUuid(macroData.sourceItemUuid);
-
-  // create an active effect to set the target of the item
-  const effectData = {
-    changes: [
-      // who is marked
-      {
-        key: "flags.world.ancestralProtectors.targetUuid",
-        mode: CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
-        value: targetUuid,
-        priority: 20,
-      },
-    ],
-
-    origin: macroData.sourceItemUuid, //flag the effect as associated to the source item used
-    disabled: false,
-    duration: { rounds: 1 },
-    icon: sourceItem.img,
-    label: `${sourceItemName} - Target`,
-  };
-  await actor.createEmbeddedDocuments("ActiveEffect", [effectData]);
-
-  // create an active effect on target
-  const targetEffectData = {
-    changes: [
-      // macro to set disadvantage or not before attack made by marked target
-      {
-        key: "flags.midi-qol.onUseMacroName",
-        mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-        value: `ItemMacro.${macroData.sourceItemUuid},preAttackRoll`,
-        priority: 15,
-      },
-      // macro to set damage resistance or not
-      {
-        key: "flags.midi-qol.onUseMacroName",
-        mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-        value: `ItemMacro.${macroData.sourceItemUuid},preDamageApplication`,
-        priority: 20,
-      },
-      // flag to indicate who marked this actor
-      {
-        key: "flags.world.ancestralProtectors.sourceTokenUuid",
-        mode: CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
-        value: macroData.tokenUuid,
-        priority: 20,
-      },
-    ],
-
-    origin: effectData.origin, // flag the effect as associated to the source item used
-    disabled: false,
-    duration: { rounds: 1 },
-    icon: sourceItem.img,
-    label: `Marked by ${sourceItemName}`,
-  };
-  
-  await MidiQOL.socket().executeAsGM("createEffects", { actorUuid: targetActor.uuid, effects: [targetEffectData] });
-  
-} else if (args[0].tag === "OnUse" && args[0].macroPass === "preDamageApplication") {
-  const macroData = args[0];
-  let token = canvas.tokens.get(macroData.tokenId);
-  let actor = token.actor;
-
-  if (actor.getFlag("world", "ancestralProtectors.sourceTokenUuid")) {
-    // Damage was done by the marked target
-    await handlePreDamageByMarkedTarget(macroData);
-  }
+} catch (err) {
+    console.error(`${optionName} - ${version}`, err);
 }
 
 /**
@@ -121,26 +63,52 @@ if (args[0].tag === "OnUse" && args[0].macroPass === "preAttackRoll") {
  * @returns true if the effect is found, false otherwise.
  */
 function hasEffectApplied(effectName, actor) {
-  return actor.effects.find((ae) => ae.data.label === effectName) !== undefined;
+  return actor.effects.find((ae) => ae.label === effectName) !== undefined;
 }
 
-/**
- * When a marked target makes an attack. Sets disadvantage if the marked target does not attack its marker.
- * @param {*} macroData midi-qol macro data.
- * @returns
- */
-function handlePreAttackByMarkedTarget(macroData) {
-  if (macroData.targets.length < 1) return;
-
-  let token = canvas.tokens.get(macroData.tokenId);
-  let actor = token.actor;
-
-  const sourceTokenUuid = actor.getFlag("world", "ancestralProtectors.sourceTokenUuid");
-  if (macroData.targetUuids.filter((targetUuid) => targetUuid !== sourceTokenUuid).length > 0) {
-    // Target is not the source of the mark
-    console.log(`${sourceItemName}: Disadvantage on target for not being the marker of the attacker`, macroData);
-    setProperty(macroData.workflowOptions, "disadvantage", true);
-  }
+// Mark the target 
+async function markAsTarget(targetActor, actorId, macroData) {
+	const effectData = {
+		label: optionName,
+		icon: "icons/environment/people/charge.webp",
+		origin: actorId,
+		changes: [
+			{
+				key: 'flags.midi-qol.disadvantage.attack.all',
+				mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
+				value: `'@targetUuid' !== '${macroData.tokenUuid}'`,
+				priority: 20
+			},
+			// macro to set damage resistance or not
+			{
+				key: "flags.midi-qol.onUseMacroName",
+				mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
+				value: `ItemMacro.${macroData.sourceItemUuid},postAttackRoll`,
+				priority: 20,
+			},
+			// flag to indicate who marked this actor
+			{
+				key: "flags.world.ancestralProtectors.sourceTokenUuid",
+				mode: CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
+				value: macroData.tokenUuid,
+				priority: 20,
+			},
+		],
+		flags: {
+			dae: {
+				selfTarget: false,
+				stackable: "none",
+				durationExpression: "",
+				macroRepeat: "none",
+				specialDuration: [
+					"turnStartSource"
+				],
+				transfer: false
+			}
+		},
+		disabled: false
+	};
+    await MidiQOL.socket().executeAsGM("createEffects", { actorUuid: targetActor.uuid, effects: [effectData] });
 }
 
 /**
@@ -148,48 +116,67 @@ function handlePreAttackByMarkedTarget(macroData) {
  * @param {*} macroData midi-qol macro data.
  */
 async function handlePreDamageByMarkedTarget(macroData) {
-  if (macroData.hitTargets.length < 1 || !macroData.attackRoll) return;
-  // There must be at least one hit target
-  // The damage must be from an attack
+	if (macroData.hitTargets.length < 1 || !macroData.attackRoll) return;
+	// There must be at least one hit target
+	// The damage must be from an attack
+	let token = canvas.tokens.get(args[0].tokenId);
+	let actor = token.actor;
+	
+	const sourceTokenUuid = actor.getFlag("world", "ancestralProtectors.sourceTokenUuid");	
+	const notSourceTargetUuids = macroData.targetUuids.filter((targetUuid) => targetUuid !== sourceTokenUuid);
+	if (notSourceTargetUuids.length > 0) {
+		console.log(`${optionName} - damage resistance should apply`);
 
-  let token = canvas.tokens.get(args[0].tokenId);
-  let actor = token.actor;
+		// create an active effect on targets to provide DR on the attack
+		const sourceItem = await fromUuid(macroData.sourceItemUuid);
+		const targetEffectData = {
+			changes: [
+				{
+					key: "system.traits.dr.all",
+					mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
+					value: "1",
+					priority: 20,
+				},
+			],
+			flags: {
+				dae: {
+					selfTarget: false,
+					stackable: "none",
+					durationExpression: "",
+					macroRepeat: "none",
+					specialDuration: [
+						"isDamaged"
+					],
+					transfer: false
+				}
+			},
+			origin: macroData.sourceItemUuid, //flag the effect as associated to the source item used
+			disabled: false,
+			duration: { turns: 1 },
+			icon: sourceItem.img,
+			label: `${sourceItem.name} - Damage resistance`,
+		};
 
-  const sourceTokenUuid = actor.getFlag("world", "ancestralProtectors.sourceTokenUuid");
-  const notSourceTargetUuids = macroData.targetUuids.filter((targetUuid) => targetUuid !== sourceTokenUuid);
-  if (notSourceTargetUuids.length > 0) {
-    console.log(
-      `${sourceItemName}: Damage resistance applied to targets for not being the marker of the attacker`,
-      macroData,
-      notSourceTargetUuids
-    );
+		for (let targetUuid of notSourceTargetUuids) {
+			const target = await fromUuid(targetUuid);
+			const targetActor = target.actor;
+			await MidiQOL.socket().executeAsGM("createEffects", { actorUuid: targetActor.uuid, effects: [targetEffectData] });
+		}
+	}
+}
 
-    // create an active effect on targets
-    const sourceItem = await fromUuid(macroData.sourceItemUuid);
-    const targetEffectData = {
-      changes: [
-        // flag for damage resistance
-        {
-          key: "system.traits.dr.all",
-          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-          value: "1",
-          priority: 20,
-        },
-      ],
-
-      origin: macroData.sourceItemUuid, //flag the effect as associated to the source item used
-      disabled: false,
-      duration: { turns: 1 },
-      icon: sourceItem.img,
-      label: `${sourceItemName} - Damage resistance`,
-    };
-    setProperty(targetEffectData, "flags.dae.specialDuration", ["isDamaged"]);
-
-    for (let targetUuid of notSourceTargetUuids) {
-      const target = await fromUuid(targetUuid);
-      const targetActor = target.actor;
-      await MidiQOL.socket().executeAsGM("createEffects", { actorUuid: targetActor.uuid, effects: [targetEffectData] });
-    }
-  }
-
+// Check to make sure the actor hasn't already applied Ancestral Protectors
+function isAvailableThisTurn() {
+	if (game.combat) {
+		const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn /100}`;
+		const lastTime = actor.getFlag("midi-qol", timeFlag);
+		if (combatTime === lastTime) {
+			console.log(`${optionName} - already applied this turn`);
+			return false;
+		}
+		
+		return true;
+	}
+	
+	return false;
 }

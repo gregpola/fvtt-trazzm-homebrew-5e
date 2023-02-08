@@ -1,43 +1,58 @@
-const version = "0.1.0";
+/*
+	Starting when you choose this path at 3rd level, you can channel divine fury into your weapon strikes. While you’re raging, the first creature you hit on each of your turns with a weapon attack takes extra damage equal to 1d6 + half your barbarian level. The extra damage is necrotic or radiant; you choose the type of damage when you gain this feature.
+*/
+const version = "10.0.0";
 const optionName = "Divine Fury";
 const rageEffectName = "Rage";
+const timeFlag = "divineFuryTime";
 
 try {
 	if (args[0].macroPass === "DamageBonus") {
-		let workflow = MidiQOL.Workflow.getWorkflow(args[0].uuid);
-		let actor = workflow?.actor;
-		let target = args[0].hitTargets[0];
-		let tactor = target?.actor;
-
-		// must be raging
-		if (!hasEffectApplied(rageEffectName, actor)) {
-		console.log(`$(optionName} : not allowed, not raging`);
-			return;
-		}
+		const lastArg = args[args.length - 1];
+		let actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
+		let target = lastArg.hitTargets[0];
 		
-		// make sure it's an allowed attack
-		const at = args[0].item?.data?.actionType;
-		if (!at || !["mwak","rwak"].includes(at)) {
-			console.log(`${optionName}: not an eligible attack: ${at}`);
+		// make sure the actor is raging
+		if (!hasEffectApplied(rageEffectName, actor)) {
+			console.log(`${optionName}: not raging`);
 			return {};
 		}
 
-		// make sure it hasn't been used this turn
+		// make sure it's an attack
+		if (!["mwak", "rwak"].includes(lastArg.itemData.system.actionType)) {
+			console.log(`${optionName}: not an eligible attack`);
+			return {};
+		}
+		
+		// Check for availability i.e. first hit on the actors turn
 		if (!isAvailableThisTurn() || !game.combat) {
-			console.log(`${optionName}: is not available for this damage`);
+			console.log(`${optionName} - not available this attack`);
 			return;
 		}
-
+		
+		// set the time flag
 		const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn /100}`;
-		const lastTime = actor.getFlag("midi-qol", "divineFuryTime");
+		const lastTime = actor.getFlag("midi-qol", timeFlag);
 		if (combatTime !== lastTime) {
-			await actor.setFlag("midi-qol", "divineFuryTime", combatTime)
+			await actor.setFlag("midi-qol", timeFlag, combatTime)
 		}
-
-		const diceMult = args[0].isCritical ? 2: 1;
-		const barbarianLevel = actor.classes?.barbarian?.data?.data?.levels ?? 0;
+		
+		// get the damage type from the feature
+		let damageType = "radiant";
+		let feature = actor.items.find(i => i.name === optionName);
+		if (feature) {
+			// find the damage type
+			let dt = feature.system.damage.parts[0][1];
+			if (["necrotic", "radiant"].includes(dt)) {
+				damageType = dt;
+			}
+		}
+		
+		// Build the damage bonus
+		const diceMult = lastArg.isCritical ? 2: 1;
+		const barbarianLevel = actor.classes.barbarian?.system.levels ?? 0;
 		const bonus = Math.ceil(barbarianLevel/2);
-		return {damageRoll: `${diceMult}d6+${bonus}[radiant]`, flavor: `${optionName} Damage`};
+		return {damageRoll: `${diceMult}d6+${bonus}[${damageType}]`, flavor: `${optionName} Damage`};
 	}
 
 } catch (err) {
@@ -45,16 +60,16 @@ try {
 }
 
 function hasEffectApplied(effectName, actor) {
-  return actor.effects.find((ae) => ae.data.label === effectName) !== undefined;
+  return actor.effects.find((ae) => ae.label === effectName) !== undefined;
 }
 
 // Check to make sure the actor hasn't already applied the damage this turn
 function isAvailableThisTurn() {
 	if (game.combat) {
 	  const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn /100}`;
-	  const lastTime = actor.getFlag("midi-qol", "divineFuryTime");
+	  const lastTime = actor.getFlag("midi-qol", timeFlag);
 	  if (combatTime === lastTime) {
-	   console.log(`${optionName}: Already used this turn`);
+	   console.log(`${optionName}: already used this turn`);
 	   return false;
 	  }
 	  

@@ -1,17 +1,17 @@
-const version = "10.0.0";
+const version = "10.0.1";
 const optionName = "Conjure Animals";
+const summonFlag = "conjure-animals";
 
 try {
 	const lastArg = args[args.length - 1];
-	let tactor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
+	const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
+	const actorToken = canvas.tokens.get(lastArg.tokenId);
 
-	if (args[0].macroPass === "preActiveEffects") {
+	if (args[0] === "on") {
         if (!game.modules.get("warpgate")?.active) ui.notifications.error("Please enable the Warp Gate module")
 		
-		let spellLevel = args[0].spellLevel;
-		let actor = args[0].actor;
-		const token = await canvas.tokens.get(args[0].tokenId);
-
+		const sourceItem = await fromUuid(lastArg.origin);
+		const spellLevel = Number(args[1]);
 		let levelMultiplier = {1: 1, 2: 1, 3: 1, 4: 1, 5: 2, 6: 2, 7: 3, 8: 3, 9: 4};
 		const multiplier = levelMultiplier[spellLevel];
 		let counts = [8*multiplier, 4*multiplier, 2*multiplier, 1*multiplier];
@@ -81,18 +81,23 @@ try {
 			}
 
 			// build the update data to match summoned traits
+			const summonName = `${entity.name} (${actor.name})`;
 			const name = "Summoned (" + entity.name + ")";
 			let updates = {
 				token: {
-					"name": name,
-					"disposition": 1,
-					"flags": { "midi-srd": { "Conjured Animal" : { "ActorId": tactor.id } } }
+					"name": summonName,
+					"disposition": CONST.TOKEN_DISPOSITIONS.FRIENDLY,
+					"displayName": CONST.TOKEN_DISPLAY_MODES.HOVER,
+					"displayBars": CONST.TOKEN_DISPLAY_MODES.ALWAYS,
+					"bar1": { attribute: "attributes.hp" },
+					"actorLink": false,
+					"flags": { "midi-srd": { "Conjured Animal" : { "ActorId": actor.id } } }
 				},
-				"name": name,
+				"name": summonName,
 				"system.details": { 
 					"type.value": "fey"
 				}
-			}
+			};
 
 			if (mightySummoner) {
 				// modify for mighty summoner
@@ -103,15 +108,18 @@ try {
 				}
 				const bonusHP = hitDice * 2;
 				let newHPFormula = originalHPFormula + "+" + bonusHP;
-				
 				updates = {
 					token: {
-						"name": name,
-						"disposition": 1,
-						"flags": { "midi-srd": { "Conjured Animal" : { "ActorId": tactor.id } } }
+						"name": summonName,
+						"disposition": CONST.TOKEN_DISPOSITIONS.FRIENDLY,
+						"displayName": CONST.TOKEN_DISPLAY_MODES.HOVER,
+						"displayBars": CONST.TOKEN_DISPLAY_MODES.ALWAYS,
+						"bar1": { attribute: "attributes.hp" },
+						"actorLink": false,
+						"flags": { "midi-srd": { "Conjured Animal" : { "ActorId": actor.id } } }
 					},
-					"name": name,
-					system: {
+					"name": summonName,
+					"system": {
 						"details": { 
 							"type.value": "fey"
 						},
@@ -119,54 +127,51 @@ try {
 							"hp.formula": newHPFormula
 						}
 					}
-				}
-			}
-
-			// import the actor
-			let document = await entity.collection.importFromCompendium(game.packs.get(entity.pack), summonId, updates);
-			if (!document) {
-				ui.notifications.error(`${optionName} - unable to import ${resultData.text} from the compendium`);
-				return false;
+				};
+				
 			}
 			
-			let weapons = document.items.filter(i => i.type === "weapon");
-			if (weapons) {
-				for (var w of weapons) {
-                    let copy_item = duplicate(w.toObject());
-					copy_item.system.properties.mgc = true;
-                    document.updateEmbeddedDocuments("Item", [copy_item]);
+			let summonActor = game.actors.getName(summonName);
+			if (!summonActor) {
+				// import the actor
+				let document = await entity.collection.importFromCompendium(game.packs.get(entity.pack), summonId, updates);
+				if (!document) {
+					ui.notifications.error(`${optionName} - unable to import ${resultData.text} from the compendium`);
+					return false;
 				}
+				await warpgate.wait(500);
+
+				// mark attacks as magical
+				let weapons = document.items.filter(i => i.type === "weapon");
+				if (weapons) {
+					for (var w of weapons) {
+						let copy_item = duplicate(w.toObject());
+						copy_item.system.properties.mgc = true;
+						document.updateEmbeddedDocuments("Item", [copy_item]);
+					}
+				}
+
+				summonActor = game.actors.getName(summonName);
 			}
 
 			// Spawn the result
-			const tokenData = entity.prototypeToken;
-			const maxRange = 60;
-			let snap = tokenData.width/2 === 0 ? 1 : -1;
-			let {x, y} = await MidiMacros.warpgateCrosshairs(token, maxRange, optionName, tokenData.texture.src, tokenData, snap);
+			const maxRange = sourceItem.system.range.value ? sourceItem.system.range.value : 60;
+			let position = await HomebrewMacros.warpgateCrosshairs(actorToken, maxRange, sourceItem, summonActor.prototypeToken);
+			if (position) {
+				let options = {duplicates: choice[1], collision: true};
+				const spawned = await warpgate.spawnAt(position, summonName, {}, { controllingActor: actor }, options);
+				if (!spawned || !spawned[0]) {
+					ui.notifications.error(`${optionName} - unable to spawn the animals`);
+					return false;
+				}
 
-			let options = {duplicates: choice[1], collision: true};
-			
-			const spawned = await warpgate.spawnAt({ x, y }, name, updates, { controllingActor: actor }, options);
-			if (!spawned || !spawned[0]) {
-				ui.notifications.error(`${optionName} - Unable to spawn the animal`);
+				// keep track of the spawned critters, so that they can be deleted after the spell expires
+				await actor.setFlag("midi-qol", summonFlag, summonName);
+			}
+			else {
+				ui.notifications.error(`${optionName} - invalid conjure location`);
 				return false;
 			}
-
-			// keep track of the spawned critters, so that they can be deleted after the spell expires
-			await DAE.setFlag(tactor, optionName, name);
-			
-			// If in combat, set combat state and initiative
-			// TODO ? set all the same
-			if (game.combat) {
-				for (const tid of spawned) {
-					let theToken = canvas.tokens.get(tid);
-					if(theToken) {
-						await theToken.toggleCombat();
-						await theToken.actor.rollInitiative();
-					}
-				}
-			}
-
 		}
 		else {
 			return false;
@@ -174,13 +179,16 @@ try {
 
 	}
 	else if (args[0] === "off") {
-		let summonName = await DAE.getFlag(tactor, optionName);
-		if (summonName) {		
-			await MidiMacros.deleteTokens("Conjured Animal", tactor);
+		// delete the summons
+		const summonName = actor.getFlag("midi-qol", summonFlag);
+		if (summonName) {
+			await actor.unsetFlag("midi-qol", summonFlag);
+			
+			let tokens = canvas.tokens.ownedTokens.filter(i => i.name === summonName);
+			for (let i = 0; i < tokens.length; i++) {
+				await warpgate.dismiss(tokens[i].id, game.canvas.scene.id);
+			}
 		}
-		await DAE.unsetFlag(tactor, optionName);
-		game.actors.forEach(t => { if (!t.folder && (t.name === summonName)) { t.delete(); } });
-
 	}
 	
 } catch (err) {

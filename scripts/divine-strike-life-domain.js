@@ -1,32 +1,24 @@
-const version = "0.1.0";
+/*
+	At 8th level, you gain the ability to infuse your weapon strikes with divine energy. Once on each of your turns when you hit a creature with a weapon attack, you can cause the attack to deal an extra 1d8 radiant damage to the target. When you reach 14th level, the extra damage increases to 2d8.
+*/
+const version = "10.0.0";
 const optionName = "Divine Strike (Life Domain)";
 const timeFlag = "divineStrikeLifeDomain";
 
 try {
-	if (args[0].macroPass === "DamageBonus") {	
-		let workflow = MidiQOL.Workflow.getWorkflow(args[0].uuid);
-		let actor = workflow?.actor;
-		const target = args[0].hitTargets[0];
-		let tactor = target?.actor;
-		const ttoken = canvas.tokens.get(args[0].hitTargets[0].object.id);
-		let pusher = canvas.tokens.get(args[0].tokenId);
-
-		// validate targeting
-		if (!actor || !target) {
-		  console.log(`${optionName}: no target selected`);
-		  return {};
-		}
+	if (args[0].macroPass === "DamageBonus") {
+		const lastArg = args[args.length - 1];
+		const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
 
 		// make sure it's an allowed attack
-		const at = args[0].item?.data?.actionType;
-		if (!at || !["mwak", "rwak"].includes(at)) {
-			console.log(`${optionName}: not an eligible attack: ${at}`);
+		if (!["mwak", "rwak"].includes(lastArg.itemData.system.actionType)) {
+			console.log(`${optionName}: not an eligible attack`);
 			return {};
 		}
 
 		// Check for availability i.e. once per actors turn
 		if (!isAvailableThisTurn() || !game.combat) {
-			console.log(`${optionName}: is not available for this attack`);
+			console.log(`${optionName}: is not available this turn`);
 			return;
 		}
 
@@ -61,10 +53,10 @@ try {
 			}
 			
 			// add damage bonus
-			const clericLevel = actor.classes?.cleric?.data?.data?.levels ?? 0;
+			const clericLevel = actor.classes.cleric?.system.levels ?? 0;
 			const damageType = game.i18n.localize("radiant");
 			const levelMulti = clericLevel > 13 ? 2 : 1;
-			const critMulti = args[0].isCritical ? 2: 1;
+			const critMulti = lastArg.isCritical ? 2: 1;
 			const totalDice = levelMulti * critMulti;
 			return {damageRoll: `${totalDice}d8[${damageType}]`, flavor: optionName};
 		}
@@ -75,17 +67,15 @@ try {
     console.error(`${optionName}:  ${version}`, err);
 }
 
+// Check to make sure the actor hasn't already applied the damage this turn
 function isAvailableThisTurn() {
 	if (game.combat) {
-	  const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn /100}`;
-	  const lastTime = actor.getFlag("midi-qol", timeFlag);
-	  if (combatTime === lastTime) {
-	   console.log(`${optionName}: Already used this turn`);
-	   return false;
-	  }
-	  
-	  return true;
-	}
-	
+		const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn / 100}`;
+		const lastTime = actor.getFlag("midi-qol", timeFlag);
+		if (combatTime === lastTime) {
+			return false;
+		}
+		return true;
+	}	
 	return false;
 }

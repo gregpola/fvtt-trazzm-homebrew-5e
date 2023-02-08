@@ -1,24 +1,32 @@
-const version = "0.1.0";
+/*
+	As an action, you can imbue one weapon that you are holding with positive energy, using your Channel Divinity. For 1 minute, you add your Charisma modifier to attack rolls made with that weapon (with a minimum bonus of +1). The weapon also emits bright light in a 20-foot radius and dim light 20 feet beyond that. If the weapon is not already magical, it becomes magical for the duration.
+
+	You can end this effect on your turn as part of any other action. If you are no longer holding or carrying this weapon, or if you fall Unconscious, this effect ends.
+*/
+const version = "10.0.0";
 const resourceName = "Channel Divinity";
+const optionName = "Sacred Weapon";
+const lastArg = args[args.length - 1];
 
 try {
-	const lastArg = args[args.length - 1];
-	let tactor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-	
+	let actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
+	let actorToken = canvas.tokens.get(lastArg.tokenId);
+
 	if (args[0] === "on") {
 		// check resources
-		let resKey = findResource(tactor);
+		let resKey = findResource(actor);
 		if (!resKey) {
-			return ui.notifications.error(`${resourceName} - no resource found`);
+			return ui.notifications.error(`${optionName}: ${resourceName}: - no resource found`);
 		}
 
-		const points = tactor.data.data.resources[resKey].value;
+		// handle resource consumption
+		const points = actor.system.resources[resKey].value;
 		if (!points) {
-			return ui.notifications.error(`${resourceName} - resource pool is empty`);
+			return ui.notifications.error(`${optionName}: ${resourceName}: - out of resources`);
 		}
 
 		// find the actor's weapons
-		let weapons = tactor.items.filter(i => i.data.type === `weapon`);
+		let weapons = actor.items.filter(i => i.data.type === `weapon`);
 		let weapon_content = ``;
 		for (let weapon of weapons) {
 			weapon_content += `<option value=${weapon.id}>${weapon.name}</option>`;
@@ -42,24 +50,43 @@ try {
 					label: `Ok`,
 					callback: async (html) => {
 						let itemId = html.find('[name=weapons]')[0].value;
-						let weaponItem = tactor.items.get(itemId);
-						let copy_item = duplicate(weaponItem.toObject());
-						DAE.setFlag(tactor, `sacred-weapon`, {
-							id : itemId,
-							damage : copy_item.data.damage.parts[0][0],
-							magic : copy_item.data.properties.mgc						
+						let selectedItem = actor.items.get(itemId);
+						const itemName = selectedItem.name;
+
+						let mutations = {};
+						const newName = itemName + ` (${optionName})`;
+						const attackMod = Math.min(actor.system.abilities["cha"].mod, 1);
+						const oldBonus = Number(selectedItem.system.attackBonus);
+						const newBonus = attackMod + oldBonus;
+
+						mutations[selectedItem.name] = {
+							"name": newName,
+							"system.attackBonus": newBonus,
+							"system.properties.mgc": true
+						};
+												
+						const updates = {
+							embedded: {
+								Item: mutations
+							}
+						};
+						
+						// mutate the selected item
+						await warpgate.mutate(actorToken.document, updates, {}, { name: itemName });
+	
+						// track target info on the source actor
+						DAE.setFlag(actor, `sacred-weapon`, {
+							ttoken: actorToken.id,
+							itemName : itemName
 						});
-						let damage = copy_item.data.damage.parts[0][0];
-						var newdamage = damage + " + @abilities.cha.mod";
-						copy_item.data.damage.parts[0][0] = newdamage;
-						copy_item.data.properties.mgc = true;
-						tactor.updateEmbeddedDocuments("Item", [copy_item]);
-						ChatMessage.create({content: copy_item.name + " is sacred"});
 						
 						// create the light effect
-						addLightEffects( tactor, args[1]);
+						addLightEffects(actor, lastArg.origin);
 						
-						await consumeResource(tactor, resKey, 1);
+						await consumeResource(actor, resKey, 1);
+						ChatMessage.create({
+							content: `${actorToken.name}'s ${selectedItem.name} is blessed with positive energy`,
+							speaker: ChatMessage.getSpeaker({ actor: actor })});
 					}
 				},
 				Cancel:
@@ -70,18 +97,14 @@ try {
 		}).render(true);
 	}
 	else if (args[0] === "off") {
-		let flag = DAE.getFlag(tactor, `sacred-weapon`);
+		let flag = DAE.getFlag(actor, `sacred-weapon`);
 		if (flag) {
-			let effect = await findEffect(tactor, "sacred-weapon-light");
-			if (effect) await MidiQOL.socket().executeAsGM("removeEffects", { actorUuid: tactor.uuid, effects: [effect.id] });
-			
-			let weaponItem = tactor.items.get(flag.id);
-			let copy_item = duplicate(weaponItem.toObject());
-			copy_item.data.damage.parts[0][0] = flag.damage;
-			copy_item.data.properties.mgc = flag.magic;
-			await tactor.updateEmbeddedDocuments("Item", [copy_item]);
-			DAE.unsetFlag(tactor, `sacred-weapon`);
-			ChatMessage.create({content: copy_item.name + " returns to normal"});
+			const itemName = flag.itemName;
+			let restore = await warpgate.revert(actorToken.document, itemName);
+			DAE.unsetFlag(actor, `sacred-weapon`);
+			ChatMessage.create({
+				content: `${actorToken.name}'s ${itemName} returns to normal.`,
+				speaker: ChatMessage.getSpeaker({ actor: actor })});
 		}
 	}
 	
@@ -89,11 +112,11 @@ try {
 	console.error(`Channel Divinity: Sacred Weapon ${version}`, err);
 }
 
-// find the resource
+// find the resource matching this feature
 function findResource(actor) {
 	if (actor) {
-		for (let res in actor.data.data.resources) {
-			if (actor.data.data.resources[res].label === resourceName) {
+		for (let res in actor.system.resources) {
+			if (actor.system.resources[res].label === resourceName) {
 			  return res;
 			}
 		}
@@ -105,15 +128,17 @@ function findResource(actor) {
 // handle resource consumption
 async function consumeResource(actor, resKey, cost) {
 	if (actor && resKey && cost) {
-		const points = actor.data.data.resources[resKey].value;
-		if (!points) {
+		const {value, max} = actor.system.resources[resKey];
+		if (!value) {
 			ChatMessage.create({'content': '${resourceName} : Out of resources'});
-			return;
+			return false;
 		}
-		const pointsMax = actor.data.data.resources[resKey].max;
-		let resources = duplicate(actor.data.data.resources); // makes a duplicate of the resources object for adjustments.
-		resources[resKey].value = Math.clamped(points - cost, 0, pointsMax);
-		await actor.update({"data.resources": resources});    // do the update to the actor.
+		
+		const resources = foundry.utils.duplicate(actor.system.resources);
+		const resourcePath = `system.resources.${resKey}`;
+		resources[resKey].value = Math.clamped(value - cost, 0, max);
+		await actor.update({ "system.resources": resources });
+		return true;
 	}
 }
 
@@ -122,7 +147,7 @@ async function addLightEffects(target, origin) {
     const effectData = {
         label: "sacred-weapon-light",
         icon: "icons/magic/light/beam-rays-yellow-blue-large.webp",
-        origin: origin.origin,
+        origin: origin,
         changes: [
 			{
 				key: 'ATL.light.dim',
@@ -147,11 +172,4 @@ async function addLightEffects(target, origin) {
         disabled: false
     }
     await MidiQOL.socket().executeAsGM("createEffects", { actorUuid: target.uuid, effects: [effectData] });
-}
-
-// Function to test for an effect
-async function findEffect(actor, effectName) {
-    let effectUuid = null;
-    effectUuid = actor?.data.effects.find(ef => ef.data.label === effectName);
-    return effectUuid;
 }

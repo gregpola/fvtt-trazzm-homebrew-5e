@@ -12,14 +12,14 @@ try {
 		let actor = workflow.actor;
 		let resKey = findResource(actor);
 		if (!resKey) {
-			ChatMessage.create(`${resourceName}: ${optionName} - no resource found`);
+			ui.notifications.error(`${optionName}: ${resourceName}: - no resource found`);
 			return false;
 		}
 
 		// handle resource consumption
 		const points = actor.system.resources[resKey].value;
 		if (!points) {
-			ChatMessage.create({'content': '${resourceName}: Out of resources'});
+			ui.notifications.error(`${optionName}: ${resourceName}: - out of resources`);
 			return false;
 		}
 		await consumeResource(actor, resKey, 1);

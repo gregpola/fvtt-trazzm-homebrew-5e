@@ -1,20 +1,24 @@
-const version = "0.1.0";
+/*
+	Your eyes briefly become pools of darkness, and ghostly, flightless wings sprout from your back temporarily. Creatures other than your allies within 10 feet of you that can see you must succeed on a Charisma saving throw (DC 8 + your proficiency bonus + your Charisma modifier) or become frightened of you until the end of your next turn. Until the transformation ends, once on each of your turns, you can deal extra necrotic damage to one target when you deal damage to it with an attack or a spell. The extra damage equals your proficiency bonus.
+*/
+const version = "10.0.0";
 const optionName = "Necrotic Shroud";
+const timeFlag = "necroticShroudTime";
+
+const lastArg = args[args.length - 1];
+const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
 
 try {
-	let workflow = MidiQOL.Workflow.getWorkflow(args[0].uuid);
-	let actor = workflow?.actor;
-		
-	if (args[0].macroPass === "templatePlaced") {
+	if (args[0].macroPass === "preambleComplete") {
 		// find nearby enemies
 		const enemies = MidiQOL.findNearby(-1, token, 10, 0);
-
-		const dc = 8 + actor.data.data.attributes.prof + actor.data.data.abilities.cha.mod;
+		const dc = 8 + actor.system.attributes.prof + actor.system.abilities.cha.mod;
 		const flavor = `${CONFIG.DND5E.abilities["cha"]} DC${dc} ${optionName}`;
 		
 		for (let ttoken of enemies) {
-			let saveRoll = (await ttoken.actor.rollAbilitySave("cha", {flavor})).total;
-			if (saveRoll < dc) {
+			let saveRoll = await ttoken.actor.rollAbilitySave("cha", {flavor});
+			await game.dice3d?.showForRoll(saveRoll);
+			if (saveRoll.total < dc) {
 				await markAsFrightened(ttoken.actor.uuid, actor.uuid);
 			}
 		}
@@ -56,12 +60,12 @@ try {
 		}
 
 		const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn /100}`;
-		const lastTime = actor.getFlag("midi-qol", "necroticShroudTime");
+		const lastTime = actor.getFlag("midi-qol", timeFlag);
 		if (combatTime !== lastTime) {
-			await actor.setFlag("midi-qol", "necroticShroudTime", combatTime)
+			await actor.setFlag("midi-qol", timeFlag, combatTime)
 		}
 
-		const pb = actor?.data?.data?.attributes?.prof ?? 2;
+		const pb = actor.system.attributes.prof;
 		return {damageRoll: `${pb}[necrotic]`, flavor: `${optionName} Damage`};		
 	}
 
@@ -72,16 +76,13 @@ try {
 // Check to make sure the actor hasn't already applied the damage this turn
 function isAvailableThisTurn() {
 	if (game.combat) {
-	  const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn /100}`;
-	  const lastTime = actor.getFlag("midi-qol", "necroticShroudTime");
-	  if (combatTime === lastTime) {
-	   console.log(`${optionName}: Already used this turn`);
-	   return false;
-	  }
-	  
-	  return true;
-	}
-	
+		const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn /100}`;
+		const lastTime = actor.getFlag("midi-qol", timeFlag);
+		if (combatTime === lastTime) {
+			return false;
+		}
+		return true;
+	}	
 	return false;
 }
 

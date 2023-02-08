@@ -209,6 +209,12 @@
         "type": "module",
         "compatibility": {}
       }
+      },
+      {
+        "id": "tokenmagic",
+        "type": "module",
+        "compatibility": {}
+      }
     ],
     "systems": [
       {
@@ -222,6 +228,9 @@
   },
   "esmodules": [
     "module/module.js"
+  ],
+  "scripts": [
+    "module/HomebrewMacros.js"
   ],
   "flags": {
     "allowBugReporter": true

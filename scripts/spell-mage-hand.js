@@ -1,46 +1,89 @@
-const version = "10.0.0";
+const version = "10.0.1";
 const optionName = "Mage Hand";
 const actorName = "Mage Hand";
+const summonFlag = "mage-hand";
 
 try {
 	const lastArg = args[args.length - 1];
-	let caster;
-	if (lastArg.tokenId) caster = canvas.tokens.get(lastArg.tokenId).actor;
-	else caster = game.actors.get(lastArg.actorId);
-	
+	let caster = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
+	const actorToken = canvas.tokens.get(lastArg.tokenId);
+
     if (args[0] === "on") {
-        let summonActor = game.actors.getName(actorName);
-        if (!summonActor) {
-			ui.notifications.error(`${optionName} - ${actorName} actor not found!`);
-            return;
-        }
-		
-		const summonName = actorName + " (" + caster.name + ")";
+		const sourceItem = await fromUuid(lastArg.origin);
+		const summonName = `${actorName} (${caster.name})`;
 
         let updates = {
             token: {
-                "name": summonName, 
-				"disposition": 1,
+				"name": summonName,
+				"disposition": CONST.TOKEN_DISPOSITIONS.FRIENDLY,
+				"displayName": CONST.TOKEN_DISPLAY_MODES.HOVER,
+				"displayBars": CONST.TOKEN_DISPLAY_MODES.ALWAYS,
+				"bar1": { attribute: "attributes.hp" },
+				"actorLink": false,
 				"flags": { "midi-srd": { "Mage Hand": { "ActorId": caster.id } } }
-            }
+			},
+			"name": summonName
         };
 
-		const options = { controllingActor: caster };
+        let summonActor = game.actors.getName(summonName);
+        if (!summonActor) {
+			// Get from the compendium
+			const summonId = "gNpc7JZyxBMmZ2wo";
+			let entity = await fromUuid("Compendium.fvtt-trazzm-homebrew-5e.homebrew-creatures." + summonId);
+			if (!entity) {
+				ui.notifications.error(`${optionName} - unable to find the actor`);
+				return false;
+			}
 
-        const summoned = await warpgate.spawn(actorName, updates, {}, options);
-        if (summoned.length !== 1) {
-			return ui.notifications.error(`${optionName} - Unable to spawn the hand`);
-		}		
-		
-		// Save the hand id on the caster
-		await actor.setFlag("midi-qol", "mage-hand", summoned[0]);
+			// import the actor
+			let document = await entity.collection.importFromCompendium(game.packs.get(entity.pack), summonId, updates);
+			if (!document) {
+				ui.notifications.error(`${optionName} - unable to import from the compendium`);
+				return false;
+			}
+			await warpgate.wait(500);
+			summonActor = game.actors.getName(summonName);
+		}
+				
+		// Spawn the result
+		const maxRange = sourceItem.system.range.value ? sourceItem.system.range.value : 30;
+		let position = await HomebrewMacros.warpgateCrosshairs(actorToken, maxRange, sourceItem, summonActor.prototypeToken);
+		if (position) {
+			// check for token collision
+			const newCenter = canvas.grid.getSnappedPosition(position.x - summonActor.prototypeToken.width / 2, position.y - summonActor.prototypeToken.height / 2, 1);
+			if (HomebrewMacros.checkPosition(newCenter.x, newCenter.y)) {
+				ui.notifications.error(`${optionName} - can't teleport on top of another token`);
+				return false;
+			}
+
+			const result = await warpgate.spawnAt(position, summonName, updates, { controllingActor: caster }, {});
+			if (!result || !result[0]) {
+				ui.notifications.error(`${optionName} - Unable to spawn`);
+				return false;
+			}
+
+			let summonedToken = canvas.tokens.get(result[0]);
+			if (summonedToken) {
+				await caster.setFlag("midi-qol", summonFlag, summonedToken.id);
+				// players can't do the following:
+				//await summonedToken.toggleCombat();
+				//await summonedToken.actor.rollInitiative();
+			}
+			
+		}
+		else {
+			ui.notifications.error(`${optionName} - invalid summon location`);
+			return false;
+		}
 
 	}
 	else if (args[0] === "off") {
-		// delete the hand
-		const lastSphere = caster.getFlag("midi-qol", "mage-hand");
-		if (lastSphere) await caster.unsetFlag("midi-qol", "mage-hand");
-        await MidiMacros.deleteTokens(actorName, caster);
+		// delete the summon
+		const lastSummon = caster.getFlag("midi-qol", summonFlag);
+		if (lastSummon) {
+			await caster.unsetFlag("midi-qol", summonFlag);
+			await warpgate.dismiss(lastSummon, game.canvas.scene.id);
+		}
 	}
 	
 } catch (err) {

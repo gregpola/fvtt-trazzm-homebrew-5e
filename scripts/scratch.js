@@ -1,29 +1,96 @@
 const version = "10.0.0";
-const resourceName = "Superiority Dice";
 const optionName = "Precision Attack";
+const resourceName = "Superiority Dice";
 
 try {
 	const lastArg = args[args.length - 1];
+	const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
+	const actorToken = canvas.tokens.get(lastArg.tokenId);
+	const targetActor = lastArg.hitTargets[0].actor;
+	const targetToken = game.canvas.tokens.get(lastArg.hitTargets[0].id);
+	const item = fromUuid(lastArg.origin);
+	const sourceItem = fromUuid(lastArg.sourceItemUuid)
+	
 	const workflow = MidiQOL.Workflow.getWorkflow(lastArg.uuid);
 
-	if (lastArg.macroPass === "preCheckHits") {
-		const theItem = workflow;
+	const druidLevel = actor.classes.druid?.system.levels ?? 0;
+	const pb = actor.system.attributes.prof;
+	const actorDC = actor.system.attributes.spelldc ?? 12;
+	actor.system.abilities.cha.mod;
+	
+	macro.tokenMagic
 
-		if ((theItem != null) && (theItem.name != "Combat Maneuver (Precision Attack)")) {
-		}
-	}
+	await game.dice3d?.showForRoll(saveRoll);
+	
+	if (!["mwak", "rwak", "msak", "rsak", "save", "heal"].includes(lastArg.itemData.system.actionType)) {
+	
+	await game.dfreds.effectInterface.removeEffect({effectName: 'Incapacitated', uuid:actor.uuid});
+
+	ui.notifications.error(`${optionName}: ${resourceName}: - no resource found`);
+
+	ChatMessage.create({
+		content: `${actorToken.name}'s ${selectedItem.name} is blessed with positive energy`,
+		speaker: ChatMessage.getSpeaker({ actor: actor })});
 
 } catch (err) {
-    console.error(`${resourceName}: ${optionName} - ${version}`, err);
+    console.error(`${optionName}: ${version}`, err);
 }
-		let rows = "";
-		for (let t of lastArg.damageRoll.terms) {
-			let row = `<div class="flexrow"><label>${t.number}d${t.faces}</label>`;
-			for (let r of t.results) {
-				row += `<input type="checkbox" style="margin-right:10px;" value=${r.result}>${r.result}</input><div>,  </div>`;
-				let dieData = [`d${t.faces}`, r.result, false, `${t.options.flavor}`];
-				rerollDataSet.add(dieData);
+
+async function wait(ms) { return new Promise(resolve => { setTimeout(resolve, ms); }); }
+
+function findEffect(actor, effectName) {
+    let effectUuid = null;
+    effectUuid = actor?.effects?.find(ef => ef.label === effectName);
+    return effectUuid;
+}
+
+async function findEffect(actor, effectName, origin) {
+    let effectUuid = null;
+    effectUuid = actor?.effects?.find(ef => ef.label === effectName && ef.origin === origin);
+    return effectUuid;
+}
+
+async function wait(ms) { return new Promise(resolve => { setTimeout(resolve, ms); });}
+
+// find the resource matching this feature
+function findResource(actor) {
+	if (actor) {
+		for (let res in actor.system.resources) {
+			if (actor.system.resources[res].label === resourceName) {
+			  return res;
 			}
-			row += `</div>`;
-			rows += row;
 		}
+	}
+	
+	return null;
+}
+
+// handle resource consumption
+async function consumeResource(actor, resKey, cost) {
+	if (actor && resKey && cost) {
+		const {value, max} = actor.system.resources[resKey];
+		if (!value) {
+			ChatMessage.create({'content': '${resourceName} : Out of resources'});
+			return false;
+		}
+		
+		const resources = foundry.utils.duplicate(actor.system.resources);
+		const resourcePath = `system.resources.${resKey}`;
+		resources[resKey].value = Math.clamped(value - cost, 0, max);
+		await actor.update({ "system.resources": resources });
+		return true;
+	}
+}
+
+// Check to make sure the actor hasn't already applied the damage this turn
+function isAvailableThisTurn() {
+	if (game.combat) {
+		const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn / 100}`;
+		const lastTime = actor.getFlag("midi-qol", timeFlag);
+		if (combatTime === lastTime) {
+			return false;
+		}
+		return true;
+	}	
+	return false;
+}

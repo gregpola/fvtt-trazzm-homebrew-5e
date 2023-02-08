@@ -1,5 +1,7 @@
-const version = "10.0.13";
+const version = "10.0.14";
 const optionName = "Flaming Sphere";
+const summonFlag = "flaming-sphere";
+const creatureName = "Driftglobe";
 
 try {
 	const lastArg = args[args.length - 1];
@@ -8,13 +10,9 @@ try {
 	else caster = game.actors.get(lastArg.actorId);
 	
     if (args[0] === "on") {
+
+		// Build the token updates
 		let summonName = optionName + " (" + caster.name + ")";
-        let sphereActor = game.actors.getName(optionName);
-        if (!sphereActor) {
-			ui.notifications.error(`${optionName} - Flaming Sphere actor not found!`);
-            return;
-        }
-		
 		const spellLevel = lastArg.efData.flags["midi-qol"].castData.castLevel;
 		
         const overTimeValue = `turn=end,saveDC=${caster.system.attributes.spelldc ?? 10},saveAbility=dex,damageRoll=${spellLevel}d6,damageType=fire,saveDamage=halfdamage,saveRemove=false`;
@@ -22,7 +20,11 @@ try {
         let updates = {
             token: {
                 "name": summonName, 
-				"disposition": 1,
+				"disposition": CONST.TOKEN_DISPOSITIONS.FRIENDLY,
+				"displayName": CONST.TOKEN_DISPLAY_MODES.HOVER,
+				"displayBars": CONST.TOKEN_DISPLAY_MODES.ALWAYS,
+				"bar1": { attribute: "attributes.hp" },
+				"actorLink": false,
 				"lightColor": "#a2642a",
 				"lightAlpha": 0.4,
 				"lightAnimation": {
@@ -32,6 +34,7 @@ try {
 				},
 				"flags": { "midi-srd": { "Flaming Sphere": { "ActorId": caster.id } } }
             },
+			"name": summonName,
 			embedded: {
 				Item: {
 					"Flaming Sphere Damage": {
@@ -64,24 +67,50 @@ try {
 				}
             },
         };
-		let options = { controllingActor: caster };
+		        
+		let summonActor = game.actors.getName(summonName);
+        if (!summonActor) {
+			// Get from the compendium
+			const summonId = "4PyDMPHwGsfOY8mR";
+			let entity = await fromUuid("Compendium.fvtt-trazzm-homebrew-5e.homebrew-creatures." + summonId);
+			if (!entity) {
+				ui.notifications.error(`${optionName} - unable to find the actor`);
+				return false;
+			}
 
-        const summoned = await warpgate.spawn("Flaming Sphere", updates, {}, options);
-        if (summoned.length !== 1) {
-			return ui.notifications.error(`${optionName} - Unable to spawn the sphere`);
+			// import the actor
+			let document = await entity.collection.importFromCompendium(game.packs.get(entity.pack), summonId, updates);
+			if (!document) {
+				ui.notifications.error(`${optionName} - unable to import from the compendium`);
+				return false;
+			}
+			await warpgate.wait(1000);
 		}
-		
-		const summonedSphere = canvas.scene.tokens.get(summoned[0]);
-				
-		// Save the sphere id on the caster
-		await actor.setFlag("midi-qol", "flaming-sphere", summoned[0]);
+
+		// Spawn the result
+		const options = { controllingActor: actor };
+        const result = await warpgate.spawn(summonName, updates, {}, options);
+		if (!result || !result[0]) {
+			ui.notifications.error(`${optionName} - Unable to spawn`);
+			return false;
+		}
+
+		let summonedToken = canvas.tokens.get(result[0]);
+		if (summonedToken) {
+			await actor.setFlag("midi-qol", summonFlag, summonedToken.id);
+			// players can't do the following:
+			//await summonedToken.toggleCombat();
+			//await summonedToken.actor.rollInitiative();
+		}
 
     }
 	else if (args[0] === "off") {
 		// delete the sphere
-		const lastSphere = caster.getFlag("midi-qol", "flaming-sphere");
-		if (lastSphere) await caster.unsetFlag("midi-qol", "flaming-sphere");
-        await MidiMacros.deleteTokens("Flaming Sphere", caster);
+		const lastSummon = actor.getFlag("midi-qol", summonFlag);
+		if (lastSummon) {
+			await actor.unsetFlag("midi-qol", summonFlag);
+			await warpgate.dismiss(lastSummon, game.canvas.scene.id);
+		}
 		
 		// delete all overTime effects
 		for (let tokenDoc of canvas.scene.tokens) {

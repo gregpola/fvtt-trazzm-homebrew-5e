@@ -10,6 +10,8 @@ try {
 		let target = lastArg.hitTargets[0];
 		let ttoken = canvas.tokens.get(target.object.id);
 		
+		// Make sure the actor is raging
+		
 		// make sure it's an allowed attack
 		if (!["mwak", "rwak"].includes(lastArg.itemData.system.actionType)) {
 			console.log(`${optionName} - not an eligible attack`);

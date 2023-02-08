@@ -1,68 +1,84 @@
 /*
-When you gain this feat, you gain the following benefits:
+	When you gain this feat, you gain the following benefits:
 
-Spells you cast ignore resistance to acid damage. In addition, when you roll damage for a spell you cast that deals acid damage, you can treat any 1 on a damage die as a 2.
+	Spells you cast ignore resistance to acid damage. 
+	In addition, when you roll damage for a spell you cast that deals acid damage, you can treat any 1 on a damage die as a 2.
 
-You can select this feat multiple times. Each time you do so, you must choose a different damage type.
+	You can select this feat multiple times. Each time you do so, you must choose a different damage type.
 */
 const version = "10.0.0";
 const optionName = "Elemental Adept";
 const damageType = "acid";
-const lastArg = args[args.length - 1];
+
+const effectUpdate = {
+	changes:[{
+		key: 'system.traits.dr.value',
+		mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
+		value: `-${damageType}`
+	}],
+	label: `Elemental Adept (${damageType})`,
+	icon: "icons/svg/aura.svg",
+	flags: {dae: { specialDuration: ['isDamaged']} }
+};
 
 try {
-	// make sure the attempted hit was made with a spell attack of some type
-	if (!["msak", "rsak", "save"].includes(lastArg.itemData.system.actionType)) return;
+	const lastArg = args[args.length - 1];
+	const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
+	const theItem = lastArg.item;
+	let itemData = lastArg.itemData;
 	
-	if (lastArg.macroPass === "DamageBonus") {
-		let actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-		const theItem = lastArg.item;
-		let itemData = lastArg.itemData;
-		let targets = lastArg.hitTargets;
-
-		let dr = lastArg.damageRoll;
-		if (!dr) return;
+	if (lastArg.macroPass === "preDamageRoll") {
+		// make sure the dmage type matches
+		if (!theItem.system.damage.parts.map(i=>i[1]).includes(damageType)) {
+			return;
+		}
 		
-		// check the attacks damage type
-		let damageTypeResult = 0;
-		for (let term of dr.terms) {
-			if (term.options?.flavor?.includes(damageType)) {
-				let bonus = sumResults(term.results);
-				if (bonus) {
-					damageTypeResult += bonus;
+		// make sure the attempted hit was made with a spell attack of some type
+		if (!["msak", "rsak", "save"].includes(lastArg.itemData.system.actionType)) {
+			return;
+		}
+		
+		// find the resistant targets and turn it off for this attack
+		let targets = lastArg.hitTargets;
+		for (let target of targets) {
+			let resistant = target.actor.system.traits.dr.value.has(damageType);
+			if (resistant) {
+				await MidiQOL.socket().executeAsGM("createEffects", {actorUuid: target.actor.uuid, effects: [effectUpdate]}); 
+			}
+		}
+	}
+	else if (lastArg.macroPass === "postDamageRoll") {
+		// check pre-requisites
+		// make sure the dmage type matches
+		if (!theItem.system.damage.parts.map(i=>i[1]).includes(damageType)) {
+			return;
+		}
+		
+		// make sure the attempted hit was made with a spell attack of some type
+		if (!["msak", "rsak", "save"].includes(lastArg.itemData.system.actionType)) {
+			return;
+		}
+		
+		let isModified = false;
+		let terms = lastArg.workflow.damageRoll.terms;
+		for (let i = 0; i < terms.length; i++) {
+			if ((terms[i] instanceof Die)
+				&& (terms[i].options.flavor === damageType)) {
+				// look for a 1
+				let results = terms[i].results;
+				for (let z = 0; z < results.length; z++) {
+					if (results[z].result === 1) {
+						results[z].result = 2;
+						isModified = true;
+					}
 				}
 			}
 		}
 		
-		// no matching damage type
-		if (damageTypeResult === 0) return;
-		
-		// build the two target lists
-		let resistantTargets = new Set();
-		let otherTargets = new Set();
-
-		// find the resistant targets
-		for (let target of targets) {
-			let resistant = target.actor.system.traits.dr.value.has(damageType);
-			if (resistant)
-				resistantTargets.add(target);
-			else
-				otherTargets.add(target);
+		if (isModified) {
+			const newDamageRoll = CONFIG.Dice.DamageRoll.fromTerms(terms);
+			await lastArg.workflow.setDamageRoll(newDamageRoll)
 		}
-		
-		if (resistantTargets.size > 0 ) {
-			// double the damage to simulate no resistance
-			await MidiQOL.applyTokenDamage([{ damage: damageTypeResult, type: damageType }], damageTypeResult, resistantTargets, theItem, new Set());
-		}
-
-		if (otherTargets.size > 0 ) {
-			// get the bonus damage for changing 1's to 2's
-			const improveDamage = sumImprovedDamage(results);
-			
-			// double the damage to simulate no resistance
-			await MidiQOL.applyTokenDamage([{ damage: improveDamage, type: damageType }], improveDamage, resistantTargets, theItem, new Set());
-		}
-		
 	}
 
 	return;

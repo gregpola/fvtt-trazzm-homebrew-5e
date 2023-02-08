@@ -1,7 +1,11 @@
 import { RelentlessRage } from "./RelentlessRage.js";
+import {InitiativeHandler} from "./InitiativeHandler.js";
+import {SpellHandler} from "./SpellHandler.js";
 
 const SUB_MODULES = {
-    RelentlessRage
+    InitiativeHandler,
+    RelentlessRage,
+    SpellHandler
 };
 
 Hooks.once('init', async function () {

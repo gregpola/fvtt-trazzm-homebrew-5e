@@ -1,37 +1,43 @@
-const version = "0.1.0";
+/*
+	Starting at 2nd level, you can use your Channel Divinity to heal the badly injured.
+
+	As an action, you present your holy symbol and evoke healing energy that can restore a number of hit points equal to five times your cleric level. Choose any creatures within 30 feet of you, and divide those hit points among them. This feature can restore a creature to no more than half of its hit point maximum. You can’t use this feature on an undead or a construct.
+*/
+const version = "10.0.0";
 const resourceName = "Channel Divinity";
 const optionName = "Preserve Life"
 
 try {
-	const lastArg = args[args.length - 1];
-	let tactor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-	let token = canvas.tokens.get(args[0].tokenId);
-	
 	if (args[0].macroPass === "preItemRoll") {
-		let workflow = MidiQOL.Workflow.getWorkflow(args[0].uuid);
-		let actor = workflow?.actor;
+		const lastArg = args[args.length - 1];
+		const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
+		const actorToken = canvas.tokens.get(lastArg.tokenId);
 		
 		// check resources
-		let resKey = findResource(tactor);
+		let resKey = findResource(actor);
 		if (!resKey) {
 			ui.notifications.error(`${resourceName} - no resource found`);
 			return false;
 		}
 
-		const points = tactor.data.data.resources[resKey].value;
+		const points = actor.system.resources[resKey].value;
 		if (!points) {
 			ui.notifications.error(`${resourceName} - resource pool is empty`);
 			return false;
 		}
 		
 		// find nearby allies
-		const friendlyTargets = MidiQOL.findNearby(1, token, 30, 0);
-		const neutralTargets = MidiQOL.findNearby(0, token, 30, 0);
-		let possibleTargets = [token, ...friendlyTargets, ...neutralTargets];
+		const friendlyTargets = MidiQOL.findNearby(1, actorToken, 30, 0);
+		const neutralTargets = MidiQOL.findNearby(0, actorToken, 30, 0);
+		let possibleTargets = [actorToken, ...friendlyTargets, ...neutralTargets];
 		const recipients = possibleTargets.filter(filterRecipient);
 		
 		// roll the total temp HP to spend
-		const clericLevel = actor.classes?.cleric?.data?.data?.levels ?? 0;
+		const clericLevel = actor.classes.cleric?.system.levels ?? 0;
+		if (!clericLevel) {
+			ui.notifications.error(`${optionName} - caster is not a cleric`);
+			return false;
+		}
 		const totalHealing = 5 * clericLevel;
 		
 		// ask which ones to heal and how much
@@ -40,8 +46,8 @@ try {
 		for (var i = 0; i < recipients.length; i++) {
 			let r = recipients[i];
 			// get the max hp per recipient
-			let half = Math.ceil(r.actor.data.data.attributes.hp.max / 2);
-			let eligible = ((half > r.actor.data.data.attributes.hp.value) ? (half - r.actor.data.data.attributes.hp.value) : 0);
+			let half = Math.ceil(r.actor.system.attributes.hp.max / 2);
+			let eligible = ((half > r.actor.system.attributes.hp.value) ? (half - r.actor.system.attributes.hp.value) : 0);
 			let recipientMax = Math.min(totalHealing, eligible);
 			let row = `<div class="flexrow"><label>${r.name}</label>` 
 				+ `<input id="hp_` + i + `" type="number" min="0" step="1.0" max="${recipientMax}"></input>`
@@ -99,7 +105,7 @@ try {
 									let pts = rd[1];
 									if (pts > 0) {
 										const damageRoll = await new Roll(`${pts}`).evaluate({ async: true });
-										await new MidiQOL.DamageOnlyWorkflow(actor, token, damageRoll.total, "healing", [ttoken], damageRoll, 
+										await new MidiQOL.DamageOnlyWorkflow(actor, actorToken, damageRoll.total, "healing", [ttoken], damageRoll, 
 											{flavor: `${optionName}`, itemCardId: args[0].itemCardId});
 									}
 								}
@@ -126,16 +132,16 @@ try {
 }
 
 function filterRecipient(r) {
-	let half = (r.actor.data.data.attributes.hp.max / 2);
-	let eligible = ((half > r.actor.data.data.attributes.hp.value) ? (half - r.actor.data.data.attributes.hp.value) : 0);
+	let half = (r.actor.system.attributes.hp.max / 2);
+	let eligible = ((half > r.actor.system.attributes.hp.value) ? (half - r.actor.system.attributes.hp.value) : 0);
 	return eligible > 0;
 }
 
-// find the resource
+// find the resource matching this feature
 function findResource(actor) {
 	if (actor) {
-		for (let res in actor.data.data.resources) {
-			if (actor.data.data.resources[res].label === resourceName) {
+		for (let res in actor.system.resources) {
+			if (actor.system.resources[res].label === resourceName) {
 			  return res;
 			}
 		}
@@ -147,14 +153,16 @@ function findResource(actor) {
 // handle resource consumption
 async function consumeResource(actor, resKey, cost) {
 	if (actor && resKey && cost) {
-		const points = actor.data.data.resources[resKey].value;
-		if (!points) {
+		const {value, max} = actor.system.resources[resKey];
+		if (!value) {
 			ChatMessage.create({'content': '${resourceName} : Out of resources'});
-			return;
+			return false;
 		}
-		const pointsMax = actor.data.data.resources[resKey].max;
-		let resources = duplicate(actor.data.data.resources); // makes a duplicate of the resources object for adjustments.
-		resources[resKey].value = Math.clamped(points - cost, 0, pointsMax);
-		await actor.update({"data.resources": resources});    // do the update to the actor.
+		
+		const resources = foundry.utils.duplicate(actor.system.resources);
+		const resourcePath = `system.resources.${resKey}`;
+		resources[resKey].value = Math.clamped(value - cost, 0, max);
+		await actor.update({ "system.resources": resources });
+		return true;
 	}
 }

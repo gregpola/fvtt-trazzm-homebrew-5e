@@ -1,19 +1,35 @@
-const version = "10.0.0";
+const version = "10.0.1";
 const optionName = "Divine Smite";
 
 try {
 	if (args[0].macroPass === "DamageBonus") {
+		const lastArg = args[args.length - 1];
+		const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
+		const actorToken = canvas.tokens.get(lastArg.tokenId);
+		const targetActor = lastArg.hitTargets[0].actor;
+		const targetToken = game.canvas.tokens.get(lastArg.hitTargets[0].id);
+		
 		// Must be a melee weapon attack
-		if (!["mwak"].includes(args[0].itemData.system.actionType)) return {}; // weapon attack
-
-		// validate actor, target and hit
-		token = canvas.tokens.get(args[0].tokenId);
-		actor = token.actor;
-		if (!actor || !token || args[0].hitTargets.length < 1) return {};
-
-		let target = canvas.tokens.get(args[0].hitTargets[0].id ?? args[0].hitTargets[0]._id);
-		if (!target) {
+		if (!["mwak"].includes(lastArg.itemData.system.actionType)) 
+			return {};
+		
+		// Make sure it's not thrown
+		const reach = lastArg.itemData.system.rch;
+		
+		if (!targetToken) {
 			MidiQOL.error(`${optionName}: no target`);
+			return {};
+		}
+		
+		const ray = new Ray(actorToken.center, targetToken.center);
+		const gridDistance = Math.floor(ray.distance / canvas.grid.size);
+		if (gridDistance > 1 && !reach) {
+			console.log(`${optionName} - thrown is not an eligible attack`);
+			return {};
+		}
+		
+		if (gridDistance > 2) {
+			console.log(`${optionName} - target is out of range`);
 			return {};
 		}
 
@@ -91,9 +107,9 @@ try {
 		
 		let numDice = 1 + level;
 		if (numDice > 5) numDice = 5;
-		let undead = ["undead", "fiend"].some(type => (target?.actor.system.details.type?.value || "").toLowerCase().includes(type));
+		let undead = ["undead", "fiend"].some(type => (targetActor.system.details.type?.value || "").toLowerCase().includes(type));
 		if (undead) numDice += 1;
-		if (args[0].isCritical) {
+		if (lastArg.isCritical) {
 			numDice = numDice * 2;
 		}
 		
@@ -101,7 +117,7 @@ try {
 	}
 
 } catch (err) {
-    console.error(`${args[0].itemData.name} - Divine Smite ${version}`, err);
+    console.error(`${optionName}: ${version}`, err);
 }
 
 function nth(n){return n + (["st","nd","rd"][((n+90)%100-10)%10-1]||"th")}

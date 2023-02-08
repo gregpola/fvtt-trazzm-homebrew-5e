@@ -1,31 +1,31 @@
 const version = "10.0.0";
-const resourceName = "Superiority Dice";
 const optionName = "Riposte";
+const resourceName = "Superiority Dice";
 
 try {
 	const lastArg = args[args.length - 1];
-	let tactor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-	const target = Array.from(game.user.targets)[0];
+	let actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
+	const targetToken = game.canvas.tokens.get(lastArg.targets[0].id);
 
 	if (args[0].macroPass === "preItemRoll") {
 		// check resources
-		let resKey = findResource(tactor);
+		let resKey = findResource(actor);
 		if (!resKey) {
 			ui.notifications.error(`${resourceName} - no resource found`);
 			return false;
 		}
 
 		// handle resource consumption
-		let proceed = await consumeResource(tactor, resKey, 1);
+		let proceed = await consumeResource(actor, resKey, 1);
 		if (proceed) {
-			ChatMessage.create({'content': `${actor.name} riposte's the miss by ${target.actor.name}`});		
+			ChatMessage.create({'content': `${actor.name} riposte's the miss by ${targetToken.name}`});		
 		}
 		
 		return proceed;
 	}
 
 } catch (err) {
-    console.error(`${resourceName}: ${optionName} - ${version}`, err);
+    console.error(`${optionName}: ${version}`, err);
 }
 
 // find the resource matching this feature

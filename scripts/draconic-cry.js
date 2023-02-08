@@ -1,9 +1,9 @@
-const version = "0.1.0";
+const version = "10.0.0";
 const optionName = "Draconic Cry";
 
 try {
-	let workflow = MidiQOL.Workflow.getWorkflow(args[0].uuid);
-	let actor = workflow?.actor;
+	const lastArg = args[args.length - 1];
+	const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
 		
 	if (args[0].macroPass === "postActiveEffects") {
 		// find nearby enemies

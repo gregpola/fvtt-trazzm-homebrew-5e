@@ -1,22 +1,27 @@
-const version = "10.0.0";
+const version = "10.0.1";
 const optionName = "Driftglobe";
+const summonFlag = "item-driftglobe";
+const creatureName = "Driftglobe";
 
 try {
 	const lastArg = args[args.length - 1];
-	let tactor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
+	let actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
 
 	if (args[0].macroPass === "postActiveEffects") {
         if (!game.modules.get("warpgate")?.active) ui.notifications.error("Please enable the Warp Gate module")
 		
-		const token = await canvas.tokens.get(args[0].tokenId);
-		const summonName = "Driftglobe (" + tactor.name + ")";
+		const summonName = "Driftglobe (" + actor.name + ")";
 		
 		// build the update data to match summoned traits
 		let updates = {
 			token: {
 				"name": summonName,
-				"disposition": 1,
-				"flags": { "midi-srd": { "Driftglobe" : { "ActorId": tactor.id } } }
+				"disposition": CONST.TOKEN_DISPOSITIONS.FRIENDLY,
+				"displayName": CONST.TOKEN_DISPLAY_MODES.HOVER,
+				"displayBars": CONST.TOKEN_DISPLAY_MODES.ALWAYS,
+				"bar1": { attribute: "attributes.hp" },
+				"actorLink": false,
+				"flags": { "midi-srd": { "Driftglobe" : { "ActorId": actor.id } } }
 			},
 			"name": summonName
 		}
@@ -37,17 +42,35 @@ try {
 				ui.notifications.error(`${optionName} - unable to import from the compendium`);
 				return false;
 			}
+			await warpgate.wait(1000);
 		}
 		
 		// Spawn the result
-		const options = { controllingActor: tactor };
-        const summoned = await warpgate.spawn(summonName, updates, {}, options);
-		if (!summoned || !summoned[0]) {
+		const options = { controllingActor: actor };
+        const result = await warpgate.spawn(summonName, updates, {}, options);
+		if (!result || !result[0]) {
 			ui.notifications.error(`${optionName} - Unable to spawn`);
 			return false;
 		}
+
+		let summonedToken = canvas.tokens.get(result[0]);
+		if (summonedToken) {
+			await actor.setFlag("midi-qol", summonFlag, summonedToken.id);
+			// players can't do the following:
+			//await summonedToken.toggleCombat();
+			//await summonedToken.actor.rollInitiative();
+		}
+		
 	}
-	
+	else if (args[0] === "off") {
+		// delete the summon
+		const lastSummon = actor.getFlag("midi-qol", summonFlag);
+		if (lastSummon) {
+			await actor.unsetFlag("midi-qol", summonFlag);
+			await warpgate.dismiss(lastSummon, game.canvas.scene.id);
+		}
+	}
+
 } catch (err) {
     console.error(`${optionName} ${version}`, err);
 }

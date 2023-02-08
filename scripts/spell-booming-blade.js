@@ -1,116 +1,101 @@
-const lastArg = args[args.length - 1];
+/*
+	You brandish the weapon used in the spell’s casting and make a melee attack with it against one creature within 5 feet of you. On a hit, the target suffers the weapon attack’s normal effects and then becomes sheathed in booming energy until the start of your next turn. If the target willingly moves 5 feet or more before then, the target takes 1d8 thunder damage, and the spell ends.
 
-// macro vars
+	This spell’s damage increases when you reach certain levels. At 5th level, the melee attack deals an extra 1d8 thunder damage to the target on a hit, and the damage the target takes for moving increases to 2d8. Both damage rolls increase by 1d8 at 11th level (2d8 and 3d8) and again at 17th level (3d8 and 4d8).
+*/
+const version = "10.0.0";
+const optionName = "Booming Blade";
+const gameRound = game.combat ? game.combat.round : 0;
 const sequencerFile = "jb2a.static_electricity.01.blue";
 const sequencerScale = 1.5;
 const damageType = "thunder";
+const flagItemId = "midi-qol.BoomingBlade.uuid";
+const flagItemDice = "midi-qol.BoomingBlade.dice";
+
+try {
+	const lastArg = args[args.length - 1];
+	const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
+
+	if (args[0].macroPass === "DamageBonus") {
+		// Must be a melee weapon attack
+		if (!["mwak"].includes(args[0].itemData.system.actionType))
+			return {}; // weapon attack
+		
+		// apply effect to the target to handle the move case
+		const targetToken = game.canvas.tokens.get(lastArg.targets[0].id);
+		sequencerEffect(targetToken, sequencerFile, sequencerScale);
+		
+		const sourceItem = await fromUuid(lastArg.sourceItemUuid);
+		const characterLevel = actor.type === "character" ? actor.system.details.level : actor.system.details.cr;
+		const cantripDice = 1 + Math.floor((characterLevel + 1) / 6);
+
+		const effectData = {
+			label: sourceItem.name,
+			icon: sourceItem.img,
+			origin: lastArg.sourceItemUuid,
+			changes: [
+				{
+					key: 'macro.itemMacro',
+					mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
+					value: `ItemMacro.${sourceItem.name}`,
+					priority: 20
+				},
+				{
+					'key': 'macro.tokenMagic',
+					'mode': CONST.ACTIVE_EFFECT_MODES.CUSTOM,
+					'value': 'electric',
+					'priority': 20
+				}
+			],
+			flags: {
+				dae: {
+					selfTarget: false,
+					stackable: "none",
+					durationExpression: "",
+					macroRepeat: "none",
+					specialDuration: [
+						"turnStartSource",
+						"isMoved"
+					],
+					transfer: false
+				},
+				cantripDice: cantripDice
+			},
+			disabled: false
+		};
+		await MidiQOL.socket().executeAsGM("createEffects", { actorUuid: targetToken.actor.uuid, effects: [effectData] });
+		
+		// add damage bonus to the attack
+		const originalDice = cantripDice - 1;
+		if (originalDice > 0) {
+			let damageRoll0riginal = await new game.dnd5e.dice.DamageRoll(`${originalDice}d8[${damageType}]`, actor.getRollData(), { critical: lastArg.isCritical });
+			await game.dice3d?.showForRoll(damageRoll0riginal);
+			return {damageRoll: damageRoll0riginal.formula, flavor: `${optionName}`};
+		}		
+	}
+	else if (lastArg["expiry-reason"]?.includes("midi-qol:isMoved")) {
+		// apply damage and remove effect
+		const actorToken = canvas.tokens.get(lastArg.tokenId);
+		const sourceItem = await fromUuid(lastArg.efData.origin);
+		const caster = sourceItem.parent;
+		const casterToken = canvas.tokens.placeables.find((t) => t.actor?.uuid === caster.uuid);
+		
+		const damageRoll = await new Roll(`${lastArg.efData.flags.cantripDice}d8[${damageType}]`).evaluate({ async: false });
+		await new MidiQOL.DamageOnlyWorkflow(caster, casterToken.document, damageRoll.total, damageType, [actorToken], 
+			damageRoll, {flavor: `${optionName}`, itemCardId: lastArg.itemCardId});
+		sequencerEffect(actorToken, sequencerFile, sequencerScale);
+	}
+	else if (args[0] === "off") {
+		console.log(`${optionName} - off`);
+	}
+
+} catch (err) {
+    console.error(`${optionName}: ${version}`, err);
+}
 
 // sequencer caller for effects on target
 function sequencerEffect(target, file, scale) {
  if (game.modules.get("sequencer")?.active && hasProperty(Sequencer.Database.entries, "jb2a")) {
   new Sequence().effect().file(file).atLocation(target).scaleToObject(scale).play();
- }
-}
-
-function weaponAttack(caster, sourceItemData, origin, target) {
- const chosenWeapon = DAE.getFlag(caster, "boomingBladeChoice");
- const filteredWeapons = caster.items.filter((i) => i.data.type === "weapon" && i.data.data.equipped);
- const weaponContent = filteredWeapons
-  .map((w) => {
-   const selected = chosenWeapon && chosenWeapon == w.id ? " selected" : "";
-   return `<option value="${w.id}"${selected}>${w.name}</option>`;
-  })
-  .join("");
-
- const content = `
-<div class="form-group">
- <label>Weapons : </label>
- <select name="weapons"}>
- ${weaponContent}
- </select>
-</div>
-`;
- new Dialog({
-  title: "Booming Blade: Choose a weapon to attack with",
-  content,
-  buttons: {
-   Ok: {
-    label: "Ok",
-    callback: async (html) => {
-     const characterLevel = caster.data.type === "character" ? caster.data.data.details.level : caster.data.data.details.cr;
-     const cantripDice = 1 + Math.floor((characterLevel + 1) / 6);
-     const itemId = html.find("[name=weapons]")[0].value;
-     const weaponItem = caster.getEmbeddedDocument("Item", itemId);
-     DAE.setFlag(caster, "boomingBladeChoice", itemId);
-     const weaponCopy = duplicate(weaponItem);
-     delete weaponCopy._id;
-     if (cantripDice > 0) {
-      weaponCopy.data.damage.parts[0][0] += ` + ${cantripDice - 1}d8[${damageType}]`;
-     }
-     weaponCopy.name = weaponItem.name + " [Booming Blade]";
-     weaponCopy.effects.push({
-      changes: [{ key: "macro.itemMacro", mode: 0, value: "", priority: "20", }],
-      disabled: false,
-      duration: { rounds: 1 },
-      icon: sourceItemData.img,
-      label: sourceItemData.name,
-      origin,
-      transfer: false,
-      flags: { targetUuid: target.uuid, casterUuid: caster.uuid, origin, cantripDice, damageType, dae: { specialDuration: ["turnStartSource", "isMoved"], transfer: false }},
-     });
-     setProperty(weaponCopy, "flags.itemacro", duplicate(sourceItemData.flags.itemacro));
-     setProperty(weaponCopy, "flags.midi-qol.effectActivation", false);
-     const attackItem = new CONFIG.Item.documentClass(weaponCopy, { parent: caster });
-     const options = { showFullCard: false, createWorkflow: true, configureDialog: true };
-     await MidiQOL.completeItemRoll(attackItem, options);
-    },
-   },
-   Cancel: {
-    label: "Cancel",
-   },
-  },
- }).render(true);
-}
-
-if(args[0].tag === "OnUse"){
- if (lastArg.targets.length > 0) {
-  const casterData = await fromUuid(lastArg.actorUuid);
-  const caster = casterData.actor ? casterData.actor : casterData;
-  weaponAttack(caster, lastArg.itemData, lastArg.uuid, lastArg.targets[0]);
- } else {
-  ui.notifications.error("Booming Blade: No target selected: please select a target and try again.");
- }
-
-} else if (args[0] === "on") {
- const targetToken = canvas.tokens.get(lastArg.tokenId);
- sequencerEffect(targetToken, sequencerFile, sequencerScale);
-} else if (args[0] === "off") {
- // uses midis move flag to determine if to apply extra damage
- if (lastArg["expiry-reason"] === "midi-qol:isMoved" || lastArg["expiry-reaason"] === "midi-qol:isMoved") {
-  const targetToken = await fromUuid(lastArg.tokenUuid);
-  const sourceItem = await fromUuid(lastArg.efData.flags.origin);
-  const caster = sourceItem.parent;
-  const casterToken = canvas.tokens.placeables.find((t) => t.actor?.uuid === caster.uuid);
-  const damageRoll = await new Roll(`${lastArg.efData.flags.cantripDice}d8[${damageType}]`).evaluate({ async: true });
-  if (game.dice3d) game.dice3d.showForRoll(damageRoll);
-  const workflowItemData = duplicate(sourceItem.data);
-  workflowItemData.data.target = { value: 1, units: "", type: "creature" };
-  workflowItemData.name = "Booming Blade: Movement Damage";
-
-  await new MidiQOL.DamageOnlyWorkflow(
-   caster,
-   casterToken.data,
-   damageRoll.total,
-   damageType,
-   [targetToken],
-   damageRoll,
-   {
-    flavor: `(${CONFIG.DND5E.damageTypes[damageType]})`,
-    itemCardId: "new",
-    itemData: workflowItemData,
-    isCritical: false,
-   }
-  );
-  sequencerEffect(targetToken, sequencerFile, sequencerScale);
  }
 }

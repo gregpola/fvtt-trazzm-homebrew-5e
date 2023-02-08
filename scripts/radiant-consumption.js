@@ -1,9 +1,11 @@
-const version = "0.1.0";
+const version = "10.0.0";
 const optionName = "Radiant Consumption";
+const timeFlag = "radiantConsumptionTime";
 
 try {
-	let workflow = MidiQOL.Workflow.getWorkflow(args[0].uuid);
-	let actor = workflow?.actor;
+	const lastArg = args[args.length - 1];
+	const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
+	const actorToken = canvas.tokens.get(lastArg.tokenId);
 		
 	if (args[0].macroPass === "DamageBonus") {
 		// Check for availability i.e. once per actors turn
@@ -20,12 +22,12 @@ try {
 				content: `<p>Apply ${optionName} damage to this attack?</p>`,
 				buttons: {
 					one: {
-						icon: '<p> </p><img src = "icons/magic/light/explosion-star-glow-silhouette.webp" width="40" height="40"></>',
+						icon: '<p> </p><img src = "icons/magic/light/explosion-star-glow-silhouette.webp" width="30" height="30"></>',
 						label: "<p>Yes</p>",
 						callback: () => resolve(true)
 					},
 					two: {
-						icon: '<p> </p><img src = "icons/skills/melee/weapons-crossed-swords-yellow.webp" width="40" height="40"></>',
+						icon: '<p> </p><img src = "icons/skills/melee/weapons-crossed-swords-yellow.webp" width="30" height="30"></>',
 						label: "<p>No</p>",
 						callback: () => { resolve(false) }
 					}
@@ -41,41 +43,39 @@ try {
 		}
 
 		const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn /100}`;
-		const lastTime = actor.getFlag("midi-qol", "radiantConsumptionTime");
+		const lastTime = actor.getFlag("midi-qol", timeFlag);
 		if (combatTime !== lastTime) {
-			await actor.setFlag("midi-qol", "radiantConsumptionTime", combatTime)
+			await actor.setFlag("midi-qol", timeFlag, combatTime)
 		}
 
-		const pb = actor?.data?.data?.attributes?.prof ?? 2;
+		const pb = actor.system.attributes.prof ?? 2;
 		return {damageRoll: `${pb}[radiant]`, flavor: `${optionName} Damage`};
 		
 	}
 	else if (args[0].macroPass === "postActiveEffects") {
 		// do radiant damage to everyone around the actor
 		const targets = MidiQOL.findNearby(null, token, 10, 0);
-		const rollTerm = actor.data.data.attributes.prof;
+		const rollTerm = actor.system.attributes.prof;
 		let damageRoll = await new Roll(`${rollTerm}`).evaluate({async: false});
-		await new MidiQOL.DamageOnlyWorkflow(actor, workflow.token.document, damageRoll.total, "radiant", targets, 
-			damageRoll, {flavor: `${optionName}`, itemCardId: args[0].itemCardId});
+		await game.dice3d?.showForRoll(damageRoll);
+		await new MidiQOL.DamageOnlyWorkflow(actor, actorToken, damageRoll.total, "radiant", targets, 
+			damageRoll, {flavor: `${optionName}`, itemCardId: lastArg.itemCardId});
 			
 	}
 
 } catch (err) {
-    console.error(`${resourceName}: ${optionName} - ${version}`, err);
+    console.error(`${optionName}: ${version}`, err);
 }
 
 // Check to make sure the actor hasn't already applied the damage this turn
 function isAvailableThisTurn() {
 	if (game.combat) {
-	  const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn /100}`;
-	  const lastTime = actor.getFlag("midi-qol", "radiantConsumptionTime");
-	  if (combatTime === lastTime) {
-	   console.log(`${optionName}: Already used this turn`);
-	   return false;
-	  }
-	  
-	  return true;
-	}
-	
+		const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn /100}`;
+		const lastTime = actor.getFlag("midi-qol", timeFlag);
+		if (combatTime === lastTime) {
+			return false;
+		}
+		return true;
+	}	
 	return false;
 }

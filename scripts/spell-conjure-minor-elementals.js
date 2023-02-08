@@ -1,17 +1,17 @@
-const version = "10.0.0";
+const version = "10.0.1";
 const optionName = "Conjure Minor Elementals";
+const summonFlag = "conjure-minor-elementals";
 
 try {
 	const lastArg = args[args.length - 1];
-	let tactor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
+	const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
+	const actorToken = canvas.tokens.get(lastArg.tokenId);
 
-	if (args[0].macroPass === "preActiveEffects") {
+	if (args[0] === "on") {
         if (!game.modules.get("warpgate")?.active) ui.notifications.error("Please enable the Warp Gate module")
 		
-		let spellLevel = args[0].spellLevel;
-		let actor = args[0].actor;
-		const token = await canvas.tokens.get(args[0].tokenId);
-
+		const sourceItem = await fromUuid(lastArg.origin);
+		const spellLevel = Number(args[1]);
 		let levelMultiplier = {1: 1, 2: 1, 3: 1, 4: 1, 5: 1, 6: 2, 7: 2, 8: 3, 9: 3};
 		const multiplier = levelMultiplier[spellLevel];
 		let counts = [8*multiplier, 4*multiplier, 2*multiplier, 1*multiplier];
@@ -76,55 +76,54 @@ try {
 			}
 
 			// build the update data to match summoned traits
-			const name = "Conjured (" + entity.name + ")";
+			const summonName = `${entity.name} (${actor.name})`;
 			let updates = {
 				token: {
-					"name": name,
-					"disposition": 1,
-					"flags": { "midi-srd": { "Conjured Elemental" : { "ActorId": tactor.id } } }
+					"name": summonName,
+					"disposition": CONST.TOKEN_DISPOSITIONS.FRIENDLY,
+					"displayName": CONST.TOKEN_DISPLAY_MODES.HOVER,
+					"displayBars": CONST.TOKEN_DISPLAY_MODES.ALWAYS,
+					"bar1": { attribute: "attributes.hp" },
+					"actorLink": false,
+					"flags": { "midi-srd": { "Conjured Elemental" : { "ActorId": actor.id } } }
 				},
-				"name": name,
+				"name": summonName,
 				"system.details": { 
 					"type.value": "fey"
 				}
-			}
+			};
 
-			// import the actor
-			let document = await entity.collection.importFromCompendium(game.packs.get(entity.pack), summonId, updates);
-			if (!document) {
-				ui.notifications.error(`${optionName} - unable to import ${resultData.text} from the compendium`);
-				return false;
+			let summonActor = game.actors.getName(summonName);
+			if (!summonActor) {
+				// import the actor
+				let document = await entity.collection.importFromCompendium(game.packs.get(entity.pack), summonId, updates);
+				if (!document) {
+					ui.notifications.error(`${optionName} - unable to import ${resultData.text} from the compendium`);
+					return false;
+				}
+				await warpgate.wait(500);
+				summonActor = game.actors.getName(summonName);
 			}
 
 			// Spawn the result
 			const tokenData = entity.prototypeToken;
-			const maxRange = 60;
-			let snap = tokenData.width/2 === 0 ? 1 : -1;
-			let {x, y} = await MidiMacros.warpgateCrosshairs(token, maxRange, optionName, tokenData.texture.src, tokenData, snap);
+			const maxRange = sourceItem.system.range.value ? sourceItem.system.range.value : 60;
+			let position = await HomebrewMacros.warpgateCrosshairs(actorToken, maxRange, sourceItem, summonActor.prototypeToken);
+			if (position) {
+				let options = {duplicates: choice[1], collision: true};
+				const spawned = await warpgate.spawnAt(position, summonName, {}, { controllingActor: actor }, options);
+				if (!spawned || !spawned[0]) {
+					ui.notifications.error(`${optionName} - Unable to spawn the elemental`);
+					return false;
+				}
 
-			let options = {duplicates: choice[1], collision: true};
-			
-			const spawned = await warpgate.spawnAt({ x, y }, name, {}, { controllingActor: actor }, options);
-			if (!spawned || !spawned[0]) {
-				ui.notifications.error(`${optionName} - Unable to spawn the elemental`);
+				// keep track of the spawned critters, so that they can be deleted after the spell expires
+				await actor.setFlag("midi-qol", summonFlag, summonName);
+			}
+			else {
+				ui.notifications.error(`${optionName} - invalid conjure location`);
 				return false;
 			}
-
-			// keep track of the spawned critters, so that they can be deleted after the spell expires
-			await DAE.setFlag(tactor, optionName, name);
-			
-			// If in combat, set combat state and initiative
-			// TODO ? set all the same
-			if (game.combat) {
-				for (const tid of spawned) {
-					let theToken = canvas.tokens.get(tid);
-					if(theToken) {
-						await theToken.toggleCombat();
-						await theToken.actor.rollInitiative();
-					}
-				}
-			}
-
 		}
 		else {
 			return false;
@@ -132,15 +131,18 @@ try {
 
 	}
 	else if (args[0] === "off") {
-		let summonName = await DAE.getFlag(tactor, optionName);
-		if (summonName) {		
-			await MidiMacros.deleteTokens("Conjured Elemental", tactor);
+		// delete the summons
+		const summonName = actor.getFlag("midi-qol", summonFlag);
+		if (summonName) {
+			await actor.unsetFlag("midi-qol", summonFlag);
+			
+			let tokens = canvas.tokens.ownedTokens.filter(i => i.name === summonName);
+			for (let i = 0; i < tokens.length; i++) {
+				await warpgate.dismiss(tokens[i].id, game.canvas.scene.id);
+			}
 		}
-		await DAE.unsetFlag(tactor, optionName);
-		game.actors.forEach(t => { if (!t.folder && (t.name === summonName)) { t.delete(); } });
-
 	}
 	
 } catch (err) {
-    console.error(`${optionName} ${version}`, err);
+    console.error(`${optionName}: ${version}`, err);
 }

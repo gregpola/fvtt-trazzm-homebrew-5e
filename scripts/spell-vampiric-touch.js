@@ -54,7 +54,7 @@ try {
 									]
 								},
 								"preparation": {
-								"mode": "atwill"
+									"mode": "atwill"
 								}
 							},
 							"flags": {

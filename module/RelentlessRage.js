@@ -28,6 +28,7 @@ export class RelentlessRage {
                         const featureValue = featureItem.system.uses?.value ?? 1;
                         const targetValue = (10 + (5 * featureValue));
                         let saveRoll = await targetActor.rollAbilitySave("con", {flavor: ITEM_NAME + " - DC " + targetValue});
+                        await game.dice3d?.showForRoll(saveRoll);
                         if (saveRoll.total >= targetValue) {
                             ditem.totalDamage = ditem.hpDamage = ditem.appliedDamage = ditem.oldHP - 1;
                             ditem.newHP = 1;

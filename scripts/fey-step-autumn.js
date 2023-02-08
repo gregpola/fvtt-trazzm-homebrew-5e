@@ -1,0 +1,167 @@
+const version = "10.0.1";
+const optionName = "Fey Step (Autumn)";
+
+try {
+	if (args[0].macroPass === "postActiveEffects") {
+		const lastArg = args[args.length - 1];
+		let actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
+		let actorToken = canvas.tokens.get(lastArg.tokenId);
+		const maxRange = lastArg.item.system.range.value ?? 30;
+
+		// transport the caster		
+		let position = await HomebrewMacros.warpgateCrosshairs(actorToken, maxRange, lastArg.item, actorToken);
+		if (position) {
+			// check for token collision
+			const newCenter = canvas.grid.getSnappedPosition(position.x - actorToken.width / 2, position.y - actorToken.height / 2, 1);
+			if (HomebrewMacros.checkPosition(newCenter.x, newCenter.y)) {
+				ui.notifications.error(`${optionName} - can't teleport on top of another token`);
+				return false;
+			}
+			
+			const portalScale = actorToken.w / canvas.grid.size * 0.7;		
+			new Sequence()
+				.effect()
+				.file("jb2a.misty_step.01.green")       
+				.atLocation(actorToken)
+				.scale(portalScale)
+				.fadeOut(200)
+				.wait(500)
+				.thenDo(() => {
+					canvas.pan(position)
+				})
+				.animation()
+				.on(actorToken)
+				.teleportTo(position, { relativeToCenter: true })
+				.fadeIn(200)
+				.effect()
+				.file("jb2a.misty_step.02.blue")
+				.atLocation({x: position.x, y: position.y})
+				.scale(portalScale)
+				.anchor(0.5,0.5)
+				.play();
+		}
+		else {
+			ui.notifications.error(`${optionName} - invalid teleport location`);
+			return false;
+		}
+			
+		// Ask which targets to try to charm
+		await wait(1000);
+		const potentialTargets = MidiQOL.findNearby(null, actorToken, 10, null);
+		if (potentialTargets.length === 0) {
+			console.log(`${optionName} - no targets within 10 feet to charm`);
+			return;
+		}
+		
+		let charmTargets = new Set();
+		
+		let rows = "";
+		for(let t of potentialTargets) {
+			let row = `<div class="flexrow"><label>${t.name}</label><input type="checkbox" value=${t.actor.uuid} style="margin-right:10px;"/></div>`;
+			rows += row;
+		}
+		
+		let content = `
+		  <form>
+			<div class="flexcol">
+				<div class="flexrow" style="margin-bottom: 5px;"><p>Pick your charm targets (max 2):</p></div>
+				<div id="targetRows" class="flexcol"style="margin-bottom: 10px;">
+					${rows}
+				</div>
+			</div>
+		  </form>
+		`;
+		
+		let dialog = new Promise((resolve, reject) => {
+			new Dialog({
+				title: optionName,
+				content,
+				buttons:
+				{
+					Ok:
+					{
+						label: `Ok`,
+						callback: async (html) => {
+							let spent = 0;
+							var grid = document.getElementById("targetRows");
+							var checkBoxes = grid.getElementsByTagName("INPUT");
+							for (var i = 0; i < checkBoxes.length; i++) {
+								if (checkBoxes[i].checked) {
+									charmTargets.add(checkBoxes[i].value);
+									spent += 1;
+								}
+							}
+							
+							if (!spent) {
+								resolve(false);
+							}
+							else if (spent > 2) {
+								ui.notifications.error(`${optionName} - too many targets selected`);
+								resolve(false);
+							}
+
+							resolve(true);
+						}
+					},
+					Cancel:
+					{
+						label: `Cancel`,
+						callback: () => { resolve(false) }
+					}
+						}
+			}).render(true);
+		});
+		
+		let proceed = await dialog;
+		if (proceed) {
+			const saveDC = actor.system.attributes.spelldc;
+			const saveFlavor = `${CONFIG.DND5E.abilities["wis"]} DC${saveDC} ${optionName}`;
+			const sourceOrigin = args[0]?.tokenUuid;
+			
+			const charmedEffectData = {
+				label: "Charmed",
+				icon: "modules/dfreds-convenient-effects/images/charmed.svg",
+				origin: sourceOrigin,
+				duration: {startTime: game.time.worldTime, seconds: 60},
+				changes: [
+					{
+						key: 'macro.CE',
+						mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
+						value: "Charmed",
+						priority: 20
+					}
+				],
+				flags: {
+					dae: {
+						selfTarget: false,
+						stackable: "none",
+						durationExpression: "",
+						macroRepeat: "none",
+						specialDuration: [
+							"isDamaged", "isSave"
+						],
+						transfer: false
+					}
+				},
+				disabled: false
+			};
+			
+			for (let uuid of charmTargets.values()) {
+				let targetActor = MidiQOL.MQfromActorUuid(uuid);
+				if (targetActor) {
+					let saveRoll = await targetActor.rollAbilitySave("wis", {saveFlavor});
+					await game.dice3d?.showForRoll(saveRoll);
+
+					if (saveRoll.total < saveDC) {
+						await MidiQOL.socket().executeAsGM("createEffects", { actorUuid: uuid, effects: [charmedEffectData] });
+					}
+				}
+			}
+		}		
+	}
+	
+} catch (err) {
+    console.error(`${optionName} ${version}`, err);
+}
+
+async function wait(ms) { return new Promise(resolve => { setTimeout(resolve, ms); });}
