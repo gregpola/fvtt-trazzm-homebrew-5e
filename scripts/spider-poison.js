@@ -53,9 +53,7 @@ try {
 						
 							let mutations = {};
 							mutations[selectedItem.name] = {
-								"name": `${selectedItem.name} (${optionName})`,
-								"system.components.somatic": false,
-								"system.components.vocal": false
+								"name": `${selectedItem.name} (${optionName})`
 							};
 													
 							const updates = {

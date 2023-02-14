@@ -91,7 +91,7 @@ export class InitiativeHandler {
                     // Damage bonus effect
                     const damageBonusEffect = {
                         label: "Dread Ambusher - Bonus Damage",
-                        icon: "icons/skills/movement/feet-winged-boots-brown.webp",
+                        icon: "icons/magic/nature/stealth-hide-beast-eyes-green.webp",
                         origin: featureOrigin,
                         changes: [
                             {

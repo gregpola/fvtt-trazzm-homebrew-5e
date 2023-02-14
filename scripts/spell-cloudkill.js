@@ -1,6 +1,7 @@
 /*
 	For the template to look cool for this, add an Override in the Token Magic Template Settings:
 	
+	*** Ignore this ***
 		Target: Cloudkill
 		Inner Opacity: 0.5
 		Effect Tint: #00A80B

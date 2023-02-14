@@ -1,15 +1,11 @@
-# 10.0.5
+# 10.0.6
 * Fixed/Updated:
   * Class Feature: Evasion
   * Item: all injury poisons - 3 ammo effect
   * Rogue: Sneak Attack - fixed out of combat bug, updated to work on NPC's
-  * Spell: Lesser Restoration
-  * Spell: Levitate
+  * Spells: Lesser Restoration, Levitate, Shield
   
 * Added Automation to:
-  * Creatures: Drow Assassin, Drow Elite Warrior, Drow Gunslinger, Drow House Captain, Drow Inquisitor 
-  * Creatures: Drow Inquisitor (Summoner Variant), 
-  * Creatures: Quasit, 
   * Druid: Circle of the Shepherd - all features except Faithful Summons
   * Item: Dagger of Venom
   * Potion of Fire Breath

@@ -8,9 +8,9 @@
 const version = "10.0.0";
 const optionName = "Spirit Totem";
 const summonFlag = "spirit-totem";
-const bearTotemId = "jMuTtF0dF44XWS4c";
-const hawkTotemId = "EeE1fQqfPLrAZg3d";
-const unicornTotemId = "tWpxVCeF2jzJmplV";
+const bearTotemId = "Q2nGM1ElUYDPcLHZ";
+const hawkTotemId = "wpmRmZ9pSYFKxnVa";
+const unicornTotemId = "HD4G5T4lTJbljnnJ";
 
 try {
 	const lastArg = args[args.length - 1];
