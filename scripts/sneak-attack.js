@@ -9,10 +9,10 @@
 
 	The amount of the extra damage increases as you gain levels in this class, as shown in the Sneak Attack column of the Rogue table.		
 */
-const version = "10.1.0";
+const version = "10.1.1";
 const optionName = "Sneak Attack";
 const lastArg = args[args.length - 1];
-const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn / 100}`;
+const combatTime = game.combat ? `${game.combat.id}-${game.combat.round + game.combat.turn / 100}` : 1;
 
 try {
 	if (lastArg.macroPass === "DamageBonus") {
@@ -29,7 +29,7 @@ try {
 				
 		// check for rogue levels
 		let rogueToken = canvas.tokens.get(lastArg.tokenId);
-		const rogueLevels = rogueToken.actor.getRollData().classes.rogue?.levels;
+		const rogueLevels = rogueToken.actor.type === "npc" ? rogueToken.actor.system.details.cr : rogueToken.actor.system.classes.rogue?.levels;
 	    if (!rogueLevels) {
 			console.debug(`${optionName} - no rogue levels`);
 			return {};

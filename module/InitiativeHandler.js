@@ -13,36 +13,118 @@ export class InitiativeHandler {
         });
 
         Hooks.on("dnd5e.rollInitiative", async(actor, combatants) => {
-            // look for relentless
-            let featureItem = actor?.items?.getName("Relentless");
-            if (featureItem) {
-                // add a superiority die if they don't have any left
-                let resKey = InitiativeHandler.findResource(actor, "Superiority Dice");
-                if (resKey) {
-                    let resources = actor.system.resources;
-                    if (resources[resKey].value < 1) {
-                        resources[resKey].value = 1;
-                        actor.update({ "system.resources": resources });
-                        await InitiativeHandler.wait(500);
+        });
+
+        Hooks.on("combatStart", async (combat, delta) => {
+            let tokens = combat.combatants.map(c => c.token);
+            console.log(combat);
+
+            // look for supported features in the combatants
+            for (let token of tokens) {
+                let actor = token.actor;
+
+                // look for relentless
+                let featureItem = actor?.items?.getName("Relentless");
+                if (featureItem) {
+                    // add a superiority die if they don't have any left
+                    let resKey = InitiativeHandler.findResource(actor, "Superiority Dice");
+                    if (resKey) {
+                        let resources = actor.system.resources;
+                        if (resources[resKey].value < 1) {
+                            resources[resKey].value = 1;
+                            actor.update({ "system.resources": resources });
+                            await InitiativeHandler.wait(500);
+                        }
                     }
                 }
-            }
 
-            // Look for Perfect Self
-            featureItem = actor?.items?.getName("Perfect Self");
-            if (featureItem) {
-                // At 20th level, when you roll for initiative and have no ki points remaining, you regain 4 ki points.
-                let resKey = InitiativeHandler.findResource(actor, "Ki Points");
-                if (resKey) {
-                    let resources = actor.system.resources;
-                    if (resources[resKey].value < 1) {
-                        resources[resKey].value = 4;
-                        actor.update({ "system.resources": resources });
-                        await InitiativeHandler.wait(500);
+                // Look for Perfect Self
+                featureItem = actor?.items?.getName("Perfect Self");
+                if (featureItem) {
+                    // At 20th level, when you roll for initiative and have no ki points remaining, you regain 4 ki points.
+                    let resKey = InitiativeHandler.findResource(actor, "Ki Points");
+                    if (resKey) {
+                        let resources = actor.system.resources;
+                        if (resources[resKey].value < 1) {
+                            resources[resKey].value = 4;
+                            actor.update({ "system.resources": resources });
+                            await InitiativeHandler.wait(500);
+                        }
                     }
                 }
-            }
 
+                // Look for Dread Ambusher
+                featureItem = actor?.items?.getName("Dread Ambusher");
+                if (featureItem) {
+                    let newEffects = [];
+                    const featureOrigin = actor.uuid; // ????
+
+                    // Movement bonus effect
+                    const movementBonusEffect = {
+                        label: "Dread Ambusher - Movement Bonus",
+                        icon: "icons/skills/movement/feet-winged-boots-brown.webp",
+                        origin: featureOrigin,
+                        changes: [
+                            {
+                                key: 'system.attributes.movement.walk',
+                                mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                                value: 10,
+                                priority: 20
+                            }
+                        ],
+                        flags: {
+                            dae: {
+                                selfTarget: false,
+                                stackable: "none",
+                                durationExpression: "",
+                                macroRepeat: "none",
+                                specialDuration: [
+                                    "turnStartSource"
+                                ],
+                                transfer: false
+                            }
+                        },
+                        disabled: false
+                    };
+                    newEffects.push(movementBonusEffect);
+
+                    // Damage bonus effect
+                    const damageBonusEffect = {
+                        label: "Dread Ambusher - Bonus Damage",
+                        icon: "icons/skills/movement/feet-winged-boots-brown.webp",
+                        origin: featureOrigin,
+                        changes: [
+                            {
+                                key: 'system.bonuses.mwak.damage',
+                                mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                                value: '1d8',
+                                priority: 20
+                            },
+                            {
+                                key: 'system.bonuses.rwak.damage',
+                                mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                                value: '1d8',
+                                priority: 20
+                            }
+                        ],
+                        flags: {
+                            dae: {
+                                selfTarget: false,
+                                stackable: "none",
+                                durationExpression: "",
+                                macroRepeat: "none",
+                                specialDuration: [
+                                    "1Attack", "turnStartSource"
+                                ],
+                                transfer: false
+                            }
+                        },
+                        disabled: false
+                    };
+                    newEffects.push(damageBonusEffect);
+                    actor.createEmbeddedDocuments("ActiveEffect", newEffects);
+                }
+            }
         });
     }
 

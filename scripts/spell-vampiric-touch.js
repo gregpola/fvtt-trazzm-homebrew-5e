@@ -13,13 +13,13 @@ try {
 		
 			ChatMessage.create({content: `${lastArg.actor.name} steals ${steal} HP`})
 			const healthUpdate = {
-			actor: {
-				data: {
-					attributes: {
-						hp: {value: newHP}
-								}
+				actor: {
+					system: {
+						attributes: {
+							hp: {value: newHP}
+						}
 					}
-				
+					
 				}
 			}
 			await warpgate.mutate(token.document, healthUpdate, {}, {permanent: true});

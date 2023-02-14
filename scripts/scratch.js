@@ -1,13 +1,17 @@
 const version = "10.0.0";
-const optionName = "Precision Attack";
+const optionName = "Precision";
 const resourceName = "Superiority Dice";
-
+// 
 try {
 	const lastArg = args[args.length - 1];
 	const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
 	const actorToken = canvas.tokens.get(lastArg.tokenId);
+
 	const targetActor = lastArg.hitTargets[0].actor;
 	const targetToken = game.canvas.tokens.get(lastArg.hitTargets[0].id);
+	const targetActor = lastArg.targets[0].actor;
+	const targetToken = game.canvas.tokens.get(lastArg.targets[0].id);
+
 	const item = fromUuid(lastArg.origin);
 	const sourceItem = fromUuid(lastArg.sourceItemUuid)
 	
@@ -19,6 +23,8 @@ try {
 	actor.system.abilities.cha.mod;
 	
 	macro.tokenMagic
+
+	let saveRoll = await targetActor.rollAbilitySave("con", {flavor: saveFlavor});
 
 	await game.dice3d?.showForRoll(saveRoll);
 	
@@ -38,16 +44,16 @@ try {
 
 async function wait(ms) { return new Promise(resolve => { setTimeout(resolve, ms); }); }
 
-function findEffect(actor, effectName) {
-    let effectUuid = null;
-    effectUuid = actor?.effects?.find(ef => ef.label === effectName);
-    return effectUuid;
+async function findEffect(actor, effectName) {
+    let effect = null;
+    effect = actor?.effects.find(ef => ef.label === effectName);
+    return effect;
 }
 
 async function findEffect(actor, effectName, origin) {
-    let effectUuid = null;
-    effectUuid = actor?.effects?.find(ef => ef.label === effectName && ef.origin === origin);
-    return effectUuid;
+    let effect = null;
+    effect = actor?.effects?.find(ef => ef.label === effectName && ef.origin === origin);
+    return effect;
 }
 
 async function wait(ms) { return new Promise(resolve => { setTimeout(resolve, ms); });}

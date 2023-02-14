@@ -23,15 +23,4 @@ To install a module, follow these instructions:
     * Use the import file found in the config folder to ensure you have the settings required to support automation
   * sequencer
   * templatemacro
-
-### World Scripts
-  - This module has some world scripts to support some features. To install them, folow these steps:
-    1. Shutdown your world.
-    2. Copy the scripts named world-* from the module scripts directory to the root folder of your world.
-        The path is something like: ../FoundryVTT/data/worlds/<world name>.
-    3. Edit the world's world.json to include those scripts:
-        "esmodules": [
-            "world-protection-from-evil.js",
-            "world-mirror-image.js"
-        ],
-    4. Restart your world
+  * tokenmagic

@@ -32,7 +32,7 @@ try {
 		let possibleTargets = [actorToken, ...friendlyTargets, ...neutralTargets];
 		const recipients = possibleTargets.filter(filterRecipient);
 		
-		// roll the total temp HP to spend
+		// roll the total HP to spend
 		const clericLevel = actor.classes.cleric?.system.levels ?? 0;
 		if (!clericLevel) {
 			ui.notifications.error(`${optionName} - caster is not a cleric`);
