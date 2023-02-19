@@ -23,6 +23,8 @@ try {
 	actor.system.abilities.cha.mod;
 	
 	macro.tokenMagic
+	system.attributes.exhaustion = 2;
+	system.attributes.ac.bonus
 
 	let saveRoll = await targetActor.rollAbilitySave("con", {flavor: saveFlavor});
 
@@ -37,6 +39,10 @@ try {
 	ChatMessage.create({
 		content: `${actorToken.name}'s ${selectedItem.name} is blessed with positive energy`,
 		speaker: ChatMessage.getSpeaker({ actor: actor })});
+		
+// vertime setup to remove a condition on save
+turn=end, saveAbility=wis, saveDC=19, label=Frightened
+turn=end, saveAbility=wis, saveDC=19, label=Stunned
 
 } catch (err) {
     console.error(`${optionName}: ${version}`, err);

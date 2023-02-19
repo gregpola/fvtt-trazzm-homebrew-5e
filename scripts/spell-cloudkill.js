@@ -47,7 +47,7 @@ try {
 		}
 	}
 	else if (args[0] === "off") {
-		// delete the totem
+		// delete the effects
 		const token = canvas.tokens.get(lastArg.tokenId);
 		const templateId = token.actor.getFlag("midi-qol", templateFlag);
 		if (templateId) {

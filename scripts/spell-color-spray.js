@@ -51,9 +51,6 @@ try {
 				}
 			}
 		}
-
-		if (blinded.length > 0) {
-		}
 	}
 	
 } catch (err) {

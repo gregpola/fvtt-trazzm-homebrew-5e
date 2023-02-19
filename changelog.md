@@ -1,3 +1,21 @@
+# 10.0.7
+* Fixed/Updated:
+  * Injury poisons: removed the destroy on empty flag for injury poisons as it breaks the automation
+
+* Added Automation to:
+  * Creatures: Drow, Drow Arachnomancer, Drow Assassin, Drow Elite Warrior, Drow Favored Consort, Drow Gunslinger,
+    Drow House Captain, Drow Inquisitor, Drow Inquisitor (Summoner Variant), Drow Mage, Drow Matron Mother,
+    Drow Mother of Rebellion, Drow Priestess of Lolth, Drow Shadowblade, Drow Shadowblade (Summoner Variant), 
+    Drow Spore Servant, Mutated Drow, K’thriss Drow’b
+  * Creatures: Glabrezu, Ligotti, Quasit, Shadow Demon, Yochlol
+  * Features: Fiendish Resilience
+  * Items: Robe of Stars
+  * Spells: Banishment, Bounding Boulder, Confusion, Darkness, Evard's Black Tentacles, Faerie Fire,
+    Mass Cure Wounds, Mass Healing Word, Power Word Stun, Spike Growth, Web
+
+* General Changes:
+  * Consolidated and optimized all drow images 
+
 # 10.0.6
 * Fixed/Updated:
   * Class Feature: Evasion

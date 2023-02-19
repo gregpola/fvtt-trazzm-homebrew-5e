@@ -312,7 +312,6 @@ try {
 		if (!attackItem) {
 			console.log("No attack item")
 			ui.notifications.warn("No Call Lightning attack item found")
-			return;
 		}
 		else {
 			const spell = casterActor.items.getName("Call Lightning");

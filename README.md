@@ -3,7 +3,7 @@
     A collection of homebrew content for dnd5e in FoundryVTT
 
 ### Compatibility:
-  - Tested with FVTT v10 and the DND5E system 2.1+.
+  - Tested with FVTT v10 and the DND5E system 2.1.4.
 
 ### Installation Instructions
 
@@ -12,6 +12,9 @@ To install a module, follow these instructions:
   1. Start FVTT and browse to the Game Modules tab in the Configuration and Setup menu
   2. Select the 'Install Module' button and enter the following URL: https://github.com/gregpola/fvtt-trazzm-homebrew-5e/releases/latest/download/module.json
   3. Click Install and wait for installation to complete 
+
+### Configuration:
+  * The config folder contains a midi config file; screenshots showing important settings; and a list of modules I recommend.
 
 ### Module Dependencies
   * active-auras

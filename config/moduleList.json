@@ -1,0 +1,296 @@
+{
+  "activeModules": [
+    {
+      "id": "aaw-aventyr",
+      "title": "AAW Aventyr Compendium",
+      "version": ""
+    },
+    {
+      "id": "ActiveAuras",
+      "title": "Active-Auras",
+      "version": ""
+    },
+    {
+      "id": "ATL",
+      "title": "Active Token Effects",
+      "version": ""
+    },
+    {
+      "id": "advanced-macros",
+      "title": "Advanced Macros",
+      "version": ""
+    },
+    {
+      "id": "ambientdoors",
+      "title": "Ambient Doors",
+      "version": ""
+    },
+    {
+      "id": "autoanimations",
+      "title": "Automated Animations",
+      "version": ""
+    },
+    {
+      "id": "chat-portrait",
+      "title": "Chat Portrait",
+      "version": ""
+    },
+    {
+      "id": "combat-carousel",
+      "title": "Combat Carousel",
+      "version": ""
+    },
+    {
+      "id": "compendium-browser",
+      "title": "Compendium Browser",
+      "version": ""
+    },
+    {
+      "id": "compendium-folders",
+      "title": "Compendium Folders",
+      "version": ""
+    },
+    {
+      "id": "df-qol",
+      "title": "DF Quality of Life",
+      "version": ""
+    },
+    {
+      "id": "dfreds-convenient-effects",
+      "title": "DFreds Convenient Effects",
+      "version": ""
+    },
+    {
+      "id": "dfreds-effects-panel",
+      "title": "DFreds Effects Panel",
+      "version": ""
+    },
+    {
+      "id": "df-templates",
+      "title": "DF Template Enhancements",
+      "version": ""
+    },
+    {
+      "id": "dice-so-nice",
+      "title": "Dice So Nice!",
+      "version": ""
+    },
+    {
+      "id": "dice-calculator",
+      "title": "Dice Tray",
+      "version": ""
+    },
+    {
+      "id": "dae",
+      "title": "Dynamic effects using Active Effects",
+      "version": ""
+    },
+    {
+      "id": "effectmacro",
+      "title": "Effect Macro",
+      "version": ""
+    },
+    {
+      "id": "find-the-culprit",
+      "title": "Find the culprit",
+      "version": ""
+    },
+    {
+      "id": "fxmaster",
+      "title": "FXMaster",
+      "version": ""
+    },
+    {
+      "id": "itemacro",
+      "title": "Item Macro",
+      "version": ""
+    },
+    {
+      "id": "item-piles",
+      "title": "Item Piles",
+      "version": ""
+    },
+    {
+      "id": "items-with-spells-5e",
+      "title": "Items with Spells DnD5e",
+      "version": ""
+    },
+    {
+      "id": "jb2a_patreon",
+      "title": "JB2A - Patreon Complete Collection",
+      "version": ""
+    },
+    {
+      "id": "levels",
+      "title": "Levels",
+      "version": ""
+    },
+    {
+      "id": "colorsettings",
+      "title": "lib - Color Settings",
+      "version": ""
+    },
+    {
+      "id": "scene-packer",
+      "title": "Library: Scene Packer",
+      "version": ""
+    },
+    {
+      "id": "lib-wrapper",
+      "title": "libWrapper",
+      "version": ".0"
+    },
+    {
+      "id": "link-item-resource-5e",
+      "title": "Link Item and Resource DnD5e",
+      "version": ""
+    },
+    {
+      "id": "maestro",
+      "title": "Maestro",
+      "version": ""
+    },
+    {
+      "id": "multi-token-edit",
+      "title": "Mass Edit",
+      "version": ""
+    },
+    {
+      "id": "midi-qol",
+      "title": "Midi QOL",
+      "version": ""
+    },
+    {
+      "id": "midi-srd",
+      "title": "Midi SRD",
+      "version": ""
+    },
+    {
+      "id": "monks-active-tiles",
+      "title": "Monk's Active Tile Triggers",
+      "version": ""
+    },
+    {
+      "id": "monks-tokenbar",
+      "title": "Monk's TokenBar",
+      "version": ""
+    },
+    {
+      "id": "monks-wall-enhancement",
+      "title": "Monk's Wall Enhancement",
+      "version": ""
+    },
+    {
+      "id": "Next-Up",
+      "title": "Next Up",
+      "version": ""
+    },
+    {
+      "id": "pointer",
+      "title": "PnP - Pointer and Pings!",
+      "version": ""
+    },
+    {
+      "id": "polyglot",
+      "title": "Polyglot",
+      "version": ""
+    },
+    {
+      "id": "rise-of-the-drow",
+      "title": "Rise of the Drow",
+      "version": ""
+    },
+    {
+      "id": "sequencer",
+      "title": "Sequencer",
+      "version": ""
+    },
+    {
+      "id": "simbuls-athenaeum",
+      "title": "Simbul's Athenaeum",
+      "version": ""
+    },
+    {
+      "id": "simbuls-creature-aide",
+      "title": "Simbul's Creature Aide",
+      "version": ""
+    },
+    {
+      "id": "foundryvtt-simple-calendar",
+      "title": "Simple Calendar",
+      "version": ""
+    },
+    {
+      "id": "socketlib",
+      "title": "socketlib",
+      "version": ""
+    },
+    {
+      "id": "splatter",
+      "title": "Splatter",
+      "version": ""
+    },
+    {
+      "id": "templatemacro",
+      "title": "Template Macro",
+      "version": ""
+    },
+    {
+      "id": "tidy5e-sheet",
+      "title": "Tidy5e Sheet",
+      "version": ""
+    },
+    {
+      "id": "tidy-ui_game-settings",
+      "title": "Tidy UI - Game Settings",
+      "version": ""
+    },
+    {
+      "id": "times-up",
+      "title": "Times Up",
+      "version": ""
+    },
+    {
+      "id": "tokenmagic",
+      "title": "Token Magic FX",
+      "version": ""
+    },
+    {
+      "id": "tome-of-heroes",
+      "title": "Tome of Heroes",
+      "version": ""
+    },
+    {
+      "id": "fvtt-trazzm-homebrew-5e",
+      "title": "Trazzm 5e Homebrew",
+      "version": ""
+    },
+    {
+      "id": "walledtemplates",
+      "title": "Walled Templates",
+      "version": ""
+    },
+    {
+      "id": "wall-height",
+      "title": "Wall Height",
+      "version": ""
+    },
+    {
+      "id": "warpgate",
+      "title": "Warp Gate",
+      "version": ""
+    }
+  ],
+  "inactiveModules": [
+    {
+      "id": "enhancedcombathud",
+      "title": "Argon - Combat HUD",
+      "version": ""
+    },
+    {
+      "id": "drider-of-the-underworld",
+      "title": "Drider of the Underworld",
+      "version": ""
+    }
+  ]
+}

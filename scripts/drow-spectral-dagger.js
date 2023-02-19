@@ -38,7 +38,7 @@ try {
         let summonActor = game.actors.getName(summonName);
         if (!summonActor) {
 			// Get from the compendium
-			const summonId = "dVzernHN06er7DPK";
+			const summonId = "xdWlBmKk1RRdlVy7";
 			let entity = await fromUuid("Compendium.fvtt-trazzm-homebrew-5e.homebrew-creatures." + summonId);
 			if (!entity) {
 				ui.notifications.error(`${optionName} - unable to find the actor`);

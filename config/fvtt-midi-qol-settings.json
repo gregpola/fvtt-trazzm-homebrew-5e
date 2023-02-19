@@ -13,7 +13,7 @@
     "autoFastForward": "all",
     "autoRollAttack": true,
     "autoRollDamage": "onHit",
-    "autoTarget": "dftemplates",
+    "autoTarget": "dfwalledTemplates",
     "checkSaveText": false,
     "concentrationAutomation": true,
     "consumeResource": "both",
@@ -79,7 +79,7 @@
     "potionUseSound": "",
     "promptDamageRoll": true,
     "quickSettings": true,
-    "rangeTarget": "always",
+    "rangeTarget": "wallsBlock",
     "reactionTimeout": 30,
     "recordAOO": "all",
     "removeButtons": "all",
@@ -207,7 +207,7 @@
         "title": "Active-Auras",
         "description": "Active-Auras",
         "url": "https://github.com/kandashi/Active-Auras",
-        "version": "v0.5.6",
+        "version": "v0.5.7",
         "compatibility": {
           "minimum": "10",
           "verified": "10"
@@ -249,8 +249,7 @@
         "version": "1.19.3",
         "compatibility": {
           "minimum": "10",
-          "verified": "10",
-          "maximum": "10"
+          "verified": "10"
         },
         "relationships": {
           "systems": [],
@@ -326,7 +325,7 @@
         "title": "Automated Animations",
         "description": "This will automatically run most JB2A Animations such as Melee/Ranged Attacks, Spell Attacks, and Instant Spells",
         "url": "https://github.com/otigon/automated-jb2a-animations",
-        "version": "4.2.30",
+        "version": "4.2.31",
         "compatibility": {
           "minimum": "10",
           "verified": "10",
@@ -360,7 +359,7 @@
         "title": "Chat Portrait",
         "description": "Display the Actor's portrait and colors on the Chat Message.",
         "url": "https://github.com/p4535992/foundryvtt-chat-portrait",
-        "version": "0.8.33",
+        "version": "0.8.35",
         "compatibility": {
           "minimum": "10",
           "verified": "10",
@@ -642,7 +641,7 @@
         "version": "1.5.3",
         "compatibility": {
           "minimum": "0.7.5",
-          "verified": "10.291"
+          "verified": "10"
         },
         "relationships": {
           "systems": [],
@@ -705,42 +704,6 @@
         "socket": false
       },
       {
-        "title": "Argon - Combat HUD",
-        "description": "It's Magic",
-        "url": "https://github.com/theripper93/enhancedcombathud",
-        "version": "1.4.9",
-        "compatibility": {
-          "minimum": "10",
-          "verified": "10"
-        },
-        "relationships": {
-          "systems": [
-            {
-              "id": "dnd5e",
-              "type": "system",
-              "compatibility": {}
-            }
-          ],
-          "requires": [
-            {
-              "id": "colorsettings",
-              "type": "module",
-              "compatibility": {}
-            }
-          ],
-          "conflicts": [],
-          "flags": {}
-        },
-        "scripts": [
-          "modules/enhancedcombathud/scripts/main.js",
-          "modules/enhancedcombathud/scripts/config.js",
-          "modules/enhancedcombathud/scripts/ExtendedCombatHud.js",
-          "modules/enhancedcombathud/scripts/items.js"
-        ],
-        "esmodules": [],
-        "socket": true
-      },
-      {
         "title": "Find the culprit",
         "description": "This module helps you to find a module causing issues, by automating the process of deactivating and reactivating modules.<br />Just click the 'Find the culprit' button inside Module Management.",
         "url": "https://github.com/Moerill/fvtt-find-the-culprit",
@@ -786,7 +749,7 @@
         "title": "Trazzm 5e Homebrew",
         "description": "A collection of homebrew for dnd5e",
         "url": "https://github.com/gregpola/fvtt-trazzm-homebrew-5e",
-        "version": "10.0.5",
+        "version": "10.0.6",
         "compatibility": {
           "minimum": "10.286",
           "verified": "10",
@@ -895,8 +858,7 @@
         "version": "2.4.16",
         "compatibility": {
           "minimum": "10",
-          "verified": "10",
-          "maximum": "10"
+          "verified": "10"
         },
         "relationships": {
           "systems": [],
@@ -943,6 +905,43 @@
         "socket": false
       },
       {
+        "title": "Items with Spells DnD5e",
+        "description": "A module that allows spells to be attached to Items, Features, etc.",
+        "url": "https://github.com/ElfFriend-DnD/foundryvtt-items-with-spells-5e",
+        "version": "1.3.1",
+        "compatibility": {
+          "minimum": "10",
+          "verified": "10"
+        },
+        "relationships": {
+          "systems": [
+            {
+              "id": "dnd5e",
+              "type": "system",
+              "compatibility": {
+                "minimum": "2.1.2"
+              }
+            }
+          ],
+          "requires": [
+            {
+              "id": "lib-wrapper",
+              "type": "module",
+              "compatibility": {
+                "minimum": "1.12.7.1"
+              }
+            }
+          ],
+          "conflicts": [],
+          "flags": {}
+        },
+        "scripts": [],
+        "esmodules": [
+          "modules/items-with-spells-5e/scripts/items-with-spells-5e.js"
+        ],
+        "socket": false
+      },
+      {
         "title": "JB2A - Patreon Complete Collection",
         "description": "<p>Animated Assets for spells, tiles, tokens, melee and ranged attacks</p><p>Troubleshooting and FAQ section on our <a href=\"https://jb2a.com\">website</a> </p><p>Join our <a href=\"https://discord.gg/gmd8MAPX4m\">Discord server</a> for any further questions</p><p> <a href=\"https://www.jb2a.com/Library_Preview/\">Preview</a> our assets<br /></p><p>Thank you for the support ! ❤️</p>",
         "url": "https://www.patreon.com/JB2A",
@@ -967,7 +966,7 @@
         "title": "Levels",
         "description": "Add multiple vertical levels to maps",
         "url": "https://github.com/theripper93/Levels",
-        "version": "3.7.4",
+        "version": "3.7.5",
         "compatibility": {
           "minimum": "10",
           "verified": "10"
@@ -1079,36 +1078,6 @@
         "socket": false
       },
       {
-        "title": "Magic Items",
-        "description": "Module that adds the ability to create magical items with spells or feats that belong to the item itself, such as staffs or magic wands, which will be automatically inherited from the character who owns the item.",
-        "url": "https://gitlab.com/riccisi/foundryvtt-magic-items",
-        "version": "3.0.0",
-        "compatibility": {
-          "minimum": "10",
-          "verified": "10.285"
-        },
-        "relationships": {
-          "systems": [
-            {
-              "id": "dnd5e",
-              "type": "system",
-              "manifest": "https://raw.githubusercontent.com/foundryvtt/dnd5e/master/system.json",
-              "compatibility": {
-                "verified": "2.0.2"
-              }
-            }
-          ],
-          "requires": [],
-          "conflicts": [],
-          "flags": {}
-        },
-        "scripts": [],
-        "esmodules": [
-          "modules/magicitems/magicitems.js"
-        ],
-        "socket": false
-      },
-      {
         "title": "Midi QOL",
         "description": "Automates rolling weapon/spell attacks and applying damage",
         "url": "https://gitlab.com/tposney/midi-qol",
@@ -1162,8 +1131,9 @@
         "url": "https://github.com/thatlonelybugbear/midi-srd",
         "version": "10.10.0",
         "compatibility": {
-          "minimum": "9",
-          "verified": "10"
+          "minimum": "10.286",
+          "verified": "10",
+          "maximum": "10"
         },
         "relationships": {
           "systems": [
@@ -1270,6 +1240,28 @@
         "socket": true
       },
       {
+        "title": "Monk's Wall Enhancement",
+        "description": "Enhancements to the Wall Tool.  Drag points together, freehand draw a wall, plus more.",
+        "url": "https://github.com/ironmonk88/monks-wall-enhancement",
+        "version": "10.3",
+        "compatibility": {
+          "minimum": "10",
+          "verified": "10"
+        },
+        "relationships": {
+          "systems": [],
+          "requires": [],
+          "conflicts": [],
+          "flags": {}
+        },
+        "scripts": [],
+        "esmodules": [
+          "modules/monks-wall-enhancement/monks-wall-enhancement.js",
+          "modules/monks-wall-enhancement/settings.js"
+        ],
+        "socket": true
+      },
+      {
         "title": "Mass Edit",
         "description": "Search and edit multiple placeables at the same time.",
         "url": "https://github.com/Aedif/multi-token-edit",
@@ -1294,11 +1286,10 @@
         "title": "Next Up",
         "description": "Several Combat Enhancements, pan to combatant, open sheets and turn markers.",
         "url": "https://github.com/gregpola/Next-Up",
-        "version": "10.0.4",
+        "version": "10.0.5",
         "compatibility": {
-          "minimum": "10.286",
-          "verified": "10",
-          "maximum": "10"
+          "minimum": "0.8.9",
+          "verified": "10"
         },
         "relationships": {
           "systems": [
@@ -1327,8 +1318,7 @@
         "version": "2.4.1",
         "compatibility": {
           "minimum": "10",
-          "verified": "10.285",
-          "maximum": "10"
+          "verified": "10.285"
         },
         "relationships": {
           "systems": [],
@@ -1348,7 +1338,7 @@
         "title": "Polyglot",
         "description": "Talk to others using a language you can speak and scrambles text you can't understand, in several fantasy scripts.",
         "url": "https://github.com/mclemente/fvtt-module-polyglot",
-        "version": "1.8.9",
+        "version": "1.8.12",
         "compatibility": {
           "minimum": "10",
           "verified": "10"
@@ -1397,8 +1387,7 @@
         "version": "2.6.14",
         "compatibility": {
           "minimum": "0.8.6",
-          "verified": "10",
-          "maximum": "10"
+          "verified": "10"
         },
         "relationships": {
           "systems": [],
@@ -1620,7 +1609,7 @@
         "url": "https://github.com/sdenec/tidy5e-sheet",
         "version": "0.8.21",
         "compatibility": {
-          "minimum": "10.283",
+          "minimum": "10",
           "verified": "10"
         },
         "relationships": {
@@ -1832,10 +1821,38 @@
         "socket": false
       },
       {
+        "title": "Walled Templates",
+        "description": "",
+        "url": "https://github.com/caewok/fvtt-walled-templates",
+        "version": "0.4.8",
+        "compatibility": {
+          "minimum": "10.277",
+          "verified": "10.291"
+        },
+        "relationships": {
+          "systems": [],
+          "requires": [
+            {
+              "id": "lib-wrapper",
+              "type": "module",
+              "manifest": "https://raw.githubusercontent.com/ruipin/fvtt-lib-wrapper/master/module.json",
+              "compatibility": {}
+            }
+          ],
+          "conflicts": [],
+          "flags": {}
+        },
+        "scripts": [],
+        "esmodules": [
+          "modules/walledtemplates/scripts/module.js"
+        ],
+        "socket": false
+      },
+      {
         "title": "Warp Gate",
         "description": "Utility module for spawning and modifying tokens.",
         "url": "https://github.com/trioderegion/warpgate",
-        "version": "1.16.1",
+        "version": "1.16.2",
         "compatibility": {
           "minimum": "10",
           "verified": "10.291"

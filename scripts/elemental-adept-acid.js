@@ -28,7 +28,7 @@ try {
 	let itemData = lastArg.itemData;
 	
 	if (lastArg.macroPass === "preDamageRoll") {
-		// make sure the dmage type matches
+		// make sure the damage type matches
 		if (!theItem.system.damage.parts.map(i=>i[1]).includes(damageType)) {
 			return;
 		}

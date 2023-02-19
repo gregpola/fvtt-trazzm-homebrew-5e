@@ -38,7 +38,7 @@ try {
 				"displayBars": CONST.TOKEN_DISPLAY_MODES.ALWAYS,
 				"bar1": { attribute: "attributes.hp" },
 				"actorLink": false,
-				"flags": { "midi-srd": { "Conjured Elemental" : { "ActorId": actor.id } } }
+				"flags": { "midi-srd": { "Summoned Demon" : { "ActorId": actor.id } } }
 			},
 			"name": summonName
 		};
