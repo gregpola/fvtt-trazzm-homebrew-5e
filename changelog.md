@@ -1,3 +1,17 @@
+# 10.0.8
+* Fixed/Updated:
+  * Spells: Chill Touch (stop regeneration), Light
+
+* Added Automation to:
+  * Added a general grapple handler to te HomebrewMacros
+  * Creatures: Assassin Vine, Hobgoblin, Hobgoblin Captain, Hobgoblin Devastator, Hobgoblin Iron Shadow, Hobgoblin Warlord,
+    Bearded Devil, Wolf, Dire Wolf, Winter Wolf, Centaur, Owlbear
+  * Barbarian: Warrior of the Gods
+  * Rogue: Supreme Sneak
+
+* General Changes:
+  * Consolidated and optimized all hobgoblin images
+
 # 10.0.7
 * Fixed/Updated:
   * Injury poisons: removed the destroy on empty flag for injury poisons as it breaks the automation

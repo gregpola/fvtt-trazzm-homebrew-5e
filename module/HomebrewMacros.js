@@ -551,4 +551,230 @@ class HomebrewMacros {
         }
     }
 
+    /**
+     * Applies a grappled effect to the target if they are not already grappled by the source.
+     *
+     * @param sourceActor       the grappling actor
+     * @param tokenDoc          the target actor token document
+     * @param saveDC            the break grapple DC
+     * @param sourceActorFlag   a flag, if any, that should be removed on the sourceActor if the grapple is broken
+     * @param overtimeValue     an overtime effect value to apply to the target, if any
+     * @returns {Promise<boolean>}
+     */
+    static async applyGrappled(sourceActor, tokenDoc, saveDC, sourceActorFlag, overtimeValue) {
+        // sanity checks
+        if (!sourceActor || !tokenDoc || !saveDC) {
+            console.error("applyGrappled() is missing arguments");
+            return false;
+        }
+
+        let targetActor = tokenDoc.actor;
+        let existingGrappled = targetActor.effects.find(eff => eff.label === 'Grappled' && eff.origin === sourceActor.uuid);
+        if (existingGrappled) {
+            console.error("applyGrappled() " + targetActor.name + " is already grappled by " + sourceActor.name);
+            return false;
+        }
+
+        // add the grappled effect to the target
+        let grappledEffect = {
+            'label': 'Grappled',
+            'icon': 'icons/magic/nature/root-vine-fire-entangled-hand.webp',
+            'changes': [
+                {
+                    'key': 'flags.midi-qol.OverTime',
+                    'mode': CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
+                    'value': overtimeValue,
+                    'priority': 20
+                },
+                {
+                    'key': 'macro.CE',
+                    'mode': CONST.ACTIVE_EFFECT_MODES.CUSTOM,
+                    'value': 'Grappled',
+                    'priority': 21
+                }
+            ],
+            'origin': sourceActor.uuid,
+            'duration': {'seconds': 3600}
+        };
+        await targetActor.createEmbeddedDocuments("ActiveEffect", [grappledEffect]);
+
+        // add the break free feature to the target
+        let bestAbility = targetActor.system.abilities.dex.mod > targetActor.system.abilities.str.mod ? "dex" : "str";
+        let escapeMacro = "const dc = " + saveDC + ";\nconst roll = await token.actor.rollAbilityTest('" + bestAbility
+            + "', {targetValue: " + saveDC +"});\nif (roll.total >= " + saveDC
+            + ") {\nlet effect = token.actor.effects.find(ef => ef.label === 'Grappled' && ef.origin === '" + sourceActor.uuid
+            + "');\nif (effect) {\nawait effect.delete();\nawait warpgate.revert(token.document, 'Escape Grapple');\nChatMessage.create({'content': '"
+            + targetActor.name + " escapes the grapple!'});}\n}";
+        if (sourceActorFlag) {
+            escapeMacro = "const dc = " + saveDC + ";\nconst roll = await token.actor.rollAbilityTest('" + bestAbility
+                + "', {targetValue: " + saveDC +"});\nif (roll.total >= " + saveDC
+                + ") {\nlet effect = token.actor.effects.find(ef => ef.label === 'Grappled' && ef.origin === '" + sourceActor.uuid
+                + "');\nif (effect) {\nawait effect.delete();\nawait warpgate.revert(token.document, 'Escape Grapple');\nChatMessage.create({'content': '"
+                + targetActor.name + " escapes the grapple!'});\nlet sactor = MidiQOL.MQfromActorUuid('"
+                + sourceActor.uuid  + "');\nif (sactor) {\nawait sactor.unsetFlag('midi-qol', '" + sourceActorFlag + "');\n}\n}\n}";
+        }
+
+        const updates = {
+            embedded: {
+                Item: {
+                    "Escape Grapple" : {
+                        "type": "feat",
+                        "img": "icons/magic/nature/root-vine-entangled-hands.webp",
+                        "system": {
+                            "description": {
+                                "value": "As an action, you can make a strength or dexterity check to escape the grapple"
+                            },
+                            "activation": {
+                                "type": "action",
+                                "cost": 1
+                            },
+                            "target": {
+                                "value": null,
+                                "type": "self"
+                            },
+                            "range": {
+                                "value":null,
+                                "long":null,
+                                "units": "self"
+                            },
+                            "duration": {
+                                "value": null,
+                                "units": "inst"
+                            },
+                            "cover": null,
+                        },
+                        "flags": {
+                            "midi-qol": {
+                                "onUseMacroName": "ItemMacro"
+                            },
+                            "itemacro": {
+                                "macro": {
+                                    "name": "Escape Grapple",
+                                    "type": "script",
+                                    "scope": "global",
+                                    "command": escapeMacro
+                                }
+                            }
+                        },
+                    }
+                }
+            }
+        };
+        await warpgate.mutate(tokenDoc, updates, {}, { name: "Escape Grapple" });
+        return true;
+    }
+
+    /**
+     * Applies a restrained effect to the target if they are not already restrained by the source.
+     *
+     * @param sourceActor       the source actor
+     * @param tokenDoc          the target actor token document
+     * @param checkDC           the break DC
+     * @param abilityCheck      the ability check type
+     * @param sourceActorFlag   a flag, if any, that should be removed on the sourceActor if the grapple is broken
+     * @param overtimeValue     an overtime effect value to apply to the target, if any
+     * @returns {Promise<boolean>}
+     */
+    static async applyRestrained(sourceActor, tokenDoc, checkDC, abilityCheck, sourceActorFlag, overtimeValue) {
+        // sanity checks
+        if (!sourceActor || !tokenDoc || !checkDC || !abilityCheck) {
+            console.error("applyRestrained() is missing arguments");
+            return false;
+        }
+
+        let targetActor = tokenDoc.actor;
+        let existingRestrained = targetActor.effects.find(eff => eff.label === 'Restrained' && eff.origin === sourceActor.uuid);
+        if (existingRestrained) {
+            console.error("applyRestrained() " + targetActor.name + " is already restrained by " + sourceActor.name);
+            return false;
+        }
+
+        // add the Restrained effect to the target
+        let restrainedEffect = {
+            'label': 'Restrained',
+            'icon': 'icons/magic/control/encase-creature-spider-hold.webp',
+            'changes': [
+                {
+                    'key': 'flags.midi-qol.OverTime',
+                    'mode': CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
+                    'value': overtimeValue,
+                    'priority': 20
+                },
+                {
+                    'key': 'macro.CE',
+                    'mode': CONST.ACTIVE_EFFECT_MODES.CUSTOM,
+                    'value': 'Restrained',
+                    'priority': 21
+                }
+            ],
+            'origin': sourceActor.uuid,
+            'duration': {'seconds': 3600}
+        };
+        await targetActor.createEmbeddedDocuments("ActiveEffect", [restrainedEffect]);
+
+        // add the break free feature to the target
+        let escapeMacro = "const dc = " + checkDC + ";\nconst roll = await token.actor.rollAbilityTest('" + abilityCheck
+            + "', {targetValue: " + checkDC +"});\nif (roll.total >= " + checkDC
+            + ") {\nlet effect = token.actor.effects.find(ef => ef.label === 'Restrained' && ef.origin === '" + sourceActor.uuid
+            + "');\nif (effect) {\nawait effect.delete();\nawait warpgate.revert(token.document, 'Break Free');\nChatMessage.create({'content': '"
+            + targetActor.name + " breaks free!'});}\n}";
+        if (sourceActorFlag) {
+            escapeMacro = "const dc = " + checkDC + ";\nconst roll = await token.actor.rollAbilityTest('" + abilityCheck
+                + "', {targetValue: " + checkDC +"});\nif (roll.total >= " + checkDC
+                + ") {\nlet effect = token.actor.effects.find(ef => ef.label === 'Restrained' && ef.origin === '" + sourceActor.uuid
+                + "');\nif (effect) {\nawait effect.delete();\nawait warpgate.revert(token.document, 'Break Free');\nChatMessage.create({'content': '"
+                + targetActor.name + " breaks free!'});\nlet sactor = MidiQOL.MQfromActorUuid('"
+                + sourceActor.uuid  + "');\nif (sactor) {\nawait sactor.unsetFlag('midi-qol', '" + sourceActorFlag + "');\n}\n}\n}";
+        }
+
+        const abilityName = CONFIG.DND5E.abilities[abilityCheck];
+        const updates = {
+            embedded: {
+                Item: {
+                    "Break Free" : {
+                        "type": "feat",
+                        "img": "icons/magic/control/encase-creature-spider-hold.webp",
+                        "system": {
+                            "description": {
+                                "value": "As an action, you can make a " + abilityName + " check to break free"
+                            },
+                            "activation": {
+                                "type": "action",
+                                "cost": 1
+                            },
+                            "target": {
+                                "value": null,
+                                "type": "self"
+                            },
+                            "range": {
+                                "value":null,
+                                "long":null,
+                                "units": "self"
+                            },
+                            "duration": {
+                                "value": null,
+                                "units": "inst"
+                            },
+                            "cover": null,
+                        },
+                        "flags": {
+                            "midi-qol": {
+                                "onUseMacroName": "ItemMacro"
+                            },
+                            "itemacro": {
+                                "macro": {
+                                    "name": "Break Free",
+                                    "type": "script",
+                                    "scope": "global",
+                                    "command": escapeMacro
+                                }
+                            }
+                        },
+                    }
+                }
+            }
+        };
+        await warpgate.mutate(tokenDoc, updates, {}, { name: "Break Free" });
+        return true;
+    }
 }

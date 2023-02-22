@@ -1,7 +1,7 @@
 const version = "10.0.0";
 const optionName = "Precision";
 const resourceName = "Superiority Dice";
-// 
+// https://github.com/gregpola/fvtt-trazzm-homebrew-5e/releases/latest/download/module.json
 try {
 	const lastArg = args[args.length - 1];
 	const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
@@ -43,6 +43,7 @@ try {
 // vertime setup to remove a condition on save
 turn=end, saveAbility=wis, saveDC=19, label=Frightened
 turn=end, saveAbility=wis, saveDC=19, label=Stunned
+turn=end, saveAbility=con, saveDC=12, label=Poisoned
 
 } catch (err) {
     console.error(`${optionName}: ${version}`, err);
