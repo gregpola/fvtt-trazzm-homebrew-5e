@@ -2,7 +2,7 @@ const VERSION = "10.0.0";
 const _charmResistLabels = new Set(["Dark Devotion", "Fey Ancestry", "Leviathan Will", "Mental Discipline"]);
 const _frightenedResistLabels = new Set(["Brave", "Dark Devotion", "Leviathan Will", "Mental Discipline"]);
 const _paralyzedResistLabels = new Set(["Leviathan Will"]);
-const _poisonResistLabels = new Set(["Dwarven Resilience", "Leviathan Will", "Poison Resilience", "Stout Resilience"]);
+const _poisonResistLabels = new Set(["Dwarven Resilience", "Hill Rune", "Leviathan Will", "Poison Resilience", "Stout Resilience"]);
 const _sleepResistLabels = new Set(["Leviathan Will"]);
 const _stunResistLabels = new Set(["Leviathan Will"]);
 
@@ -151,31 +151,31 @@ export class SaveHandler {
                         rollData.advantage = true;
                     }
                 }
-                else if (entry === 'frightened' || entry === 'fright') {
+                else if (condition === 'frightened' || condition === 'fright') {
                     let frightFeature = actor.items.find(f => _frightenedResistLabels.has(f.name));
                     if (frightFeature) {
                         rollData.advantage = true;
                     }
                 }
-                else if (entry === 'charmed' || entry === 'charm') {
+                else if (condition === 'charmed' || condition === 'charm') {
                     let charmFeature = actor.items.find(f => _charmResistLabels.has(f.name));
                     if (charmFeature) {
                         rollData.advantage = true;
                     }
                 }
-                else if (entry === 'paralyzed' || entry === 'paralyze' || entry === 'paralysis') {
+                else if (condition === 'paralyzed' || condition === 'paralyze' || condition === 'paralysis') {
                     let paralyzeFeature = actor.items.find(f => _paralyzedResistLabels.has(f.name));
                     if (paralyzeFeature) {
                         rollData.advantage = true;
                     }
                 }
-                else if (entry === 'stunned' || entry === 'stun') {
+                else if (condition === 'stunned' || condition === 'stun') {
                     let stunFeature = actor.items.find(f => _stunResistLabels.has(f.name));
                     if (stunFeature) {
                         rollData.advantage = true;
                     }
                 }
-                else if (entry === 'sleep' || entry === 'asleep') {
+                else if (condition === 'sleep' || condition === 'asleep') {
                     let sleepFeature = actor.items.find(f => _sleepResistLabels.has(f.name));
                     if (sleepFeature) {
                         rollData.advantage = true;

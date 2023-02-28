@@ -121,7 +121,7 @@ try {
 			const charmedEffectData = {
 				label: "Charmed",
 				icon: "modules/dfreds-convenient-effects/images/charmed.svg",
-				origin: sourceOrigin,
+				origin: lastArg.itemUuid,
 				duration: {startTime: game.time.worldTime, seconds: 60},
 				changes: [
 					{

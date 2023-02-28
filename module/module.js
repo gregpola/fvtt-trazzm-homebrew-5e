@@ -1,14 +1,14 @@
-import { RelentlessRage } from "./RelentlessRage.js";
 import {InitiativeHandler} from "./InitiativeHandler.js";
 import {SaveHandler} from "./SaveHandler.js";
 import {SpellHandler} from "./SpellHandler.js";
+import {BarbarianFeatures} from "./BarbarianFeatures.js";
 import {WarlockFeatures} from "./WarlockFeatures.js";
 
 const SUB_MODULES = {
     InitiativeHandler,
-    RelentlessRage,
     SaveHandler,
     SpellHandler,
+    BarbarianFeatures,
     WarlockFeatures
 };
 

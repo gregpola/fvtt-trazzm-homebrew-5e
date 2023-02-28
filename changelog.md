@@ -1,3 +1,12 @@
+# 10.0.10
+* Fixed/Updated:
+  * Bug in the SaveHandler 
+  * Class Features: Reckless Attack 
+  * Races: Bugbear, Lizardfolk
+
+* Added Automation to:
+  * Path of the Totem Warrior
+
 # 10.0.9
 * Fixed/Updated:
   * Channel Divinity: Preserve Life, Inspiring Smite
