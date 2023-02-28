@@ -15,6 +15,7 @@ To install a module, follow these instructions:
 
 ### Configuration:
   * The config folder contains a midi config file; screenshots showing important settings; and a list of modules I recommend.
+  * I recommend you also import the fvtt-AutomatedAnimations-GlobalMenu-dnd5e.json into the Automated Animations module. Follow the steps found in: config/AA-Setup.txt
 
 ### Module Dependencies
   * active-auras
