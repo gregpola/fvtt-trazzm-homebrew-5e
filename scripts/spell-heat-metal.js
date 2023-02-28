@@ -1,4 +1,4 @@
-const version = "10.0.0";
+const version = "10.0.1";
 const optionName = "Heat Metal";
 const metalWeapons = ["Scimitar", "sword", "blade", "Rapier", "dagger", "mace"];
 const metalArmor = ["medium", "heavy"];
@@ -92,7 +92,6 @@ try {
 						await markTarget(target.actor.uuid, lastArg.item.uuid, dc, saveType);
 						
 						// add item to the source actor
-						// TODO set the source
 						const damageDice = 2 + Math.max(level - 2, 0);
 						const sourceActorUpdates = {
 							embedded: {
@@ -166,7 +165,7 @@ async function markTarget(targetId, itemId, spellDC, saveType) {
             {
 				key: `flags.midi-qol.OverTime`, 
 				mode: CONST.ACTIVE_EFFECT_MODES.OVERRIDE, 
-				value: `turn=start,label=${optionName},saveDC=${spellDC},saveAbility=${saveType},saveRemove=false`, 
+				value: `turn=start,label=${optionName},damageRoll=2d8, damageType=fire`, 
 				priority: 20
 			},
 			{

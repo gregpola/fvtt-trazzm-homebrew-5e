@@ -85,15 +85,9 @@ try {
 			}
 		}]
 
-		await TokenMagic.addUpdateFilters(actorToken, params);		
+		await TokenMagic.addUpdateFilters(actorToken, params);
 	}
 
 } catch (err) {
-    console.error(`${optionName} ${version}`, err);
+    console.error(`${optionName}: ${version}`, err);
 }
-
-/*
-									"command": "const dc = 15;\nconst roll = await token.actor.rollAbilityTest('str', {targetValue: dc});\nif (roll.total >= dc) {\nlet effect = token.actor.effects.find(ef => ef.label === 'Webbed');\nif (effect) await effect.delete();\nChatMessage.create({'content': `${token.name} breaks free of the webs!`});\n}"
-
-									"command": "const dc = 15;\nconst e = event;\nconst roll = await token.actor.rollAbilityTest('str', {targetValue: dc});\nif (roll.total >= dc) {\nawait warpgate.revert(token.document, 'Webbed - Break Free');\nawait game.dfreds.effectInterface.removeEffect({effectName: 'Restrained', uuid: token.actor.uuid});\nChatMessage.create({'content': `${token.name} breaks free of the webs!`});\n}"
-*/

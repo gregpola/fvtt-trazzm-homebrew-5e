@@ -1,4 +1,4 @@
-const version = "10.0.0";
+const version = "10.0.1";
 const optionName = "Blessing of the Forge";
 const flagName = "blessing-of-the-forge";
 const gameVersion = Math.floor(game.version);
@@ -21,7 +21,7 @@ try {
 		targetChoices.add({ type: "radio", label: actor.name, value: actor.uuid, options: "blessingTarget" });
 
 		// ask the caster who to bless an item on
-		const allies = MidiQOL.findNearby(1, target, 60, 0);
+		const allies = MidiQOL.findNearby(1, target, 60);
 		for (var i = 0; i < allies.length; i++) {
 			targetChoices.add({ type: "radio", label: allies[i].name, value: allies[i].actor.uuid, options: "blessingTarget" });
 		}

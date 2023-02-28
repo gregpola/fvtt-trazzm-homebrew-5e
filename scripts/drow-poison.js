@@ -75,7 +75,7 @@ try {
 													
 							// track target info on the actor
 							await DAE.setFlag(actor, flagName, {itemName: itemName, itemId: itemId, applications: useCount } );
-							ChatMessage.create({content: itemName + " is poisoned"});
+							ChatMessage.create({content: itemName + " is coated"});
 							resolve(true);
 						}
 					},
@@ -120,9 +120,7 @@ try {
 			// apply the poison damage
 			let targetActor = (await fromUuid(lastArg.hitTargetUuids[0]))?.actor;			
 			const uuid = targetActor.uuid;
-			let saveRoll = await targetActor.rollAbilitySave("con", {flavor: saveFlavor});
-			await game.dice3d?.showForRoll(saveRoll);
-			
+			let saveRoll = await targetActor.rollAbilitySave("con", {flavor: saveFlavor, damageType: "poison"});
 			if (saveRoll.total < (saveDC - 5)) {
 				await applyPoisonedEffect(actor, targetActor);
 				await applyUnconsciousEffect(actor, targetActor);				

@@ -1,4 +1,4 @@
-const version = "10.0.0";
+const version = "10.0.1";
 const resourceName = "Superiority Dice";
 const optionName = "Trip Attack";
 
@@ -64,8 +64,8 @@ try {
 				const abilityBonus = Math.max(actor.system.abilities.str.mod, actor.system.abilities.dex.mod);
 				const dc = 8 + actor.system.attributes.prof + abilityBonus;
 				
-				const flavor = `${CONFIG.DND5E.abilities["str"]} DC${dc} ${optionName || ""}`;
-				let saveRoll = await target.actor.rollAbilitySave("str", {flavor});
+				const saveFlavor = `${CONFIG.DND5E.abilities["str"]} DC${dc} ${optionName || ""}`;
+				let saveRoll = await target.actor.rollAbilitySave("str", {flavor: saveFlavor, damageType: "prone"});
 				await game.dice3d?.showForRoll(saveRoll);
 
 				if (saveRoll.total < dc) { 

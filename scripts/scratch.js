@@ -40,10 +40,21 @@ try {
 		content: `${actorToken.name}'s ${selectedItem.name} is blessed with positive energy`,
 		speaker: ChatMessage.getSpeaker({ actor: actor })});
 		
+	// Hit point level values
+	targetTokenDoc.actor.classes.barbarian.advancement.byType.HitPoints (array, first has the hp rolls)
+	
 // vertime setup to remove a condition on save
 turn=end, saveAbility=wis, saveDC=19, label=Frightened
 turn=end, saveAbility=wis, saveDC=19, label=Stunned
 turn=end, saveAbility=con, saveDC=12, label=Poisoned
+turn=start, damageRoll=2d6, damageType=poison, label=Constricted
+
+// Monks token bar
+let message = await game.MonksTokenBar.requestRoll([targetToken], {request:'save:con', flavor: 'Poisoned weapon', silent: true});
+await wait(10000);
+let tokenid = 'token' + targetToken.id;
+saveTotal = message.flags["monks-tokenbar"][tokenid].total;
+
 
 } catch (err) {
     console.error(`${optionName}: ${version}`, err);

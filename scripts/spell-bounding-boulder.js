@@ -3,7 +3,7 @@
 
 	This spell’s damage increases by 1d6 when you reach 5th level (2d6), 11th level (3d6), and 17th level (4d6).
 */
-const version = "10.0.1";
+const version = "10.0.2";
 const optionName = "Bounding Boulder";
 
 const lastArg = args[args.length - 1];
@@ -27,7 +27,7 @@ try {
 				let targetToken = game.canvas.tokens.get(target.id);
 				
 				if (targetToken) {
-					let saveRoll = await targetToken.actor.rollAbilitySave("str", {saveFlavor});
+					let saveRoll = await targetToken.actor.rollAbilitySave("str", {flavor: saveFlavor, damageType: "bludgeoning"});
 					await game.dice3d?.showForRoll(saveRoll);
 					
 					if (saveRoll.total < saveDC) {

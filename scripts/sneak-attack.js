@@ -9,7 +9,7 @@
 
 	The amount of the extra damage increases as you gain levels in this class, as shown in the Sneak Attack column of the Rogue table.		
 */
-const version = "10.1.1";
+const version = "10.1.2";
 const optionName = "Sneak Attack";
 const lastArg = args[args.length - 1];
 const combatTime = game.combat ? `${game.combat.id}-${game.combat.round + game.combat.turn / 100}` : 1;
@@ -130,7 +130,7 @@ function checkRakishAudacity(rogueToken, targetToken) {
 	let featureItem = rogueToken.actor.items.getName("Rakish Audacity");
 	let rakish = false;
 	if (featureItem) {
-		let totalNearbyToMe = MidiQOL.findNearby(null, rogueToken, 5, 9).length;
+		let totalNearbyToMe = MidiQOL.findNearby(null, rogueToken, 5).length;
 		let distanceToTarget = MidiQOL.getDistance(targetToken, rogueToken, false);
 		rakish = ((totalNearbyToMe === 1) && (distanceToTarget <= 5));
 	}

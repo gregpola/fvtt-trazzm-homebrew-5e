@@ -3,7 +3,7 @@ const VERSION = "10.0.0";
 export class SpellHandler {
 
     static register() {
-        logger.info("fvtt-trazzm-homebrew-5e | ", "Registering SpellHandler");
+        logger.info("%c fvtt-trazzm-homebrew-5e", "color: #D030DE", " | Registering SpellHandler");
         SpellHandler.hooks();
     }
 

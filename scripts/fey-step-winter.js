@@ -1,4 +1,4 @@
-const version = "10.0.1";
+const version = "10.0.2";
 const optionName = "Fey Step (Winter)";
 
 try {
@@ -9,7 +9,7 @@ try {
 		const maxRange = lastArg.item.system.range.value ?? 30;
 
 		// Apply frightened to nearby target of the actor's choice
-		const potentialTargets = MidiQOL.findNearby(null, actorToken, 5, null);
+		const potentialTargets = MidiQOL.findNearby(null, actorToken, 5);
 		if (potentialTargets.length > 0) {
 			let frightTarget = null;
 			
@@ -62,7 +62,7 @@ try {
 					disabled: false
 				};
 
-				let saveRoll = await frightTarget.actor.rollAbilitySave("wis", {saveFlavor});
+				let saveRoll = await frightTarget.actor.rollAbilitySave("wis", {flavor: saveFlavor, damageType: "frightened"});
 				await game.dice3d?.showForRoll(saveRoll);			
 
 				if (saveRoll.total < saveDC) {

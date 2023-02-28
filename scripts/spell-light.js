@@ -1,4 +1,4 @@
-const version = "10.0.0";
+const version = "10.0.1";
 const optionName = "Light Spell";
 
 try {
@@ -12,7 +12,7 @@ try {
 				const saveDC = actor.system.attributes.spelldc;
 				const saveFlavor = `${CONFIG.DND5E.abilities["dex"]} DC${saveDC} ${optionName}`;
 
-				let saveRoll = await targetToken.actor.rollAbilitySave("dex", {saveFlavor});
+				let saveRoll = await targetToken.actor.rollAbilitySave("dex", {flavor: saveFlavor, damageType: "light"});
 				await game.dice3d?.showForRoll(saveRoll);
 				
 				if (saveRoll.total >= saveDC) {

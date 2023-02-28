@@ -16,7 +16,7 @@ if (args[0].macroPass === "DamageBonus") {
 		let spiritToken = game.canvas.tokens.get(summonData.tokenId);
 		if (spiritToken) {
 			// ask which tokens in the aura to heal
-			const possibleTargets = MidiQOL.findNearby(null, spiritToken, 30, 0);
+			const possibleTargets = MidiQOL.findNearby(null, spiritToken, 30);
 			if (possibleTargets.length > 0) {
 				// build the target data
 				let rows = "";

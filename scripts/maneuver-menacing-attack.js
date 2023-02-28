@@ -1,4 +1,4 @@
-const version = "10.0.0";
+const version = "10.0.1";
 const resourceName = "Superiority Dice";
 const optionName = "Menacing Attack";
 
@@ -57,8 +57,8 @@ try {
 			const fullSupDie = tactor.system.scale["battle-master"]["superiority-die"];
 			const abilityBonus = Math.max(tactor.system.abilities.str.mod, tactor.system.abilities.dex.mod);
 			const dc = 8 + tactor.system.attributes.prof + abilityBonus;
-			const flavor = `${CONFIG.DND5E.abilities["wis"]} DC${dc} ${optionName || ""}`;
-			let saveRoll = await target.actor.rollAbilitySave("wis", {flavor});
+			const saveFlavor = `${CONFIG.DND5E.abilities["wis"]} DC${dc} ${optionName || ""}`;
+			let saveRoll = await target.actor.rollAbilitySave("wis", {flavor: saveFlavor, damageType: "frightened"});
 			await game.dice3d?.showForRoll(saveRoll);
 
 			if (saveRoll.total < dc) {

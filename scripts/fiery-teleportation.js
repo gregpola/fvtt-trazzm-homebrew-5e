@@ -1,4 +1,4 @@
-const version = "10.0.1";
+const version = "10.0.2";
 const optionName = "Fiery Teleportation";
 const maxRange = 15;
 
@@ -9,7 +9,7 @@ try {
 		const actorToken = canvas.tokens.get(lastArg.tokenId);
 
 		// get the friends that are coming along
-		const potentialTargets = MidiQOL.findNearby(1, token, 5, null);
+		const potentialTargets = MidiQOL.findNearby(1, token, 5);
 		let movedFriends = [];
 
 		if (potentialTargets) {

@@ -3,7 +3,7 @@
 
 	As an action, you present your holy symbol and evoke healing energy that can restore a number of hit points equal to five times your cleric level. Choose any creatures within 30 feet of you, and divide those hit points among them. This feature can restore a creature to no more than half of its hit point maximum. You can’t use this feature on an undead or a construct.
 */
-const version = "10.0.0";
+const version = "10.0.1";
 const resourceName = "Channel Divinity";
 const optionName = "Preserve Life"
 
@@ -27,8 +27,8 @@ try {
 		}
 		
 		// find nearby allies
-		const friendlyTargets = MidiQOL.findNearby(1, actorToken, 30, 0);
-		const neutralTargets = MidiQOL.findNearby(0, actorToken, 30, 0);
+		const friendlyTargets = MidiQOL.findNearby(1, actorToken, 30);
+		const neutralTargets = MidiQOL.findNearby(0, actorToken, 30);
 		let possibleTargets = [actorToken, ...friendlyTargets, ...neutralTargets];
 		const recipients = possibleTargets.filter(filterRecipient);
 		

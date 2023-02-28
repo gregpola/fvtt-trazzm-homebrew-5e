@@ -47,7 +47,7 @@ try {
 		}
 			
 		await wait(1000);
-		const potentialTargets = MidiQOL.findNearby(null, actorToken, 5, null);
+		const potentialTargets = MidiQOL.findNearby(null, actorToken, 5);
 		if (potentialTargets.length === 0) {
 			console.log(`${optionName} - no targets within 5 feet for flames`);
 			return;

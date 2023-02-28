@@ -1,15 +1,19 @@
 import { RelentlessRage } from "./RelentlessRage.js";
 import {InitiativeHandler} from "./InitiativeHandler.js";
+import {SaveHandler} from "./SaveHandler.js";
 import {SpellHandler} from "./SpellHandler.js";
+import {WarlockFeatures} from "./WarlockFeatures.js";
 
 const SUB_MODULES = {
     InitiativeHandler,
     RelentlessRage,
-    SpellHandler
+    SaveHandler,
+    SpellHandler,
+    WarlockFeatures
 };
 
 Hooks.once('init', async function () {
-    console.log('fvtt-trazzm-homebrew-5e | Initializing homebrew-5e');
+    console.log('%c fvtt-trazzm-homebrew-5e | Initializing homebrew-5e', 'color: #D030DE');
     initialize_module();
 });
 

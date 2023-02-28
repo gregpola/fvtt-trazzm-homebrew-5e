@@ -1,4 +1,4 @@
-const version = "10.0.0";
+const version = "10.0.1";
 const optionName = "Dagger of Venom";
 const flagName = "dagger-of-venom";
 const damageDice = "2d10";
@@ -24,13 +24,11 @@ try {
 			// apply the poison damage
 			let targetActor = (await fromUuid(lastArg.hitTargetUuids[0]))?.actor;			
 			const uuid = targetActor.uuid;
-			const saveFlavor = `${CONFIG.DND5E.abilities["con"]} DC${saveDC} ${optionName}`;
-			let saveRoll = await targetActor.rollAbilitySave("con", {flavor: saveFlavor});
-			await game.dice3d?.showForRoll(saveRoll);
-			
 			const damageRoll = await new Roll(`${damageDice}`).evaluate({ async: false });
 			await game.dice3d?.showForRoll(damageRoll);
 
+			const saveFlavor = `${CONFIG.DND5E.abilities["con"]} DC${saveDC} ${optionName}`;
+			let saveRoll = await targetActor.rollAbilitySave("con", {flavor: saveFlavor, damageType: "poison"});
 			if (saveRoll.total < saveDC) {
 				await applyPoisonedEffect(actor, targetActor);
 				return {damageRoll: `${damageRoll.total}[poison]`, flavor: `${optionName} Damage`};		

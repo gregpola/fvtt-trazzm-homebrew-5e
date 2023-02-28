@@ -1,4 +1,4 @@
-const version = "10.0.0";
+const version = "10.0.1";
 const optionName = "Draconic Cry";
 
 try {
@@ -7,7 +7,7 @@ try {
 		
 	if (args[0].macroPass === "postActiveEffects") {
 		// find nearby enemies
-		const enemies = MidiQOL.findNearby(-1, token, 10, 0);
+		const enemies = MidiQOL.findNearby(-1, token, 10);
 		
 		if (enemies.length === 0) {
 			return ui.notifications.error(`${optionName} - no enemies within range`);

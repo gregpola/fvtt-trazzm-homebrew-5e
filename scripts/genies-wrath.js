@@ -1,4 +1,4 @@
-const version = "10.0.0";
+const version = "10.0.1";
 const optionName = "Genies Wrath";
 const timeFlag = "geniesWrathTime";
 
@@ -24,7 +24,7 @@ try {
 			new Dialog({
 				// localize this text
 				title: `${optionName}`,
-				content: `<p>Apply ${optionName} damage to this attack?</p>`,
+				content: `<p>Apply ${optionName} damage to this attack?</p><p>Once during each of your turns when you hit with an attack roll, you can deal extra damage to the target equal to your proficiency bonus.</p>`,
 				buttons: {
 					one: {
 						icon: '<p> </p><img src = "icons/magic/fire/orb-vortex.webp" width="40" height="40"></>',

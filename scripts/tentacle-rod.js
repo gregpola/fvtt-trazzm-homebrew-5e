@@ -1,7 +1,7 @@
 /*
 	Melee Weapon Attack: +9 to hit, reach 15 ft., one creature. Hit: 3 (1d6) bludgeoning damage. If the target is hit three times by the rod on one turn, the target must succeed on a DC 15 Constitution saving throw or suffer the following effects for 1 minute: the target’s speed is halved, it has disadvantage on Dexterity saving throws, and it can’t use reactions. Moreover, on each of its turns, it can take either an action or a bonus action, but not both. At the end of each of its turns, it can repeat the saving throw, ending the effect on itself on a success.
 */
-const version = "10.0.0";
+const version = "10.0.1s";
 const optionName = "Tentacle Rod";
 const flagName = "tentacle-rod-hits";
 const combatTime = game.combat ? `${game.combat.id}-${game.combat.round + game.combat.turn / 100}` : 1;
@@ -22,7 +22,7 @@ try {
 		}
 		else if (flags.count === 2) {
 			// third hit
-			let saveRoll = await targetToken.actor.rollAbilitySave("con", {saveFlavor});
+			let saveRoll = await targetToken.actor.rollAbilitySave("con", {flavor: saveFlavor, damageType: "magic"});
 			await game.dice3d?.showForRoll(saveRoll);
 			
 			if (saveRoll.total < 15) {

@@ -64,6 +64,65 @@ class HomebrewMacros {
         return position;
     }
 
+    /**
+     *
+     * @param {Token} actorToken Source of the crosshairs
+     * @param {Number} maxRange the maximum allowed range
+     * @param {Item} item the item for which the function is called
+     * @returns
+     */
+    static async warpgateCrosshairs(actorToken, maxRange, item) {
+        const tokenCenter = actorToken.center;
+        let cachedDistance = 0;
+
+        const checkDistance = async(crosshairs) => {
+            while (crosshairs.inFlight) {
+                //wait for initial render
+                await warpgate.wait(100);
+                const ray = new Ray( tokenCenter, crosshairs );
+                const distance = canvas.grid.measureDistances([{ray}], {gridSpaces:true})[0]
+
+                //only update if the distance has changed
+                if (cachedDistance !== distance) {
+                    cachedDistance = distance;
+                    if(distance > maxRange) {
+                        crosshairs.icon = 'icons/svg/hazard.svg';
+                    } else {
+                        crosshairs.icon = item.img;
+                    }
+
+                    crosshairs.draw();
+                    crosshairs.label = `${distance} ft`;
+                }
+            }
+        };
+
+        const callbacks = {
+            show: checkDistance
+        };
+
+        const config = {
+            drawIcon: true,
+            interval: 0,
+            size: 1
+        };
+
+        if (typeof item !== 'undefined') {
+            config.drawIcon = true;
+            config.icon = item.img;
+            config.label = item.name;
+        }
+
+        const position = await warpgate.crosshairs.show(config, callbacks);
+
+        if (position.cancelled) return false;
+        if (cachedDistance > maxRange) {
+            ui.notifications.error(`${name} has a maximum range of ${maxRange} ft.`)
+            return false;
+        }
+        return position;
+    }
+
     static checkPosition(newX, newY) {
         const hasToken = canvas.tokens.placeables.some(t => {
             const detectX = newX.between(t.document.x, t.document.x + canvas.grid.size * (t.document.width-1));
@@ -559,9 +618,10 @@ class HomebrewMacros {
      * @param saveDC            the break grapple DC
      * @param sourceActorFlag   a flag, if any, that should be removed on the sourceActor if the grapple is broken
      * @param overtimeValue     an overtime effect value to apply to the target, if any
+     * @param restrained        if present and true  also apply a restrained effect
      * @returns {Promise<boolean>}
      */
-    static async applyGrappled(sourceActor, tokenDoc, saveDC, sourceActorFlag, overtimeValue) {
+    static async applyGrappled(sourceActor, tokenDoc, saveDC, sourceActorFlag, overtimeValue, restrained) {
         // sanity checks
         if (!sourceActor || !tokenDoc || !saveDC) {
             console.error("applyGrappled() is missing arguments");
@@ -596,6 +656,34 @@ class HomebrewMacros {
             'origin': sourceActor.uuid,
             'duration': {'seconds': 3600}
         };
+        if (restrained) {
+            grappledEffect = {
+                'label': 'Grappled',
+                'icon': 'icons/magic/nature/root-vine-fire-entangled-hand.webp',
+                'changes': [
+                    {
+                        'key': 'flags.midi-qol.OverTime',
+                        'mode': CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
+                        'value': overtimeValue,
+                        'priority': 20
+                    },
+                    {
+                        'key': 'macro.CE',
+                        'mode': CONST.ACTIVE_EFFECT_MODES.CUSTOM,
+                        'value': 'Grappled',
+                        'priority': 21
+                    },
+                    {
+                        'key': 'macro.CE',
+                        'mode': CONST.ACTIVE_EFFECT_MODES.CUSTOM,
+                        'value': 'Restrained',
+                        'priority': 22
+                    }
+                ],
+                'origin': sourceActor.uuid,
+                'duration': {'seconds': 3600}
+            };
+        }
         await targetActor.createEmbeddedDocuments("ActiveEffect", [grappledEffect]);
 
         // add the break free feature to the target
@@ -776,5 +864,143 @@ class HomebrewMacros {
         };
         await warpgate.mutate(tokenDoc, updates, {}, { name: "Break Free" });
         return true;
+    }
+
+    /**
+     * Pulls the target maxSquares number of squares towards the puller.
+     *
+     * @param pullerToken
+     * @param targetToken
+     * @param maxSquares
+     * @returns {Promise<boolean>}
+     */
+    static async pullTarget(pullerToken, targetToken, maxSquares) {
+        // sanity checks
+        if (!pullerToken || !targetToken) {
+            console.error("pullTarget() is missing arguments");
+            return false;
+        }
+
+        let squares = maxSquares ? maxSquares : 1;
+        let movePixels = squares * canvas.grid.size;
+        const ray = new Ray(pullerToken.center, targetToken.center);
+        let newCenter = ray.project((ray.distance - movePixels)/ray.distance);
+
+        // check for collision
+        let c = canvas.grid.getSnappedPosition(newCenter.x - targetToken.width / 2, newCenter.y - targetToken.height / 2, 1);
+        let isAllowedLocation = !HomebrewMacros.checkPosition(c.x, c.y);
+
+        while ((squares > 1) && !isAllowedLocation) {
+            squares = squares - 1;
+            movePixels = squares * canvas.grid.size;
+            let shorterCenter = ray.project((ray.distance - movePixels)/ray.distance);
+            c = canvas.grid.getSnappedPosition(shorterCenter.x - targetToken.width / 2, shorterCenter.y - targetToken.height / 2, 1);
+            let isShorterAllowed = !HomebrewMacros.checkPosition(c.x, c.y);
+
+            if (isShorterAllowed) {
+                isAllowedLocation = true;
+                newCenter = shorterCenter;
+                break;
+            }
+        }
+
+        if (isAllowedLocation) {
+            // finish the pull
+            newCenter = canvas.grid.getSnappedPosition(newCenter.x - targetToken.width / 2, newCenter.y - targetToken.height / 2, 1);
+            const mutationData = { token: {x: newCenter.x, y: newCenter.y}};
+            await warpgate.mutate(targetToken.document, mutationData, {}, {permanent: true});
+            return true;
+        }
+
+        return false;
+    }
+
+    static async wallOfThornsEffects(tokenids) {
+        if (!tokenids)
+            return;
+
+        for (let i = 0; tokenids.length > i; i++) {
+            let tokenDoc = canvas.scene.tokens.get(tokenids[i]);
+            if (!tokenDoc) continue;
+
+            let tokenInTemplates = game.modules.get('templatemacro').api.findContainers(tokenDoc);
+            let effect = tokenDoc.actor.effects.find(eff => eff.label === 'WallofThorns');
+            let createEffect = false;
+            let deleteEffect = false;
+            let inThorns = false;
+            let spellLevel = -100;
+            let spelldc = -100;
+            let oldSpellLevel = effect?.flags?.world?.spell?.WallofThorns?.spellLevel;
+            let oldSpelldc = effect?.flags?.world?.spell?.WallofThorns?.spelldc;
+            let templateid = effect?.flags?.world?.spell?.WallofThorns?.templateid;
+            for (let j = 0; tokenInTemplates.length > j; j++) {
+                let testTemplate = canvas.scene.collections.templates.get(tokenInTemplates[j]);
+                if (!testTemplate) continue;
+                let wallofThorns = testTemplate.flags.world?.spell?.WallofThorns;
+                if (!wallofThorns) continue;
+                inThorns = true;
+                let testSpellLevel = wallofThorns.spellLevel;
+                let testSpelldc = wallofThorns.spelldc;
+                if (testSpellLevel > spellLevel) {
+                    spellLevel = testSpellLevel;
+                    templateid = tokenInTemplates[j];
+                }
+                if (testSpelldc > spelldc) {
+                    spelldc = testSpelldc;
+                    templateid = tokenInTemplates[j];
+                }
+            }
+            if (!inThorns) {
+                deleteEffect = true;
+            } else {
+                if (oldSpellLevel !== spellLevel || oldSpelldc !== spelldc) {
+                    createEffect = true;
+                    deleteEffect = true;
+                }
+            }
+            if (deleteEffect && effect) {
+                try {
+                    await effect.delete();
+                } catch {}
+            }
+            if (createEffect && inThorns && (oldSpellLevel !== spellLevel || oldSpelldc !== spelldc)) {
+                let dieCount = spellLevel + 1;
+                let damageRoll = dieCount + 'd8';
+                const damageType = "slashing";
+                let templateDoc = canvas.scene.collections.templates.get(templateid);
+                let origin = templateDoc.flags?.dnd5e?.origin;
+                let effectData = {
+                    'label': 'WallofThorns',
+                    'icon': 'icons/magic/nature/root-vine-barrier-wall-brown.webp',
+                    'changes': [
+                        {
+                            'key': 'flags.midi-qol.OverTime',
+                            'mode': 5,
+                            'value': 'turn=start, rollType=save, saveAbility=dex, saveDamage=halfdamage, saveRemove=false, saveMagic=true, damageType=' + damageType + ', damageRoll=' + damageRoll + ', saveDC =' + spelldc,
+                            'priority': 20
+                        }
+                    ],
+                    'origin': origin,
+                    'duration': {'seconds': 600},
+                    'flags': {
+                        'effectmacro': {
+                            'onTurnStart': {
+                                'script': "let combatTurn = game.combat.round + '-' + game.combat.turn;\nlet templateid = effect.flags.world.spell.WallofThorns.templateid;\ntoken.document.setFlag('world', `spell.WallofThorns.${templateid}.turn`, combatTurn);"
+                            }
+                        },
+                        'world': {
+                            'spell': {
+                                'WallofThorns': {
+                                    'spellLevel': spellLevel,
+                                    'spelldc': spelldc,
+                                    'templateid': templateDoc.id
+                                }
+                            }
+                        }
+                    }
+                };
+                await tokenDoc.actor.createEmbeddedDocuments("ActiveEffect", [effectData]);
+            }
+        }
     }
 }

@@ -3,7 +3,7 @@ const VERSION = "10.0.0";
 export class InitiativeHandler {
 
     static register() {
-        logger.info("fvtt-trazzm-homebrew-5e | ", "Registering InitiativeHandler");
+        logger.info("%c fvtt-trazzm-homebrew-5e", "color: #D030DE", " | Registering InitiativeHandler");
         InitiativeHandler.hooks();
     }
 

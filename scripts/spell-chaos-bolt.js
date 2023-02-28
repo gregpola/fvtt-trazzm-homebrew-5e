@@ -7,7 +7,7 @@
 
 	At Higher Levels. When you cast this spell using a spell slot of 2nd level or higher, each target takes 1d6 extra damage of the type rolled for each slot level above 1st.
 */
-const version = "10.0.0";
+const version = "10.0.1";
 const optionName = "Chaos Bolt";
 const damageList = { 1: "acid", 2: "cold", 3: "fire", 4: "force", 5: "lightning", 6: "poison", 7: "psychic", 8: "thunder" };
 
@@ -33,7 +33,7 @@ try {
 }
 
 async function findTarget(target, itemD) {
-	let get_targets = await MidiQOL.findNearby(CONST.TOKEN_DISPOSITIONS.FRIENDLY, target, 30, null);
+	let get_targets = await MidiQOL.findNearby(CONST.TOKEN_DISPOSITIONS.FRIENDLY, target, 30);
 	await rollAttack(get_targets, itemD);
 }
 

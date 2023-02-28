@@ -1,4 +1,4 @@
-const version = "10.0.1";
+const version = "10.0.2";
 const optionName = "Dimension Door";
 const lastArg = args[args.length - 1];
 
@@ -11,7 +11,7 @@ try {
 		// ask if they want to bring an ally along
 		// find nearby allies
 		let companion = null;
-		const friendlyTargets = MidiQOL.findNearby(1, actorToken, 5, 0);
+		const friendlyTargets = MidiQOL.findNearby(1, actorToken, 5);
 		let friend_content = ``;
 		for (let friend of friendlyTargets) {
 			friend_content += `<option value=${friend.id}>${friend.name}</option>`;

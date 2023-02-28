@@ -3,7 +3,7 @@
 
 	At Higher Levels. When you cast this spell using a spell slot of 4th level or higher, the healing increases by 1d4 for each slot level above 3rd.
 */
-const version = "10.0.0";
+const version = "10.0.1";
 const optionName = "Mass Healing Word";
 
 try {
@@ -18,8 +18,8 @@ try {
 		const spellcasting = actor.system.abilities[spellStat].mod;
 		
 		// find the potential targets
-		const friendlyTargets = MidiQOL.findNearby(1, actorToken, 60, 0);
-		const neutralTargets = MidiQOL.findNearby(0, actorToken, 60, 0);
+		const friendlyTargets = MidiQOL.findNearby(1, actorToken, 60);
+		const neutralTargets = MidiQOL.findNearby(0, actorToken, 60);
 		let combinedTargets = [actorToken, ...friendlyTargets, ...neutralTargets];
 		
 		let possibleTargets = combinedTargets.filter(function (target) {

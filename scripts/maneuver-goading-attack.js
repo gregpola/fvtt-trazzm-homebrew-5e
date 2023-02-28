@@ -1,7 +1,7 @@
 /*
 When you hit a creature with a weapon attack, you can expend one superiority die to attempt to goad the target into attacking you. You add the superiority die to the attack’s damage roll, and the target must make a Wisdom saving throw. On a failed save, the target has disadvantage on all attack rolls against targets other than you until the end of your next turn.
 */
-const version = "10.0.0";
+const version = "10.0.1";
 const resourceName = "Superiority Dice";
 const optionName = "Goading Attack";
 
@@ -60,9 +60,8 @@ try {
 			const fullSupDie = tactor.system.scale["battle-master"]["superiority-die"];
 			const abilityBonus = Math.max(tactor.system.abilities.str.mod, tactor.system.abilities.dex.mod);
 			const dc = 8 + tactor.system.attributes.prof + abilityBonus;
-			const flavor = `${CONFIG.DND5E.abilities["wis"]} DC${dc} Goading Attack`;
-
-			let saveRoll = await target.actor.rollAbilitySave("wis", {flavor});
+			const saveFlavor = `${CONFIG.DND5E.abilities["wis"]} DC${dc} Goading Attack`;
+			let saveRoll = await target.actor.rollAbilitySave("wis", {flavor: saveFlavor, damageType: "taunt"});
 			await game.dice3d?.showForRoll(saveRoll);
 			if (saveRoll.total < dc) {
 				await markAsGoaded(target.actor.uuid, tactor.uuid, lastArg);

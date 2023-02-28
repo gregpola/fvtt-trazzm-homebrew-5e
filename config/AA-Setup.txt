@@ -1,0 +1,14 @@
+0. Make sure you have Automated Animations, Sequencer, and JB2A animations installed
+1. Download the current autorec version or use the one in this folder
+2. Open your world in Foundry
+3. Go to Game Settings (the icon of two gears on the right) and then Configure Settings
+4. Select Automated Animations from the list
+5. Select Launch Menu
+6. Select Menu Manager
+7. If you haven't added animations before, select Overwrite Menu (if you have, see Safe Merge below) and click Yes
+8. Select Choose File and browse to the autorec file you downloaded
+9. Click the check mark
+10. Click Check/Uncheck All (unless you want to only import a specific set of settings) and then Import!
+
+--Safe Merge--
+The suggested way to implement this if you have personally created automatic recognition settings is to export your existing animations somewhere safe, overwrite your Automatic Animations settings with this file, then merge your exported animations back in. If you don't have anything you want to keep, just overwrite everything with this. 

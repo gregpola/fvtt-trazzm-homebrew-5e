@@ -1,4 +1,7 @@
-const version = "10.0.0";
+/*
+	When you hit a creature with a weapon attack, you can expend one superiority die to attempt to disarm the target, forcing it to drop one item of your choice that it’s holding. You add the superiority die to the attack’s damage roll, and the target must make a Strength saving throw. On a failed save, it drops the object you choose. The object lands at its feet.
+*/
+const version = "10.0.1";
 const resourceName = "Superiority Dice";
 const optionName = "Disarming Attack";
 
@@ -38,12 +41,12 @@ try {
 				content: `<p>Use ${optionName}? (${points} superiority dice remaining)</p>`,
 				buttons: {
 					one: {
-						icon: '<p> </p><img src = "icons/skills/melee/weapons-crossed-swords-black.webp" width="30" height="30"></>',
+						icon: '<p> </p><img src = "icons/skills/melee/weapons-crossed-swords-black.webp" width="50" height="50"></>',
 						label: "<p>Yes</p>",
 						callback: () => resolve(true)
 					},
 					two: {
-						icon: '<p> </p><img src = "icons/skills/melee/weapons-crossed-swords-yellow.webp" width="30" height="30"></>',
+						icon: '<p> </p><img src = "icons/skills/melee/weapons-crossed-swords-yellow.webp" width="50" height="50"></>',
 						label: "<p>No</p>",
 						callback: () => { resolve(false) }
 					}
@@ -61,7 +64,7 @@ try {
 			const abilityBonus = Math.max(actor.system.abilities.str.mod, actor.system.abilities.dex.mod);
 			const dc = 8 + actor.system.attributes.prof + abilityBonus;
 			const flavor = `${CONFIG.DND5E.abilities["str"]} DC${dc} ${optionName}`;
-			let saveRoll = (await tactor.rollAbilitySave("str", {flavor})).total;
+			let saveRoll = (await tactor.rollAbilitySave("str", {flavor: saveFlavor, damageType: "disarm"})).total;
 			if (saveRoll < dc) {
 				// TODO give the player a choice of items to drop
 				//await dropAnItem(args...);

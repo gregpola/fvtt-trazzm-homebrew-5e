@@ -1,4 +1,4 @@
-const version = "10.0.1";
+const version = "10.0.2";
 const optionName = "Fey Step (Autumn)";
 
 try {
@@ -47,7 +47,7 @@ try {
 			
 		// Ask which targets to try to charm
 		await wait(1000);
-		const potentialTargets = MidiQOL.findNearby(null, actorToken, 10, null);
+		const potentialTargets = MidiQOL.findNearby(null, actorToken, 10);
 		if (potentialTargets.length === 0) {
 			console.log(`${optionName} - no targets within 10 feet to charm`);
 			return;
@@ -149,7 +149,7 @@ try {
 			for (let uuid of charmTargets.values()) {
 				let targetActor = MidiQOL.MQfromActorUuid(uuid);
 				if (targetActor) {
-					let saveRoll = await targetActor.rollAbilitySave("wis", {saveFlavor});
+					let saveRoll = await targetActor.rollAbilitySave("wis", {flavor: saveFlavor, damageType: "charm"});
 					await game.dice3d?.showForRoll(saveRoll);
 
 					if (saveRoll.total < saveDC) {

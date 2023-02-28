@@ -21,7 +21,7 @@ try {
 		let templateDoc = canvas.scene.collections.templates.get(lastArg.templateId);
 		if (!templateDoc) return;
 		
-		// store template it in actor to move it
+		// store template id in actor to move it
 		await lastArg.actor.setFlag("midi-qol", templateFlag, lastArg.templateId);
 		
 		let spellLevel = lastArg.spellLevel;

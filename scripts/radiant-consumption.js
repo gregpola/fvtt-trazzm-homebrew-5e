@@ -1,4 +1,4 @@
-const version = "10.0.0";
+const version = "10.0.1";
 const optionName = "Radiant Consumption";
 const timeFlag = "radiantConsumptionTime";
 
@@ -54,7 +54,7 @@ try {
 	}
 	else if (args[0].macroPass === "postActiveEffects") {
 		// do radiant damage to everyone around the actor
-		const targets = MidiQOL.findNearby(null, token, 10, 0);
+		const targets = MidiQOL.findNearby(null, token, 10);
 		const rollTerm = actor.system.attributes.prof;
 		let damageRoll = await new Roll(`${rollTerm}`).evaluate({async: false});
 		await game.dice3d?.showForRoll(damageRoll);

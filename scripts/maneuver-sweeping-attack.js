@@ -31,7 +31,7 @@ try {
 		}
 						
 		// find nearby foes
-		const potentialTargets = MidiQOL.findNearby(null, ttoken, 5, null);
+		const potentialTargets = MidiQOL.findNearby(null, ttoken, 5);
 		if (!potentialTargets) {
 			console.log(`${resourceName} - no targets near your original target`);
 			return {};

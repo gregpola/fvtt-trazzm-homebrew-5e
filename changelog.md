@@ -1,3 +1,29 @@
+# 10.0.9
+* Fixed/Updated:
+  * Channel Divinity: Preserve Life, Inspiring Smite
+  * Cleric: Blessing of the Forge
+  * Combat Maneuvers: Disarming Attack, Goading Attack, Menacing Attack, Pushing Attack, Trip Attack
+  * Creature Features: Death Lance
+  * Creatures: Scripted fix of all weapon item targeting and reach, Mage, Poison Weird, Treant
+  * Feats: Empowered Cantrips
+  * Items: all injury poisons to support poison resilience, Tentacle Rod, Dagger of Venom
+  * Monk: Stunning Strike
+  * Races: Dwarven Resilience, Fey Step (Autumn), Fey Step (Winter), Necrotic Shroud, All elves and half-elves, Locathah,
+    Draconic Cry, Radiant Consumption
+  * Rogue: Sneak Attack
+  * Spells: Barkskin, Heat Metal, Maximilian's Earthen Grasp, Light, Bounding Boulder, Mass Healing Word, Dimension Door, 
+    Thorn Whip, Dispel Magic
+  * Subclasses: auto grant all subclass bonus spells except Circle of the Land
+  * Warlock: Genie's Wrath
+
+* Added Automation to:
+  * Creatures: Shadow, all Kobolds, all Orcs, all Goblins
+  * Races: poison resilience features, Fey Ancestry
+  * Spells: Entangle, Fog Cloud
+
+* Added Items:
+  * Scraps of Hide
+  
 # 10.0.8
 * Fixed/Updated:
   * Spells: Chill Touch (stop regeneration), Light

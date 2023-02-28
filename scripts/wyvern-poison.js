@@ -1,4 +1,4 @@
-const version = "10.0.1";
+const version = "10.0.2";
 const optionName = "Wyvern Poison";
 const flagName = "wyvern-poison-weapon";
 const damageDice = "7d6";
@@ -118,13 +118,10 @@ try {
 			// apply the poison damage
 			let targetActor = (await fromUuid(lastArg.hitTargetUuids[0]))?.actor;			
 			const uuid = targetActor.uuid;
-			const saveFlavor = `${CONFIG.DND5E.abilities["con"]} DC${saveDC} ${optionName}`;
-			let saveRoll = await targetActor.rollAbilitySave("con", {flavor: saveFlavor});
-			await game.dice3d?.showForRoll(saveRoll);
-			
 			const damageRoll = await new Roll(`${damageDice}`).evaluate({ async: false });
 			await game.dice3d?.showForRoll(damageRoll);
 
+			let saveRoll = await targetActor.rollAbilitySave("con", {flavor: saveFlavor, damageType: "poison"});
 			if (saveRoll.total < saveDC) {
 				return {damageRoll: `${damageRoll.total}[poison]`, flavor: `${optionName} Damage`};		
 			}

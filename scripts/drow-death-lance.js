@@ -3,7 +3,7 @@
 	The target’s hit point maximum is reduced by an amount equal to the necrotic damage taken. This reduction lasts until
 	the target finishes a long rest. The target dies if its hit point maximum is reduced to 0.
 */
-const version = "10.0.0";
+const version = "10.0.1";
 const optionName = "Death Lance";
 
 try {
@@ -33,6 +33,7 @@ try {
 
 				// check for death
 				if (newMax === 0) {
+					await targetTokenDoc.actor.update({"system.attributes.hp.value": 0});
 					await applyDeathEffect(lastArg.sourceItemUuid, targetTokenDoc.actor);
 				}
 			}

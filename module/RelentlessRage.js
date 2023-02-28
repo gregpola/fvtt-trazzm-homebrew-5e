@@ -5,7 +5,7 @@ const ITEM_NAME = "Relentless Rage";
 export class RelentlessRage {
 
     static register() {
-        logger.info("fvtt-trazzm-homebrew-5e | ", "Registering Relentless Rage");
+        logger.info("%c fvtt-trazzm-homebrew-5e", "color: #D030DE", " | Registering Relentless Rage");
         RelentlessRage.hooks();
     }
 

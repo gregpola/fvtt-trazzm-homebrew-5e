@@ -1,4 +1,4 @@
-const version = "10.0.0";
+const version = "10.0.1";
 const optionName = "Empowered Cantrips";
 const timeFlag = "empoweredCantripsTime";
 
@@ -31,7 +31,7 @@ try {
 			new Dialog({
 				// localize this text
 				title: `${optionName}`,
-				content: `<p>Apply ${optionName} to this casting?</p>`,
+				content: `<p>Apply ${optionName} to this casting?</p><p>Once per turn, when you cast a cantrip that uses the increased ability score, you can add your ability modifier to the damage you deal.</p>`,
 				buttons: {
 					one: {
 						icon: '<p> </p><img src = "icons/magic/fire/flame-burning-hand-white.webp" width="30" height="30"></>',

@@ -1,4 +1,4 @@
-const version = "10.0.0";
+const version = "10.0.1";
 const resourceName = "Superiority Dice";
 const optionName = "Pushing Attack";
 
@@ -64,9 +64,9 @@ try {
 			else {
 				const abilityBonus = Math.max(tactor.system.abilities.str.mod, tactor.system.abilities.dex.mod);
 				const dc = 8 + tactor.system.attributes.prof + abilityBonus;
-				const flavor = `${CONFIG.DND5E.abilities["str"]} DC${dc} ${optionName || ""}`;
+				const saveFlavor = `${CONFIG.DND5E.abilities["str"]} DC${dc} ${optionName || ""}`;
 				
-				let saveRoll = await target.actor.rollAbilitySave("str", {flavor});
+				let saveRoll = await target.actor.rollAbilitySave("str", {flavor: saveFlavor, damageType: "push"});
 				await game.dice3d?.showForRoll(saveRoll);				
 				
 				if (saveRoll.total < dc) { 

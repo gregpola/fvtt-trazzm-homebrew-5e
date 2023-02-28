@@ -1,7 +1,7 @@
 /*
 	Immediately after you deal damage to a creature with your Divine Smite feature, you can use your Channel Divinity as a bonus action and distribute temporary hit points to creatures of your choice within 30 feet of you, which can include you. The total number of temporary hit points equals 2d8 + your level in this class, divided among the chosen creatures however you like.
 */
-const version = "10.0.0";
+const version = "10.0.1";
 const resourceName = "Channel Divinity";
 const optionName = "Inspiring Smite"
 const lastArg = args[args.length - 1];
@@ -25,8 +25,8 @@ try {
 		}
 		
 		// find nearby allies
-		const friendlyTargets = MidiQOL.findNearby(1, actorToken, 30, 0);
-		const neutralTargets = MidiQOL.findNearby(0, actorToken, 30, 0);
+		const friendlyTargets = MidiQOL.findNearby(1, actorToken, 30);
+		const neutralTargets = MidiQOL.findNearby(0, actorToken, 30);
 		let recipients = [actorToken, ...friendlyTargets, ...neutralTargets];
 		
 		// roll the total temp HP to spend

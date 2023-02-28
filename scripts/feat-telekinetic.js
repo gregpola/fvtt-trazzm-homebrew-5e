@@ -31,8 +31,7 @@ try {
 }
 
 async function MoveToken(sourceToken, targetToken, movePixels) {
-	const ray = new Ray(sourceToken.center, targetToken.center);
-	let newCenter = ray.project((ray.distance + movePixels)/ray.distance);
+	const ray = Ray.fromAngle(templateDoc.x, templateDoc.y, templateDoc.direction/360, templateDoc.distance)
 	
 	// check for collision
 	const isAllowedLocation = canvas.effects.visibility.testVisibility({x: newCenter.x, y: newCenter.y}, {object: targetToken});

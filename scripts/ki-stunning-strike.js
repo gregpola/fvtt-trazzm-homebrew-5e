@@ -1,7 +1,7 @@
 /*
 	Starting at 5th level, you can interfere with the flow of ki in an opponent's body. When you hit another creature with a melee weapon attack, you can spend 1 ki point to attempt a stunning strike. The target must succeed on a Constitution saving throw or be stunned until the end of your next turn.
 */	
-const version = "10.0.0";
+const version = "10.0.1";
 const resourceName = "Ki Points";
 const optionName = "Stunning Strike";
 const optionCost = 1;
@@ -64,9 +64,9 @@ try {
 		if (useFeature) {
 			const abilityBonus = actor.system.abilities.wis.mod;
 			const dc = 8 + actor.system.attributes.prof + abilityBonus;
-			const flavor = `${CONFIG.DND5E.abilities["con"]} DC${dc} ${optionName || ""}`;
+			const saveFlavor = `${CONFIG.DND5E.abilities["con"]} DC${dc} ${optionName || ""}`;
 			
-			let saveRoll = await targetActor.rollAbilitySave("con", {flavor});
+			let saveRoll = await targetActor.rollAbilitySave("con", {flavor: saveFlavor, damageType: "stun"});
 			await game.dice3d?.showForRoll(saveRoll);
 			if (saveRoll.total < dc) { 
 				// Apply stunned
