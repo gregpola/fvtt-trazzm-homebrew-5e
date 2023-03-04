@@ -1,22 +1,31 @@
-const version = "10.0.1";
+/*
+	Choose a manufactured metal object, such as a metal weapon or a suit of heavy or medium metal armor, that you can see within range. You cause the object to glow red-hot. Any creature in physical contact with the object takes 2d8 fire damage when you cast the spell. Until the spell ends, you can use a bonus action on each of your subsequent turns to cause this damage again.
+
+	If a creature is holding or wearing the object and takes the damage from it, the creature must succeed on a Constitution saving throw or drop the object if it can. If it doesn't drop the object, it has disadvantage on attack rolls and ability checks until the start of your next turn.
+
+	At Higher Levels. When you cast this spell using a spell slot of 3rd level or higher, the damage increases by 1d8 for each slot level above 2nd.
+*/
+const version = "10.0.2";
 const optionName = "Heat Metal";
 const metalWeapons = ["Scimitar", "sword", "blade", "Rapier", "dagger", "mace"];
 const metalArmor = ["medium", "heavy"];
 const gameRound = game.combat ? game.combat.round : 0;
-const ongoingDamageName = "Heat Metal - apply damage";
+const flagName = "heat-metal";
 
 try {
 	const lastArg = args[args.length - 1];
 	let actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-	let token = canvas.scene.tokens.get(lastArg.tokenId);	
+	let actorToken = canvas.scene.tokens.get(lastArg.tokenId);
+	
 	const level = Number(lastArg.spellLevel);
+	const damageDice = 2 + Math.max(level - 2, 0);
 
 	if (args[0].macroPass === "postActiveEffects") {
 		const target = (lastArg.targets ? canvas.tokens.get(lastArg.targets[0].id) : null);
 
 		// find the target actor's weapons & armor that are metal
-		let firstWeapons = target.actor.items.filter(i => (i.type === `weapon`));
-		let armor = target.actor.items.filter(i => ((i.type === `equipment`) && metalArmor.includes(i.system.armor?.type) && (i.system.baseItem !== "hide")));
+		let firstWeapons = target.actor.items.filter(i => (i.type === `weapon` && i.system.equipped));
+		let armor = target.actor.items.filter(i => ((i.type === `equipment`) && i.system.equipped && metalArmor.includes(i.system.armor?.type) && (i.system.baseItem !== "hide")));
 		let targetItems = new Set();
 		
 		for (let weapon of firstWeapons) {
@@ -29,7 +38,7 @@ try {
 		}
 
 		armor.forEach(item => targetItems.add(item));
-		if (targetItems.length < 1) {
+		if (targetItems.size < 1) {
 			return ui.notifications.error(`${optionName} - ${target.actor.name} has no eligible items`);
 		}
 		
@@ -48,143 +57,113 @@ try {
 			  </div>
 			</div>`;
 
-		new Dialog({
-			title: `⚔️ Choose the item to heat`,
-			content,
-			buttons:
-			{
-				Ok:
+		let dialog = new Promise((resolve, reject) => {
+			new Dialog({
+				title: `⚔️ Choose the item to heat`,
+				content,
+				buttons:
 				{
-					label: `Ok`,
-					callback: async (html) => {
-						let itemId = html.find('[name=titem]')[0].value;
-						let selectedItem = target.actor.items.get(itemId);
-						const itemName = selectedItem.name;
-						let isWeapon = selectedItem.type === `weapon`;
+					Ok:
+					{
+						label: `Ok`,
+						callback: async (html) => {
+							let itemId = html.find('[name=titem]')[0].value;
+							let selectedItem = target.actor.items.get(itemId);
+							const itemName = selectedItem.name;
+							let isWeapon = selectedItem.type === `weapon`;
 
-						// apply the blessing
-						const newName = itemName + ` (${optionName})`;
-						let mutations = {};
-						mutations[selectedItem.name] = {
-							"name": newName
-						};
-						
-						const updates = {
-							embedded: {
-								Item: mutations
-							}
-						};
-						
-						// mutate the selected item
-						await warpgate.mutate(target.document, updates, {}, { name: itemName });
-						
-						// track target info on the source actor
-						DAE.setFlag(actor, `heat-metal`, {
-							ttoken: target.id,
-							itemName : itemName
-						});
-						
-						// apply the effects to the target
-						const ability = actor.system.attributes.spellcasting;
-						const abilityBonus = actor.system.abilities[ability].mod;
-						const dc = 8 + actor.system.attributes.prof + abilityBonus;
-						let saveType = game.i18n.localize("con");
-						await markTarget(target.actor.uuid, lastArg.item.uuid, dc, saveType);
-						
-						// add item to the source actor
-						const damageDice = 2 + Math.max(level - 2, 0);
-						const sourceActorUpdates = {
-							embedded: {
-								Item: {
-									"Heat Metal - apply damage": { 
-										type: "feat",
-										img: "icons/tools/smithing/furnace-fire-metal-orange.webp",
-										data: {
-											description: {
-												value: `${optionName}`
-											},
-											activation: {
-												type: "bonus",
-												cost: 1
-											},
-											actionType: "util",
-											damage: {
-												parts: [
-													[`${damageDice}d8`, "fire"]
-												]
-											},
+							// apply the heat
+							const newName = itemName + ` (${optionName})`;
+							
+							let mutations = {};
+							mutations[selectedItem.name] = {
+								"name": newName,
+								"effects": [{
+									"label": optionName,
+									"icon": "icons/tools/smithing/furnace-fire-metal-orange.webp",
+									"origin": lastArg.itemUuid,
+									"disabled": false,
+									"transfer": true,
+									"duration": {
+										rounds: 10, seconds: 60, startRound: gameRound, startTime: game.time.worldTime 
+									},
+									"changes": [
+										{
+											"key": "flags.midi-qol.OverTime",
+											"mode": 5,
+											"value": `turn=start, label=${optionName}, damageRoll=${damageDice}d8, damageType=fire`,
+											"priority": 20
+										},
+										{
+											"key": "macro.tokenMagic",
+											"mode": 0,
+											"value": "Fire v2 (sparks)",
+											"priority": 21
+										},
+										{
+											"key": "flags.midi-qol.disadvantage.attack.all",
+											"mode": CONST.ACTIVE_EFFECT_MODES.CUSTOM,
+											"value": `true`,
+											"priority": 22
+										},
+										{
+											"key": "flags.midi-qol.disadvantage.ability.check.all",
+											"mode": CONST.ACTIVE_EFFECT_MODES.CUSTOM,
+											"value": `true`,
+											"priority": 23
 										}
+									],
+									"flags": {
 									}
+								}]
+							};
+							
+							const updates = {
+								embedded: {
+									Item: mutations
 								}
-							}
-						};						
-						await warpgate.mutate(token, sourceActorUpdates);
-
-						ChatMessage.create({content: target.actor.name + "'s " + itemName + " becomes red-hot!"});
-						return true;
-					}
-				},
-				Cancel:
-				{
-					label: `Cancel`,
-					callback: async (html) => {
-						return false;
+							};
+							
+							// mutate the selected item
+							await warpgate.mutate(target.document, updates, {}, { name: itemName });
+							
+							// track target info on the source actor
+							DAE.setFlag(actor, flagName, {tokenId: target.id, itemName: itemName});
+							ChatMessage.create({content: target.actor.name + "'s " + itemName + " becomes red-hot!"});
+							resolve(true);
+						}
 					}
 				}
-			}
-		}).render(true);
+			}).render(true);
+		});
+		
+		let useFeature = await dialog;
+		if (useFeature) {
+			const targetToken = game.canvas.tokens.get(lastArg.targets[0].id);
+			const actorData = actor.getRollData();
+			let damageRoll = await new game.dnd5e.dice.DamageRoll(`${damageDice}d8[fire]`, actorData).evaluate({async:false});
+			await new MidiQOL.DamageOnlyWorkflow(actor, actorToken, damageRoll.total, "fire", [targetToken], damageRoll, { flavor: `(${optionName})`, itemData: lastArg.item, itemCardId: "new" });
+			await game.dice3d?.showForRoll(damageRoll);
+
+		}
+		return useFeature;		
 	}
 	else if (args[0] === "off") {
-		let flag = DAE.getFlag(actor, `heat-metal`);
+		let flag = DAE.getFlag(actor, flagName);
 		if (flag) {
-			// revert the actor
-			await warpgate.revert(token, ongoingDamageName);
-			
-			// revert the target
-			const ttoken = canvas.tokens.get(flag.ttoken);
-			const itemName = flag.itemName;
-			let restore = await warpgate.revert(ttoken.document, itemName);
-			
-			DAE.unsetFlag(actor, `heat-metal`);
-			ChatMessage.create({
-				content: `${ttoken.name}'s ${itemName} returns to normal.`,
-				speaker: ChatMessage.getSpeaker({ actor: actor })});
+			// get the target actor
+			let targetToken = canvas.scene.tokens.get(flag.tokenId);
+			if (targetToken) {
+				const itemName = flag.itemName;
+				let restore = await warpgate.revert(targetToken, itemName);
+				ChatMessage.create({
+					content: `${targetToken.name}'s ${itemName} returns to normal.`,
+					speaker: ChatMessage.getSpeaker({ actor: actor })});
+			}
+			DAE.unsetFlag(actor, flagName);
 		}
 	}
 	
 } catch (err) {
 	console.error(`${optionName} : ${version}`, err);
-}
-
-async function markTarget(targetId, itemId, spellDC, saveType) {
-	const effectData = {
-		label: optionName,
-		icon: "icons/tools/smithing/furnace-fire-metal-orange.webp",
-		origin: itemId,
-		changes: [
-            {
-				key: `flags.midi-qol.OverTime`, 
-				mode: CONST.ACTIVE_EFFECT_MODES.OVERRIDE, 
-				value: `turn=start,label=${optionName},damageRoll=2d8, damageType=fire`, 
-				priority: 20
-			},
-			{
-				key: 'flags.midi-qol.disadvantage.attack.all',
-				mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-				value: "1",
-				priority: 21
-			},
-			{
-				key: 'flags.midi-qol.disadvantage.ability.check.all',
-				mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-				value: "1",
-				priority: 22
-			}
-		],
-		duration: { 
-			rounds: 10, seconds: 60, startRound: gameRound, startTime: game.time.worldTime 
-		},
-		disabled: false
-	};
-    await MidiQOL.socket().executeAsGM("createEffects", { actorUuid: targetId, effects: [effectData] });
 }

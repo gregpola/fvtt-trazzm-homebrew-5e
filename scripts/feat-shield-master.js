@@ -1,4 +1,4 @@
-const version = "10.0.0";
+const version = "10.0.1";
 const optionName = "Shield Master";
 const lastArg = args[args.length - 1];
 
@@ -44,34 +44,10 @@ async function ShoveKnockback(){
 	let skill = target.actor.system.skills.ath.total < target.actor.system.skills.acr.total ? "acr" : "ath";
 	let tokenRoll = await target.actor.rollSkill(skill);
 	if (tactorRoll.total >= tokenRoll.total) {
-		await PushToken(pusher, target);
+		await HomebrewMacros.pushTarget(pusher, target, 1);
 		ChatMessage.create({'content': `${pusher.name} pushes ${target.name} back!`});
 	}
 	else {
 		ChatMessage.create({'content': `${pusher.name} is to weak, can't push ${target.name} back at all!`});
 	}
-}
-
-async function PushToken(sourceToken, targetToken) {
-	const knockbackPixels = canvas.grid.size;
-	const ray = new Ray(sourceToken.center, targetToken.center);
-	let newCenter = ray.project((ray.distance + knockbackPixels)/ray.distance);
-	
-	// check for collision
-	const isAllowedLocation = canvas.effects.visibility.testVisibility({x: newCenter.x, y: newCenter.y}, {object: targetToken});
-	if(!isAllowedLocation) {
-		// too far, check for 5-feet
-		let shorterCenter = ray.project((ray.distance + (knockbackPixels/2))/ray.distance);
-		const isShorterAllowed = canvas.effects.visibility.testVisibility({x: shorterCenter.x, y: shorterCenter.y}, {object: targetToken});
-		
-		if (!isShorterAllowed) {
-			return ChatMessage.create({content: `${targetToken.name} hits a wall`});
-		}
-		newCenter = shorterCenter;
-	}
-	
-	// finish the push
-	newCenter = canvas.grid.getSnappedPosition(newCenter.x - targetToken.width / 2, newCenter.y - targetToken.height / 2, 1);
-	const mutationData = { token: {x: newCenter.x, y: newCenter.y}};
-	await warpgate.mutate(targetToken.document, mutationData, {}, {permanent: true});
 }

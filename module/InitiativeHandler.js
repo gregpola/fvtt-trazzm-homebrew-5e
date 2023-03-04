@@ -53,6 +53,21 @@ export class InitiativeHandler {
                     }
                 }
 
+                // Look for Superior Inspiration
+                featureItem = actor?.items?.getName("Superior Inspiration");
+                if (featureItem) {
+                    // At 20th level, when you roll initiative and have no uses of Bardic Inspiration left, you regain one use.
+                    let resKey = InitiativeHandler.findResource(actor, "Bardic Inspiration");
+                    if (resKey) {
+                        let resources = actor.system.resources;
+                        if (resources[resKey].value < 1) {
+                            resources[resKey].value = 1;
+                            actor.update({ "system.resources": resources });
+                            await InitiativeHandler.wait(500);
+                        }
+                    }
+                }
+
                 // Look for Dread Ambusher
                 featureItem = actor?.items?.getName("Dread Ambusher");
                 if (featureItem) {

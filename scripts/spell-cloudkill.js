@@ -9,7 +9,7 @@
 		Texture: modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png
 		
 */
-const version = "10.0.0"
+const version = "10.0.1"
 const optionName = "Cloudkill";
 const templateFlag = "cloudkill-template";
 try {
@@ -60,8 +60,10 @@ try {
 }
 
 function getAllowedMoveLocation(casterToken, templateDoc, maxSquares) {
+	let pixelsPerSquare = canvas.grid.size * 1.33; // handle diagonals
+	
 	for (let i = maxSquares; i > 0; i--) {
-		const movePixels = i * canvas.grid.size;
+		const movePixels = i * pixelsPerSquare;
 		const ray = new Ray(casterToken.center, templateDoc.object.center);
 		const newCenter = ray.project((ray.distance + movePixels)/ray.distance);
 		const isAllowedLocation = canvas.effects.visibility.testVisibility({x: newCenter.x, y: newCenter.y}, {object: templateDoc.Object});

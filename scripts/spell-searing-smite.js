@@ -9,8 +9,6 @@ try {
 		const lastArg = args[args.length - 1];
 		const target = lastArg.hitTargets[0];
 		let tactor = target?.actor;
-		const ttoken = canvas.tokens.get(lastArg.hitTargets[0].object.id);
-		let pusher = canvas.tokens.get(lastArg.tokenId);
 
 		// validate targeting
 		if (!actor || !target) {

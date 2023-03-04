@@ -1,7 +1,7 @@
 /*
 	At 6th level, when you deal lightning damage to a Large or smaller creature, you can also push it up to 10 feet away from you.
 */
-const version = "10.0.0";
+const version = "10.0.1";
 const optionName = "Thunderbolt Strike";
 
 try {
@@ -49,35 +49,10 @@ try {
 		let useFeature = await dialog;
 		if (useFeature) {
 			// Push the target
-			await pushTarget(actorToken, targetToken);
+			await HomebrewMacros.pushTarget(actorToken, targetToken, 3);
 		}
 	}
 
 } catch (err) {
     console.error(`${optionName}:  ${version}`, err);
-}
-
-async function pushTarget(sourceToken, targetToken) {
-	let newCenter = getAllowedPushLocation(sourceToken, targetToken, 3);
-	if(!newCenter) {
-		return ui.notifications.error(`${resourceName} - no room to push ${targetToken.name}`);
-	}
-	const tobj = targetToken.document.object;
-	newCenter = canvas.grid.getSnappedPosition(newCenter.x - tobj.w / 2, newCenter.y - tobj.h / 2, 1);
-	const mutationData = { token: {x: newCenter.x, y: newCenter.y}};
-	await warpgate.mutate(targetToken.document, mutationData, {}, {permanent: true});
-}
-
-function getAllowedPushLocation(sourceToken, targetToken, maxSquares) {
-	for (let i = maxSquares; i > 0; i--) {
-		const knockbackPixels = i * canvas.grid.size;
-		const ray = new Ray(sourceToken.center, targetToken.center);
-		const newCenter = ray.project((ray.distance + knockbackPixels)/ray.distance);
-		const isAllowedLocation = canvas.effects.visibility.testVisibility({x: newCenter.x, y: newCenter.y}, {object: targetToken.Object});
-		if(isAllowedLocation) {
-			return newCenter;
-		}
-	}
-	
-	return null;
 }

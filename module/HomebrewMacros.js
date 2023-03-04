@@ -44,7 +44,7 @@ class HomebrewMacros {
 
         const config = {
             drawIcon: true,
-            interval: targetToken.width % 2 === 0 ? 1 : -1,
+            interval: 1,
             size: targetToken.width / canvas.grid.size
         };
 
@@ -882,7 +882,8 @@ class HomebrewMacros {
         }
 
         let squares = maxSquares ? maxSquares : 1;
-        let movePixels = squares * canvas.grid.size;
+        let pixelsPerSquare = canvas.grid.size * 1.33; // handle diagonals
+        let movePixels = squares * pixelsPerSquare;
         const ray = new Ray(pullerToken.center, targetToken.center);
         let newCenter = ray.project((ray.distance - movePixels)/ray.distance);
 
@@ -892,8 +893,58 @@ class HomebrewMacros {
 
         while ((squares > 1) && !isAllowedLocation) {
             squares = squares - 1;
-            movePixels = squares * canvas.grid.size;
+            movePixels = squares * pixelsPerSquare;
             let shorterCenter = ray.project((ray.distance - movePixels)/ray.distance);
+            c = canvas.grid.getSnappedPosition(shorterCenter.x - targetToken.width / 2, shorterCenter.y - targetToken.height / 2, 1);
+            let isShorterAllowed = !HomebrewMacros.checkPosition(c.x, c.y);
+
+            if (isShorterAllowed) {
+                isAllowedLocation = true;
+                newCenter = shorterCenter;
+                break;
+            }
+        }
+
+        if (isAllowedLocation) {
+            // finish the pull
+            newCenter = canvas.grid.getSnappedPosition(newCenter.x - targetToken.width / 2, newCenter.y - targetToken.height / 2, 1);
+            const mutationData = { token: {x: newCenter.x, y: newCenter.y}};
+            await warpgate.mutate(targetToken.document, mutationData, {}, {permanent: true});
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Pushes the target maxSquares number of squares away from the pusher.
+     *
+     * @param pusherToken
+     * @param targetToken
+     * @param maxSquares
+     * @returns {Promise<boolean>}
+     */
+    static async pushTarget(pusherToken, targetToken, maxSquares) {
+        // sanity checks
+        if (!pusherToken || !targetToken) {
+            console.error("pullTarget() is missing arguments");
+            return false;
+        }
+
+        let squares = maxSquares ? maxSquares : 1;
+        let pixelsPerSquare = canvas.grid.size * 1.33; // handle diagonals
+        let movePixels = squares * pixelsPerSquare;
+        const ray = new Ray(pusherToken.center, targetToken.center);
+        let newCenter = ray.project((ray.distance + movePixels)/ray.distance);
+
+        // check for collision
+        let c = canvas.grid.getSnappedPosition(newCenter.x - targetToken.width / 2, newCenter.y - targetToken.height / 2, 1);
+        let isAllowedLocation = !HomebrewMacros.checkPosition(c.x, c.y);
+
+        while ((squares > 1) && !isAllowedLocation) {
+            squares = squares - 1;
+            movePixels = squares * pixelsPerSquare;
+            let shorterCenter = ray.project((ray.distance + movePixels)/ray.distance);
             c = canvas.grid.getSnappedPosition(shorterCenter.x - targetToken.width / 2, shorterCenter.y - targetToken.height / 2, 1);
             let isShorterAllowed = !HomebrewMacros.checkPosition(c.x, c.y);
 
@@ -992,6 +1043,190 @@ class HomebrewMacros {
                             'spell': {
                                 'WallofThorns': {
                                     'spellLevel': spellLevel,
+                                    'spelldc': spelldc,
+                                    'templateid': templateDoc.id
+                                }
+                            }
+                        }
+                    }
+                };
+                await tokenDoc.actor.createEmbeddedDocuments("ActiveEffect", [effectData]);
+            }
+        }
+    }
+
+    static async moonbeamEffects(tokenids) {
+        if (!tokenids)
+            return;
+
+        for (let i = 0; tokenids.length > i; i++) {
+            let tokenDoc = canvas.scene.tokens.get(tokenids[i]);
+            if (!tokenDoc) continue;
+
+            let tokenInTemplates = game.modules.get('templatemacro').api.findContainers(tokenDoc);
+            let effect = tokenDoc.actor.effects.find(eff => eff.label === 'Moonbeam');
+            let createEffect = false;
+            let deleteEffect = false;
+            let inBeam = false;
+            let spellLevel = -100;
+            let spelldc = -100;
+            let oldSpellLevel = effect?.flags?.world?.spell?.Moonbeam?.spellLevel;
+            let oldSpelldc = effect?.flags?.world?.spell?.Moonbeam?.spelldc;
+            let ambientLightId = effect?.flags?.world?.spell?.Moonbeam?.ambientLightId;
+
+            let templateid = effect?.flags?.world?.spell?.Moonbeam?.templateid;
+            for (let j = 0; tokenInTemplates.length > j; j++) {
+                let testTemplate = canvas.scene.collections.templates.get(tokenInTemplates[j]);
+                if (!testTemplate) continue;
+                let moonbeam = testTemplate.flags.world?.spell?.Moonbeam;
+                if (!moonbeam) continue;
+                inBeam = true;
+                let testSpellLevel = moonbeam.spellLevel;
+                let testSpelldc = moonbeam.spelldc;
+                if (testSpellLevel > spellLevel) {
+                    spellLevel = testSpellLevel;
+                    templateid = tokenInTemplates[j];
+                }
+                if (testSpelldc > spelldc) {
+                    spelldc = testSpelldc;
+                    templateid = tokenInTemplates[j];
+                }
+            }
+
+            if (!inBeam) {
+                deleteEffect = true;
+            } else {
+                if (oldSpellLevel !== spellLevel || oldSpelldc !== spelldc) {
+                    createEffect = true;
+                    deleteEffect = true;
+                }
+            }
+            if (deleteEffect && effect) {
+                try {
+                    await effect.delete();
+                } catch {}
+            }
+            if (createEffect && inBeam && (oldSpellLevel !== spellLevel || oldSpelldc !== spelldc)) {
+                let dieCount = spellLevel;
+                let damageRoll = dieCount + 'd10';
+                const damageType = "radiant";
+                let templateDoc = canvas.scene.collections.templates.get(templateid);
+                let origin = templateDoc.flags?.dnd5e?.origin;
+                let effectData = {
+                    'label': 'Moonbeam',
+                    'icon': 'icons/magic/light/beam-rays-yellow-blue.webp',
+                    'changes': [
+                        {
+                            'key': 'flags.midi-qol.OverTime',
+                            'mode': 5,
+                            'value': 'turn=start, rollType=save, saveAbility=con, saveDamage=halfdamage, saveRemove=false, saveMagic=true, damageType=' + damageType + ', damageRoll=' + damageRoll + ', saveDC =' + spelldc,
+                            'priority': 20
+                        }
+                    ],
+                    'origin': origin,
+                    'duration': {'seconds': 600},
+                    'flags': {
+                        'effectmacro': {
+                            'onTurnStart': {
+                                'script': "let combatTurn = game.combat.round + '-' + game.combat.turn;\nlet templateid = effect.flags.world.spell.Moonbeam.templateid;\ntoken.document.setFlag('world', `spell.Moonbeam.${templateid}.turn`, combatTurn);"
+                            }
+                        },
+                        'world': {
+                            'spell': {
+                                'Moonbeam': {
+                                    'spellLevel': spellLevel,
+                                    'spelldc': spelldc,
+                                    'templateid': templateDoc.id,
+                                    'ambientLightId': ambientLightId
+                                }
+                            }
+                        }
+                    }
+                };
+                await tokenDoc.actor.createEmbeddedDocuments("ActiveEffect", [effectData]);
+            }
+        }
+    }
+
+    static async createBonfireEffects(tokenids) {
+        if (!tokenids)
+            return;
+
+        for (let i = 0; tokenids.length > i; i++) {
+            let tokenDoc = canvas.scene.tokens.get(tokenids[i]);
+            if (!tokenDoc) continue;
+
+            let tokenInTemplates = game.modules.get('templatemacro').api.findContainers(tokenDoc);
+            let effect = tokenDoc.actor.effects.find(eff => eff.label === 'CreateBonfire');
+            let createEffect = false;
+            let deleteEffect = false;
+            let inBeam = false;
+            let damageDice = 1;
+            let spelldc = -100;
+            let oldDamageDice = effect?.flags?.world?.spell?.CreateBonfire?.cantripDice;
+            let oldSpelldc = effect?.flags?.world?.spell?.CreateBonfire?.spelldc;
+
+            let templateid = effect?.flags?.world?.spell?.CreateBonfire?.templateid;
+            for (let j = 0; tokenInTemplates.length > j; j++) {
+                let testTemplate = canvas.scene.collections.templates.get(tokenInTemplates[j]);
+                if (!testTemplate) continue;
+                let createBonfire = testTemplate.flags.world?.spell?.CreateBonfire;
+                if (!createBonfire) continue;
+                inBeam = true;
+                let testDamageDice = createBonfire.cantripDice;
+                let testSpelldc = createBonfire.spelldc;
+                if (testDamageDice > damageDice) {
+                    damageDice = testDamageDice;
+                    templateid = tokenInTemplates[j];
+                }
+                if (testSpelldc > spelldc) {
+                    spelldc = testSpelldc;
+                    templateid = tokenInTemplates[j];
+                }
+            }
+
+            if (!inBeam) {
+                deleteEffect = true;
+            } else {
+                if (oldDamageDice !== damageDice || oldSpelldc !== spelldc) {
+                    createEffect = true;
+                    deleteEffect = true;
+                }
+            }
+            if (deleteEffect && effect) {
+                try {
+                    await effect.delete();
+                } catch {}
+            }
+            if (createEffect && inBeam && (oldDamageDice !== damageDice || oldSpelldc !== spelldc)) {
+                let dieCount = damageDice;
+                let damageRoll = dieCount + 'd8';
+                const damageType = "fire";
+                let templateDoc = canvas.scene.collections.templates.get(templateid);
+                let origin = templateDoc.flags?.dnd5e?.origin;
+                let effectData = {
+                    'label': 'CreateBonfire',
+                    'icon': 'icons/magic/fire/flame-burning-campfire-orange.webp',
+                    'changes': [
+                        {
+                            'key': 'flags.midi-qol.OverTime',
+                            'mode': 5,
+                            'value': 'turn=start, rollType=save, saveAbility=con, saveDamage=halfdamage, saveRemove=false, saveMagic=true, damageType=' + damageType + ', damageRoll=' + damageRoll + ', saveDC =' + spelldc,
+                            'priority': 20
+                        }
+                    ],
+                    'origin': origin,
+                    'duration': {'seconds': 600},
+                    'flags': {
+                        'effectmacro': {
+                            'onTurnStart': {
+                                'script': "let combatTurn = game.combat.round + '-' + game.combat.turn;\nlet templateid = effect.flags.world.spell.CreateBonfire.templateid;\ntoken.document.setFlag('world', `spell.CreateBonfire.${templateid}.turn`, combatTurn);"
+                            }
+                        },
+                        'world': {
+                            'spell': {
+                                'CreateBonfire': {
+                                    'cantripDice': damageDice,
                                     'spelldc': spelldc,
                                     'templateid': templateDoc.id
                                 }

@@ -1,4 +1,4 @@
-const version = "10.0.0";
+const version = "10.0.1";
 const optionName = "Thunderous Smite";
 const squaresPushed = 2;
 
@@ -41,7 +41,7 @@ try {
 	    if (save.total < dc) {
 			await game.dfreds?.effectInterface.addEffect({ effectName: 'Prone', uuid: target.actor.uuid });
 			await wait(300);
-			await pushTarget(pusher, ttoken);
+			await HomebrewMacros.pushTarget(pusher, ttoken.object, squaresPushed);
 		}
 
 		// add damage bonus
@@ -56,28 +56,3 @@ try {
 }
 
 async function wait(ms) { return new Promise(resolve => { setTimeout(resolve, ms); }); }
-
-async function pushTarget(sourceToken, targetToken) {
-	let newCenter = getAllowedPushLocation(sourceToken, targetToken, squaresPushed);
-	if(!newCenter) {
-		return ui.notifications.error(`${optionName} - no room to push ${targetToken.name}`);
-	}
-	const tobj = targetToken.document.object;
-	newCenter = canvas.grid.getSnappedPosition(newCenter.x - tobj.w / 2, newCenter.y - tobj.h / 2, 1);
-	const mutationData = { token: {x: newCenter.x, y: newCenter.y}};
-	await warpgate.mutate(targetToken.document, mutationData, {}, {permanent: true});
-}
-
-function getAllowedPushLocation(sourceToken, targetToken, maxSquares) {
-	for (let i = maxSquares; i > 0; i--) {
-		const knockbackPixels = i * canvas.grid.size;
-		const ray = new Ray(sourceToken.center, targetToken.center);
-		const newCenter = ray.project((ray.distance + knockbackPixels)/ray.distance);
-		const isAllowedLocation = canvas.effects.visibility.testVisibility({x: newCenter.x, y: newCenter.y}, {object: targetToken.Object});
-		if(isAllowedLocation) {
-			return newCenter;
-		}
-	}
-	
-	return null;
-}

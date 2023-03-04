@@ -1,130 +1,62 @@
-const version = "10.0.1";
+/*
+	A silvery beam of pale light shines down in a 5-foot-radius, 40-foot-high Cylinder centered on a point within range. Until the spell ends, dim light fills the cylind⁠er.
+
+	When a creature enters the spell’s area for the first time on a turn or starts its turn there, it is engulfed in ghostly flames that cause searing pain, and it must make a Constitution saving throw. It takes 2d10 radiant damage on a failed save, or half as much damage on a successful one.
+
+	A Shapechanger makes its saving throw with disadvantage. If it fails, it also instantly reverts to its original form and can’t assume a different form until it leaves the spell’s light.
+
+	On each of your turns after you cast this spell, you can use an action to move the beam up to 60 feet in any direction.
+
+	At Higher Levels. When you cast this spell using a spell slot of 3rd level or higher, the damage increases by 1d10 for each slot level above 2nd.
+*/
+const version = "10.0.2";
 const optionName = "Moonbeam";
-const summonFlag = "spell-moonbeam";
+const templateFlag = "moonbeam-template";
+const ambientLightFlag = "moonbeam-light";
 
 try {
 	const lastArg = args[args.length - 1];
 	let caster = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
 	const actorToken = canvas.tokens.get(lastArg.tokenId);
-	
-    if (args[0] === "on") {
-		const sourceItem = await fromUuid(lastArg.origin);
-		let summonName = optionName + " (" + caster.name + ")";
-		const spellLevel = lastArg.efData.flags["midi-qol"].castData.castLevel;
-				
-        const overTimeValue = `turn=start,saveDC=${caster.system.attributes.spelldc ?? 10},saveAbility=con,damageRoll=${spellLevel}d10,damageType=radiant,saveDamage=halfdamage,saveRemove=false`;
 
-        let updates = {
-            token: {
-				"name": summonName,
-				"disposition": CONST.TOKEN_DISPOSITIONS.FRIENDLY,
-				"displayName": CONST.TOKEN_DISPLAY_MODES.HOVER,
-				"displayBars": CONST.TOKEN_DISPLAY_MODES.ALWAYS,
-				"bar1": { attribute: "attributes.hp" },
-				"actorLink": false,
-				"flags": { "midi-srd": { "Moonbeam": { "ActorId": caster.id } } }
-            },
-			"name": summonName,
-			embedded: {
-				Item: {
-					"Entry Damage": {
-						"system.damage.parts": [[`${spellLevel}d10`, "radiant"]], 
-						"system.save.dc": caster.system.attributes.spelldc
-					}
-				},
-				ActiveEffect: {
-					"Moonbeam Aura": {
-						"changes":  [{"key":"flags.midi-qol.OverTime", "mode":5, "value": overTimeValue, "priority":"20"}],
-						"disabled": false,
-						"label": "Moonbeam Damage",
-						"icon": "icons/magic/light/beam-rays-blue-large.webp",
-						"origin": lastArg.origin,
-						"flags": {
-							"ActiveAuras": {
-								"isAura":true,
-								"aura":"All",
-								"radius":7.5,
-								"alignment":"",
-								"type":"",
-								"ignoreSelf":true,
-								"height":false,
-								"hidden":false,
-								"hostile":false,
-								"onlyOnce":false
-							}
-						},
-					}
-				}
-            }
-        };
-		        
-        let summonActor = game.actors.getName(summonName);
-        if (!summonActor) {
-			// Get from the compendium
-			const summonId = "fb1BqNyY43H87dQD";
-			let entity = await fromUuid("Compendium.fvtt-trazzm-homebrew-5e.homebrew-creatures." + summonId);
-			if (!entity) {
-				ui.notifications.error(`${optionName} - unable to find the actor`);
-				return false;
-			}
-
-			// import the actor
-			let document = await entity.collection.importFromCompendium(game.packs.get(entity.pack), summonId, updates);
-			if (!document) {
-				ui.notifications.error(`${optionName} - unable to import from the compendium`);
-				return false;
-			}
-			await warpgate.wait(500);
-			summonActor = game.actors.getName(summonName);
-		}
-
-		// spawn the moonbeam
-		const maxRange = sourceItem.system.range.value ? sourceItem.system.range.value : 120;
-		let position = await HomebrewMacros.warpgateCrosshairs(actorToken, maxRange, sourceItem, summonActor.prototypeToken);
-		if (position) {
-			// check for token collision
-			const newCenter = canvas.grid.getSnappedPosition(position.x - summonActor.prototypeToken.width / 2, position.y - summonActor.prototypeToken.height / 2, 1);
-			if (HomebrewMacros.checkPosition(newCenter.x, newCenter.y)) {
-				ui.notifications.error(`${optionName} - can't summon on top of another token`);
-				return false;
-			}
-
-			const result = await warpgate.spawnAt(position, summonName, updates, { controllingActor: caster }, {});
-			if (!result || !result[0]) {
-				ui.notifications.error(`${optionName} - Unable to spawn`);
-				return false;
-			}
-
-			let summonedToken = canvas.tokens.get(result[0]);
-			if (summonedToken) {
-				await caster.setFlag("midi-qol", summonFlag, summonedToken.id);
-				// players can't do the following:
-				//await summonedToken.toggleCombat();
-				//await summonedToken.actor.rollInitiative();
-			}
-			
-		}
-		else {
-			ui.notifications.error(`${optionName} - invalid summon location`);
-			return false;
-		}
-
-    }
-	else if (args[0] === "off") {
-		// delete the summon
-		const lastSummon = caster.getFlag("midi-qol", summonFlag);
-		if (lastSummon) {
-			await caster.unsetFlag("midi-qol", summonFlag);
-			await warpgate.dismiss(lastSummon, game.canvas.scene.id);
-		}
+	if (args[0].macroPass === "postActiveEffects") {
+		// build the template macro
+		let templateDoc = canvas.scene.collections.templates.get(lastArg.templateId);
+		if (!templateDoc) return;
 		
-		// delete all overTime effects
-		for (let tokenDoc of canvas.scene.tokens) {
-			let uuid = tokenDoc.actor.uuid;
-			let auraEffect = tokenDoc.actor.effects?.find(i => i.label === "Moonbeam Aura" && i.origin === lastArg.origin);
-			if (auraEffect) {
-				await MidiQOL.socket().executeAsGM("removeEffects", { actorUuid: uuid, effects: [auraEffect.id] });
-			}
+		// add ambient light
+		let lightDoc = await canvas.scene.createEmbeddedDocuments("AmbientLight", [{
+			t: "l", // l for local. The other option is g for global.
+			x: templateDoc.x, // horizontal positioning
+			y: templateDoc.y, // vertical positioning
+			rotation: 0, // the beam direction of the light in degrees (if its angle is less than 360 degrees.) 
+			config: { 
+				dim: 15, // the total radius of the light, including where it is dim.
+				bright: 0, // the bright radius of the light
+				angle: 360, // the coverage of the light. (Try 30 for a "spotlight" effect.)
+							// Oddly, degrees are counted from the 6 o'clock position.
+				color: "#AED9D5", // Light coloring.
+				alpha: 0.5
+			} // Light opacity (or "brightness," depending on how you think about it.) 
+		}]);
+		
+		const ambientLightId = lightDoc[0].id;
+		await actor.setFlag("midi-qol", ambientLightFlag, ambientLightId);
+
+		// store the spell data in the template
+		let spellLevel = lastArg.spellLevel;
+		let spelldc = lastArg.actor.system.attributes.spelldc;
+		let touchedTokens = await game.modules.get('templatemacro').api.findContained(templateDoc);
+		await templateDoc.setFlag('world', 'spell.Moonbeam', {spellLevel, spelldc, touchedTokens, ambientLightId});
+		await HomebrewMacros.moonbeamEffects(touchedTokens);
+	}
+	else if (args[0] === "off") {
+		// delete the ambient light effect
+		const lightDocId = actor.getFlag("midi-qol", ambientLightFlag);
+		if (lightDocId) {
+			await actor.unsetFlag("midi-qol", ambientLightFlag);
+			// delete the ambient light
+			let delDoc = await canvas.scene.deleteEmbeddedDocuments("AmbientLight", [lightDocId]);
 		}
 	}
 	

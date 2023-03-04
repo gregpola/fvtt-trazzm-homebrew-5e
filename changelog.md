@@ -1,3 +1,25 @@
+# 10.0.11
+* Fixed/Updated:
+  * Bard: Bardic Inspiration, Combat Inspiration, Countercharm
+  * Centaur
+  * Fighter: Precision Attack
+  * Spells: Chill Touch, Friends, Frostbite, Gust, Heat Metal, Lathander's Holy Dart, Lightning bolt (animation),
+    Magic Stone, Moonbeam, Primal Savagery, Produce Flame, 
+    Ray of Frost, Shocking Grasp, Sword Burst, Vicious Mockery, Wysard's Snowball
+  * SaveHandler to also look at active effects in addition to features i.e. Countercharm
+  * Push/Pull adjusted pixels to properly handle diagonal targets:
+    * Feats: Charger, Shield Master, Telekinetic
+    * Class Features: Pushing Attack, Repelling Blast, Thunderbolt Strike
+    * Racial Features: Metallic Breath Weapon - Repulsion
+    * Spells: Cloudkill, Thunderous Smite, Thunderwave
+
+* Added Automation to:
+  * College of Valor
+  * MooseTaur
+  * Rune Knight
+  * Swarmkeeper
+  * Spells: Blade Ward, Create Bonfire, Infestation, Lightning Lure, Sapping Sting
+
 # 10.0.10
 * Fixed/Updated:
   * Bug in the SaveHandler 

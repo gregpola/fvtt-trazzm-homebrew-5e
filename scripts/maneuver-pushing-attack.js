@@ -1,4 +1,4 @@
-const version = "10.0.1";
+const version = "10.0.2";
 const resourceName = "Superiority Dice";
 const optionName = "Pushing Attack";
 
@@ -56,7 +56,7 @@ try {
 		if (useManeuver) {
 			await consumeResource(actor, resKey, 1);
 			
-			// todo check the target's size, must be Large or smaller
+			// check the target's size, must be Large or smaller
 			const tsize = target.actor.system.traits.size;
 			if (!["tiny","sm","med","lg"].includes(tsize)) {
 				ui.notifications.info(`${resourceName} - target is too large to push`);
@@ -69,8 +69,8 @@ try {
 				let saveRoll = await target.actor.rollAbilitySave("str", {flavor: saveFlavor, damageType: "push"});
 				await game.dice3d?.showForRoll(saveRoll);				
 				
-				if (saveRoll.total < dc) { 
-					await pushTarget(pusher, ttoken);
+				if (saveRoll.total < dc) {
+					await HomebrewMacros.pushTarget(pusher, ttoken, 3);
 				}
 			}
 			
@@ -87,31 +87,6 @@ try {
 	
 } catch (err) {
     console.error(`${resourceName}: ${optionName} - ${version}`, err);
-}
-
-async function pushTarget(sourceToken, targetToken) {
-	let newCenter = getAllowedPushLocation(sourceToken, targetToken, 3);
-	if(!newCenter) {
-		return ui.notifications.error(`${resourceName} - no room to push ${targetToken.name}`);
-	}
-	const tobj = targetToken.document.object;
-	newCenter = canvas.grid.getSnappedPosition(newCenter.x - tobj.w / 2, newCenter.y - tobj.h / 2, 1);
-	const mutationData = { token: {x: newCenter.x, y: newCenter.y}};
-	await warpgate.mutate(targetToken.document, mutationData, {}, {permanent: true});
-}
-
-function getAllowedPushLocation(sourceToken, targetToken, maxSquares) {
-	for (let i = maxSquares; i > 0; i--) {
-		const knockbackPixels = i * canvas.grid.size;
-		const ray = new Ray(sourceToken.center, targetToken.center);
-		const newCenter = ray.project((ray.distance + knockbackPixels)/ray.distance);
-		const isAllowedLocation = canvas.effects.visibility.testVisibility({x: newCenter.x, y: newCenter.y}, {object: targetToken.Object});
-		if(isAllowedLocation) {
-			return newCenter;
-		}
-	}
-	
-	return null;
 }
 
 // find the resource matching this feature

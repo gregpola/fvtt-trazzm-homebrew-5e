@@ -8,8 +8,6 @@ try {
 		let actor = workflow?.actor;
 		const target = args[0].hitTargets[0];
 		let tactor = target?.actor;
-		const ttoken = canvas.tokens.get(args[0].hitTargets[0].object.id);
-		let pusher = canvas.tokens.get(args[0].tokenId);
 
 		// validate targeting
 		if (!actor || !target) {

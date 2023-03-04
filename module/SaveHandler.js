@@ -1,6 +1,6 @@
 const VERSION = "10.0.0";
-const _charmResistLabels = new Set(["Dark Devotion", "Fey Ancestry", "Leviathan Will", "Mental Discipline"]);
-const _frightenedResistLabels = new Set(["Brave", "Dark Devotion", "Leviathan Will", "Mental Discipline"]);
+const _charmResistLabels = new Set(["Countercharm", "Dark Devotion", "Fey Ancestry", "Leviathan Will", "Mental Discipline"]);
+const _frightenedResistLabels = new Set(["Brave", "Countercharm", "Dark Devotion", "Leviathan Will", "Mental Discipline"]);
 const _paralyzedResistLabels = new Set(["Leviathan Will"]);
 const _poisonResistLabels = new Set(["Dwarven Resilience", "Hill Rune", "Leviathan Will", "Poison Resilience", "Stout Resilience"]);
 const _sleepResistLabels = new Set(["Leviathan Will"]);
@@ -91,11 +91,23 @@ export class SaveHandler {
                         if (poisonFeature) {
                             hasResilience = true;
                         }
+                        else {
+                            let poisonEffect = tokenDoc.document.actor.effects.find(f => _poisonResistLabels.has(f.label));
+                            if (poisonEffect) {
+                                hasResilience = true;
+                            }
+                        }
                     }
                     else if (entry === 'charmed' || entry === 'charm') {
                         let charmFeature = tokenDoc.document.actor.items.find(f => _charmResistLabels.has(f.name));
                         if (charmFeature) {
                             hasResilience = true;
+                        }
+                        else {
+                            let charmEffect = tokenDoc.document.actor.effects.find(f => _charmResistLabels.has(f.label));
+                            if (charmEffect) {
+                                hasResilience = true;
+                            }
                         }
                     }
                     else if (entry === 'frightened' || entry === 'fright') {
@@ -103,11 +115,23 @@ export class SaveHandler {
                         if (frightFeature) {
                             hasResilience = true;
                         }
+                        else {
+                            let frightEffect = tokenDoc.document.actor.effects.find(f => _frightenedResistLabels.has(f.label));
+                            if (frightEffect) {
+                                hasResilience = true;
+                            }
+                        }
                     }
                     else if (entry === 'paralyzed' || entry === 'paralyze' || entry === 'paralysis') {
                         let paralyzeFeature = tokenDoc.document.actor.items.find(f => _paralyzedResistLabels.has(f.name));
                         if (paralyzeFeature) {
                             hasResilience = true;
+                        }
+                        else {
+                            let paralyzeEffect = tokenDoc.document.actor.effects.find(f => _paralyzedResistLabels.has(f.label));
+                            if (paralyzeEffect) {
+                                hasResilience = true;
+                            }
                         }
                     }
                     else if (entry === 'stunned' || entry === 'stun') {
@@ -115,11 +139,23 @@ export class SaveHandler {
                         if (stunFeature) {
                             hasResilience = true;
                         }
+                        else {
+                            let stunEffect = tokenDoc.document.actor.effects.find(f => _stunResistLabels.has(f.label));
+                            if (stunEffect) {
+                                hasResilience = true;
+                            }
+                        }
                     }
                     else if (entry === 'sleep' || entry === 'asleep') {
                         let sleepFeature = tokenDoc.document.actor.items.find(f => _sleepResistLabels.has(f.name));
                         if (sleepFeature) {
                             hasResilience = true;
+                        }
+                        else {
+                            let sleepEffect = tokenDoc.document.actor.effects.find(f => _sleepResistLabels.has(f.label));
+                            if (sleepEffect) {
+                                hasResilience = true;
+                            }
                         }
                     }
                 }

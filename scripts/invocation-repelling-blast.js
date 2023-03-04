@@ -1,4 +1,4 @@
-const version = "10.0.0";
+const version = "10.0.1";
 const optionName = "Repelling Blast";
 
 try {
@@ -37,7 +37,7 @@ try {
 		
 		let useManeuver = await dialog;
 		if (useManeuver) {
-			await pushTarget(attacker, ttoken);
+			await HomebrewMacros.pushTarget(attacker, ttoken, 2);
 		}
 		
 	}
@@ -46,29 +46,4 @@ try {
 	
 } catch (err) {
     console.error(`${optionName} - ${version}`, err);
-}
-
-async function pushTarget(sourceToken, targetToken) {
-	let newCenter = getAllowedPushLocation(sourceToken, targetToken, 2);
-	if(!newCenter) {
-		return ui.notifications.error(`${optionName} - no room to push ${targetToken.name}`);
-	}
-	const tobj = targetToken.document.object;
-	newCenter = canvas.grid.getSnappedPosition(newCenter.x - tobj.w / 2, newCenter.y - tobj.h / 2, 1);
-	const mutationData = { token: {x: newCenter.x, y: newCenter.y}};
-	await warpgate.mutate(targetToken.document, mutationData, {}, {permanent: true});
-}
-
-function getAllowedPushLocation(sourceToken, targetToken, maxSquares) {
-	for (let i = maxSquares; i > 0; i--) {
-		const knockbackPixels = i * canvas.grid.size;
-		const ray = new Ray(sourceToken.center, targetToken.center);
-		const newCenter = ray.project((ray.distance + knockbackPixels)/ray.distance);
-		const isAllowedLocation = canvas.effects.visibility.testVisibility({x: newCenter.x, y: newCenter.y}, {object: targetToken.Object});
-		if(isAllowedLocation) {
-			return newCenter;
-		}
-	}
-	
-	return null;
 }

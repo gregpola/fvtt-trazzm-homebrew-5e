@@ -7,8 +7,7 @@ try {
 	if (lastArg.macroPass === "DamageBonus") {
 		let workflow = MidiQOL.Workflow.getWorkflow(lastArg.uuid);
 		let actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-		let pusher = canvas.tokens.get(lastArg.tokenId);
-		
+
 		const targetActor = lastArg.hitTargets[0].actor;
 		const targetToken = game.canvas.tokens.get(lastArg.hitTargets[0].id);
 

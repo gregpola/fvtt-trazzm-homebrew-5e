@@ -49,6 +49,8 @@ turn=end, saveAbility=wis, saveDC=19, label=Stunned
 turn=end, saveAbility=con, saveDC=12, label=Poisoned
 turn=start, damageRoll=2d6, damageType=poison, label=Constricted
 
+flags.midi-qol.optional.BardicInspiration.ac
+
 // Monks token bar
 let message = await game.MonksTokenBar.requestRoll([targetToken], {request:'save:con', flavor: 'Poisoned weapon', silent: true});
 await wait(10000);
