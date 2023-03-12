@@ -2,6 +2,7 @@ const version = "10.0.0";
 const optionName = "Precision";
 const resourceName = "Superiority Dice";
 // https://github.com/gregpola/fvtt-trazzm-homebrew-5e/releases/latest/download/module.json
+
 try {
 	const lastArg = args[args.length - 1];
 	const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);

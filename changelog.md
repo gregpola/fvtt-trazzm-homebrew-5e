@@ -1,3 +1,16 @@
+# 10.0.12
+* Fixed/Updated:
+  * Creatures: Updated some tokens
+  * Items: Potion of Invisibility
+  * Races: Fixed subtype setting for all applicable races
+
+* Added Automation to:
+  * Actions: Dodge, Grapple, Help, Shove 
+  * Creatures: Dryad, Ghoul
+  * Creature Features: Animate Vines
+  * Items: Pearl of Power, Pearl of Wisdom
+  * Spells: Blink
+
 # 10.0.11
 * Fixed/Updated:
   * Bard: Bardic Inspiration, Combat Inspiration, Countercharm
@@ -60,7 +73,7 @@
   * Spells: Chill Touch (stop regeneration), Light
 
 * Added Automation to:
-  * Added a general grapple handler to te HomebrewMacros
+  * Added a general grapple handler to the HomebrewMacros
   * Creatures: Assassin Vine, Hobgoblin, Hobgoblin Captain, Hobgoblin Devastator, Hobgoblin Iron Shadow, Hobgoblin Warlord,
     Bearded Devil, Wolf, Dire Wolf, Winter Wolf, Centaur, Owlbear
   * Barbarian: Warrior of the Gods

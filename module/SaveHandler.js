@@ -2,7 +2,7 @@ const VERSION = "10.0.0";
 const _charmResistLabels = new Set(["Countercharm", "Dark Devotion", "Fey Ancestry", "Leviathan Will", "Mental Discipline"]);
 const _frightenedResistLabels = new Set(["Brave", "Countercharm", "Dark Devotion", "Leviathan Will", "Mental Discipline"]);
 const _paralyzedResistLabels = new Set(["Leviathan Will"]);
-const _poisonResistLabels = new Set(["Dwarven Resilience", "Hill Rune", "Leviathan Will", "Poison Resilience", "Stout Resilience"]);
+const _poisonResistLabels = new Set(["Deathless Nature", "Dwarven Resilience", "Hill Rune", "Leviathan Will", "Poison Resilience", "Stout Resilience"]);
 const _sleepResistLabels = new Set(["Leviathan Will"]);
 const _stunResistLabels = new Set(["Leviathan Will"]);
 
