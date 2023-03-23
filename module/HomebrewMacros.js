@@ -618,7 +618,7 @@ class HomebrewMacros {
      * @param saveDC            the break grapple DC
      * @param sourceActorFlag   a flag, if any, that should be removed on the sourceActor if the grapple is broken
      * @param overtimeValue     an overtime effect value to apply to the target, if any
-     * @param restrained        if present and true  also apply a restrained effect
+     * @param restrained        if present and true, also apply a restrained effect
      * @returns {Promise<boolean>}
      */
     static async applyGrappled(sourceActor, tokenDoc, saveDC, sourceActorFlag, overtimeValue, restrained) {
@@ -975,6 +975,98 @@ class HomebrewMacros {
         return false;
     }
 
+    static async wallOfFireEffects(tokenids) {
+        if (!tokenids)
+            return;
+
+        for (let i = 0; tokenids.length > i; i++) {
+            let tokenDoc = canvas.scene.tokens.get(tokenids[i]);
+            if (!tokenDoc) continue;
+
+            let tokenInTemplates = game.modules.get('templatemacro').api.findContainers(tokenDoc);
+            let effect = tokenDoc.actor.effects.find(eff => eff.label === 'WallofFire');
+            let createEffect = false;
+            let deleteEffect = false;
+            let inFire = false;
+            let spellLevel = -100;
+            let spelldc = -100;
+            let oldSpellLevel = effect?.flags?.world?.spell?.WallofFire?.spellLevel;
+            let oldSpelldc = effect?.flags?.world?.spell?.WallofFire?.spelldc;
+            let templateid = effect?.flags?.world?.spell?.WallofFire?.templateid;
+            for (let j = 0; tokenInTemplates.length > j; j++) {
+                let testTemplate = canvas.scene.collections.templates.get(tokenInTemplates[j]);
+                if (!testTemplate) continue;
+                let wallofFire = testTemplate.flags.world?.spell?.WallofFire;
+                if (!wallofFire) continue;
+                inFire = true;
+                let testSpellLevel = wallofFire.spellLevel;
+                let testSpelldc = wallofFire.spelldc;
+                if (testSpellLevel > spellLevel) {
+                    spellLevel = testSpellLevel;
+                    templateid = tokenInTemplates[j];
+                }
+                if (testSpelldc > spelldc) {
+                    spelldc = testSpelldc;
+                    templateid = tokenInTemplates[j];
+                }
+            }
+
+            if (!inFire) {
+                deleteEffect = true;
+            } else {
+                if (oldSpellLevel !== spellLevel || oldSpelldc !== spelldc) {
+                    createEffect = true;
+                    deleteEffect = true;
+                }
+            }
+
+            if (deleteEffect && effect) {
+                try {
+                    await effect.delete();
+                } catch {}
+            }
+
+            if (createEffect && inFire && (oldSpellLevel !== spellLevel || oldSpelldc !== spelldc)) {
+                let dieCount = spellLevel + 1;
+                let damageRoll = dieCount + 'd8';
+                const damageType = "fire";
+                let templateDoc = canvas.scene.collections.templates.get(templateid);
+                let origin = templateDoc.flags?.dnd5e?.origin;
+                let effectData = {
+                    'label': 'WallofFire',
+                    'icon': 'icons/magic/fire/flame-burning-fence.webp',
+                    'changes': [
+                        {
+                            'key': 'flags.midi-qol.OverTime',
+                            'mode': 5,
+                            'value': 'turn=end, damageType=' + damageType + ', damageRoll=' + damageRoll,
+                            'priority': 20
+                        }
+                    ],
+                    'origin': origin,
+                    'duration': {'seconds': 60},
+                    'flags': {
+                        'effectmacro': {
+                            'onTurnEnd': {
+                                'script': "let combatTurn = game.combat.round + '-' + game.combat.turn;\nlet templateid = effect.flags.world.spell.WallofFire.templateid;\ntoken.document.setFlag('world', `spell.WallofFire.${templateid}.turn`, combatTurn);"
+                            }
+                        },
+                        'world': {
+                            'spell': {
+                                'WallofFire': {
+                                    'spellLevel': spellLevel,
+                                    'spelldc': spelldc,
+                                    'templateid': templateDoc.id
+                                }
+                            }
+                        }
+                    }
+                };
+                await tokenDoc.actor.createEmbeddedDocuments("ActiveEffect", [effectData]);
+            }
+        }
+    }
+
     static async wallOfThornsEffects(tokenids) {
         if (!tokenids)
             return;
@@ -1036,7 +1128,7 @@ class HomebrewMacros {
                         {
                             'key': 'flags.midi-qol.OverTime',
                             'mode': 5,
-                            'value': 'turn=start, rollType=save, saveAbility=dex, saveDamage=halfdamage, saveRemove=false, saveMagic=true, damageType=' + damageType + ', damageRoll=' + damageRoll + ', saveDC =' + spelldc,
+                            'value': 'turn=end, rollType=save, saveAbility=dex, saveDamage=halfdamage, saveRemove=false, saveMagic=true, damageType=' + damageType + ', damageRoll=' + damageRoll + ', saveDC =' + spelldc,
                             'priority': 20
                         }
                     ],

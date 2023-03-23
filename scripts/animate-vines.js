@@ -5,7 +5,7 @@
 
 	An animated vine can grapple one creature of its own but can’t make attacks while grappling. An animated vine reverts to its inanimate state if reduced to 0 hit points or if the kyton is incapacitated or dies.
 */
-const version = "10.0.0";
+const version = "10.0.1";
 const optionName = "Animate Vines";
 const summonFlag = "animated-vines";
 const summonId = "0MsDEmI3rNoF8vvi";
@@ -62,18 +62,15 @@ try {
 			
 			if (position) {
 				let options = {collision: true};
-				const spawned = await warpgate.spawnAt(position, summonName, updates, { controllingActor: actor }, options);
+				let spawned = await warpgate.spawnAt(position, summonName, updates, { controllingActor: actor }, options);
 				if (!spawned || !spawned[0]) {
 					ui.notifications.error(`${optionName} - unable to spawn the vine`);
 				}
-				
-				let summonedToken;
-				for (var i = 0; i < spawned.length; i++) {
-					summonedToken = canvas.tokens.get(spawned[i]);
-					if (summonedToken) {
-						await summonedToken.toggleCombat();
-						await summonedToken.actor.rollInitiative();
-					}
+
+				let summonedToken = canvas.tokens.get(spawned[0]);
+				if (summonedToken) {
+					await summonedToken.toggleCombat();
+					await summonedToken.actor.rollInitiative();
 				}
 			}			
 		}

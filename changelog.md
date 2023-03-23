@@ -1,3 +1,18 @@
+# 10.0.13
+* Fixed/Updated:
+  * Creature Features: Animate Vines
+  * Feats: Heavily Armored, Infernal Constitution
+  * Items: cleaned up stray damage flavors
+  * Racial Traits: Relentless Endurance
+  * Rogue: Sneak Attack (handle Versatile Sneak Attack feat)
+  * Spells: Spiritual Weapon, Wall of Fire (line), Wall of Thorns
+
+* Added Automation to:
+  * Cleric: Warding Flare
+    * Feats: Flames of Phlegethos, Gift of the Chromatic Dragon, Gift of the Gem Dragon, Gift of the Metallic Dragon, 
+      Second Chance, Spell Sniper, Tavern Brawler
+  * Spells: Animate Objects, Bigby's Hand, Find Familiar, Wall of Sand
+
 # 10.0.12
 * Fixed/Updated:
   * Creatures: Updated some tokens

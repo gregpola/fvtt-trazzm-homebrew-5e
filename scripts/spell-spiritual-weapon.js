@@ -1,4 +1,4 @@
-const version = "10.0.1";
+const version = "10.0.2";
 const optionName = "Spiritual Weapon";
 const actorName = "Spiritual Weapon";
 const summonFlag = "spiritual-weapon";
@@ -17,7 +17,10 @@ try {
 
 		let spellStat = caster.system.attributes.spellcasting;
 		if (spellStat === "") spellStat = "wis";
-		const spellcasting = caster.system.abilities[spellStat].mod;
+		const spellMod = caster.system.abilities[spellStat].mod;
+		const pb = caster.system.attributes.prof;
+		const msakBonus = caster.system.bonuses.msak.attack ? Number(caster.system.bonuses.msak.attack) : 0;
+		const toHitBonus = spellMod + pb + msakBonus;
 
 		const summonName = `${actorName} (${caster.name})`;
 		const updates = {
@@ -30,15 +33,17 @@ try {
 				"actorLink": false,
 				"flags": { "midi-srd": { "Spiritual Weapon": { "ActorId": caster.id } } }
 			},
-			"name": summonName,			
-			Item: {
-				"Spiritual Weapon Attack": {
-					"system.proficient": true,
-					"system.properties.mgc": true,
-					"system.attackBonus": `${Number(caster.system.attributes.prof) + Number(spellcasting) + Number(caster.system.bonuses.msak.attack)}`,
-					"system.damage.parts":[[`${attackDice}d8 + ${spellcasting}`,"force"]]
+			"name": summonName,	
+			embedded: {
+				Item: {
+					"Spiritual Weapon Attack": {
+						"system.proficient": false,
+						"system.properties.mgc": true,
+						"system.attackBonus": `${toHitBonus}`,
+						"system.damage.parts":[[`${attackDice}d8 + ${spellMod}`,"force"]]
+					}
+				}
 			}
-		  }
 		};
 
         let summonActor = game.actors.getName(summonName);
@@ -82,9 +87,6 @@ try {
 			if (summonedToken) {
 				await anime(actorToken, summonedToken);
 				await actor.setFlag("midi-qol", summonFlag, summonedToken.id);
-				// players can't do the following:
-				//await summonedToken.toggleCombat();
-				//await summonedToken.actor.rollInitiative();
 			}
 			
 		}

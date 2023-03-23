@@ -1,157 +1,64 @@
-const version = "10.0.0";
+/*
+	You create a wall of fire on a solid surface within range. You can make the wall up to 60 feet long, 20 feet high, and 1 foot thick, or a ringed wall up to 20 feet in diameter, 20 feet high, and 1 foot thick. The wall is opaque and lasts for the duration.
+
+	When the wall appears, each creature within its area must make a Dexterity saving throw. On a failed save, a creature takes 5d8 fire damage, or half as much damage on a successful save.
+
+	One side of the wall, selected by you when you cast this spell, deals 5d8 fire damage to each creature that ends its turn within 10 feet of that side or inside the wall. A creature takes the same damage when it enters the wall for the first time on a turn or ends its turn there. The other side of the wall deals no damage.
+
+	At Higher Levels. When you cast this spell using a spell slot of 5th level or higher, the damage increases by 1d8 for each slot level above 4th.
+*/
+const version = "10.0.1";
 const optionName = "Wall of Fire";
+const templateFlag = "wall-of-fire-template";
 
 try {
-	if (args[0].tag === "OnUse") {
-		const casterActor = fromUuidSync(args[0].tokenUuid).actor;
-		let attackItem = game.items.getName("Wall of Fire attack");
-		if (attackItem) {
-			console.log(`${optionName} - found one attack item`);
-		}
-		
-		if (!attackItem) {
-			const itemJSON = JSON.parse(`{
-				"name": "Wall of Fire attack",
-				"type": "spell",
-				"img": "icons/magic/fire/projectile-wave-yellow.webp",
-				"system": {
-					"description": {
-						"value": "",
-						"chat": "",
-						"unidentified": ""
-					},
-					"source": "",
-					"quantity": 1,
-					"weight": 0,
-					"price": 0,
-					"attunement": 0,
-					"equipped": true,
-					"rarity": "",
-					"identified": true,
-					"activation": {
-						"type": "special",
-						"cost": 0,
-						"condition": ""
-					},
-					"duration": {
-						"value": null,
-						"units": "inst"
-					},
-					"target": {
-						"value": 1,
-						"width": null,
-						"units": "",
-						"type": "creature"
-					},
-					"range": {
-						"value": 240,
-						"long": null,
-						"units": "ft"
-					},
-					"uses": {
-						"value": null,
-						"max": "",
-						"per": "",
-						"recovery": ""
-					},
-					"consume": {
-						"type": "",
-						"target": "",
-						"amount": null
-					},
-					"ability": "",
-					"actionType": "save",
-					"attackBonus": 0,
-					"chatFlavor": "",
-					"critical": {
-						"threshold": null,
-						"damage": ""
-					},
-					"damage": {
-						"parts": [
-							["5d8", "fire"]
-						],
-						"versatile": ""
-					},
-					"formula": "",
-					"save": {
-						"ability": "dex",
-						"dc": null,
-						"scaling": "spell"
-					},
-					"level": 0,
-					"school": "con",
-					"components": {
-						"value": "",
-						"vocal": true,
-						"somatic": true,
-						"material": false,
-						"ritual": false,
-						"concentration": false
-					},
-					"materials": {
-						"value": "",
-						"consumed": false,
-						"cost": 0,
-						"supply": 0
-					},
-					"preparation": {
-						"mode": "prepared",
-						"prepared": true
-					}
-				},
-				"effects": [],
-				"flags": {
-					"midi-qol": {
-						"effectActivation": false
-					},
-					"midiProperties": {
-						"nodam": false,
-						"fulldam": false,
-						"halfdam": false,
-						"rollOther": false,
-						"critOther": false,
-						"magicdam": false,
-						"magiceffect": false,
-						"concentration": false,
-						"toggleEffect": false,
-						"ignoreTotalCover": false
-					},
-					"exportSource": {
-					"world": "test-5e",
-					"system": "dnd5e",
-					"coreVersion": "10.290",
-					"systemVersion": "2.1.2"
-					}
-				},
-				"_stats": {
-					"systemId": "dnd5e",
-					"systemVersion": "2.1.2",
-					"coreVersion": "10.290",
-					"createdTime": 1669083115688,
-					"modifiedTime": 1669086825953,
-					"lastModifiedBy": "oKTPW6AHSqX8CsNe"
-				}
-				}`);
-			await Item.create(itemJSON);
-		}
-		
-		attackItem = game.items.getName("Wall of Fire attack");
-		if (!attackItem) {
-			console.log(`${optionName} No attack item`);
-			ui.notifications.warn(`${optionName} no attack item found`);
-			return;
-		}
-		else {
-			const spell = casterActor.items.getName(optionName);
-			let spellEffect = spell.effects.find(eff=>eff.label === optionName).toObject();
-			if (spellEffect.changes[0].value !== attackItem.uuid) {
-				spellEffect.changes[0].value = `Item.${attackItem.id}`;
-				await spell.update({effects:[spellEffect]});
-			}
-		}
+	const lastArg = args[args.length - 1];
+
+	if (args[0].macroPass === "postActiveEffects") {
+		// build the template macro
+		let templateDoc = canvas.scene.collections.templates.get(lastArg.templateId);
+		if (!templateDoc) return;
+
+		// add the walls to block vision
+		await lineWall(templateDoc);
+
+		// store the spell data in the template
+		let spellLevel = lastArg.spellLevel;
+		let spelldc = lastArg.actor.system.attributes.spelldc;
+		let touchedTokens = await game.modules.get('templatemacro').api.findContained(templateDoc);
+		await templateDoc.setFlag('world', 'spell.WallofFire', {spellLevel, spelldc, touchedTokens});
+		await HomebrewMacros.wallOfFireEffects(touchedTokens);
 	}
-		
+	else if (args[0] === "off") {
+		async function removeWalls() {
+			let thornWalls = canvas.walls.placeables.filter(w => w.document.flags["midi-srd"]?.WallofFire?.ActorId === actor.id)
+			let wallArray = thornWalls.map(function (w) {
+				return w.document._id;
+			})
+			await canvas.scene.deleteEmbeddedDocuments("Wall", wallArray);
+		}
+		await removeWalls();
+	}
+	
 } catch (err) {
     console.error(`${optionName}: ${version}`, err);
+}
+
+async function lineWall(templateDoc) {
+	const ray = Ray.fromAngle(templateDoc.x, 
+		templateDoc.y, 
+		templateDoc.direction * (Math.PI/180), 
+		templateDoc.distance * canvas.grid.size / canvas.dimensions.distance);
+
+	let data = [];
+	data.push({
+		c: [ray.A.x, ray.A.y, ray.B.x, ray.B.y],
+		move: CONST.WALL_MOVEMENT_TYPES.NONE,
+		sense: CONST.WALL_SENSE_TYPES.NORMAL,
+		dir: CONST.WALL_DIRECTIONS.BOTH,
+		door: CONST.WALL_DOOR_TYPES.NONE,
+		ds: CONST.WALL_DOOR_STATES.CLOSED,
+		flags: { "midi-srd": { WallofFire: { ActorId: actor.id } } }
+	});
+	await canvas.scene.createEmbeddedDocuments("Wall", data);
 }

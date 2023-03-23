@@ -68,6 +68,20 @@ export class InitiativeHandler {
                     }
                 }
 
+                // Look for Second Chance
+                featureItem = actor?.items?.getName("Second Chance");
+                if (featureItem) {
+                    // Once you use this ability, you can’t use it again until you roll initiative at the start of combat or until you finish a short or long rest.
+                    // if this check fails, something is wrong with the feature setup
+                    if (featureItem.system.uses) {
+                        let uses = featureItem.system.uses.value ?? 0;
+                        if (!uses) {
+                            await featureItem.update({"system.uses.value": 1});
+                            await InitiativeHandler.wait(500);
+                        }
+                    }
+                }
+
                 // Look for Dread Ambusher
                 featureItem = actor?.items?.getName("Dread Ambusher");
                 if (featureItem) {

@@ -2,6 +2,7 @@
 	This version of sneak attack takes into consideration subclass features:
 		* Rakish Audacity
 		* Insightful Fighting
+		* Versatile Sneak Attack feat
 
 	Beginning at 1st level, you know how to strike subtly and exploit a foe's distraction. Once per turn, you can deal an extra 1d6 damage to one creature you hit with an attack if you have advantage on the attack roll. The attack must use a finesse or a ranged weapon.
 
@@ -9,26 +10,33 @@
 
 	The amount of the extra damage increases as you gain levels in this class, as shown in the Sneak Attack column of the Rogue table.		
 */
-const version = "10.1.2";
+const version = "10.1.3";
 const optionName = "Sneak Attack";
 const lastArg = args[args.length - 1];
 const combatTime = game.combat ? `${game.combat.id}-${game.combat.round + game.combat.turn / 100}` : 1;
 
 try {
 	if (lastArg.macroPass === "DamageBonus") {
+		let rogueToken = canvas.tokens.get(lastArg.tokenId);
+
 		// Check the attack type
 		if (!["mwak", "rwak"].includes(lastArg.itemData.system.actionType)) {
 			console.debug(`${optionName} - not valid action type`);
 			return {};
 		}
 		
-		if (lastArg.itemData.system.actionType === "mwak" && !lastArg.itemData.system.properties?.fin) {
+		let weaponAllowed = lastArg.itemData.system.properties?.fin;
+		let versatile = checkVersatileSneakAttack(rogueToken);
+		if (versatile) {
+			weaponAllowed = lastArg.itemData.system.proficient;
+		}
+		
+		if (lastArg.itemData.system.actionType === "mwak" && !weaponAllowed) {
 			console.debug(`${optionName} - non-finesse melee attack`);
 			return {};
 		}
 				
 		// check for rogue levels
-		let rogueToken = canvas.tokens.get(lastArg.tokenId);
 		const rogueLevels = rogueToken.actor.type === "npc" ? rogueToken.actor.system.details.cr : rogueToken.actor.system.classes.rogue?.levels;
 	    if (!rogueLevels) {
 			console.debug(`${optionName} - no rogue levels`);
@@ -139,7 +147,14 @@ function checkRakishAudacity(rogueToken, targetToken) {
 }
 
 function checkInsightfulFighting(rogueToken, targetToken) {
-	const effect = findEffect(targetToken.actor, "Insightful Fighting", rogueToken.actor.uuid);
+	const effect = findEffect(rogueToken.actor, "Insightful Fighting", rogueToken.actor.uuid);
+	if (effect)
+		return true;
+	return false;
+}
+
+function checkVersatileSneakAttack(rogueToken) {
+	const effect = findEffect(rogueToken.actor, "Versatile Sneak Attack", rogueToken.actor.uuid);
 	if (effect)
 		return true;
 	return false;

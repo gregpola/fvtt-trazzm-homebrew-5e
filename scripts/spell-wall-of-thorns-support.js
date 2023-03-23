@@ -31,8 +31,11 @@ function sleep(ms) {
 await sleep(10);
 await HomebrewMacros.wallOfThornsEffects([token.id]);
 let touchedTokens = template.flags.world?.spell?.WallofThorns?.touchedTokens || [];
-if (!touchedTokens.includes(token.id)) touchedTokens.push(token.id);
+if (!touchedTokens.includes(token.id)) {
+	touchedTokens.push(token.id);
+}
 await template.setFlag('world', 'spell.WallofThorns', {touchedTokens});
+
 let doDamage = false;
 if (game.combat != null && game.combat != undefined) {
 	let combatTurn = game.combat.round + '-' + game.combat.turn;
@@ -42,9 +45,10 @@ if (game.combat != null && game.combat != undefined) {
 } else {
 	doDamage = true;
 }
+
 if (doDamage) {
 	let effect = token.actor.effects.find(eff => eff.label === 'WallofThorns');
-	if (effect)	MidiQOL.doOverTimeEffect(token.actor, effect, true);
+	if (effect)	MidiQOL.doOverTimeEffect(token.actor, effect, false);
 }
 
 

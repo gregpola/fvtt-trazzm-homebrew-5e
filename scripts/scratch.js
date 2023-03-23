@@ -1,7 +1,11 @@
+// https://github.com/gregpola/fvtt-trazzm-homebrew-5e/releases/latest/download/module.json
+const resourceName = "Superiority Dice";
+
+/*
+	
+*/
 const version = "10.0.0";
 const optionName = "Precision";
-const resourceName = "Superiority Dice";
-// https://github.com/gregpola/fvtt-trazzm-homebrew-5e/releases/latest/download/module.json
 
 try {
 	const lastArg = args[args.length - 1];
@@ -17,6 +21,12 @@ try {
 	const sourceItem = fromUuid(lastArg.sourceItemUuid)
 	
 	const workflow = MidiQOL.Workflow.getWorkflow(lastArg.uuid);
+
+} catch (err) {
+    console.error(`${optionName}: ${version}`, err);
+}
+
+
 
 	const druidLevel = actor.classes.druid?.system.levels ?? 0;
 	const pb = actor.system.attributes.prof;
@@ -58,10 +68,6 @@ await wait(10000);
 let tokenid = 'token' + targetToken.id;
 saveTotal = message.flags["monks-tokenbar"][tokenid].total;
 
-
-} catch (err) {
-    console.error(`${optionName}: ${version}`, err);
-}
 
 async function wait(ms) { return new Promise(resolve => { setTimeout(resolve, ms); }); }
 
