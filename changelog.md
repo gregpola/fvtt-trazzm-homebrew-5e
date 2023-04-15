@@ -1,3 +1,17 @@
+# 10.0.14
+* Fixed/Updated:
+  * Class Features: Devil's Sight
+  * Items: Winged Boots 
+  * Spells: Spare the Dying
+
+* Added Automation to:
+  * Barbarian: Path of the Beast
+  * Cleric: Twilight Domain
+  * Druid: Circle of Stars
+  * Paladin: Oath of Devotion
+  * Wizard: School of Divination
+  * Spells: See Invisibility
+
 # 10.0.13
 * Fixed/Updated:
   * Creature Features: Animate Vines
@@ -9,7 +23,7 @@
 
 * Added Automation to:
   * Cleric: Warding Flare
-    * Feats: Flames of Phlegethos, Gift of the Chromatic Dragon, Gift of the Gem Dragon, Gift of the Metallic Dragon, 
+  * Feats: Flames of Phlegethos, Gift of the Chromatic Dragon, Gift of the Gem Dragon, Gift of the Metallic Dragon, 
       Second Chance, Spell Sniper, Tavern Brawler
   * Spells: Animate Objects, Bigby's Hand, Find Familiar, Wall of Sand
 

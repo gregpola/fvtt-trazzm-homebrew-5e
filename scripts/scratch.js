@@ -18,7 +18,7 @@ try {
 	const targetToken = game.canvas.tokens.get(lastArg.targets[0].id);
 
 	const item = fromUuid(lastArg.origin);
-	const sourceItem = fromUuid(lastArg.sourceItemUuid)
+	const sourceItem = fromUuid(lastArg.sourceItemUuid);
 	
 	const workflow = MidiQOL.Workflow.getWorkflow(lastArg.uuid);
 
@@ -42,6 +42,9 @@ try {
 	await game.dice3d?.showForRoll(saveRoll);
 	
 	if (!["mwak", "rwak", "msak", "rsak", "save", "heal"].includes(lastArg.itemData.system.actionType)) {
+		
+	// bluish color
+	// #5570B8
 	
 	await game.dfreds.effectInterface.removeEffect({effectName: 'Incapacitated', uuid:actor.uuid});
 
@@ -75,6 +78,10 @@ async function findEffect(actor, effectName) {
     let effect = null;
     effect = actor?.effects.find(ef => ef.label === effectName);
     return effect;
+}
+
+function hasEffectApplied(effectName, actor) {
+  return actor.effects.find((ae) => ae.label === effectName) !== undefined;
 }
 
 async function findEffect(actor, effectName, origin) {

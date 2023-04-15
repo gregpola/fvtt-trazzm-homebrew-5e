@@ -3,13 +3,16 @@ import {SaveHandler} from "./SaveHandler.js";
 import {SpellHandler} from "./SpellHandler.js";
 import {BarbarianFeatures} from "./BarbarianFeatures.js";
 import {WarlockFeatures} from "./WarlockFeatures.js";
+import {WizardFeatures} from "./WizardFeatures.js";
+import {macros} from './macros.js';
 
 const SUB_MODULES = {
     InitiativeHandler,
     SaveHandler,
     SpellHandler,
     BarbarianFeatures,
-    WarlockFeatures
+    WarlockFeatures,
+    WizardFeatures
 };
 
 Hooks.once('init', async function () {
@@ -22,4 +25,8 @@ Hooks.once('init', async function () {
  */
 function initialize_module() {
     Object.values(SUB_MODULES).forEach(cl => cl.register());
+}
+
+globalThis['trazzmHomebrew'] = {
+    macros
 }
