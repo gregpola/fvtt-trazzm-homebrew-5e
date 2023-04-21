@@ -4,7 +4,7 @@
   * Creatures: fixed the half-damage on save versus wolf creatures bite
 
 * Added Automation to:
-  * ALl mundane light sources
+  * All mundane light sources
 
 * Misc
   * Added automation support compendiums
