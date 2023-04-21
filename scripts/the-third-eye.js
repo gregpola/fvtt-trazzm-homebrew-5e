@@ -81,10 +81,28 @@ async function applyDarkvision(actor, origin) {
 		origin: origin,
 		changes: [
 			{
-				key: 'system.attributes.senses.darkvision',
-				mode: CONST.ACTIVE_EFFECT_MODES.UPGRADE,
-				value: '60',
-				priority: 20
+				"key": "ATL.dimSight",
+				"mode": 4,
+				"value": "60",
+				"priority": 20
+			},
+			{
+				"key": "ATL.sight.visionMode",
+				"mode": 4,
+				"value": "darkvision",
+				"priority": 20
+			},
+			{
+				"key": "ATL.detectionModes.basic.range",
+				"mode": 4,
+				"value": "60",
+				"priority": 20
+			},
+			{
+				"key": "system.attributes.senses.darkvision",
+				"mode": 4,
+				"value": "60",
+				"priority": 20
 			}
 		],
 		flags: {

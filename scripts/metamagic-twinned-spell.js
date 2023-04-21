@@ -3,7 +3,7 @@
 
 	To be eligible, a spell must be incapable of targeting more than one creature at the spell's current level. For example, Magic Missile and Scorching Ray aren't eligible, but Ray of Frost is.
 */
-const version = "10.0.0";
+const version = "10.0.1";
 const optionName = "Metamagic: Twinned Spell";
 const resourceName = "Sorcery Points";
 const mutationFlag = "twinned-spell-item";
@@ -102,7 +102,7 @@ try {
 												
 						// track target info on the actor
 						DAE.setFlag(actor, mutationFlag, {itemName : itemName } );
-						await consumeResource(actor, resKey, Math.min(selectedItem.system.level, 1));
+						await consumeResource(actor, resKey, Math.max(selectedItem.system.level, 1));
 					}
 				},
 				Cancel:

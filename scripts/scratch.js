@@ -62,6 +62,7 @@ turn=end, saveAbility=wis, saveDC=19, label=Frightened
 turn=end, saveAbility=wis, saveDC=19, label=Stunned
 turn=end, saveAbility=con, saveDC=12, label=Poisoned
 turn=start, damageRoll=2d6, damageType=poison, label=Constricted
+turn=start, damageRoll=10, damageType=radiant, label=Holy Nimbus
 
 flags.midi-qol.optional.BardicInspiration.ac
 

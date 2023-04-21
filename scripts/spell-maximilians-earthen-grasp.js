@@ -1,4 +1,4 @@
-const version = "10.0.1";
+const version = "10.0.2";
 const optionName = "Maximilian's Earthen Grasp";
 const actorName = "Maximilian's Hand";
 const summonFlag = "maximilians-earthen-grasp";
@@ -38,8 +38,8 @@ try {
         let summonActor = game.actors.getName(summonName);
         if (!summonActor) {
 			// Get from the compendium
-			const summonId = "5tslaBSPjYi8Lkdo";
-			let entity = await fromUuid("Compendium.fvtt-trazzm-homebrew-5e.homebrew-creatures." + summonId);
+			const summonId = "1IU2SzcYygPCET2y";
+			let entity = await fromUuid("Compendium.fvtt-trazzm-homebrew-5e.homebrew-automation-actors." + summonId);
 			if (!entity) {
 				ui.notifications.error(`${optionName} - unable to find the actor`);
 				return false;

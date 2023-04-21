@@ -7,16 +7,16 @@
 	
 	At Higher Levels. If you cast this spell using a spell slot of 6th level or higher, you can animate two additional objects for each slot level above 5th.	
 */
-const version = "10.0.0";
+const version = "10.0.1";
 const optionName = "Animate Objects";
 const summonChoices = "animated-objects-choices";
 const summonFlag = "animated-objects";
 
-const summonOptions = new Map([['tiny', 'BfGYrwolRM9RJuPN'], 
-	['small', '4lbFzxZfyle9B20e'], 
-	['medium', 'dL8B5s6DOHramsIf'], 
-	['large', '00lP8rbhRSt2A0Gi'], 
-	['huge', 'wmZYkeiENQPSyB4K']]);
+const summonOptions = new Map([['tiny', 'oTegQQ5gS1E2Rrtz'],
+	['small', 'XGVr2FDd2bfr9hZc'],
+	['medium', 'b9FbMxVqMfPVoCrF'],
+	['large', 'VePAFYyY3VKgI10p'],
+	['huge', 'VsrvIw6cfqwcyQVe']]);
 
 try {
 	const lastArg = args[args.length - 1];
@@ -95,7 +95,7 @@ try {
 			
 			// Get from the compendium
 			const summonId = summonOptions.get(size);
-			let entity = await fromUuid("Compendium.fvtt-trazzm-homebrew-5e.homebrew-creatures." + summonId);
+			let entity = await fromUuid("Compendium.fvtt-trazzm-homebrew-5e.homebrew-automation-actors." + summonId);
 			if (!entity) {
 				return ui.notifications.error(`${optionName} - unable to find the actor (${summonId})`);
 			}

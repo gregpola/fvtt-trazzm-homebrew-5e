@@ -1,4 +1,4 @@
-const version = "10.0.0";
+const version = "10.0.1";
 const resourceName = "Sorcery Points";
 const optionName = "Hound of Ill Omen";
 const cost = 3;
@@ -42,8 +42,8 @@ try {
         let summonActor = game.actors.getName(summonName);
         if (!summonActor) {
 			// Get from the compendium
-			const summonId = "mQjQtV8KIUCJVzTA";
-			let entity = await fromUuid("Compendium.fvtt-trazzm-homebrew-5e.homebrew-creatures." + summonId);
+			const summonId = "BrSkEz78sUFsbHIF";
+			let entity = await fromUuid("Compendium.fvtt-trazzm-homebrew-5e.homebrew-automation-actors." + summonId);
 			if (!entity) {
 				ui.notifications.error(`${optionName} - unable to find the actor`);
 				return false;

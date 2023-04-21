@@ -3,7 +3,7 @@
 
 	If you cast this spell again, the spell ends early on any pebbles still affected by it.
 */
-const version = "10.0.0";
+const version = "10.0.1";
 const optionName = "Magic Stone";
 
 try {

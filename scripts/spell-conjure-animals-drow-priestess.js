@@ -1,4 +1,4 @@
-const version = "10.0.1";
+const version = "10.0.2";
 const optionName = "Conjure Animals";
 const summonFlag = "conjure-animals";
 const summonId = "FdCL6zWkQCoglDjT";
@@ -23,10 +23,10 @@ try {
 		}
 		
 		// Get the actor
-		let entity = await fromUuid("Compendium." + collectionName + "." + summonId);
+		let entity = await fromUuid("Compendium.fvtt-trazzm-homebrew-5e.homebrew-creatures." + summonId);
 		if (!entity) {
 			ui.notifications.error(`${optionName} - unable to find the creature: ${resultData.text}`);
-			return false;
+			return;
 		}
 
 		// build the update data to match summoned traits

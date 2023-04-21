@@ -155,6 +155,24 @@
       "type": "Item",
       "system": "dnd5e",
       "flags": {}
+    },
+    {
+      "name": "homebrew-automation-actors",
+      "label": "Homebrew Automation Actors",
+      "path": "packs/automation-actors.db",
+      "private": false,
+      "type": "Actor",
+      "system": "dnd5e",
+      "flags": {}
+    },
+    {
+      "name": "homebrew-automation-items",
+      "label": "Homebrew Automation Items",
+      "path": "packs/automation-items.db",
+      "private": false,
+      "type": "Item",
+      "system": "dnd5e",
+      "flags": {}
     }
   ],
   "compatibility": {

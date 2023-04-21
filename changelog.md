@@ -1,7 +1,17 @@
+# 10.0.15
+* Fixed/Updated:
+  * Missed changes from 10.0.14
+  * Creatures: fixed the half-damage on save versus wolf creatures bite
+
+* Added Automation to:
+  * ALl mundane light sources
+
+* Misc
+  * Added automation support compendiums
+
 # 10.0.14
 * Fixed/Updated:
-  * Class Features: Devil's Sight
-  * Items: Winged Boots 
+  * Items: Winged Boots
   * Spells: Spare the Dying
 
 * Added Automation to:

@@ -5,10 +5,10 @@
 
 	When you cast the spell and as a bonus action on your subsequent turns, you can move the hand up to 60 feet and then cause one of the following effects with it.
 */
-const version = "10.0.0";
+const version = "10.0.1";
 const optionName = "Bigby's Hand";
 const summonFlag = "bigbys-hand";
-const summonId = "eT36UwBXOud7pDSe";
+const summonId = "VGPZe2To1voHuhys";
 
 try {
 	const lastArg = args[args.length - 1];
@@ -59,7 +59,7 @@ try {
         let summonActor = game.actors.getName(summonName);
         if (!summonActor) {
 			// Get from the compendium
-			let entity = await fromUuid("Compendium.fvtt-trazzm-homebrew-5e.homebrew-creatures." + summonId);
+			let entity = await fromUuid("Compendium.fvtt-trazzm-homebrew-5e.homebrew-automation-actors." + summonId);
 			if (!entity) {
 				ui.notifications.error(`${optionName} - unable to find the actor`);
 				return false;

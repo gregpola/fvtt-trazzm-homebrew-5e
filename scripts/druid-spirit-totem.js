@@ -5,12 +5,12 @@
 
 	The spirit persists for 1 minute or until you’re Incapacitated. Once you use this feature, you can’t use it again until you finish a short or long rest.
 */
-const version = "10.0.1";
+const version = "10.0.2";
 const optionName = "Spirit Totem";
 const summonFlag = "spirit-totem";
-const bearTotemId = "Q2nGM1ElUYDPcLHZ";
-const hawkTotemId = "wpmRmZ9pSYFKxnVa";
-const unicornTotemId = "HD4G5T4lTJbljnnJ";
+const bearTotemId = "uMowTZFFeR2KBSAS";
+const hawkTotemId = "kZqN4DrBUL4BOlz6";
+const unicornTotemId = "E2OxvVXjfdExsyVs";
 
 try {
 	const lastArg = args[args.length - 1];
@@ -73,7 +73,7 @@ try {
 			if (!summonActor) {
 				// Get from the compendium
 				const summonId = totemActorData.id;
-				let entity = await fromUuid("Compendium.fvtt-trazzm-homebrew-5e.homebrew-creatures." + summonId);
+				let entity = await fromUuid("Compendium.fvtt-trazzm-homebrew-5e.homebrew-automation-actors." + summonId);
 				if (!entity) {
 					ui.notifications.error(`${optionName} - unable to find the actor`);
 					return false;

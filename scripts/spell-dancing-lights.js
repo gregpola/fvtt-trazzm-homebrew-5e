@@ -3,7 +3,7 @@
 
 	As a bonus action on your turn, you can move the lights up to 60 feet to a new spot within range. A light must be within 20 feet of another light created by this spell, and a light winks out if it exceeds the spell's range.
 */
-const version = "10.0.0";
+const version = "10.0.1";
 const optionName = "Dancing Lights";
 const summonFlag = "dancing-lights";
 const creatureName = "Dancing Light";
@@ -39,8 +39,8 @@ try {
         let summonActor = game.actors.getName(summonName);
         if (!summonActor) {
 			// Get from the compendium
-			const summonId = "uaUwyUt1T3zIRvDU";
-			let entity = await fromUuid("Compendium.fvtt-trazzm-homebrew-5e.homebrew-creatures." + summonId);
+			const summonId = "Op8A5UPzieggtaCt";
+			let entity = await fromUuid("Compendium.fvtt-trazzm-homebrew-5e.homebrew-automation-actors." + summonId);
 			if (!entity) {
 				ui.notifications.error(`${optionName} - unable to find the actor`);
 				return false;

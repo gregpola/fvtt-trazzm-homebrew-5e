@@ -16,7 +16,7 @@
     "autoTarget": "dfwalledTemplates",
     "checkSaveText": false,
     "concentrationAutomation": true,
-    "consumeResource": "both",
+    "consumeResource": "item",
     "convenientEffectsReaction": "Reaction",
     "criticalSound": "sounds/dice.wav",
     "customSoundsPlaylist": "none",
@@ -100,7 +100,7 @@
     "spellUseSoundRanged": "",
     "tempHPDamageConcentrationCheck": false,
     "toggleOptionalRules": false,
-    "useCustomSounds": false,
+    "useCustomSounds": true,
     "usePlayerPortrait": true,
     "useTokenNames": true,
     "weaponHitSound": "",
@@ -114,7 +114,7 @@
       "coverCalculation": "none",
       "nearbyFoe": 5,
       "nearbyAllyRanged": 0,
-      "incapacitated": false,
+      "incapacitated": true,
       "removeHiddenInvis": true,
       "maxDRValue": true,
       "distanceIncludesHeight": true,
@@ -127,7 +127,9 @@
       "criticalNat20": false,
       "actionSpecialDurationImmediate": false,
       "challengModeArmor": false,
-      "enableddbGL": false
+      "enableddbGL": false,
+      "autoRerollInitiative": false,
+      "vitalityResource": ""
     },
     "autoItemEffects": "applyRemove",
     "playerCardDamageDifferent": true,
@@ -137,15 +139,14 @@
     "attackPerTarget": false,
     "autoRemoveTemplate": true,
     "removeConcentrationEffects": "effects",
-    "highlightSuccess": false
+    "highlightSuccess": true
   },
   "midiSoundSettings": {
-    "any": {},
     "version": "0.9.48"
   },
   "itemRollButtons": true,
   "criticalDamage": "default",
-  "itemDeleteCheck": true,
+  "itemDeleteCheck": false,
   "nsaFlag": true,
   "coloredBorders": "borders",
   "addChatDamageButtons": "gm",
@@ -158,17 +159,17 @@
     "exportSource": {
       "system": "dnd5e",
       "coreVersion": "10.291",
-      "systemVersion": "2.1.4"
+      "systemVersion": "2.1.5"
     },
     "modules": {
-      "daeVersion": "10.0.20",
-      "DSNversion": "4.6.5",
+      "daeVersion": "10.0.25",
+      "DSNversion": "4.6.7",
       "itemMacroVersion": "1.8.0",
-      "midiQolVersion": "10.0.29",
-      "monksVersion": "10.6",
+      "midiQolVersion": "10.0.36",
+      "monksVersion": "10.9",
       "socketlibVersion": "1.0.12",
       "simpleCalendarVersion": "2.1.80",
-      "timesUpVersion": "10.0.3"
+      "timesUpVersion": "10.0.4"
     },
     "all-modules": [
       {
@@ -246,7 +247,7 @@
         "title": "Advanced Macros",
         "description": "Use handlebars templating, recursive macro calls and call macros with arguments or directly from chat.",
         "url": "https://github.com/League-of-Foundry-Developers/fvtt-advanced-macros",
-        "version": "1.19.3",
+        "version": "v1.19.6",
         "compatibility": {
           "minimum": "10",
           "verified": "10"
@@ -303,7 +304,7 @@
         "title": "Active Token Effects",
         "description": "Active Token Effects",
         "url": "https://github.com/kandashi/Active-Token-Lighting",
-        "version": "0.5.1",
+        "version": "0.5.3",
         "compatibility": {
           "minimum": "10",
           "verified": "10"
@@ -325,7 +326,7 @@
         "title": "Automated Animations",
         "description": "This will automatically run most JB2A Animations such as Melee/Ranged Attacks, Spell Attacks, and Instant Spells",
         "url": "https://github.com/otigon/automated-jb2a-animations",
-        "version": "4.2.31",
+        "version": "4.2.46",
         "compatibility": {
           "minimum": "10",
           "verified": "10",
@@ -356,10 +357,41 @@
         "socket": true
       },
       {
+        "title": "Better Roofs",
+        "description": "Vision enhancements for roofs",
+        "url": "https://github.com/theripper93/Better-Roofs",
+        "version": "1.7.6",
+        "compatibility": {
+          "minimum": "10",
+          "verified": "10"
+        },
+        "relationships": {
+          "systems": [],
+          "requires": [
+            {
+              "id": "lib-wrapper",
+              "type": "module",
+              "compatibility": {}
+            }
+          ],
+          "conflicts": [],
+          "flags": {}
+        },
+        "scripts": [
+          "modules/betterroofs/scripts/main.js",
+          "modules/betterroofs/scripts/roofs.js",
+          "modules/betterroofs/scripts/helpers.js",
+          "modules/betterroofs/scripts/config.js",
+          "modules/betterroofs/scripts/occlusionlink.js"
+        ],
+        "esmodules": [],
+        "socket": false
+      },
+      {
         "title": "Chat Portrait",
         "description": "Display the Actor's portrait and colors on the Chat Message.",
         "url": "https://github.com/p4535992/foundryvtt-chat-portrait",
-        "version": "0.8.35",
+        "version": "0.8.46",
         "compatibility": {
           "minimum": "10",
           "verified": "10",
@@ -374,12 +406,6 @@
               "type": "module",
               "compatibility": {},
               "reason": "Redundancy of features you can disable 'Simply Portraits' module if you want"
-            },
-            {
-              "id": "speaking-as",
-              "type": "module",
-              "compatibility": {},
-              "reason": "Redundancy of features you can disable 'Speaking As' module if you want"
             }
           ],
           "flags": {}
@@ -415,10 +441,10 @@
         "title": "Combat Carousel",
         "description": "Adds a CRPG-style combat tracker to the top of the screen",
         "url": "https://github.com/death-save/combat-carousel",
-        "version": "0.3.1",
+        "version": "0.3.3",
         "compatibility": {
           "minimum": "10.275",
-          "verified": "10.290"
+          "verified": "10.291"
         },
         "relationships": {
           "systems": [],
@@ -488,7 +514,7 @@
         "title": "Dynamic effects using Active Effects",
         "description": "replacement for dynamic effects",
         "url": "https://gitlab.com/tposney/dae",
-        "version": "10.0.20",
+        "version": "10.0.25",
         "compatibility": {
           "minimum": "10.279",
           "verified": "10.286",
@@ -582,7 +608,7 @@
         "title": "DFreds Convenient Effects",
         "description": "Adds easy to use toggleable active effects for common use cases",
         "url": "https://github.com/DFreds/dfreds-convenient-effects",
-        "version": "3.1.1",
+        "version": "4.2.1",
         "compatibility": {
           "minimum": "10",
           "verified": "10.291",
@@ -594,11 +620,21 @@
               "id": "dnd5e",
               "type": "system",
               "compatibility": {}
+            },
+            {
+              "id": "sw5e",
+              "type": "system",
+              "compatibility": {}
             }
           ],
           "requires": [
             {
               "id": "socketlib",
+              "type": "module",
+              "compatibility": {}
+            },
+            {
+              "id": "lib-wrapper",
               "type": "module",
               "compatibility": {}
             }
@@ -616,7 +652,7 @@
         "title": "DFreds Effects Panel",
         "description": "A FoundryVTT module that adds a panel of active effects for the selected tokens.",
         "url": "https://github.com/DFreds/dfreds-effects-panel",
-        "version": "2.1.1",
+        "version": "2.1.3",
         "compatibility": {
           "minimum": "10",
           "verified": "10.291",
@@ -661,10 +697,10 @@
         "title": "Dice So Nice!",
         "description": "Adds customizable 3D dice to Foundry VTT with lots of options to fit your playstyle.",
         "url": "https://gitlab.com/riccisi/foundryvtt-dice-so-nice",
-        "version": "4.6.5",
+        "version": "4.6.7",
         "compatibility": {
           "minimum": "10",
-          "verified": "10.288"
+          "verified": "10.291"
         },
         "relationships": {
           "systems": [],
@@ -702,6 +738,42 @@
           "modules/effectmacro/setup.mjs"
         ],
         "socket": false
+      },
+      {
+        "title": "Argon - Combat HUD",
+        "description": "It's Magic",
+        "url": "https://github.com/theripper93/enhancedcombathud",
+        "version": "1.6.5",
+        "compatibility": {
+          "minimum": "10",
+          "verified": "10"
+        },
+        "relationships": {
+          "systems": [
+            {
+              "id": "dnd5e",
+              "type": "system",
+              "compatibility": {}
+            }
+          ],
+          "requires": [
+            {
+              "id": "colorsettings",
+              "type": "module",
+              "compatibility": {}
+            }
+          ],
+          "conflicts": [],
+          "flags": {}
+        },
+        "scripts": [
+          "modules/enhancedcombathud/scripts/main.js",
+          "modules/enhancedcombathud/scripts/config.js",
+          "modules/enhancedcombathud/scripts/ExtendedCombatHud.js",
+          "modules/enhancedcombathud/scripts/items.js"
+        ],
+        "esmodules": [],
+        "socket": true
       },
       {
         "title": "Find the culprit",
@@ -749,7 +821,7 @@
         "title": "Trazzm 5e Homebrew",
         "description": "A collection of homebrew for dnd5e",
         "url": "https://github.com/gregpola/fvtt-trazzm-homebrew-5e",
-        "version": "10.0.6",
+        "version": "10.0.14",
         "compatibility": {
           "minimum": "10.286",
           "verified": "10",
@@ -832,7 +904,7 @@
         "title": "FXMaster",
         "description": "Adds various particle and filter effects",
         "url": "https://github.com/ghost-fvtt/fxmaster",
-        "version": "3.5.2",
+        "version": "3.6.0",
         "compatibility": {
           "minimum": "10.278",
           "verified": "10"
@@ -855,7 +927,7 @@
         "title": "Item Piles",
         "description": "This module adds the ability for items to be dropped onto the ground, and then picked up.",
         "url": "https://github.com/fantasycalendar/FoundryVTT-ItemPiles",
-        "version": "2.4.16",
+        "version": "2.6.8",
         "compatibility": {
           "minimum": "10",
           "verified": "10"
@@ -945,10 +1017,10 @@
         "title": "JB2A - Patreon Complete Collection",
         "description": "<p>Animated Assets for spells, tiles, tokens, melee and ranged attacks</p><p>Troubleshooting and FAQ section on our <a href=\"https://jb2a.com\">website</a> </p><p>Join our <a href=\"https://discord.gg/gmd8MAPX4m\">Discord server</a> for any further questions</p><p> <a href=\"https://www.jb2a.com/Library_Preview/\">Preview</a> our assets<br /></p><p>Thank you for the support ! ❤️</p>",
         "url": "https://www.patreon.com/JB2A",
-        "version": "0.5.3",
+        "version": "0.5.5",
         "compatibility": {
           "minimum": "8",
-          "verified": "10.286"
+          "verified": "10.291"
         },
         "relationships": {
           "systems": [],
@@ -966,7 +1038,7 @@
         "title": "Levels",
         "description": "Add multiple vertical levels to maps",
         "url": "https://github.com/theripper93/Levels",
-        "version": "3.7.5",
+        "version": "3.8.1",
         "compatibility": {
           "minimum": "10",
           "verified": "10"
@@ -1081,7 +1153,7 @@
         "title": "Midi QOL",
         "description": "Automates rolling weapon/spell attacks and applying damage",
         "url": "https://gitlab.com/tposney/midi-qol",
-        "version": "10.0.29",
+        "version": "10.0.36",
         "compatibility": {
           "minimum": "10.286",
           "verified": "10",
@@ -1129,10 +1201,10 @@
         "title": "Midi SRD",
         "description": "DnD 5e SRD items, features and spells configured for Dynamic Active Effects and Midi QoL",
         "url": "https://github.com/thatlonelybugbear/midi-srd",
-        "version": "10.10.0",
+        "version": "10.10.2",
         "compatibility": {
-          "minimum": "10.286",
-          "verified": "10",
+          "minimum": "10",
+          "verified": "10.291",
           "maximum": "10"
         },
         "relationships": {
@@ -1190,7 +1262,7 @@
         "title": "Monk's Active Tile Triggers",
         "description": "Want to teleport, or open doors, or hide characters, or display a message, or play a sound, or change a token's elevation when a token walks over a tile... now you can",
         "url": "https://github.com/ironmonk88/monks-active-tiles",
-        "version": "10.12",
+        "version": "10.15",
         "compatibility": {
           "minimum": "10",
           "verified": "10"
@@ -1214,7 +1286,7 @@
         "title": "Monk's TokenBar",
         "description": "Add a bar with all the current player tokens.  Limit movement, roll saving throws, assign XP.",
         "url": "https://github.com/ironmonk88/monks-tokenbar",
-        "version": "10.6",
+        "version": "10.9",
         "compatibility": {
           "minimum": "10",
           "verified": "10"
@@ -1265,9 +1337,9 @@
         "title": "Mass Edit",
         "description": "Search and edit multiple placeables at the same time.",
         "url": "https://github.com/Aedif/multi-token-edit",
-        "version": "1.36.1",
+        "version": "1.39.0",
         "compatibility": {
-          "minimum": "9",
+          "minimum": "10",
           "verified": "10.291"
         },
         "relationships": {
@@ -1286,7 +1358,7 @@
         "title": "Next Up",
         "description": "Several Combat Enhancements, pan to combatant, open sheets and turn markers.",
         "url": "https://github.com/gregpola/Next-Up",
-        "version": "10.0.5",
+        "version": "10.0.8",
         "compatibility": {
           "minimum": "0.8.9",
           "verified": "10"
@@ -1338,7 +1410,7 @@
         "title": "Polyglot",
         "description": "Talk to others using a language you can speak and scrambles text you can't understand, in several fantasy scripts.",
         "url": "https://github.com/mclemente/fvtt-module-polyglot",
-        "version": "1.8.12",
+        "version": "1.8.13",
         "compatibility": {
           "minimum": "10",
           "verified": "10"
@@ -1384,10 +1456,11 @@
         "title": "Library: Scene Packer",
         "description": "A module to assist with Scene and Adventure packing and unpacking.",
         "url": "https://github.com/League-of-Foundry-Developers/scene-packer",
-        "version": "2.6.14",
+        "version": "2.6.15",
         "compatibility": {
           "minimum": "0.8.6",
-          "verified": "10"
+          "verified": "10",
+          "maximum": "10"
         },
         "relationships": {
           "systems": [],
@@ -1406,10 +1479,10 @@
         "title": "Sequencer",
         "description": "This module allows you to play effects on the canvas, and create complex sequences of actions",
         "url": "https://github.com/fantasycalendar/FoundryVTT-Sequencer",
-        "version": "2.411",
+        "version": "2.414",
         "compatibility": {
           "minimum": "10",
-          "verified": "10"
+          "verified": "11"
         },
         "relationships": {
           "systems": [],
@@ -1523,7 +1596,7 @@
         "title": "Splatter",
         "description": "Blood up your games",
         "url": "https://github.com/theripper93/Splatter",
-        "version": "3.1",
+        "version": "3.2.1",
         "compatibility": {
           "minimum": "10",
           "verified": "10"
@@ -1557,21 +1630,14 @@
         "title": "Template Macro",
         "description": "",
         "url": "https://github.com/krbz999/templatemacro",
-        "version": "10.0.1",
+        "version": "10.0.2",
         "compatibility": {
           "minimum": "10",
           "verified": "10.291",
           "maximum": "10"
         },
         "relationships": {
-          "systems": [
-            {
-              "id": "dnd5e",
-              "type": "system",
-              "manifest": "https://raw.githubusercontent.com/foundryvtt/dnd5e/master/system.json",
-              "compatibility": {}
-            }
-          ],
+          "systems": [],
           "requires": [],
           "conflicts": [],
           "flags": {}
@@ -1661,7 +1727,7 @@
         "title": "Times Up",
         "description": "Active expiry expiration",
         "url": "https://gitlab.com/tposney/times-up",
-        "version": "10.0.3",
+        "version": "10.0.4",
         "compatibility": {
           "minimum": "10",
           "verified": "10",
@@ -1691,10 +1757,39 @@
         "socket": true
       },
       {
+        "title": "Token Attacher",
+        "description": "Attach anything(even tokens) to tokens, so that they move when the token moves and rotate/move when the token rotates. Create prefabs and many more features, see the github readme for more details.",
+        "url": "https://github.com/KayelGee/token-attacher",
+        "version": "4.5.12",
+        "compatibility": {
+          "minimum": "10",
+          "verified": "10.291",
+          "maximum": "10"
+        },
+        "relationships": {
+          "systems": [],
+          "requires": [
+            {
+              "id": "lib-wrapper",
+              "type": "module",
+              "manifest": "https://github.com/ruipin/fvtt-lib-wrapper/releases/latest/download/module.json",
+              "compatibility": {}
+            }
+          ],
+          "conflicts": [],
+          "flags": {}
+        },
+        "scripts": [],
+        "esmodules": [
+          "modules/token-attacher/scripts/token-attacher.js"
+        ],
+        "socket": true
+      },
+      {
         "title": "Token Magic FX",
         "description": "<p>Add special effects and animations on your tokens, tiles, drawings and templates.</p>",
         "url": "https://github.com/Feu-Secret/Tokenmagic",
-        "version": "0.6.1.2",
+        "version": "0.6.2",
         "compatibility": {
           "minimum": "10",
           "verified": "10.285",
@@ -1797,7 +1892,7 @@
         "title": "Wall Height",
         "description": "Adds the ability to set wall height for walls so that tokens can look and move over them.",
         "url": "https://github.com/theripper93/wall-height",
-        "version": "4.9.2",
+        "version": "4.9.6",
         "compatibility": {
           "minimum": "10",
           "verified": "10"
@@ -1824,9 +1919,9 @@
         "title": "Walled Templates",
         "description": "",
         "url": "https://github.com/caewok/fvtt-walled-templates",
-        "version": "0.4.8",
+        "version": "0.5.1",
         "compatibility": {
-          "minimum": "10.277",
+          "minimum": "10",
           "verified": "10.291"
         },
         "relationships": {

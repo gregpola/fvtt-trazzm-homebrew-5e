@@ -7,7 +7,7 @@
 
 	At Higher Levels. When you cast this spell using a spell slot of 3rd level or higher, the healing increases by 1d6 for each slot level above 2nd.
 */
-const version = "10.0.1";
+const version = "10.0.2";
 const optionName = "Healing Spirit";
 const actorName = "Healing Spirit";
 const summonFlag = "healing-spirit";
@@ -58,8 +58,8 @@ try {
         let summonActor = game.actors.getName(summonName);
         if (!summonActor) {
 			// Get from the compendium
-			const summonId = "9J3UJFo5rzBgyNQ7";
-			let entity = await fromUuid("Compendium.fvtt-trazzm-homebrew-5e.homebrew-creatures." + summonId);
+			const summonId = "T5eonwFExxiqgS55";
+			let entity = await fromUuid("Compendium.fvtt-trazzm-homebrew-5e.homebrew-automation-actors." + summonId);
 			if (!entity) {
 				ui.notifications.error(`${optionName} - unable to find the actor`);
 				return false;

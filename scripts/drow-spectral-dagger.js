@@ -3,7 +3,7 @@
 
 	The dagger lasts for 1 minute. As a bonus action on later turns, the drow can move the dagger up to 20 feet and repeat the attack against one creature within 5 feet of the dagger.
 */
-const version = "10.0.0";
+const version = "10.0.1";
 const optionName = "Spectral Dagger";
 const actorName = "Spectral Dagger";
 const summonFlag = "spectral-dagger";
@@ -38,8 +38,8 @@ try {
         let summonActor = game.actors.getName(summonName);
         if (!summonActor) {
 			// Get from the compendium
-			const summonId = "xdWlBmKk1RRdlVy7";
-			let entity = await fromUuid("Compendium.fvtt-trazzm-homebrew-5e.homebrew-creatures." + summonId);
+			const summonId = "bS3OYvsFjCuPunO9";
+			let entity = await fromUuid("Compendium.fvtt-trazzm-homebrew-5e.homebrew-automation-actors." + summonId);
 			if (!entity) {
 				ui.notifications.error(`${optionName} - unable to find the actor`);
 				return false;

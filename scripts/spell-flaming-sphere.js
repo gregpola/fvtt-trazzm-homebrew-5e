@@ -1,4 +1,4 @@
-const version = "10.0.14";
+const version = "10.0.15";
 const optionName = "Flaming Sphere";
 const summonFlag = "flaming-sphere";
 const creatureName = "Driftglobe";
@@ -71,8 +71,8 @@ try {
 		let summonActor = game.actors.getName(summonName);
         if (!summonActor) {
 			// Get from the compendium
-			const summonId = "4PyDMPHwGsfOY8mR";
-			let entity = await fromUuid("Compendium.fvtt-trazzm-homebrew-5e.homebrew-creatures." + summonId);
+			const summonId = "kzn1NJxvNPHfNw0B";
+			let entity = await fromUuid("Compendium.fvtt-trazzm-homebrew-5e.homebrew-automation-actors." + summonId);
 			if (!entity) {
 				ui.notifications.error(`${optionName} - unable to find the actor`);
 				return false;

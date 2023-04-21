@@ -1,4 +1,4 @@
-const version = "10.0.1";
+const version = "10.0.2";
 const optionName = "Figurine of Wondrous Power (Silver Raven)";
 const actorName = "Raven";
 const creatureName = "Silver Raven";

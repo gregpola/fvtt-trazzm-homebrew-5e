@@ -1,4 +1,4 @@
-const version = "10.0.0";
+const version = "10.0.1";
 const resourceName = "Wild Shape";
 const optionName = "Summon Wildfire Spirit";
 const cost = 1;
@@ -57,8 +57,8 @@ try {
         let summonActor = game.actors.getName(summonName);
         if (!summonActor) {
 			// Get from the compendium
-			const summonId = "mpoueAlhekkjJ8nG";
-			let entity = await fromUuid("Compendium.fvtt-trazzm-homebrew-5e.homebrew-creatures." + summonId);
+			const summonId = "0AEkhbXs7xcVK9GQ";
+			let entity = await fromUuid("Compendium.fvtt-trazzm-homebrew-5e.homebrew-automation-actors." + summonId);
 			if (!entity) {
 				ui.notifications.error(`${optionName} - unable to find the actor`);
 				return false;
