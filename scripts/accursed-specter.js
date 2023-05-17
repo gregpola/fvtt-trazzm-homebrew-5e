@@ -5,7 +5,7 @@
 
 	Once you bind a specter with this feature, you can’t use the feature again until you finish a long rest.
 */
-const version = "10.0.0";
+const version = "10.0.1";
 const optionName = "Accursed Specter";
 const creatureName = "Specter";
 const specterFlag = "accursed-specter";
@@ -33,7 +33,6 @@ try {
 				"displayBars": CONST.TOKEN_DISPLAY_MODES.ALWAYS,
 				"bar1": { attribute: "attributes.hp" },
 				"actorLink": false,
-				"flags": { "midi-srd": { "Accursed Specter": { "ActorId": actor.id } } }
             },
             actor: {
                 "system": { 

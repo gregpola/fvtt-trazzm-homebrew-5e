@@ -5,7 +5,7 @@
 
 	An animated vine can grapple one creature of its own but can’t make attacks while grappling. An animated vine reverts to its inanimate state if reduced to 0 hit points or if the kyton is incapacitated or dies.
 */
-const version = "10.0.2";
+const version = "10.0.3";
 const optionName = "Animate Vines";
 const summonFlag = "animated-vines";
 const summonId = "I176AV0yK9dNOXrY";
@@ -29,8 +29,7 @@ try {
 				"displayName": CONST.TOKEN_DISPLAY_MODES.HOVER,
 				"displayBars": CONST.TOKEN_DISPLAY_MODES.ALWAYS,
 				"bar1": { attribute: "attributes.hp" },
-				"actorLink": false,
-				"flags": { "midi-srd": { "Animated Vines" : { "ActorId": actor.id } } }
+				"actorLink": false
 			},
 			"name": summonName
 		};

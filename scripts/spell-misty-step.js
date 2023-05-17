@@ -10,7 +10,7 @@ try {
 		const maxRange = lastArg.item.system.range.value ?? 30;
 		
 		// transport the caster
-		let position = await HomebrewMacros.warpgateCrosshairs(actorToken, maxRange, lastArg.item, actorToken);
+		let position = await HomebrewMacros.warpgateCrosshairs(actorToken, maxRange, lastArg.item);
 		if (position) {
 			// check for token collision
 			const newCenter = canvas.grid.getSnappedPosition(position.x - actorToken.width / 2, position.y - actorToken.height / 2, 1);

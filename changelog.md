@@ -1,3 +1,9 @@
+# 10.0.16
+* Fixed/Updated:
+  * Green-Flame Blade
+  * Misty Step
+  * Spiritual Weapon
+
 # 10.0.15
 * Fixed/Updated:
   * Missed changes from 10.0.14

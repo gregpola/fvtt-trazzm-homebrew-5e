@@ -66,6 +66,10 @@ turn=start, damageRoll=10, damageType=radiant, label=Holy Nimbus
 
 flags.midi-qol.optional.BardicInspiration.ac
 
+// options = { maxSize: undefined, includeIncapacitated: false, canSee: false }
+let secondTarget = await MidiQOL.findNearby(CONST.TOKEN_DISPOSITIONS.FRIENDLY, ttoken, 5, {canSee: true});
+
+
 // Monks token bar
 let message = await game.MonksTokenBar.requestRoll([targetToken], {request:'save:con', flavor: 'Poisoned weapon', silent: true});
 await wait(10000);

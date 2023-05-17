@@ -1,4 +1,4 @@
-const version = "10.0.0";
+const version = "10.0.1";
 const optionName = "Green-Flame Blade";
 try {
 	if (args[0].macroPass === "DamageBonus") {
@@ -7,9 +7,10 @@ try {
 		const actorD = tokenD.actor;
 		const actorData = actorD.getRollData();
 		const itemD = lastArg.item;
+
 		let mainTarget = await lastArg.hitTargets.values().next().value;
-		let ttoken = canvas.tokens.get(args[0].hitTargets[0].object.id);
-		let secondTarget = await MidiQOL.findNearby(CONST.TOKEN_DISPOSITIONS.FRIENDLY, ttoken, 5, null);
+		let ttoken = canvas.tokens.get(args[0].hitTargets[0].object.id);		
+		let secondTarget = await MidiQOL.findNearby(CONST.TOKEN_DISPOSITIONS.FRIENDLY, ttoken, 5, {canSee: true});
 
 		// Must be a melee weapon attack
 		if (!["mwak"].includes(args[0].itemData.system.actionType))

@@ -1,7 +1,7 @@
 /*
 	The treant magically animates one or two trees it can see within 60 feet of it. These trees have the same statistics as a treant, except they have Intelligence and Charisma scores of 1, they can't speak, and they have only the Slam action option. An animated tree acts as an ally of the treant. The tree remains animate for 1 day or until it dies; until the treant dies or is more than 120 feet from the tree; or until the treant takes a bonus action to turn it back into an inanimate tree. The tree then takes root if possible.
 */
-const version = "10.0.0";
+const version = "10.0.1";
 const optionName = "Animate Trees";
 const summonFlag = "animated-trees";
 const summonId = "dvQ8Wpl9C416Adnq";
@@ -26,7 +26,6 @@ try {
 				"displayBars": CONST.TOKEN_DISPLAY_MODES.ALWAYS,
 				"bar1": { attribute: "attributes.hp" },
 				"actorLink": false,
-				"flags": { "midi-srd": { "Animated Tree" : { "ActorId": actor.id } } }
 			},
 			"name": summonName
 		};

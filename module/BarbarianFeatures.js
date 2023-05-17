@@ -84,7 +84,7 @@ export class BarbarianFeatures {
             // 'Totem Spirit - Wolf' - must be mwak or msak
             if (["mwak", "msak"].includes(workflow.item.system.actionType)) {
                 // check if an ally within 5 feet of the target has 'Totem Spirit - Wolf' and is raging
-                const nearbyAllies = MidiQOL.findNearby(-1, target, 5);
+                const nearbyAllies = MidiQOL.findNearby(-1, target, 5, { includeIncapacitated: false });
                 if (nearbyAllies.length > 0) {
                     const allyIter = nearbyAllies.values();
                     for (let ally of allyIter) {
@@ -103,7 +103,7 @@ export class BarbarianFeatures {
             // 'Totemic Attunement - Bear'
             // find all enemies within 5-feet that are raging and have the feature
             let totemicBears = new Set();
-            const nearbyEnemies = MidiQOL.findNearby(-1, workflow.token, 5);
+            const nearbyEnemies = MidiQOL.findNearby(-1, workflow.token, 5, { canSee: true, includeIncapacitated: false });
             if (nearbyEnemies.length > 0) {
                 const enemyIter = nearbyEnemies.values();
                 for (let enemy of enemyIter) {
