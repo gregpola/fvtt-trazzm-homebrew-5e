@@ -1,4 +1,4 @@
-const version = "10.0.0";
+const version = "10.0.1";
 const optionName = "Bigby's Hand";
 const summonFlag = "bigbys-hand";
 const actorSizes = ["tiny","sm","med","lg", "huge", "grg"];
@@ -47,7 +47,9 @@ async function applyGrappled(grappler, defender, skillForBreakFree) {
 		'origin': grappler.actor.uuid,
 		'duration': {'seconds': 3600}
 	};
-	await defender.actor.createEmbeddedDocuments("ActiveEffect", [grappledEffect]);
+
+	await MidiQOL.socket().executeAsGM("createEffects",
+		{ actorUuid: defender.actor.uuid, effects: [grappledEffect] });
 
 	// add the break free feature to the target
 	let escapeMacro = "let effect = token.actor.effects.find(ef => ef.label === 'Grappled' && ef.origin === '" + grappler.actor.uuid + "');\n"

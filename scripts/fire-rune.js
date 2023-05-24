@@ -1,7 +1,7 @@
 /*
 	In addition, when you hit a creature with an attack using a weapon, you can invoke the rune to summon fiery shackles: the target takes an extra 2d6 fire damage, and it must succeed on a Strength saving throw or be Restrained for 1 minute. While restrained by the shackles, the target takes 2d6 fire damage at the start of each of its turns. The target can repeat the saving throw at the end of each of its turns, banishing the shackles on a success. Once you invoke this rune, you can’t do so again until you finish a short or long rest.
 */
-const version = "10.0.0";
+const version = "10.0.1";
 const optionName = "Fire Rune";
 
 try {
@@ -94,7 +94,9 @@ try {
 					'origin': lastArg.itemUuid,
 					'duration': {'seconds': 60}
 				};
-				await targetActor.createEmbeddedDocuments("ActiveEffect", [restrainedEffect]);
+
+				await MidiQOL.socket().executeAsGM("createEffects",
+					{ actorUuid: targetActor.uuid, effects: [restrainedEffect] });
 			}
 				
 			// return initial damage bonus

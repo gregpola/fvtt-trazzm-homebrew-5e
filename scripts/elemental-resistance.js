@@ -1,4 +1,4 @@
-const version = "10.0.0";
+const version = "10.0.1";
 const optionName = "Elemental Resistance";
 
 try {
@@ -48,7 +48,9 @@ try {
 									origin: lastArg.uuid,
 									disabled: false,
 								}];
-								await tactor.createEmbeddedDocuments("ActiveEffect", effectDataResistance);
+
+								await MidiQOL.socket().executeAsGM("createEffects",
+									{ actorUuid: tactor.uuid, effects: [effectDataResistance] });
 							}
 							resolve();
 						},

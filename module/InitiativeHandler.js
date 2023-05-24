@@ -151,7 +151,10 @@ export class InitiativeHandler {
                         disabled: false
                     };
                     newEffects.push(damageBonusEffect);
-                    actor.createEmbeddedDocuments("ActiveEffect", newEffects);
+
+                    await MidiQOL.socket().executeAsGM("createEffects",
+                        { actorUuid: actor.uuid, effects: [newEffects] });
+                    //actor.createEmbeddedDocuments("ActiveEffect", newEffects);
                 }
             }
         });

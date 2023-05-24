@@ -1,7 +1,6 @@
-const version = "10.0.0";
+const version = "10.0.1";
 const resourceName = "Lay on Hands";
 let workflow = MidiQOL.Workflow.getWorkflow(args[0].uuid);
-let actor = workflow.actor;
 let target = args[0]?.targets[0];
 let tactor = target?.actor;
 let resKey = findResource(actor);

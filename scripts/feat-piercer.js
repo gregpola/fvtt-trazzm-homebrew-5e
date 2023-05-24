@@ -8,7 +8,7 @@ You have achieved a penetrating precision in combat, granting you the following 
 	* When you score a critical hit that deals piercing damage to a creature, you can roll one additional damage die when determining the extra piercing damage the target takes.
 
 */
-const version = "10.0.0";
+const version = "10.1";
 const optionName = "Piercer";
 const lastArg = args[args.length - 1];
 

@@ -1,11 +1,11 @@
 /*
 	 The target’s hit point maximum is reduced by an amount equal to the necrotic damage taken, and the vampire regains hit points equal to that amount. The reduction lasts until the target finishes a long rest. The target dies if its hit point maximum is reduced to 0.
 */
-const version = "10.0.0";
-const optionName = "Strength Drain";
+const version = "10.1";
+const optionName = "Draining Attack";
 
 try {
-	if (args[0].macroPass === "postActiveEffects") {
+	if (args[0] === "on") {
 		const lastArg = args[args.length - 1];
 		const targetTokenDoc = lastArg.hitTargets.length > 0 ? lastArg.hitTargets[0] : undefined;
 		
@@ -36,6 +36,9 @@ try {
 				}
 			}
 		}
+	}
+	else if (args[0] === "off") {
+
 	}
 	
 } catch (err) {

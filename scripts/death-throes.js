@@ -3,7 +3,7 @@
 
 	When the dark folk dies, it explodes into a flash of blinding darkness in a 20- foot radius. The darkness lingers for 1 minute.
 */
-const version = "10.0.0";
+const version = "10.0.1";
 const optionName = "Death Throes";
 
 try {

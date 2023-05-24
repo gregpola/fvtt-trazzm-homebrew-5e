@@ -1,4 +1,4 @@
-const version = "10.0.0";
+const version = "10.0.1";
 const optionName = "Hex";
 let workflow = MidiQOL.Workflow.getWorkflow(args[0].uuid);
 let actor = workflow?.actor;
@@ -59,6 +59,7 @@ try {
 							  label: args[0].item.name
 							}
 							await actor.createEmbeddedDocuments("ActiveEffect", [effectData]);
+
 							// Define effect on target
 							const teffectData = {
 							  changes: [{key: `flags.midi-qol.disadvantage.ability.check.${stat}`, mode: 5,value: true, priority: 50}],
@@ -68,7 +69,9 @@ try {
 							  icon: args[0].item.img,
 							  label: args[0].item.name
 							}
-							await tactor.createEmbeddedDocuments("ActiveEffect", [teffectData]);
+							await MidiQOL.socket().executeAsGM("createEffects",
+								{ actorUuid: tactor.uuid, effects: [teffectData] });
+
 							// Update concentration duration
 							let effectcon = actor.effects.find(i => i.label === "Concentrating");
 							let duration = effectcon.duration;
@@ -110,7 +113,9 @@ try {
 							  icon: effect.icon,
 							  label: effect.label
 							}
-							await tactor.createEmbeddedDocuments("ActiveEffect", [teffectData]);
+
+							await MidiQOL.socket().executeAsGM("createEffects",
+								{ actorUuid: tactor.uuid, effects: [teffectData] });
 						}
 					},
 				},

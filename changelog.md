@@ -1,3 +1,19 @@
+# 10.0.17
+* Fixed/Updated:
+  * Action - Grapple
+  * Actor: Bigby's Hand
+  * Elemental Resistance
+  * Fire Rune
+  * Lay on Hands
+  * Piercer
+  * Spells: Gift of Alacrity, Hex
+  * Wand of Magic Missiles
+
+* Added Automation to:
+  * Creatures: Ghost, Specter, Wight
+  * Creature Features: Cunning Action, Life Drain, Reckless
+  * Draconic Resilience
+
 # 10.0.16
 * Fixed/Updated:
   * Green-Flame Blade

@@ -215,7 +215,10 @@ class HomebrewMacros {
                         }
                     }
                 };
-                await tokenDoc.actor.createEmbeddedDocuments("ActiveEffect", [effectData]);
+
+                await MidiQOL.socket().executeAsGM("createEffects",
+                    { actorUuid: tokenDoc.actor.uuid, effects: [effectData] });
+                //await tokenDoc.actor.createEmbeddedDocuments("ActiveEffect", [effectData]);
             }
         }
     }
@@ -314,7 +317,10 @@ class HomebrewMacros {
                             'origin': origin,
                             'duration': {'seconds': 3600}
                         };
-                        await tokenDoc.actor.createEmbeddedDocuments("ActiveEffect", [stuckEffect]);
+
+                        await MidiQOL.socket().executeAsGM("createEffects",
+                            { actorUuid: tokenDoc.actor.uuid, effects: [stuckEffect] });
+                        //await tokenDoc.actor.createEmbeddedDocuments("ActiveEffect", [stuckEffect]);
 
                         // add the break free feature
                         const updates = {
@@ -407,7 +413,10 @@ class HomebrewMacros {
                             }
                         }
                     };
-                    await tokenDoc.actor.createEmbeddedDocuments("ActiveEffect", [effectData]);
+
+                    await MidiQOL.socket().executeAsGM("createEffects",
+                        { actorUuid: tokenDoc.actor.uuid, effects: [effectData] });
+                    //await tokenDoc.actor.createEmbeddedDocuments("ActiveEffect", [effectData]);
                 }
             }
         }
@@ -511,7 +520,10 @@ class HomebrewMacros {
                             'origin': origin,
                             'duration': {'seconds': 3600}
                         };
-                        await tokenDoc.actor.createEmbeddedDocuments("ActiveEffect", [stuckEffect]);
+
+                        await MidiQOL.socket().executeAsGM("createEffects",
+                            { actorUuid: tokenDoc.actor.uuid, effects: [stuckEffect] });
+                        //await tokenDoc.actor.createEmbeddedDocuments("ActiveEffect", [stuckEffect]);
 
                         // add the break free feature
                         let bestAbility = tokenDoc.actor.system.abilities.dex.mod > tokenDoc.actor.system.abilities.str.mod ? "dex" : "str";
@@ -598,7 +610,10 @@ class HomebrewMacros {
                             }
                         }
                     };
-                    await tokenDoc.actor.createEmbeddedDocuments("ActiveEffect", [effectData]);
+
+                    await MidiQOL.socket().executeAsGM("createEffects",
+                        { actorUuid: tokenDoc.actor.uuid, effects: [effectData] });
+                    //await tokenDoc.actor.createEmbeddedDocuments("ActiveEffect", [effectData]);
                 }
 
                 if (applyDamage) {
@@ -684,7 +699,10 @@ class HomebrewMacros {
                 'duration': {'seconds': 3600}
             };
         }
-        await targetActor.createEmbeddedDocuments("ActiveEffect", [grappledEffect]);
+
+        await MidiQOL.socket().executeAsGM("createEffects",
+            { actorUuid: targetActor.uuid, effects: [grappledEffect] });
+        //await targetActor.createEmbeddedDocuments("ActiveEffect", [grappledEffect]);
 
         // add the break free feature to the target
         let bestAbility = targetActor.system.abilities.dex.mod > targetActor.system.abilities.str.mod ? "dex" : "str";
@@ -798,7 +816,10 @@ class HomebrewMacros {
             'origin': sourceActor.uuid,
             'duration': {'seconds': 3600}
         };
-        await targetActor.createEmbeddedDocuments("ActiveEffect", [restrainedEffect]);
+
+        await MidiQOL.socket().executeAsGM("createEffects",
+            { actorUuid: targetActor.uuid, effects: [restrainedEffect] });
+        //await targetActor.createEmbeddedDocuments("ActiveEffect", [restrainedEffect]);
 
         // add the break free feature to the target
         let escapeMacro = "const dc = " + checkDC + ";\nconst roll = await token.actor.rollAbilityTest('" + abilityCheck
@@ -1062,7 +1083,10 @@ class HomebrewMacros {
                         }
                     }
                 };
-                await tokenDoc.actor.createEmbeddedDocuments("ActiveEffect", [effectData]);
+
+                await MidiQOL.socket().executeAsGM("createEffects",
+                    { actorUuid: tokenDoc.actor.uuid, effects: [effectData] });
+                //await tokenDoc.actor.createEmbeddedDocuments("ActiveEffect", [effectData]);
             }
         }
     }
@@ -1151,7 +1175,10 @@ class HomebrewMacros {
                         }
                     }
                 };
-                await tokenDoc.actor.createEmbeddedDocuments("ActiveEffect", [effectData]);
+
+                await MidiQOL.socket().executeAsGM("createEffects",
+                    { actorUuid: tokenDoc.actor.uuid, effects: [effectData] });
+                //await tokenDoc.actor.createEmbeddedDocuments("ActiveEffect", [effectData]);
             }
         }
     }
@@ -1244,7 +1271,10 @@ class HomebrewMacros {
                         }
                     }
                 };
-                await tokenDoc.actor.createEmbeddedDocuments("ActiveEffect", [effectData]);
+
+                await MidiQOL.socket().executeAsGM("createEffects",
+                    { actorUuid: tokenDoc.actor.uuid, effects: [effectData] });
+                //await tokenDoc.actor.createEmbeddedDocuments("ActiveEffect", [effectData]);
             }
         }
     }
@@ -1335,7 +1365,10 @@ class HomebrewMacros {
                         }
                     }
                 };
-                await tokenDoc.actor.createEmbeddedDocuments("ActiveEffect", [effectData]);
+
+                await MidiQOL.socket().executeAsGM("createEffects",
+                    { actorUuid: tokenDoc.actor.uuid, effects: [effectData] });
+                //await tokenDoc.actor.createEmbeddedDocuments("ActiveEffect", [effectData]);
             }
         }
     }
