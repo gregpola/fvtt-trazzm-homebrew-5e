@@ -21,7 +21,7 @@ try {
 	const sourceItem = fromUuid(lastArg.sourceItemUuid);
 	
 	const workflow = MidiQOL.Workflow.getWorkflow(lastArg.uuid);
-
+	spell-hideous-laughter.js
 } catch (err) {
     console.error(`${optionName}: ${version}`, err);
 }

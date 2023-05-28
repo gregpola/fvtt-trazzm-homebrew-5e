@@ -1,4 +1,16 @@
-# 10.0.17
+# 10.18
+* Fixed/Updated:
+  * Class Features: Invocation: Ascendant Step  
+  * Feats: Sentinel
+  * Race Features: Blessing of the Raven Queen 
+  * Spells: Banishment, Blindness/Deafness, Goodberry, Shield, Spiritual Weapon, Tasha's Hideous Laughter
+  * Fixes to remove grappled, restrained, and the escape feature when the source actor drops to 0 HP
+
+* Added Automation to:
+  * Feats: Chef
+  * Spells: Aid, Ray of Enfeeblement
+
+# 10.17
 * Fixed/Updated:
   * Action - Grapple
   * Actor: Bigby's Hand

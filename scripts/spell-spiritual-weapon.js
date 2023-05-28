@@ -7,7 +7,7 @@
 
 	Higher Levels. When you cast this spell using a spell slot of 3rd level or higher, the damage increases by 1d8 for every two slot levels above the 2nd.
 */
-const version = "10.0.4";
+const version = "10.5";
 const optionName = "Spiritual Weapon";
 const actorName = "Spiritual Weapon";
 const summonFlag = "spiritual-weapon";
@@ -129,17 +129,28 @@ try {
 				let actorPortrait = weaponPortraits[x][y];
 
 				updates = {
-					token: {
-						"name": summonName,
-						"texture.src": `modules/jb2a_patreon/Library/2nd_Level/Spiritual_Weapon/${tokenImage}`,
+					'name': summonName,
+					'img': `modules/jb2a_patreon/Library/2nd_Level/Spiritual_Weapon/${actorPortrait}`,
+					'prototypeToken': {
+						'name': summonName,
 						"disposition": CONST.TOKEN_DISPOSITIONS.FRIENDLY,
 						"displayName": CONST.TOKEN_DISPLAY_MODES.HOVER,
 						"displayBars": CONST.TOKEN_DISPLAY_MODES.ALWAYS,
 						"bar1": { attribute: "attributes.hp" },
-						"actorLink": false,
+						'texture': {
+							'src': `modules/jb2a_patreon/Library/2nd_Level/Spiritual_Weapon/${tokenImage}`
+						}
 					},
-					"name": summonName,
-					"img": `modules/jb2a_patreon/Library/2nd_Level/Spiritual_Weapon/${actorPortrait}`,
+					'token': {
+						'name': summonName,
+						"disposition": CONST.TOKEN_DISPOSITIONS.FRIENDLY,
+						"displayName": CONST.TOKEN_DISPLAY_MODES.HOVER,
+						"displayBars": CONST.TOKEN_DISPLAY_MODES.ALWAYS,
+						"bar1": { attribute: "attributes.hp" },
+						'texture': {
+							'src': `modules/jb2a_patreon/Library/2nd_Level/Spiritual_Weapon/${tokenImage}`
+						}
+					},
 					embedded: {
 						Item: {
 							"Spiritual Weapon Attack": {

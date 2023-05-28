@@ -1,3 +1,4 @@
+// This is actually a combat handler
 const VERSION = "10.0.0";
 
 export class InitiativeHandler {
@@ -15,9 +16,47 @@ export class InitiativeHandler {
         Hooks.on("dnd5e.rollInitiative", async(actor, combatants) => {
         });
 
+        Hooks.on("deleteCombat", async(combat) => {
+            let tokens = combat.combatants.map(c => c.token);
+
+            // remove temporary mutations related to combat
+            for (let token of tokens) {
+                await warpgate.revert(token, 'Escape Grapple');
+                await warpgate.revert(token, 'Break Free');
+            }
+        });
+
+        Hooks.on("updateActor", async(actor, change, options, user) => {
+            // look for the death of an actor that is grappling and/or restraining an actor
+            const hpUpdate = getProperty(change, "system.attributes.hp.value");
+            if (hpUpdate !== undefined) {
+                if (actor.system.attributes.hp.value <= 0) {
+                    let tokens = canvas.scene.tokens;
+                    for (let token of tokens) {
+                        let existingGrappled = token.actor.effects.find(eff => eff.label === 'Grappled' && eff.origin === actor.uuid);
+                        if (existingGrappled) {
+                            await MidiQOL.socket().executeAsGM('removeEffects', {
+                                actorUuid: token.actor.uuid,
+                                effects: [existingGrappled.id]
+                            });
+                            await warpgate.revert(token, 'Escape Grapple');
+                        }
+
+                        let existingRestrained = token.actor.effects.find(eff => eff.label === 'Restrained' && eff.origin === actor.uuid);
+                        if (existingRestrained) {
+                            await MidiQOL.socket().executeAsGM('removeEffects', {
+                                actorUuid: token.actor.uuid,
+                                effects: [existingRestrained.id]
+                            });
+                            await warpgate.revert(token, 'Break Free');
+                        }
+                    }
+                }
+            }
+        });
+
         Hooks.on("combatStart", async (combat, delta) => {
             let tokens = combat.combatants.map(c => c.token);
-            console.log(combat);
 
             // look for supported features in the combatants
             for (let token of tokens) {

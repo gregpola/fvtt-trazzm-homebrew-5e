@@ -669,8 +669,14 @@ class HomebrewMacros {
                 }
             ],
             'origin': sourceActor.uuid,
-            'duration': {'seconds': 3600}
+            'duration': {'seconds': 3600},
+            'flags': {
+                'dae': {
+                    'specialDuration': ['shortRest', 'longRest', 'combatEnd']
+                },
+            }
         };
+
         if (restrained) {
             grappledEffect = {
                 'label': 'Grappled',
@@ -696,21 +702,29 @@ class HomebrewMacros {
                     }
                 ],
                 'origin': sourceActor.uuid,
-                'duration': {'seconds': 3600}
+                'duration': {'seconds': 3600},
+                'flags': {
+                    'dae': {
+                        'specialDuration': ['shortRest', 'longRest', 'combatEnd']
+                    },
+                }
             };
         }
 
         await MidiQOL.socket().executeAsGM("createEffects",
             { actorUuid: targetActor.uuid, effects: [grappledEffect] });
-        //await targetActor.createEmbeddedDocuments("ActiveEffect", [grappledEffect]);
 
         // add the break free feature to the target
+        // remove the old one, in case it is still there
+        await warpgate.revert(tokenDoc, 'Escape Grapple');
+
         let bestAbility = targetActor.system.abilities.dex.mod > targetActor.system.abilities.str.mod ? "dex" : "str";
         let escapeMacro = "const dc = " + saveDC + ";\nconst roll = await token.actor.rollAbilityTest('" + bestAbility
             + "', {targetValue: " + saveDC +"});\nif (roll.total >= " + saveDC
             + ") {\nlet effect = token.actor.effects.find(ef => ef.label === 'Grappled' && ef.origin === '" + sourceActor.uuid
             + "');\nif (effect) {\nawait effect.delete();\nawait warpgate.revert(token.document, 'Escape Grapple');\nChatMessage.create({'content': '"
             + targetActor.name + " escapes the grapple!'});}\n}";
+
         if (sourceActorFlag) {
             escapeMacro = "const dc = " + saveDC + ";\nconst roll = await token.actor.rollAbilityTest('" + bestAbility
                 + "', {targetValue: " + saveDC +"});\nif (roll.total >= " + saveDC
@@ -814,14 +828,21 @@ class HomebrewMacros {
                 }
             ],
             'origin': sourceActor.uuid,
-            'duration': {'seconds': 3600}
+            'duration': {'seconds': 3600},
+            'flags': {
+                'dae': {
+                    'specialDuration': ['shortRest', 'longRest', 'combatEnd']
+                },
+            }
         };
 
         await MidiQOL.socket().executeAsGM("createEffects",
             { actorUuid: targetActor.uuid, effects: [restrainedEffect] });
-        //await targetActor.createEmbeddedDocuments("ActiveEffect", [restrainedEffect]);
 
         // add the break free feature to the target
+        // remove the old one, in case it is still there
+        await warpgate.revert(tokenDoc, 'Break Free');
+
         let escapeMacro = "const dc = " + checkDC + ";\nconst roll = await token.actor.rollAbilityTest('" + abilityCheck
             + "', {targetValue: " + checkDC +"});\nif (roll.total >= " + checkDC
             + ") {\nlet effect = token.actor.effects.find(ef => ef.label === 'Restrained' && ef.origin === '" + sourceActor.uuid
