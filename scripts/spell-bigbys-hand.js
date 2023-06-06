@@ -5,14 +5,13 @@
 
 	When you cast the spell and as a bonus action on your subsequent turns, you can move the hand up to 60 feet and then cause one of the following effects with it.
 */
-const version = "10.0.1";
+const version = "10.2";
 const optionName = "Bigby's Hand";
 const summonFlag = "bigbys-hand";
 const summonId = "VGPZe2To1voHuhys";
 
 try {
 	const lastArg = args[args.length - 1];
-	const caster = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
 	const actorToken = canvas.tokens.get(lastArg.tokenId);
 
 	if (args[0] === "on") {
@@ -23,14 +22,14 @@ try {
 		const clenchedDice = 4 + ((spellLevel - 5) * 2);
 		const graspingDice = 2 + ((spellLevel - 5) * 2);
 
-		let spellStat = caster.system.attributes.spellcasting;
+		let spellStat = actor.system.attributes.spellcasting;
 		if (spellStat === "") spellStat = "int";
-		const spellMod = caster.system.abilities[spellStat].mod;
-		const pb = caster.system.attributes.prof;
-		const msakBonus = caster.system.bonuses.msak.attack ? Number(caster.system.bonuses.msak.attack) : 0;
+		const spellMod = actor.system.abilities[spellStat].mod;
+		const pb = actor.system.attributes.prof;
+		const msakBonus = actor.system.bonuses.msak.attack ? Number(actor.system.bonuses.msak.attack) : 0;
 		const toHitBonus = spellMod + pb + msakBonus;
 
-		const summonName = `${optionName} (${caster.name})`;
+		const summonName = `${optionName} (${actor.name})`;
 		const updates = {
             token: {
 				"name": summonName,
@@ -38,7 +37,7 @@ try {
 				"displayName": CONST.TOKEN_DISPLAY_MODES.HOVER,
 				"displayBars": CONST.TOKEN_DISPLAY_MODES.ALWAYS,
 				"actorLink": false,
-				"flags": { "midi-srd": { "Bigby's Hand": { "ActorId": caster.id } } }
+				"flags": { "midi-srd": { "Bigby's Hand": { "ActorId": actor.id } } }
 			},
 			"name": summonName,	
 			embedded: {

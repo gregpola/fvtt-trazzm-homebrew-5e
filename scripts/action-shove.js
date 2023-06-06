@@ -1,4 +1,4 @@
-const version = "10.0.0";
+const version = "10.1";
 const optionName = "Shove Action";
 const lastArg = args[args.length - 1];
 const actorSizes = ["tiny","sm","med","lg", "huge", "grg"];
@@ -58,7 +58,8 @@ try {
 		i++;
 	}
 
-	if (results.flags["monks-tokenbar"][`token${shover.id}`].passed === "won") {
+	let result = results.flags["monks-tokenbar"][`token${shover.id}`].passed;
+	if (result === "won" || result === "tied") {
 		if (optionChoice === 1) {
 			await shoveProne(shover, defender);
 		}
@@ -84,7 +85,12 @@ async function shoveProne(shover, defender){
 	const uuid = defender.actor.uuid;
 	const hasEffectApplied = await game.dfreds.effectInterface.hasEffectApplied('Prone', uuid);
 	if (!hasEffectApplied) {
-		 await game.dfreds?.effectInterface.addEffect({ effectName: 'Prone', uuid });
+		await game.dfreds.effectInterface.addEffect({
+			'effectName': 'Prone',
+			'uuid': uuid,
+			'origin': shover.uuid,
+			'overlay': false
+		});
 		ChatMessage.create({'content': `${shover.name} knocks ${defender.name} prone!`});
 	}
 }

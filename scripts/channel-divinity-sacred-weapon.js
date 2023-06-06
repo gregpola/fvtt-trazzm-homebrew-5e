@@ -3,7 +3,7 @@
 
 	You can end this effect on your turn as part of any other action. If you are no longer holding or carrying this weapon, or if you fall Unconscious, this effect ends.
 */
-const version = "10.0.0";
+const version = "10.1";
 const resourceName = "Channel Divinity";
 const optionName = "Sacred Weapon";
 const lastArg = args[args.length - 1];
@@ -26,7 +26,7 @@ try {
 		}
 
 		// find the actor's weapons
-		let weapons = actor.items.filter(i => i.data.type === `weapon`);
+		let weapons = actor.items.filter(i => i.type === `weapon`);
 		let weapon_content = ``;
 		for (let weapon of weapons) {
 			weapon_content += `<option value=${weapon.id}>${weapon.name}</option>`;

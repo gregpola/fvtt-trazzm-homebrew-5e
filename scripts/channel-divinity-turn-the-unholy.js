@@ -3,17 +3,14 @@
 
 	A turned creature must spend its turns trying to move as far away from you as it can, and it can’t willingly move to a space within 30 feet of you. It also can’t take reactions. For its action, it can use only the Dash action or try to escape from an effect that prevents it from moving. If there’s nowhere to move, the creature can use the Dodge action.
 */
-const version = "10.0.0";
+const version = "10.1";
 const resourceName = "Channel Divinity";
 const optionName = "Turn the Unholy";
 const targetTypes = ["undead", "fiend"];
 const immunity = ["Turn Immunity"];
-const lastArg = args[args.length - 1];
+const conditionName = "Channel Divinity: Turn the Unholy";
 
 try {
-	let actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-	let actorToken = canvas.tokens.get(lastArg.tokenId);
-
 	if (args[0].macroPass === "preItemRoll") {
 		// check resources
 		let resKey = findResource(actor);
@@ -32,8 +29,6 @@ try {
 		
 	}
 	else if (args[0].macroPass === "preambleComplete") {
-		let workflow = MidiQOL.Workflow.getWorkflow(args[0].uuid);
-
 		// check target types
 		for (let target of workflow.targets) {
 			let creatureType = target.actor.system.details.type;
@@ -55,12 +50,17 @@ try {
 		game.user.updateTokenTargets(Array.from(workflow.targets).map(t => t.id));
 	}
 	else if (args[0].macroPass === "postSave") {
-		let targets = lastArg.failedSaves;
+		let targets = workflow.failedSaves;
 		if (targets && targets.length > 0) {
 			for (let target of targets) {
-				const hasEffectApplied = await game.dfreds.effectInterface.hasEffectApplied('Channel Divinity: Turn the Unholy', target.actor.uuid);
+				const hasEffectApplied = await game.dfreds.effectInterface.hasEffectApplied(conditionName, target.actor.uuid);
 				if (!hasEffectApplied) {
-					await game.dfreds?.effectInterface.addEffect({ effectName: 'Channel Divinity: Turn the Unholy', uuid: target.actor.uuid });
+					await game.dfreds.effectInterface.addEffect({
+						'effectName': conditionName,
+						'uuid': target.actor.uuid,
+						'origin': workflow.origin,
+						'overlay': false
+					});
 				}
 			}
 		}

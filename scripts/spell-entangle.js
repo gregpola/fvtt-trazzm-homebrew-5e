@@ -5,25 +5,17 @@
 
 	When the spell ends, the conjured Plants wilt away.
 */
-const version = "10.0.0";
+const version = "10.1";
 const optionName = "Entangle";
 const flagName = "entangle-targets";
 		
 try {
-	const lastArg = args[args.length - 1];
-
 	if (args[0].macroPass === "postActiveEffects") {
-		let actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-		const actorToken = await canvas.tokens.get(lastArg.tokenId);
-		
-		// add restrained
-		let targets = args[0].failedSaves;
-		if (targets && targets.length > 0) {
+		if (workflow.failedSaves.size > 0) {
+			// add restrained to the targets that failed their save
 			const saveDC = actor.system.attributes.spelldc;
-			
-			for(let target of targets) {
-				let targetToken = game.canvas.tokens.get(target.id);
-				await HomebrewMacros.applyRestrained(actor, targetToken.document, saveDC, "str", "", "");
+			for(let target of workflow.failedSaves) {
+				await HomebrewMacros.applyRestrained(token, target, saveDC, "str");
 			}
 		}
 	}

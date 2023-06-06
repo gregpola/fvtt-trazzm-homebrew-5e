@@ -1,3 +1,18 @@
+# 10.19
+* Fixed/Updated:
+  * ALL RACES (removed effects that added most features for performance reasons, add them manually)
+  * Action - Grapple, Action - Shove
+  * Creatures: Assassin Vine, Poison Weird 
+  * Channel Divinity: Sacred Weapon, Channel Divinity: Turn the Unholy, Channel Divinity: Turn Undead
+  * Gathered Swarm, Insightful Fighting
+  * Feats: Charger, Grappler, Maneuver: Grappling Strike, Sharpshooter, Shield Master, Tavern Brawler
+  * Spells: Bigby's Hand, Darkness, Entangle, Hex, Hunter's Mark
+  * Subclass: Divine Soul, The Hexblade
+
+* Added Automation to:
+  * Pact of the Blade
+  * Spells: Staggering Smite
+
 # 10.18
 * Fixed/Updated:
   * Class Features: Invocation: Ascendant Step  

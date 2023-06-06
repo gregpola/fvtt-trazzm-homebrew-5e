@@ -77,6 +77,9 @@ let tokenid = 'token' + targetToken.id;
 saveTotal = message.flags["monks-tokenbar"][tokenid].total;
 
 
+"fvtt-trazzm-homebrew-5e.homebrew-items"
+
+
 async function wait(ms) { return new Promise(resolve => { setTimeout(resolve, ms); }); }
 
 async function findEffect(actor, effectName) {

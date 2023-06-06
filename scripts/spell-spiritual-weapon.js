@@ -83,7 +83,7 @@ try {
 		let updates = {
             token: {
 				"name": summonName,
-				"disposition": CONST.TOKEN_DISPOSITIONS.FRIENDLY,
+				"disposition": CONST.TOKEN_DISPOSITIONS.NEUTRAL,
 				"displayName": CONST.TOKEN_DISPLAY_MODES.HOVER,
 				"displayBars": CONST.TOKEN_DISPLAY_MODES.ALWAYS,
 				"bar1": { attribute: "attributes.hp" },
@@ -133,7 +133,7 @@ try {
 					'img': `modules/jb2a_patreon/Library/2nd_Level/Spiritual_Weapon/${actorPortrait}`,
 					'prototypeToken': {
 						'name': summonName,
-						"disposition": CONST.TOKEN_DISPOSITIONS.FRIENDLY,
+						"disposition": CONST.TOKEN_DISPOSITIONS.NEUTRAL,
 						"displayName": CONST.TOKEN_DISPLAY_MODES.HOVER,
 						"displayBars": CONST.TOKEN_DISPLAY_MODES.ALWAYS,
 						"bar1": { attribute: "attributes.hp" },
@@ -143,7 +143,7 @@ try {
 					},
 					'token': {
 						'name': summonName,
-						"disposition": CONST.TOKEN_DISPOSITIONS.FRIENDLY,
+						"disposition": CONST.TOKEN_DISPOSITIONS.NEUTRAL,
 						"displayName": CONST.TOKEN_DISPLAY_MODES.HOVER,
 						"displayBars": CONST.TOKEN_DISPLAY_MODES.ALWAYS,
 						"bar1": { attribute: "attributes.hp" },

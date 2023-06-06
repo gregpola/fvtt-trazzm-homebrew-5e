@@ -3,7 +3,7 @@
 
 	This benefit lasts for 1 minute or until you successfully use this feature against a different target.
 */
-const version = "10.0.0";
+const version = "10.1";
 const optionName = "Insightful Fighting";
 const lastArg = args[args.length - 1];
 
@@ -23,7 +23,8 @@ try {
 		i++;
 	}
 
-	if (results.flags["monks-tokenbar"][`token${rogue.id}`].passed === "won") {
+	let result = results.flags["monks-tokenbar"][`token${rogue.id}`].passed;
+	if (result === "won" || result === "tied") {
 		// add effect to the target
 		const effect = await findEffect(defender.actor, optionName, rogue.actor.uuid);
 		if (effect) {

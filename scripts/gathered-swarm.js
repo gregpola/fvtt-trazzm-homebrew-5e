@@ -7,23 +7,19 @@
 		* The attack’s target must succeed on a Strength saving throw against your spell save DC or be moved by the swarm up to 15 feet horizontally in a direction of your choice. 
 		130* You are moved by the swarm 5 feet horizontally in a direction of your choice.
 */
-const version = "10.0.0";
+const version = "10.1";
 const optionName = "Gathered Swarm";
 const timeFlag = "gathered-swarm-time";
 const combatTime = game.combat ? `${game.combat.id}-${game.combat.round + game.combat.turn / 100}` : 1;
 
 try {
-	const lastArg = args[args.length - 1];
-
 	if (args[0].macroPass === "DamageBonus") {
-		let itemData = lastArg.itemData;
-		const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-		const actorToken = canvas.tokens.get(lastArg.tokenId);
-		const targetActor = lastArg.hitTargets[0].actor;
-		const targetToken = game.canvas.tokens.get(lastArg.hitTargets[0].id);
+		const wf = scope.workflow;
+		const actorToken = wf.token;
+		const targetToken = wf.hitTargets.first();
 
 		// Skip if the action isn't an weapon attack roll
-		if (!["mwak", "rwak", "msak", "rsak"].includes(itemData.system.actionType)) {
+		if (!["mwak", "rwak", "msak", "rsak"].includes(wf.item.system.actionType)) {
 			console.log(`${optionName} - action type isn't applicable`);
 			return {};
 		}
@@ -70,7 +66,7 @@ try {
 				switch (featureOption) {
 					// extra damage
 					case 1:
-						const diceCount = lastArg.isCritical ? 2: 1;
+						const diceCount = wf.isCritical ? 2: 1;
 						const die = mightySwarm ? 'd8' : 'd6';
 						return {damageRoll: `${diceCount}${die}[piercing]`, flavor: optionName};
 					
@@ -83,7 +79,7 @@ try {
 						let saveRoll = await targetToken.actor.rollAbilitySave("str", {flavor: flavor, damageType: "push"});
 						await game.dice3d?.showForRoll(saveRoll);
 						if (saveRoll.total < dc) {
-							await moveTarget(actorToken, targetToken, lastArg.item);
+							await moveTarget(actorToken, targetToken, wf.item);
 							
 							if (mightySwarm) {
 								const uuid = targetToken.actor.uuid;
@@ -97,7 +93,7 @@ try {
 					
 					// move yourself
 					case 3:
-						await moveSelf(actorToken, lastArg.item);
+						await moveSelf(actorToken, wf.item);
 							
 						if (mightySwarm) {
 							let hasCover = await game.dfreds.effectInterface.hasEffectApplied('Cover (Half)', actor.uuid);
@@ -105,7 +101,7 @@ try {
 								hasCover = await game.dfreds.effectInterface.hasEffectApplied('Cover (Three-Quarters)', actor.uuid);
 							}							
 							if (!hasCover) {
-								await applyCover(actor, lastArg.itemUuid);
+								await applyCover(actor, wf.uuid);
 							}
 						}
 						break;

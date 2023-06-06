@@ -1,9 +1,11 @@
 /*
-When you use your action to Dash, you can use a bonus action to make one melee weapon attack or to shove a creature.
+	When you use your action to Dash, you can use a bonus action to make one melee weapon attack or to shove a creature.
 
-If you move at least 10 feet in a straight line immediately before taking this bonus action, you either gain a +5 bonus to the attack’s damage roll (if you chose to make a melee attack and hit) or push the target up to 10 feet away from you (if you chose to shove and you succeed).
+	If you move at least 10 feet in a straight line immediately before taking this bonus action, you either gain a +5 bonus
+	to the attack’s damage roll (if you chose to make a melee attack and hit) or push the target up to 10 feet away from
+	you (if you chose to shove and you succeed).
 */
-const version = "10.0.1";
+const version = "10.2";
 const optionName = "Charger";
 const lastArg = args[args.length - 1];
 let actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
@@ -80,7 +82,12 @@ async function ShoveProne() {
 		const uuid = target.actor.uuid;
 		const hasEffectApplied = await game.dfreds.effectInterface.hasEffectApplied('Prone', uuid);
 		if (!hasEffectApplied) {
-			 await game.dfreds?.effectInterface.addEffect({ effectName: 'Prone', uuid });
+			await game.dfreds.effectInterface.addEffect({
+				'effectName': 'Prone',
+				'uuid': target.actor.uuid,
+				'origin': shover.uuid,
+				'overlay': false
+			});
 		}
 	}
 }

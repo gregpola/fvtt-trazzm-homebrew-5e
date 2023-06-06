@@ -1,4 +1,13 @@
-const version = "10.0";
+/*
+	As an action, you present your holy symbol and speak a prayer censuring the undead. Each undead that can see or hear
+	you within 30 feet of you must make a Wisdom saving throw. If the creature fails its saving throw, it is turned for
+	1 minute or until it takes any damage.
+
+	A turned creature must spend its turns trying to move as far away from you as it can, and it can’t willingly move to
+	a space within 30 feet of you. It also can’t take reactions. For its action, it can use only the Dash action or try
+	to escape from an effect that prevents it from moving. If there’s nowhere to move, the creature can use the Dodge action.
+ */
+const version = "10.1";
 const resourceName = "Channel Divinity";
 const optionName = "Turn Undead";
 const targetTypes = ["undead"];
@@ -6,10 +15,7 @@ const immunity = ["Turn Immunity"];
 	
 try {
 	if (args[0].macroPass === "preItemRoll") {
-		let workflow = MidiQOL.Workflow.getWorkflow(args[0].uuid);
-		
 		// check resources
-		let actor = workflow.actor;
 		let resKey = findResource(actor);
 		if (!resKey) {
 			ui.notifications.error(`${optionName}: ${resourceName}: - no resource found`);
@@ -26,8 +32,6 @@ try {
 		
 	}
 	else if (args[0].macroPass === "preambleComplete") {
-		let workflow = MidiQOL.Workflow.getWorkflow(args[0].uuid);
-
 		// check target types
 		for (let target of workflow.targets) {
 			let creatureType = target.actor.system.details.type;
@@ -50,9 +54,6 @@ try {
 		
 	}	
 	else if (args[0].macroPass === "postSave") {
-		let workflow = MidiQOL.Workflow.getWorkflow(args[0].uuid);
-		let actor = workflow.actor;
-
 		let targets = args[0].failedSaves;
 		if (targets && targets.length > 0) {
 			let maxCR = getDestroyCR(actor);
@@ -62,9 +63,12 @@ try {
 					await target.actor.update({"system.attributes.hp.value": 0});
 				}
 				else {
-					const uuid = target.actor.uuid
-					const hasEffectApplied = game.dfreds.effectInterface.hasEffectApplied('Channel Divinity: Turn Undead', uuid);
-					if (!hasEffectApplied) await game.dfreds.effectInterface.addEffect({ effectName: 'Channel Divinity: Turn Undead', uuid });
+					await game.dfreds.effectInterface.addEffect({
+						'effectName': 'Channel Divinity: Turn Undead',
+						'uuid': target.actor.uuid,
+						'origin': workflow.origin,
+						'overlay': false
+					});
 				}
 			}
 		}
@@ -97,7 +101,6 @@ async function consumeResource(actor, resKey, cost) {
 		}
 		
 		const resources = foundry.utils.duplicate(actor.system.resources);
-		const resourcePath = `system.resources.${resKey}`;
 		resources[resKey].value = Math.clamped(value - cost, 0, max);
 		await actor.update({ "system.resources": resources });
 	}

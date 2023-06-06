@@ -1,12 +1,9 @@
-const version = "10.0.0";
+const version = "10.1";
 const optionName = "Grappler";
-const lastArg = args[args.length - 1];
 
 try {
-	let workflow = await MidiQOL.Workflow.getWorkflow(lastArg.uuid);
-	let grappler = canvas.tokens.get(lastArg.tokenId);
-	let defender = Array.from(game.user.targets)[0];
-	const hasGrappled = await game.dfreds.effectInterface.hasEffectApplied('Grappled', defender.actor.uuid);
+	let defender = workflow.targets.first();
+	const hasGrappled = defender.actor.effects.find( eff => eff.label === 'Grappled' && eff.origin === actor.uuid);
 
 	if (args[0].macroPass === "preAttackRoll") {
 		if (hasGrappled) {
@@ -19,29 +16,37 @@ try {
 			ChatMessage.create({'content': `Unable to attempt to pin ${defender.name}, is not grappled!`})
 		}
 		else {
-			ChatMessage.create({'content': `${grappler.name} tries to pin ${defender.name}!`})
-			let tactorRoll = await grappler.actor.rollSkill("ath");
+			ChatMessage.create({'content': `${actor.name} tries to pin ${defender.name}!`})
+			let tactorRoll = await actor.rollSkill("ath");
 			let skill = defender.actor.system.skills.ath.total < defender.actor.system.skills.acr.total ? "acr" : "ath";
 			let tokenRoll = await defender.actor.rollSkill(skill);
 			await game.dice3d?.showForRoll(tokenRoll);
 			
 			if (tactorRoll.total >= tokenRoll.total) {
-				ChatMessage.create({'content': `${grappler.name} pins ${defender.name}!`});
+				ChatMessage.create({'content': `${grappactorler.name} pins ${defender.name}!`});
 				const hasEffectApplied = await game.dfreds.effectInterface.hasEffectApplied('Restrained', defender.actor.uuid);
 				if (!hasEffectApplied) {
-					const uuid = defender.actor.uuid;
-					await game.dfreds?.effectInterface.addEffect({ effectName: 'Restrained', uuid });
+					await game.dfreds.effectInterface.addEffect({
+						'effectName': 'Restrained',
+						'uuid': defender.actor.uuid,
+						'origin': actor.uuid,
+						'overlay': false
+					});
 				}
 				
-				const hasEffectAppliedGrappler = await game.dfreds.effectInterface.hasEffectApplied('Restrained', grappler.actor.uuid);
+				const hasEffectAppliedGrappler = await game.dfreds.effectInterface.hasEffectApplied('Restrained', actor.uuid);
 				if (!hasEffectAppliedGrappler) {
-					await game.dfreds?.effectInterface.addEffect({ effectName: 'Restrained', uuid: grappler.actor.uuid });
+					await game.dfreds.effectInterface.addEffect({
+						'effectName': 'Restrained',
+						'uuid': actor.uuid,
+						'origin': workflow.origin,
+						'overlay': false
+					});
 				}
 			}
 			else {
-				ChatMessage.create({'content': `${grappler.name} fails to pin ${defender.name}`});
+				ChatMessage.create({'content': `${actor.name} fails to pin ${defender.name}`});
 			}
-			
 		}
 	}
 	

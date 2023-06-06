@@ -1,45 +1,47 @@
 /*
-Immediately after you hit a creature with a melee attack on your turn, you can expend one superiority die and then try to grapple the target as a bonus action (see the Player’s Handbook for rules on grappling). Add the superiority die to your Strength (Athletics) check. If successful, the target is Grappled.
+	Immediately after you hit a creature with a melee attack on your turn, you can expend one superiority die and then try
+	to grapple the target as a bonus action (see the Player’s Handbook for rules on grappling). Add the superiority die
+	to your Strength (Athletics) check. If successful, the target is Grappled.
 */
-const version = "10.0.0";
+const version = "10.1";
 const resourceName = "Superiority Dice";
 const optionName = "Grappling Strike";
 
 try {
-	const lastArg = args[args.length - 1];
-	let tactor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-	
 	if (args[0].macroPass === "preItemRoll") {
 		// check resources
-		let resKey = findResource(tactor);
+		let resKey = findResource(actor);
 		if (!resKey) {
 			ui.notifications.error(`${resourceName} - no resource found`);
 			return false;
 		}
 
 		// handle resource consumption
-		return await consumeResource(tactor, resKey, 1);
+		return await consumeResource(actor, resKey, 1);
 	}
 	else if (args[0].macroPass === "postActiveEffects") {
-		let grappler = canvas.tokens.get(lastArg.tokenId);
-		let defender = Array.from(game.user.targets)[0];
-		
-		// Attempt the grapple
-		ChatMessage.create({'content': `${grappler.name} tries to grapple ${defender.name}`});
-		const fullSupDie = tactor.system.scale["battle-master"]["superiority-die"];
-		let tactorRoll = await grappler.actor.rollSkill("ath", { bonus: fullSupDie });
-		
-		let skill = defender.actor.system.skills.ath.total < defender.actor.system.skills.acr.total ? "acr" : "ath";
-		let tokenRoll = await defender.actor.rollSkill(skill);
-		await game.dice3d?.showForRoll(tokenRoll);
+		const defender = workflow.targets.first();
 
-		if (tactorRoll.total >= tokenRoll.total) {
-			ChatMessage.create({'content': `${grappler.name} grapples ${defender.name}!`});
-			const uuid = defender.actor.uuid;
-			await game.dfreds?.effectInterface.addEffect({ effectName: 'Grappled', uuid });
+		// Attempt the grapple
+		ChatMessage.create({'content': `${actor.name} tries to grapple ${defender.name}`});
+		const skilltoberolled = defender.actor.system.skills.ath.total < defender.actor.system.skills.acr.total ? "acr" : "ath";
+		let results = await game.MonksTokenBar.requestContestedRoll({token: token, request: 'skill:ath'},
+			{token: defender, request:`skill:${skilltoberolled}`},
+			{silent:true, fastForward:false, flavor: `${defender.name} tries to resist ${token.name}'s grapple attempt`});
+
+		let i=0;
+		while (results.flags['monks-tokenbar'][`token${token.id}`].passed === "waiting" && i < 30) {
+			await new Promise(resolve => setTimeout(resolve, 500));
+			i++;
+		}
+
+		let result = results.flags["monks-tokenbar"][`token${token.id}`].passed;
+		if (result === "won" || result === "tied") {
+			await HomebrewMacros.applyGrappled(token, defender, 'opposed', null, null);
+			ChatMessage.create({'content': `${token.name} grapples ${defender.name}`})
 		}
 		else {
-			ChatMessage.create({'content': `${grappler.name} fails to grapple ${defender.name}`});
+			ChatMessage.create({'content': `${actor.name} fails to grapple ${defender.name}`});
 		}
 	}
 
@@ -70,7 +72,6 @@ async function consumeResource(actor, resKey, cost) {
 		}
 		
 		const resources = foundry.utils.duplicate(actor.system.resources);
-		const resourcePath = `system.resources.${resKey}`;
 		resources[resKey].value = Math.clamped(value - cost, 0, max);
 		await actor.update({ "system.resources": resources });
 		return true;
