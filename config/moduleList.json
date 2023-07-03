@@ -26,8 +26,18 @@
       "version": ""
     },
     {
+      "id": "enhancedcombathud",
+      "title": "Argon - Combat HUD",
+      "version": ""
+    },
+    {
       "id": "autoanimations",
       "title": "Automated Animations",
+      "version": ""
+    },
+    {
+      "id": "betterroofs",
+      "title": "Better Roofs",
       "version": ""
     },
     {
@@ -96,6 +106,11 @@
       "version": ""
     },
     {
+      "id": "forien-unidentified-items",
+      "title": "Forien's Unidentified Items",
+      "version": ""
+    },
+    {
       "id": "fxmaster",
       "title": "FXMaster",
       "version": ""
@@ -138,7 +153,7 @@
     {
       "id": "lib-wrapper",
       "title": "libWrapper",
-      "version": ".0"
+      "version": ".1"
     },
     {
       "id": "link-item-resource-5e",
@@ -163,6 +178,11 @@
     {
       "id": "monks-active-tiles",
       "title": "Monk's Active Tile Triggers",
+      "version": ""
+    },
+    {
+      "id": "monks-enhanced-journal",
+      "title": "Monk's Enhanced Journal",
       "version": ""
     },
     {
@@ -246,6 +266,11 @@
       "version": ""
     },
     {
+      "id": "token-attacher",
+      "title": "Token Attacher",
+      "version": ""
+    },
+    {
       "id": "tokenmagic",
       "title": "Token Magic FX",
       "version": ""
@@ -278,13 +303,13 @@
   ],
   "inactiveModules": [
     {
-      "id": "enhancedcombathud",
-      "title": "Argon - Combat HUD",
+      "id": "drider-of-the-underworld",
+      "title": "Drider of the Underworld",
       "version": ""
     },
     {
-      "id": "drider-of-the-underworld",
-      "title": "Drider of the Underworld",
+      "id": "perfect-vision",
+      "title": "Perfect Vision",
       "version": ""
     }
   ]
