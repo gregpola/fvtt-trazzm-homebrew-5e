@@ -7,7 +7,7 @@
 
 	Higher Levels. When you cast this spell using a spell slot of 3rd level or higher, the damage increases by 1d8 for every two slot levels above the 2nd.
 */
-const version = "10.5";
+const version = "10.6";
 const optionName = "Spiritual Weapon";
 const actorName = "Spiritual Weapon";
 const summonFlag = "spiritual-weapon";
@@ -87,7 +87,7 @@ try {
 				"displayName": CONST.TOKEN_DISPLAY_MODES.HOVER,
 				"displayBars": CONST.TOKEN_DISPLAY_MODES.ALWAYS,
 				"bar1": { attribute: "attributes.hp" },
-				"actorLink": false,
+				"elevation": 10
 			},
 			"name": summonName,	
 			embedded: {
@@ -136,6 +136,7 @@ try {
 						"disposition": CONST.TOKEN_DISPOSITIONS.NEUTRAL,
 						"displayName": CONST.TOKEN_DISPLAY_MODES.HOVER,
 						"displayBars": CONST.TOKEN_DISPLAY_MODES.ALWAYS,
+						"elevation": 10,
 						"bar1": { attribute: "attributes.hp" },
 						'texture': {
 							'src': `modules/jb2a_patreon/Library/2nd_Level/Spiritual_Weapon/${tokenImage}`
@@ -147,6 +148,7 @@ try {
 						"displayName": CONST.TOKEN_DISPLAY_MODES.HOVER,
 						"displayBars": CONST.TOKEN_DISPLAY_MODES.ALWAYS,
 						"bar1": { attribute: "attributes.hp" },
+						"elevation": 10,
 						'texture': {
 							'src': `modules/jb2a_patreon/Library/2nd_Level/Spiritual_Weapon/${tokenImage}`
 						}
@@ -178,14 +180,7 @@ try {
 		const maxRange = sourceItem.system.range.value ? sourceItem.system.range.value : 60;
 		let position = await HomebrewMacros.warpgateCrosshairs(actorToken, maxRange, sourceItem, summonActor.prototypeToken);
 		if (position) {
-			// check for token collision
-			const newCenter = canvas.grid.getSnappedPosition(position.x - summonActor.prototypeToken.width / 2, position.y - summonActor.prototypeToken.height / 2, 1);
-			if (HomebrewMacros.checkPosition(newCenter.x, newCenter.y)) {
-				ui.notifications.error(`${optionName} - can't teleport on top of another token`);
-				return;
-			}
-
-			const result = await warpgate.spawnAt(position, summonName, updates, { controllingActor: actor }, {});
+			const result = await warpgate.spawnAt(position, summonName, updates, { controllingActor: actor, collision: true }, {});
 			if (!result || !result[0]) {
 				ui.notifications.error(`${optionName} - Unable to spawn`);
 				return;

@@ -1,5 +1,5 @@
 const VERSION = "10.0.0";
-const _charmResistLabels = new Set(["Countercharm", "Dark Devotion", "Fey Ancestry", "Leviathan Will", "Mental Discipline"]);
+const _charmResistLabels = new Set(["Alien Mind", "Countercharm", "Dark Devotion", "Fey Ancestry", "Leviathan Will", "Mental Discipline"]);
 const _frightenedResistLabels = new Set(["Brave", "Countercharm", "Dark Devotion", "Leviathan Will", "Mental Discipline"]);
 const _paralyzedResistLabels = new Set(["Leviathan Will"]);
 const _poisonResistLabels = new Set(["Deathless Nature", "Dwarven Resilience", "Hill Rune", "Infernal Constitution", "Leviathan Will", "Poison Resilience", "Stout Resilience"]);
@@ -15,6 +15,34 @@ let conditionResilience = {
     'changes': [
         {
             'key': 'flags.midi-qol.advantage.ability.save.all',
+            'value': '1',
+            'mode': CONST.ACTIVE_EFFECT_MODES.CUSTOM,
+            'priority': 9
+        }
+    ],
+    'flags': {
+        'dae': {
+            'selfTarget': false,
+            'selfTargetAlways': false,
+            'stackable': 'none',
+            'durationExpression': '',
+            'macroRepeat': 'none',
+            'specialDuration': [
+                'isSave'
+            ]
+        }
+    }
+};
+
+let conditionSensitivity = {
+    'label': 'Condition Sensitivity',
+    'icon': 'icons/skills/toxins/symbol-poison-drop-skull-green.webp',
+    'duration': {
+        'seconds': 6
+    },
+    'changes': [
+        {
+            'key': 'flags.midi-qol.disadvantage.ability.save.all',
             'value': '1',
             'mode': CONST.ACTIVE_EFFECT_MODES.CUSTOM,
             'priority': 9
@@ -185,6 +213,16 @@ export class SaveHandler {
                     if (undeadOrFiend) {
                         hasResilience = true;
                     }
+                }
+
+                // check for Keening Mist and a Necromancy spell
+                let keeningMist = game.settings.get("fvtt-trazzm-homebrew-5e", "keening-mist");
+                if (keeningMist && workflow.item.system.school === "nec") {
+                    await MidiQOL.socket().executeAsGM('createEffects', {
+                        'actorUuid': tokenDoc.document.actor.uuid,
+                        'effects': [conditionSensitivity]
+                    });
+                    await SaveHandler.wait(100);
                 }
 
                 if (hasResilience) {

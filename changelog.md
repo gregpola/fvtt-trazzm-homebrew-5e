@@ -1,3 +1,12 @@
+# 10.20
+* Fixed/Updated:
+  * All backgrounds have been updated with consistent formatting
+  * Spells: Spiritual Weapon, Thorn Whip
+
+* Added Items:
+  * Action - Ready
+  * Rise of the Drow support
+
 # 10.19
 * Fixed/Updated:
   * ALL RACES (removed effects that added most features for performance reasons, add them manually)

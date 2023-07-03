@@ -1,13 +1,15 @@
-import {InitiativeHandler} from "./InitiativeHandler.js";
+import {CombatHandler} from "./CombatHandler.js";
 import {SaveHandler} from "./SaveHandler.js";
 import {SpellHandler} from "./SpellHandler.js";
 import {BarbarianFeatures} from "./BarbarianFeatures.js";
 import {WarlockFeatures} from "./WarlockFeatures.js";
 import {WizardFeatures} from "./WizardFeatures.js";
 import {macros} from './macros.js';
+import {registerSettings} from './settings.js';
+
 
 const SUB_MODULES = {
-    InitiativeHandler,
+    CombatHandler,
     SaveHandler,
     SpellHandler,
     BarbarianFeatures,
@@ -17,6 +19,7 @@ const SUB_MODULES = {
 
 Hooks.once('init', async function () {
     console.log('%c fvtt-trazzm-homebrew-5e | Initializing homebrew-5e', 'color: #D030DE');
+    registerSettings();
     initialize_module();
 });
 
