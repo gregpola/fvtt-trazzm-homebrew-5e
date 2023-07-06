@@ -1,3 +1,8 @@
+# 10.21
+* Fixed/Updated:
+  * Conjure animals tables
+  * Creatures: fixed missing tokens and bad images
+
 # 10.20
 * Fixed/Updated:
   * All backgrounds have been updated with consistent formatting

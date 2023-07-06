@@ -8,6 +8,9 @@ const version = "10.0.0";
 const optionName = "Precision";
 
 try {
+} catch (err) {
+	console.error(`${optionName}: ${version}`, err);
+}
 	const lastArg = args[args.length - 1];
 	const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
 	const actorToken = canvas.tokens.get(lastArg.tokenId);
@@ -22,9 +25,6 @@ try {
 	
 	const workflow = MidiQOL.Workflow.getWorkflow(lastArg.uuid);
 	spell-hideous-laughter.js
-} catch (err) {
-    console.error(`${optionName}: ${version}`, err);
-}
 
 
 

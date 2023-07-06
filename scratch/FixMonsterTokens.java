@@ -27,9 +27,11 @@ public class FixMonsterTokens extends JPanel implements ActionListener {
 
     static private final String newline = "\n";
 
-    static private final String _tokenPrefix = "tokenizer/npc-images/";
+    //static private final String _tokenPrefix = "tokenizer/npc-images/";
     static private final Path _searchPath = Paths.get("assets/monsters");
-    static private final String _imageFilePrefix = "npc-token-";
+    //static private final String _imageFilePrefix = "npc-token-";
+
+    static private final String _moduleAssetPrefix = "modules/fvtt-trazzm-homebrew-5e/";
 
     static private final Gson _gson = new Gson();
 
@@ -135,34 +137,30 @@ public class FixMonsterTokens extends JPanel implements ActionListener {
                     try {
                         JsonElement jsonElement = JsonParser.parseString(currentLine);
                         JsonObject jsonObject = jsonElement.getAsJsonObject();
-                        JsonObject tokenObject = jsonObject.getAsJsonObject("token");
+                        JsonObject tokenObject = jsonObject.getAsJsonObject("prototypeToken");
                         JsonPrimitive nameObj = tokenObject.getAsJsonPrimitive("name");
-                        JsonPrimitive imageObj = tokenObject.getAsJsonPrimitive("img");
+                        JsonObject textureObject = tokenObject.getAsJsonObject("texture");
+                        JsonPrimitive tokenImageObj = textureObject.getAsJsonPrimitive("src");
+                        JsonPrimitive portraitObj = jsonObject.getAsJsonPrimitive("img");
 
-                        // only repair those pointing to the tokenizer
-                        String tokenPath = imageObj.getAsString();
-                        if (tokenPath.toLowerCase().startsWith(_tokenPrefix) || tokenPath.isBlank()) {
-                            Path updatedPath = findImage(tokenPath);
+                        // repair those pointing to the tokenizer
+                        String tokenPath = tokenImageObj.getAsString();
+                        if (tokenPath.startsWith(_moduleAssetPrefix)) {
+                            tokenPath = tokenPath.substring(_moduleAssetPrefix.length());
+                        }
+                        File tokenImageFile = new File(tokenPath);
 
-                            if (updatedPath != null) {
-                                String newPath = updatedPath.toString().replaceAll("\\\\", "/");
-                                tokenObject.addProperty("img", newPath);
-                                tokenObject.addProperty("vision", true);
+                        if (tokenPath.isBlank() || !tokenImageFile.exists()) {
+                            System.out.println("No token found for: '" + nameObj.getAsString() + "' using the portrait");
+                            // just use the portrait image
+                            String portraitPath = portraitObj.getAsString();
+                            if ((portraitPath != null ) && !portraitPath.isBlank()) {
+                                textureObject.addProperty("src", portraitPath);
 
-                            } else {
-                                System.out.println("No token found for: '" + nameObj.getAsString() + "' using the portrait");
-                                // just use the portrait image
-                                JsonPrimitive portraitImage = jsonObject.getAsJsonPrimitive("img");
-                                String portraitPath = portraitImage.getAsString();
-                                if ((portraitPath != null ) && !portraitPath.isBlank()) {
-                                    tokenObject.addProperty("img", portraitPath);
-
-                                }
-                                else {
-                                    fixWriter.write(nameObj.getAsString());
-                                    fixWriter.write("\r\n");
-                                }
-                                tokenObject.addProperty("vision", true);
+                            }
+                            else {
+                                fixWriter.write(nameObj.getAsString());
+                                fixWriter.write("\r\n");
                             }
                         }
 
@@ -185,77 +183,6 @@ public class FixMonsterTokens extends JPanel implements ActionListener {
             log.append("Finished replacements" + newline);
             log.setCaretPosition(log.getDocument().getLength());
         }
-    }
-
-    // _tokenImagesPath
-    private Path findImage(String oldImage) {
-        String base = oldImage.substring(_tokenPrefix.length()).toLowerCase();
-
-        // first check the name as is
-        List<Path> results = null;
-        String name = base.substring(0, base.indexOf("."));
-        try {
-            results = findByFileName(name + ".webp");
-        } catch (IOException e) {
-            log.append("Exception: " + e.getMessage() + newline);
-            log.setCaretPosition(log.getDocument().getLength());
-        }
-
-        if ((results != null) && !results.isEmpty()) {
-            log.append("Found a match: " + results.get(0) + newline);
-            log.setCaretPosition(log.getDocument().getLength());
-            return results.get(0);
-        }
-
-        // try adding our typical file prefix
-        String name2 = _imageFilePrefix + name;
-        try {
-            results = findByFileName(name2 + ".webp");
-        } catch (IOException e) {
-            log.append("Exception: " + e.getMessage() + newline);
-            log.setCaretPosition(log.getDocument().getLength());
-        }
-
-        if ((results != null) && !results.isEmpty()) {
-            log.append("Found a match: " + results.get(0) + newline);
-            log.setCaretPosition(log.getDocument().getLength());
-            return results.get(0);
-        }
-
-        // try by replacing underscores with dashes
-        String name3 = _imageFilePrefix + name.replaceAll("_", "-");
-        try {
-            results = findByFileName(name3 + ".webp");
-        } catch (IOException e) {
-            log.append("Exception: " + e.getMessage() + newline);
-            log.setCaretPosition(log.getDocument().getLength());
-        }
-
-        if ((results != null) && !results.isEmpty()) {
-            log.append("Found a match: " + results.get(0) + newline);
-            log.setCaretPosition(log.getDocument().getLength());
-            return results.get(0);
-        }
-
-        // just try by the base name, this will be a fallback option
-        if (name.contains("_")) {
-            String name4 = _imageFilePrefix + name.substring(0, name.indexOf("_"));
-            try {
-                results = findByFileName(name4 + ".webp");
-            } catch (IOException e) {
-                log.append("Exception: " + e.getMessage() + newline);
-                log.setCaretPosition(log.getDocument().getLength());
-            }
-
-            if ((results != null) && !results.isEmpty()) {
-                log.append("Found a match: " + results.get(0) + newline);
-                log.setCaretPosition(log.getDocument().getLength());
-                return results.get(0);
-            }
-        }
-
-        // no image found
-        return null;
     }
 
     private List<Path> findByFileName(String fileName) throws IOException {
