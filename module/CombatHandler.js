@@ -26,6 +26,22 @@ export class CombatHandler {
             }
         });
 
+        Hooks.on("updateCombat", async(combat, update, context, userId) => {
+            console.log("updateCombat");
+
+            // check for any turn start options
+            let turnStartOptions = await CombatHandler.hasTurnStartOption(combat?.combatant);
+            if (turnStartOptions) {
+                const dialog = new TurnStartDialog({
+                    combatant: combat?.combatant,
+                }, {
+                    width: 500
+                }).render(true);
+            }
+        });
+
+        // Hooks.on("updateCombat", NextUP.handleCombatUpdate)
+
         Hooks.on("updateActor", async(actor, change, options, user) => {
             // special death handling
             const hpUpdate = getProperty(change, "system.attributes.hp.value");
@@ -276,5 +292,146 @@ export class CombatHandler {
         }
 
         return null;
+    }
+
+    /**
+     * Check the combatant for any turn start options that should be presented.
+     *
+     * @param combatant
+     */
+    static async hasTurnStartOption(combatant) {
+        if (combatant) {
+            // Check for prone condition and ask if they want to stand up. We automate this because it is a commonly
+            // missed condition that results in confusion about the actor's actions, such as having disadvantage on attacks
+            const actor = combatant.actor;
+            if (actor) {
+                const hp = actor.system.attributes.hp.value;
+                const isProne = await game.dfreds?.effectInterface?.hasEffectApplied('Prone', actor.uuid);
+                return ((hp > 0) && isProne);
+            }
+        }
+
+        return false
+    }
+}
+
+/**
+ * A dialog to show options at the start of a combatants turn.
+ *
+ * The data associated with dialog is:
+ *      content     - the dialog data content
+ *      buttons     - the dialog buttons
+ *      combatant   - the combatant whose turn it is
+ *      prone       - flag indicating the combatant is prone
+ *      hp          - the combatants current hp's
+ *
+ */
+class TurnStartDialog extends Application {
+
+    static DEFAULT_ID = 'trazzms-homebrew-turn-start-dialog';
+    static _lastPosition = new Map();
+
+    constructor(data, options) {
+        options.height = "auto";
+        options.resizable = true;
+        super(options);
+        this.data = data;
+        this.prone = false;
+        mergeObject(this.position, TurnStartDialog._lastPosition.get(this.options.id) ?? {});
+    }
+
+    static get defaultOptions() {
+        return mergeObject(super.defaultOptions, {
+            template: "modules/fvtt-trazzm-homebrew-5e/templates/dialog.html",
+            classes: ["dialog"],
+            width: 500,
+            jQuery: true,
+            close: close
+        }, { overwrite: true });
+    }
+
+    get title() {
+        return this.data.title || "Turn Start";
+    }
+
+    async getData(options) {
+        // collect actor data
+        this.data.hp = this.data.combatant.actor.system.attributes.hp.value;
+        this.data.prone = await game.dfreds?.effectInterface?.hasEffectApplied('Prone', this.data.combatant.actor.uuid);
+
+        // TODO make the content conditional
+        this.data.content = "<p>You are currently prone, would you like to stand up?<br>" +
+            "<sub>(standing up costs an amount of movement equal to half your speed)</sub></p>" +
+            "<div style='height: 25px;'/>";
+
+        this.data.buttons = {
+            standUp: { label: "Stand Up", callback: async (html) => {
+                    await game.dfreds?.effectInterface?.removeEffect({effectName: 'Prone', uuid: this.data.combatant.actor.uuid});
+                    this.close();
+                }},
+            close: { label: "Close", callback: (html) => {
+                    TurnStartDialog.storePosition(html);
+                    this.close();
+                }}
+        };
+        this.data.default = "close";
+
+        return {
+            content: this.data.content,
+            buttons: this.data.buttons
+        };
+    }
+
+    static storePosition(html) {
+        const id = html.id;
+        const position = html.position;
+        TurnStartDialog._lastPosition.set(id, {top: position.top, left: position.left});
+    }
+
+    static async standup() {
+        await game.dfreds?.effectInterface?.removeEffect({effectName: 'Prone', uuid: this.data.combatant.actor.uuid});
+    }
+
+    activateListeners(html) {
+        html.find(".dialog-button").click(this._onClickButton.bind(this));
+        $(document).on('keydown.chooseDefault', this._onKeyDown.bind(this));
+    }
+
+    _onClickButton(event) {
+        const oneUse = true;
+        const id = event.currentTarget.dataset.button;
+        const button = this.data.buttons[id];
+        this.submit(button);
+    }
+
+    _onKeyDown(event) {
+        // Close dialog
+        if (event.key === "Escape" || event.key === "Enter") {
+            event.preventDefault();
+            event.stopPropagation();
+            this.close();
+        }
+    }
+
+    async submit(button) {
+        try {
+            if (button.callback) {
+                await button.callback(this, button);
+                // await this.getData({}); Render will do a get data, doing it twice breaks the button data?
+                this.render(true);
+            }
+            // this.close();
+        }
+        catch (err) {
+            ui.notifications?.error("fvtt-trazzm-homebrew-5e | Turn start dialog error see console for details ");
+            console.error("fvtt-trazzm-homebrew-5e | ", err);
+        }
+    }
+
+    async close() {
+        if (this.data.close)
+            this.data.close();
+        $(document).off('keydown.chooseDefault');
+        return super.close({force: true});
     }
 }

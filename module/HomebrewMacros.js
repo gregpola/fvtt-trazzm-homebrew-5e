@@ -1414,4 +1414,41 @@ class HomebrewMacros {
             }
         }
     }
+
+    /**
+     * Charges (moves) the charger to their target
+     *
+     * @param chargerToken  the charger
+     * @param targetToken   the target
+     * @param minimumDistance   the minimum distance the actor has to move to charge
+     * @returns {Promise<boolean>}
+     */
+    static async chargeTarget(chargerToken, targetToken, minimumDistance) {
+        // sanity checks
+        if (!chargerToken || !targetToken) {
+            console.error("chargeTarget() is missing arguments");
+            return false;
+        }
+
+        // move the charger to their target
+        let targetRay = new Ray(chargerToken.center, targetToken.center);
+
+        let tokenSizeMulti = targetToken.data.height;
+        let moveFactor = tokenSizeMulti * 5 / canvas.dimensions.distance;
+        let moveProjection = targetRay.project(1 - ((canvas.dimensions.size * moveFactor) / targetRay.distance));
+        let newCenter = canvas.grid.getSnappedPosition(moveProjection.x - chargerToken.width / 2, moveProjection.y - chargerToken.height / 2, 1);
+
+        // check the minimum distance
+        const newPoint = new PIXI.Point(newCenter.x, newCenter.y);
+        const moveRay = new Ray(chargerToken.center, newPoint);
+        const distance = canvas.grid.measureDistances([{ray: moveRay}], {gridSpaces:true})[0];
+        if (distance < minimumDistance) {
+            ui.notifications.error('chargeTarget(): target is too close');
+            return false;
+        }
+
+        // move the actor
+        const mutationData = { token: {x: newPoint.x, y: newPoint.y}};
+        return await warpgate.mutate(chargerToken.document, mutationData, {}, {permanent: true});
+    }
 }

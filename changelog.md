@@ -1,3 +1,14 @@
+# 10.22
+* Fixed/Updated:
+  * Moosetaur: all descriptive text formatting
+  * Moosetaur: Antler Attack - fixed targeting
+  * Moosetaur: Goring Charge - merged the movement and attack into the feature
+  * Action - Ready: fixed the effect, which was Dodge for some reason...
+  * Races: standardized formatting across all races
+
+* Added Items:
+  * Some additional macros
+
 # 10.21
 * Fixed/Updated:
   * Conjure animals tables
