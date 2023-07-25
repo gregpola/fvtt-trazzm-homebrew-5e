@@ -3,6 +3,7 @@
   "title": "Trazzm 5e Homebrew",
   "description": "A collection of homebrew for dnd5e",
   "version": "This is auto replaced",
+  "socket": true,
   "authors": [
     {
       "name": "Greg Pola | Trazzm",
@@ -247,7 +248,8 @@
     "module/module.js"
   ],
   "scripts": [
-    "module/HomebrewMacros.js"
+    "module/HomebrewMacros.js",
+    "module/HomebrewHelpers.js"
   ],
   "flags": {
     "allowBugReporter": true

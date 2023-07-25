@@ -1,5 +1,6 @@
 /*
 	If you hit a creature with an attack roll, the creature takes an extra 2d6 damage if it hasn’t taken a turn yet in the current combat.
+
 */
 const version = "10.0.0";
 const optionName = "Surprise Attack";

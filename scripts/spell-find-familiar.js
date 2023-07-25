@@ -1,7 +1,7 @@
 /*
 	You gain the service of a familiar, a spirit that takes an animal form you choose: bat, cat, crab, frog (toad), hawk, lizard, octopus, owl, poisonous snake, fish (quipper), rat, raven, sea horse, spider, or weasel. Appearing in an unoccupied space within range, the familiar has the statistics of the chosen form, though it is a celestial, fey, or fiend (your choice) instead of a beast.
 */
-const version = "10.0.0";
+const version = "10.1";
 const optionName = "Find Familiar";
 const summonFlag = "find-familiar";
 
@@ -75,7 +75,7 @@ try {
 			if (position) {
 				// check for token collision
 				const newCenter = canvas.grid.getSnappedPosition(position.x - tokenData.width / 2, position.y - tokenData.height / 2, 1);
-				if (HomebrewMacros.checkPosition(newCenter.x, newCenter.y)) {
+				if (HomebrewMacros.checkPosition(tokenData, newCenter.x, newCenter.y)) {
 					ui.notifications.error(`${optionName} - can't summon on top of another token`);
 					return false;
 				}

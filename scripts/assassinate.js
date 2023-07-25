@@ -1,4 +1,4 @@
-if (game.combat.round !== 1) return;
+if (game.combat?.round !== 1) return;
 
 const sourceTokenId = args[0].tokenId;
 const targetToken = args[0].targets[0];
@@ -18,7 +18,6 @@ if (sourceTurn < targetTurn) {
         })
     }
 }
-
 Hooks.once("midi-qol.RollComplete", () => {
     if (game.assassinateAttackHookdId) Hooks.off("", game.assassinateAttackHookdId);
     if (game.assassinateDamageHookdId) Hooks.off("", game.assassinateDamageHookdId);

@@ -1,3 +1,19 @@
+# 10.23
+* Fixed/Updated:
+  * Turn start dialog no longer prompts for all players
+  * Creatures: Bugbear, Bugbear Chief, Drow Inquisitor, Drow Mage, Drow Shadowblade, Orc Eye of Gruumsh, 
+    Reduced-threat Owlbear, Skeletal Owlbear, Skeletal Two-Headed Owlbear, Snowy Owlbear
+  * Class Features: Assassinate, Dash through the Shadows, Gathered Swarm, Shadow Walk, Swarming Dispersal, Wildfire Spirit
+  * Race Features: Fey Step (all)
+  * Spells: Bigby's Hand, Blink, Chain Lightning, Dimension Door, Find Familiar, Healing Spirit, Infestation, 
+    Maximilian's Earthen Grasp
+
+* Added Items:
+  * Background: Muzarwarayn Crafter
+  * Item: Fish Suit
+  * Spell: Air Bubble
+  * Added an importable convenient effect for Surprised in the config folder
+
 # 10.22
 * Fixed/Updated:
   * Moosetaur: all descriptive text formatting

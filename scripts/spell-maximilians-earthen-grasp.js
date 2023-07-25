@@ -1,4 +1,4 @@
-const version = "10.0.2";
+const version = "10.3";
 const optionName = "Maximilian's Earthen Grasp";
 const actorName = "Maximilian's Hand";
 const summonFlag = "maximilians-earthen-grasp";
@@ -61,7 +61,7 @@ try {
 		if (position) {
 			// check for token collision
 			const newCenter = canvas.grid.getSnappedPosition(position.x - summonActor.prototypeToken.width / 2, position.y - summonActor.prototypeToken.height / 2, 1);
-			if (HomebrewMacros.checkPosition(newCenter.x, newCenter.y)) {
+			if (HomebrewMacros.checkPosition(summonActor, newCenter.x, newCenter.y)) {
 				ui.notifications.error(`${optionName} - can't summon on top of another token`);
 				return false;
 			}

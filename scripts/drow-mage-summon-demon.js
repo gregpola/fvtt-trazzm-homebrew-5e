@@ -1,4 +1,4 @@
-const version = "10.0.0";
+const version = "10.1";
 const optionName = "Drow Mage Summon Demon";
 const summonFlag = "summon-demon";
 const summonOptionsFlag = "summon-demon-options";
@@ -113,7 +113,7 @@ try {
 		if (position) {
 			// check for token collision
 			const newCenter = canvas.grid.getSnappedPosition(position.x - summonActor.prototypeToken.width / 2, position.y - summonActor.prototypeToken.height / 2, 1);
-			if (HomebrewMacros.checkPosition(newCenter.x, newCenter.y)) {
+			if (HomebrewMacros.checkPosition(summonActor, newCenter.x, newCenter.y)) {
 				ui.notifications.error(`${optionName} - can't teleport on top of another token`);
 				return false;
 			}

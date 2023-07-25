@@ -3,7 +3,7 @@
 
 	While on the Ethereal Plane, you can see and hear the plane you originated from, which is cast in shades of gray, and you can't see anything there more than 60 feet away. You can only affect and be affected by other creatures on the Ethereal Plane. Creatures that aren't there can't perceive you or interact with you, unless they have the ability to do so.
 */
-const version = "10.0.0";
+const version = "10.1";
 const optionName = "Blink";
 
 // On Combat Turn Starting
@@ -12,7 +12,7 @@ let position = await HomebrewMacros.warpgateCrosshairs(token, 10, origin);
 if (position) {
 	// check for token collision
 	const newCenter = canvas.grid.getSnappedPosition(position.x, position.y, 1);
-	if (!HomebrewMacros.checkPosition(newCenter.x, newCenter.y)) {
+	if (!HomebrewMacros.checkPosition(token, newCenter.x, newCenter.y)) {
 		const portalScale = token.w / canvas.grid.size * 0.7;		
 		new Sequence()
 			.effect()

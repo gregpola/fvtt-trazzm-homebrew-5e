@@ -1,5 +1,9 @@
-// This is actually a combat handler
 const VERSION = "10.0.0";
+
+import {socket} from "./module.js";
+import {playerForActor} from "./utils.js";
+
+const _zombieId = "UBlzKwy8bHtN42NQ";
 
 export class CombatHandler {
 
@@ -32,11 +36,10 @@ export class CombatHandler {
             // check for any turn start options
             let turnStartOptions = await CombatHandler.hasTurnStartOption(combat?.combatant);
             if (turnStartOptions) {
-                const dialog = new TurnStartDialog({
-                    combatant: combat?.combatant,
-                }, {
-                    width: 500
-                }).render(true);
+                // get the player to prompt
+                let player = playerForActor(combat.combatant.actor);
+                if (player)
+                    await socket.executeAsUser("doTurnStartOptions", player.id, combat.combatant.actor.uuid, turnStartOptions);
             }
         });
 
@@ -90,14 +93,14 @@ export class CombatHandler {
                             let zombieActor = game.actors.getName(zombieActorName);
                             if (!zombieActor) {
                                 // Get from the compendium
-                                let entity = await fromUuid("Compendium.fvtt-trazzm-homebrew-5e.homebrew-creatures." + zombieId);
+                                let entity = await fromUuid("Compendium.fvtt-trazzm-homebrew-5e.homebrew-creatures." + _zombieId);
                                 if (!entity) {
                                     ui.notifications.error(`${optionName} - unable to find the actor`);
                                     return false;
                                 }
 
                                 // import the actor
-                                let document = await entity.collection.importFromCompendium(game.packs.get(entity.pack), zombieId, updates);
+                                let document = await entity.collection.importFromCompendium(game.packs.get(entity.pack), _zombieId, updates);
                                 if (!document) {
                                     ui.notifications.error(`${optionName} - unable to import from the compendium`);
                                     return false;
@@ -307,131 +310,29 @@ export class CombatHandler {
             if (actor) {
                 const hp = actor.system.attributes.hp.value;
                 const isProne = await game.dfreds?.effectInterface?.hasEffectApplied('Prone', actor.uuid);
-                return ((hp > 0) && isProne);
+                const isDead = await game.dfreds?.effectInterface?.hasEffectApplied('Dead', actor.uuid);
+                const isUnconscious = await game.dfreds?.effectInterface?.hasEffectApplied('Unconscious', actor.uuid);
+                const isIncapacitated = await game.dfreds?.effectInterface?.hasEffectApplied('Incapacitated', actor.uuid);
+                const isParalyzed = await game.dfreds?.effectInterface?.hasEffectApplied('Paralyzed', actor.uuid);
+                const isPetrified = await game.dfreds?.effectInterface?.hasEffectApplied('Petrified', actor.uuid);
+                const isStunned = await game.dfreds?.effectInterface?.hasEffectApplied('Stunned', actor.uuid);
+
+                if ((hp > 0) && isProne && !isDead && !isUnconscious && !isIncapacitated && !isParalyzed && !isPetrified && !isStunned) {
+                    return {
+                        "combatant": combatant,
+                        "hp": hp,
+                        "prone": isProne,
+                        "dead": isDead,
+                        "unconscious": isUnconscious,
+                        "incapacitated": isIncapacitated,
+                        "paralyzed": isParalyzed,
+                        "petrified": isPetrified,
+                        "stunned": isStunned
+                    };
+                }
             }
         }
 
-        return false
-    }
-}
-
-/**
- * A dialog to show options at the start of a combatants turn.
- *
- * The data associated with dialog is:
- *      content     - the dialog data content
- *      buttons     - the dialog buttons
- *      combatant   - the combatant whose turn it is
- *      prone       - flag indicating the combatant is prone
- *      hp          - the combatants current hp's
- *
- */
-class TurnStartDialog extends Application {
-
-    static DEFAULT_ID = 'trazzms-homebrew-turn-start-dialog';
-    static _lastPosition = new Map();
-
-    constructor(data, options) {
-        options.height = "auto";
-        options.resizable = true;
-        super(options);
-        this.data = data;
-        this.prone = false;
-        mergeObject(this.position, TurnStartDialog._lastPosition.get(this.options.id) ?? {});
-    }
-
-    static get defaultOptions() {
-        return mergeObject(super.defaultOptions, {
-            template: "modules/fvtt-trazzm-homebrew-5e/templates/dialog.html",
-            classes: ["dialog"],
-            width: 500,
-            jQuery: true,
-            close: close
-        }, { overwrite: true });
-    }
-
-    get title() {
-        return this.data.title || "Turn Start";
-    }
-
-    async getData(options) {
-        // collect actor data
-        this.data.hp = this.data.combatant.actor.system.attributes.hp.value;
-        this.data.prone = await game.dfreds?.effectInterface?.hasEffectApplied('Prone', this.data.combatant.actor.uuid);
-
-        // TODO make the content conditional
-        this.data.content = "<p>You are currently prone, would you like to stand up?<br>" +
-            "<sub>(standing up costs an amount of movement equal to half your speed)</sub></p>" +
-            "<div style='height: 25px;'/>";
-
-        this.data.buttons = {
-            standUp: { label: "Stand Up", callback: async (html) => {
-                    await game.dfreds?.effectInterface?.removeEffect({effectName: 'Prone', uuid: this.data.combatant.actor.uuid});
-                    this.close();
-                }},
-            close: { label: "Close", callback: (html) => {
-                    TurnStartDialog.storePosition(html);
-                    this.close();
-                }}
-        };
-        this.data.default = "close";
-
-        return {
-            content: this.data.content,
-            buttons: this.data.buttons
-        };
-    }
-
-    static storePosition(html) {
-        const id = html.id;
-        const position = html.position;
-        TurnStartDialog._lastPosition.set(id, {top: position.top, left: position.left});
-    }
-
-    static async standup() {
-        await game.dfreds?.effectInterface?.removeEffect({effectName: 'Prone', uuid: this.data.combatant.actor.uuid});
-    }
-
-    activateListeners(html) {
-        html.find(".dialog-button").click(this._onClickButton.bind(this));
-        $(document).on('keydown.chooseDefault', this._onKeyDown.bind(this));
-    }
-
-    _onClickButton(event) {
-        const oneUse = true;
-        const id = event.currentTarget.dataset.button;
-        const button = this.data.buttons[id];
-        this.submit(button);
-    }
-
-    _onKeyDown(event) {
-        // Close dialog
-        if (event.key === "Escape" || event.key === "Enter") {
-            event.preventDefault();
-            event.stopPropagation();
-            this.close();
-        }
-    }
-
-    async submit(button) {
-        try {
-            if (button.callback) {
-                await button.callback(this, button);
-                // await this.getData({}); Render will do a get data, doing it twice breaks the button data?
-                this.render(true);
-            }
-            // this.close();
-        }
-        catch (err) {
-            ui.notifications?.error("fvtt-trazzm-homebrew-5e | Turn start dialog error see console for details ");
-            console.error("fvtt-trazzm-homebrew-5e | ", err);
-        }
-    }
-
-    async close() {
-        if (this.data.close)
-            this.data.close();
-        $(document).off('keydown.chooseDefault');
-        return super.close({force: true});
+        return undefined;
     }
 }

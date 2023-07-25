@@ -7,7 +7,7 @@
 		* The attack’s target must succeed on a Strength saving throw against your spell save DC or be moved by the swarm up to 15 feet horizontally in a direction of your choice. 
 		130* You are moved by the swarm 5 feet horizontally in a direction of your choice.
 */
-const version = "10.1";
+const version = "10.2";
 const optionName = "Gathered Swarm";
 const timeFlag = "gathered-swarm-time";
 const combatTime = game.combat ? `${game.combat.id}-${game.combat.round + game.combat.turn / 100}` : 1;
@@ -132,7 +132,7 @@ async function moveTarget(actorToken, targetToken, item) {
 	if (position) {
 		// check for token collision
 		const newCenter = canvas.grid.getSnappedPosition(position.x - targetToken.width / 2, position.y - targetToken.height / 2, 1);
-		if (HomebrewMacros.checkPosition(newCenter.x, newCenter.y)) {
+		if (HomebrewMacros.checkPosition(targetToken, newCenter.x, newCenter.y)) {
 			ui.notifications.error(`${optionName} - can't move on top of another token`);
 			return false;
 		}
@@ -165,7 +165,7 @@ async function moveSelf(actorToken, item) {
 	if (position) {
 		// check for token collision
 		const newCenter = canvas.grid.getSnappedPosition(position.x - actorToken.width / 2, position.y - actorToken.height / 2, 1);
-		if (HomebrewMacros.checkPosition(newCenter.x, newCenter.y)) {
+		if (HomebrewMacros.checkPosition(actorToken, newCenter.x, newCenter.y)) {
 			ui.notifications.error(`${optionName} - can't move on top of another token`);
 			return false;
 		}

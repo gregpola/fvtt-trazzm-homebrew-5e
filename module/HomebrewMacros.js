@@ -123,11 +123,11 @@ class HomebrewMacros {
         return position;
     }
 
-    static checkPosition(newX, newY) {
+    static checkPosition(ignoreToken, newX, newY) {
         const hasToken = canvas.tokens.placeables.some(t => {
             const detectX = newX.between(t.document.x, t.document.x + canvas.grid.size * (t.document.width-1));
             const detectY = newY.between(t.document.y, t.document.y + canvas.grid.size * (t.document.height-1));
-            return detectX && detectY;
+            return detectX && detectY && (ignoreToken !== t);
         });
         return hasToken;
     }
@@ -952,7 +952,7 @@ class HomebrewMacros {
 
         // check for collision
         let c = canvas.grid.getSnappedPosition(newCenter.x - targetToken.width / 2, newCenter.y - targetToken.height / 2, 1);
-        let isAllowedLocation = !HomebrewMacros.checkPosition(c.x, c.y);
+        let isAllowedLocation = !HomebrewMacros.checkPosition(targetToken, c.x, c.y);
 
         while ((squares > 1) && !isAllowedLocation) {
             squares = squares - 1;
@@ -961,7 +961,7 @@ class HomebrewMacros {
 
             let shorterCenter = ray.project(1 - ((canvas.dimensions.size * pullBackFactor) / ray.distance));
             c = canvas.grid.getSnappedPosition(shorterCenter.x - targetToken.width / 2, shorterCenter.y - targetToken.height / 2, 1);
-            let isShorterAllowed = !HomebrewMacros.checkPosition(c.x, c.y);
+            let isShorterAllowed = !HomebrewMacros.checkPosition(targetToken, c.x, c.y);
 
             if (isShorterAllowed) {
                 isAllowedLocation = true;
@@ -1008,7 +1008,7 @@ class HomebrewMacros {
 
         // check for collision
         let c = canvas.grid.getSnappedPosition(newCenter.x - targetToken.width / 2, newCenter.y - targetToken.height / 2, 1);
-        let isAllowedLocation = !HomebrewMacros.checkPosition(c.x, c.y);
+        let isAllowedLocation = !HomebrewMacros.checkPosition(targetToken, c.x, c.y);
 
         while ((squares > 1) && !isAllowedLocation) {
             squares = squares - 1;
@@ -1018,7 +1018,7 @@ class HomebrewMacros {
             //movePixels = squares * pixelsPerSquare;
             let shorterCenter = ray.project(1 + ((canvas.dimensions.size * knockBackFactor) / ray.distance));
             c = canvas.grid.getSnappedPosition(shorterCenter.x - targetToken.width / 2, shorterCenter.y - targetToken.height / 2, 1);
-            let isShorterAllowed = !HomebrewMacros.checkPosition(c.x, c.y);
+            let isShorterAllowed = !HomebrewMacros.checkPosition(targetToken, c.x, c.y);
 
             if (isShorterAllowed) {
                 isAllowedLocation = true;
@@ -1451,4 +1451,5 @@ class HomebrewMacros {
         const mutationData = { token: {x: newPoint.x, y: newPoint.y}};
         return await warpgate.mutate(chargerToken.document, mutationData, {}, {permanent: true});
     }
+
 }

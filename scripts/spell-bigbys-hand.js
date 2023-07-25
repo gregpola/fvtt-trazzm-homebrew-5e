@@ -5,7 +5,7 @@
 
 	When you cast the spell and as a bonus action on your subsequent turns, you can move the hand up to 60 feet and then cause one of the following effects with it.
 */
-const version = "10.2";
+const version = "10.3";
 const optionName = "Bigby's Hand";
 const summonFlag = "bigbys-hand";
 const summonId = "VGPZe2To1voHuhys";
@@ -80,7 +80,7 @@ try {
 		if (position) {
 			// check for token collision
 			const newCenter = canvas.grid.getSnappedPosition(position.x - summonActor.prototypeToken.width / 2, position.y - summonActor.prototypeToken.height / 2, 1);
-			if (HomebrewMacros.checkPosition(newCenter.x, newCenter.y)) {
+			if (HomebrewMacros.checkPosition(summonActor, newCenter.x, newCenter.y)) {
 				ui.notifications.error(`${optionName} - can't summon on top of another token`);
 				return false;
 			}

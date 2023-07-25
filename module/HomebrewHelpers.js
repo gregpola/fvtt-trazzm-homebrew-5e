@@ -207,4 +207,50 @@ class HomebrewHelpers {
         return actor.type === "npc" ? actor.system.details?.type?.value : actor.system.details?.race;
     };
 
+    static async getItemFromCompendium(key, name, packFolderId) {
+        const gamePack = game.packs.get(key);
+        if (!gamePack) {
+            ui.notifications.warn('Invalid compendium specified!');
+            return false;
+        }
+        let packIndex;
+        let match;
+        if (!isNewerVersion(game.version, '11.293')) {
+            packIndex = await gamePack.getIndex({fields: ['name', 'type', 'flags.cf.id']});
+            match = packIndex.find(item => item.name === name && (!packFolderId || (packFolderId && item.flags.cf?.id === packFolderId)));
+        } else {
+            packIndex = await gamePack.getIndex({fields: ['name', 'type', 'folder']});
+            match = packIndex.find(item => item.name === name && (!packFolderId || (packFolderId && item.folder === packFolderId)));
+        }
+        if (match) {
+            return (await gamePack.getDocument(match._id))?.toObject();
+        } else {
+            ui.notifications.warn('Item not found in specified compendium! Check spelling?');
+            return undefined;
+        }
+    }
+
+    static syntheticItemWorkflowOptions(targets, useSpellSlot, castLevel) {
+        return [
+            {
+                'showFullCard': false,
+                'createWorkflow': true,
+                'consumeResource': false,
+                'consumeRecharge': false,
+                'consumeQuantity': false,
+                'consumeUsage': false,
+                'consumeSpellSlot': useSpellSlot ?? false,
+                'consumeSpellLevel': castLevel ?? false
+            },
+            {
+                'targetUuids': targets,
+                'configureDialog': false,
+                'workflowOptions': {
+                    'autoRollDamage': 'always',
+                    'autoFastDamage': true
+                }
+            }
+        ];
+    }
+
 }

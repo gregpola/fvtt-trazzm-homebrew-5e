@@ -1,4 +1,4 @@
-const version = "10.0.2";
+const version = "10.3";
 const optionName = "Fiery Teleportation";
 const maxRange = 15;
 
@@ -27,7 +27,7 @@ try {
 		if (position) {
 			// check for token collision
 			let newCenter = canvas.grid.getSnappedPosition(position.x - actorToken.width / 2, position.y - actorToken.height / 2, 1);
-			if (HomebrewMacros.checkPosition(newCenter.x, newCenter.y)) {
+			if (HomebrewMacros.checkPosition(actorToken, newCenter.x, newCenter.y)) {
 				ui.notifications.error(`${optionName} - can't teleport on top of a token`);
 				return;
 			}

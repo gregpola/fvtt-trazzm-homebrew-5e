@@ -1,4 +1,4 @@
-const version = "10.0.1";
+const version = "10.2";
 const optionName = "Fey Step (Summer)";
 const maxRange = 30;
 
@@ -14,7 +14,7 @@ try {
 		if (position) {
 			// check for token collision
 			const newCenter = canvas.grid.getSnappedPosition(position.x - actorToken.width / 2, position.y - actorToken.height / 2, 1);
-			if (HomebrewMacros.checkPosition(newCenter.x, newCenter.y)) {
+			if (HomebrewMacros.checkPosition(actorToken, newCenter.x, newCenter.y)) {
 				ui.notifications.error(`${optionName} - can't teleport on top of another token`);
 				return false;
 			}
