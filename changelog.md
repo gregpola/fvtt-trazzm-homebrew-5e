@@ -1,3 +1,9 @@
+# 10.24
+* Fixed/Updated:
+  * Rage
+  * Torch
+  * Wildshape (text cleanup)
+  
 # 10.23
 * Fixed/Updated:
   * Turn start dialog no longer prompts for all players
