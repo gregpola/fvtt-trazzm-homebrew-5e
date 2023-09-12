@@ -3,7 +3,7 @@
     A collection of homebrew content for dnd5e in FoundryVTT
 
 ### Compatibility:
-  - Tested with FVTT v11 and the DND5E system 2.3+
+  - Tested with FVTT v10 and the DND5E system 2.2.2.
 
 ### Installation Instructions
 
