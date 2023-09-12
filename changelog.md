@@ -1,3 +1,15 @@
+# 10.25
+* Fixed/Updated:
+  * Dire Wolf (Bite)
+  * Wild Shape (uses)
+* Removed macros no longer needed
+  
+# 10.24
+* Fixed/Updated:
+  * Rage
+  * Torch
+  * Wild Shape (text cleanup)
+
 # 10.23
 * Fixed/Updated:
   * Turn start dialog no longer prompts for all players
