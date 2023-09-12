@@ -1,11 +1,6 @@
 {
   "activeModules": [
     {
-      "id": "aaw-aventyr",
-      "title": "AAW Aventyr Compendium",
-      "version": ""
-    },
-    {
       "id": "ActiveAuras",
       "title": "Active-Auras",
       "version": ""
@@ -21,8 +16,8 @@
       "version": ""
     },
     {
-      "id": "ambientdoors",
-      "title": "Ambient Doors",
+      "id": "tokenvisibility",
+      "title": "Alternative Token Visibility",
       "version": ""
     },
     {
@@ -41,28 +36,18 @@
       "version": ""
     },
     {
+      "id": "combat-tracker-dock",
+      "title": "Carousel Combat Tracker",
+      "version": ""
+    },
+    {
       "id": "chat-portrait",
       "title": "Chat Portrait",
       "version": ""
     },
     {
-      "id": "combat-carousel",
-      "title": "Combat Carousel",
-      "version": ""
-    },
-    {
       "id": "compendium-browser",
       "title": "Compendium Browser",
-      "version": ""
-    },
-    {
-      "id": "compendium-folders",
-      "title": "Compendium Folders",
-      "version": ""
-    },
-    {
-      "id": "df-qol",
-      "title": "DF Quality of Life",
       "version": ""
     },
     {
@@ -73,11 +58,6 @@
     {
       "id": "dfreds-effects-panel",
       "title": "DFreds Effects Panel",
-      "version": ""
-    },
-    {
-      "id": "df-templates",
-      "title": "DF Template Enhancements",
       "version": ""
     },
     {
@@ -116,18 +96,8 @@
       "version": ""
     },
     {
-      "id": "itemacro",
-      "title": "Item Macro",
-      "version": ""
-    },
-    {
       "id": "item-piles",
       "title": "Item Piles",
-      "version": ""
-    },
-    {
-      "id": "items-with-spells-5e",
-      "title": "Items with Spells DnD5e",
       "version": ""
     },
     {
@@ -153,7 +123,7 @@
     {
       "id": "lib-wrapper",
       "title": "libWrapper",
-      "version": ".1"
+      "version": ""
     },
     {
       "id": "link-item-resource-5e",
@@ -161,8 +131,8 @@
       "version": ""
     },
     {
-      "id": "maestro",
-      "title": "Maestro",
+      "id": "magic-items-2",
+      "title": "Magic Items 2",
       "version": ""
     },
     {
@@ -181,6 +151,21 @@
       "version": ""
     },
     {
+      "id": "monks-bloodsplats",
+      "title": "Monk's Bloodsplats",
+      "version": ""
+    },
+    {
+      "id": "monks-combat-details",
+      "title": "Monk's Combat Details",
+      "version": ""
+    },
+    {
+      "id": "monks-combat-marker",
+      "title": "Monk's Combat Marker",
+      "version": ""
+    },
+    {
       "id": "monks-enhanced-journal",
       "title": "Monk's Enhanced Journal",
       "version": ""
@@ -196,13 +181,8 @@
       "version": ""
     },
     {
-      "id": "Next-Up",
-      "title": "Next Up",
-      "version": ""
-    },
-    {
-      "id": "pointer",
-      "title": "PnP - Pointer and Pings!",
+      "id": "pointers",
+      "title": "Pointers",
       "version": ""
     },
     {
@@ -241,13 +221,18 @@
       "version": ""
     },
     {
-      "id": "splatter",
-      "title": "Splatter",
+      "id": "tagger",
+      "title": "Tagger",
       "version": ""
     },
     {
       "id": "templatemacro",
       "title": "Template Macro",
+      "version": ""
+    },
+    {
+      "id": "theripper-premium-hub",
+      "title": "TheRipper93's Module Hub",
       "version": ""
     },
     {
@@ -303,13 +288,8 @@
   ],
   "inactiveModules": [
     {
-      "id": "drider-of-the-underworld",
-      "title": "Drider of the Underworld",
-      "version": ""
-    },
-    {
-      "id": "perfect-vision",
-      "title": "Perfect Vision",
+      "id": "ambientdoors",
+      "title": "Ambient Doors",
       "version": ""
     }
   ]
