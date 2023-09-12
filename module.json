@@ -8,178 +8,213 @@
     {
       "name": "Greg Pola | Trazzm",
       "url": "https://github.com/gregpola",
-      "discord": "Trazzm#1390",
-      "flags": {}
+      "discord": "Trazzm#1390"
     }
   ],
   "packs": [
     {
       "name": "homebrew-backgrounds",
       "label": "Homebrew Backgrounds",
-      "path": "packs/backgrounds.db",
-      "private": false,
+      "path": "packs/backgrounds",
       "type": "Item",
       "system": "dnd5e",
-      "flags": {}
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
     },
     {
       "name": "homebrew-background-features",
       "label": "Homebrew Background Features",
-      "path": "packs/background-features.db",
-      "private": false,
+      "path": "packs/background-features",
       "type": "Item",
       "system": "dnd5e",
-      "flags": {}
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
     },
     {
       "name": "homebrew-classes",
       "label": "Homebrew Classes",
-      "path": "packs/classes.db",
-      "private": false,
+      "path": "packs/classes",
       "type": "Item",
       "system": "dnd5e",
-      "flags": {}
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
     },
     {
       "name": "homebrew-class-features",
       "label": "Homebrew Class Features",
-      "path": "packs/class-features.db",
-      "private": false,
+      "path": "packs/class-features",
       "type": "Item",
       "system": "dnd5e",
-      "flags": {}
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
     },
     {
       "name": "homebrew-creatures",
       "label": "Homebrew Creatures",
-      "path": "packs/creatures.db",
-      "private": false,
+      "path": "packs/creatures",
       "type": "Actor",
       "system": "dnd5e",
-      "flags": {}
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
     },
     {
       "name": "homebrew-creature-features",
       "label": "Homebrew Creature Features",
-      "path": "packs/creature-features.db",
-      "private": false,
+      "path": "packs/creature-features",
       "type": "Item",
       "system": "dnd5e",
-      "flags": {}
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
     },
     {
       "name": "homebrew-feats",
       "label": "Homebrew Feats",
-      "path": "packs/feats.db",
-      "private": false,
+      "path": "packs/feats",
       "type": "Item",
       "system": "dnd5e",
-      "flags": {}
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
     },
     {
       "name": "homebrew-items",
       "label": "Homebrew Items",
-      "path": "packs/items.db",
-      "private": false,
+      "path": "packs/items",
       "type": "Item",
       "system": "dnd5e",
-      "flags": {}
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
     },
     {
       "name": "homebrew-journal-entries",
       "label": "Homebrew Journal Entries",
-      "path": "packs/journal-entries.db",
-      "private": false,
+      "path": "packs/journal-entries",
       "type": "JournalEntry",
       "system": "dnd5e",
-      "flags": {}
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
     },
     {
       "name": "homebrew-macros",
       "label": "Homebrew Macros",
-      "path": "packs/macros.db",
-      "private": false,
+      "path": "packs/macros",
       "type": "Macro",
       "system": "dnd5e",
-      "flags": {}
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
     },
     {
       "name": "homebrew-playlists",
       "label": "Homebrew Playlists",
-      "path": "packs/playlists.db",
-      "private": false,
+      "path": "packs/playlists",
       "type": "Playlist",
       "system": "dnd5e",
-      "flags": {}
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
     },
     {
       "name": "homebrew-races",
       "label": "Homebrew Races",
-      "path": "packs/races.db",
-      "private": false,
+      "path": "packs/races",
       "type": "Item",
       "system": "dnd5e",
-      "flags": {}
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
     },
     {
       "name": "homebrew-racial-traits",
       "label": "Homebrew Racial Traits",
-      "path": "packs/racial-traits.db",
-      "private": false,
+      "path": "packs/racial-traits",
       "type": "Item",
       "system": "dnd5e",
-      "flags": {}
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
     },
     {
       "name": "homebrew-roll-tables",
       "label": "Homebrew Roll Tables",
-      "path": "packs/roll-tables.db",
-      "private": false,
+      "path": "packs/roll-tables",
       "type": "RollTable",
       "system": "dnd5e",
-      "flags": {}
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
     },
     {
       "name": "homebrew-spells",
       "label": "Homebrew Spells",
-      "path": "packs/spells.db",
-      "private": false,
+      "path": "packs/spells",
       "type": "Item",
       "system": "dnd5e",
-      "flags": {}
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
     },
     {
       "name": "homebrew-subclasses",
       "label": "Homebrew Subclasses",
-      "path": "packs/subclasses.db",
-      "private": false,
+      "path": "packs/subclasses",
       "type": "Item",
       "system": "dnd5e",
-      "flags": {}
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
     },
     {
       "name": "homebrew-automation-actors",
       "label": "Homebrew Automation Actors",
-      "path": "packs/automation-actors.db",
-      "private": false,
+      "path": "packs/automation-actors",
       "type": "Actor",
       "system": "dnd5e",
-      "flags": {}
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
     },
     {
       "name": "homebrew-automation-items",
       "label": "Homebrew Automation Items",
-      "path": "packs/automation-items.db",
-      "private": false,
+      "path": "packs/automation-items",
       "type": "Item",
       "system": "dnd5e",
-      "flags": {}
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
     }
   ],
   "compatibility": {
-    "minimum": "10.286",
-    "verified": "10.303",
-    "maximum": "10"
+    "minimum": "11",
+    "verified": "11",
+    "maximum": "11"
   },
   "relationships": {
     "requires": [
@@ -255,8 +290,8 @@
     "allowBugReporter": true
   },
   "url": "https://github.com/gregpola/fvtt-trazzm-homebrew-5e",
-  "manifest": "https://github.com/gregpola/fvtt-trazzm-homebrew-5e/releases/latest/download/module.json",
-  "download": "https://github.com/gregpola/fvtt-trazzm-homebrew-5e/releases/latest/download/module.zip",
+  "manifest": "This is auto replaced",
+  "download": "This is auto replaced",
   "license": "https://raw.githubusercontent.com/gregpola/fvtt-trazzm-homebrew-5e/main/LICENSE",
   "changelog": "https://raw.githubusercontent.com/gregpola/fvtt-trazzm-homebrew-5e/main/changelog.md",
   "readme": "https://raw.githubusercontent.com/gregpola/fvtt-trazzm-homebrew-5e/main/README.md",
