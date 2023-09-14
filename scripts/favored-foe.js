@@ -1,4 +1,4 @@
-const version = "10.0.0"
+const version = "10.1"
 const optionName = "Favored Foe";
 const marking = "Favored Foe Marked";
 
@@ -8,10 +8,7 @@ try {
 	if (args[0].macroPass === "DamageBonus") {
 		const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
 		let target = lastArg.hitTargets[0];
-		let ttoken = canvas.tokens.get(target.object.id);
-		
-		// Make sure the actor is raging
-		
+
 		// make sure it's an allowed attack
 		if (!["mwak", "rwak"].includes(lastArg.itemData.system.actionType)) {
 			console.log(`${optionName} - not an eligible attack`);
@@ -35,8 +32,8 @@ try {
 					let useFF = false;
 
 					let content = `<div class="flexcol">
-						<div class="flexrow" style="margin-bottom: 10px;"><label>Apply ${optionName} to ${target.name}?</label></div>
-						<div class="flexrow"style="margin-bottom: 10px;"><label>${usesLeft} uses remaining</label></div>
+						<div class="flexrow"><p>Apply ${optionName} to ${target.name}?</p></div>
+						<div class="flexrow" style="margin-bottom: 10px;"><p>(${usesLeft} uses remaining and requires concentration)</p></div>
 					</div>`;
 
 					let dialog = new Promise((resolve, reject) => {
@@ -64,6 +61,7 @@ try {
 					if (useFF) {
 						await decrimentFavoredFoe(actor);
 						await markAsFoe(target.uuid, lastArg.uuid);
+						await MidiQOL.addConcentration(lastArg.actor, {item: ff, targets: [target]});
 					}
 					else {
 						await setSkipThisTurn();

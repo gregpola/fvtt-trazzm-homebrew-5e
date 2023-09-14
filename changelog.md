@@ -1,3 +1,8 @@
+# 10.26
+* Fixed/Updated:
+  * Favored Foe - add concentration
+  * Guidance - apply to tool checks
+
 # 10.25
 * Fixed/Updated:
   * Dire Wolf (Bite)
