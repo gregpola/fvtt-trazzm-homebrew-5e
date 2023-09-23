@@ -4,7 +4,7 @@
 	Wisdom (Perception) or Wisdom (Survival) check you make to find it. If the target drops to 0 hit points before this
 	spell ends, you can use a bonus action on a subsequent turn of yours to mark a new creature.
  */
-const version = "10.1";
+const version = "10.2";
 const optionName = "Hunter's Mark";
 const targetOptionName = "Hunter's Marked";
 const targetFlagName = "hunters-mark-target";
@@ -242,5 +242,5 @@ async function applyMoveMark(actorToken) {
 		}
 	};
 
-	await warpgate.mutate(actorToken, moveTarget, {}, { name: optionName });
+	await warpgate.mutate(actorToken.document, moveTarget, {}, { name: optionName });
 }

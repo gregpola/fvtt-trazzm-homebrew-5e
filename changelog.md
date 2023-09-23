@@ -1,3 +1,8 @@
+# 10.27
+* Fixed/Updated:
+  * Hex - fixed reapply curse after previous target dies
+  * Hunter's Mark - fixed reapply mark after previous target dies
+
 # 10.26
 * Fixed/Updated:
   * Favored Foe - add concentration

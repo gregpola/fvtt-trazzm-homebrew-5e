@@ -12,7 +12,7 @@
 	on the spell for up to 8 hours. When you use a spell slot of 5th level or higher, you can maintain your concentration
 	on the spell for up to 24 hours.
  */
-const version = "10.2";
+const version = "10.3";
 const optionName = "Hex";
 const targetOptionName = "Hex Marked";
 const targetFlagName = "hex-target";
@@ -290,5 +290,5 @@ async function applyMoveHex(actorToken) {
 		}
 	};
 
-	await warpgate.mutate(actorToken, moveTarget, {}, { name: optionName });
+	await warpgate.mutate(actorToken.document, moveTarget, {}, { name: optionName });
 }
