@@ -1,4 +1,5 @@
 import {CombatHandler} from "./CombatHandler.js";
+import {RestHandler} from "./RestHandler.js";
 import {SaveHandler} from "./SaveHandler.js";
 import {SpellHandler} from "./SpellHandler.js";
 import {BarbarianFeatures} from "./BarbarianFeatures.js";
@@ -10,6 +11,7 @@ import {doTurnStartOptions} from "./utils.js";
 
 const SUB_MODULES = {
     CombatHandler,
+    RestHandler,
     SaveHandler,
     SpellHandler,
     BarbarianFeatures,
@@ -18,7 +20,6 @@ const SUB_MODULES = {
 };
 
 export let socket = undefined;
-
 
 Hooks.once('init', async function () {
     console.log('%c fvtt-trazzm-homebrew-5e | Initializing homebrew-5e', 'color: #D030DE');

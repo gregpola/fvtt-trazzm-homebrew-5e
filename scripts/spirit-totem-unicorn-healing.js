@@ -6,7 +6,7 @@ if (args[0].macroPass === "DamageBonus") {
 	
 	// make sure it's an heal
 	if (!["heal"].includes(lastArg.itemData.system.actionType)) {
-		console.log(`${optionName}: not a heal`);
+		console.log(`Spirit Totem (Unicorn Spirit): not a heal`);
 		return {};
 	}
 

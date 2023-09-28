@@ -1,4 +1,4 @@
-const version = "10.0.0"
+const version = "10.1"
 const optionName = "Favored Foe";
 const marking = "Favored Foe Marked";
 
@@ -8,16 +8,13 @@ try {
 	if (args[0].macroPass === "DamageBonus") {
 		const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
 		let target = lastArg.hitTargets[0];
-		let ttoken = canvas.tokens.get(target.object.id);
-		
-		// Make sure the actor is raging
-		
+
 		// make sure it's an allowed attack
 		if (!["mwak", "rwak"].includes(lastArg.itemData.system.actionType)) {
 			console.log(`${optionName} - not an eligible attack`);
 			return;
 		}
-		
+
 		// Check for availability i.e. once per actors turn
 		if (!isAvailableThisTurn() || !game.combat || isSkipThisTurn()) {
 			console.log(`${optionName} - not available this attack`);
@@ -35,8 +32,8 @@ try {
 					let useFF = false;
 
 					let content = `<div class="flexcol">
-						<div class="flexrow" style="margin-bottom: 10px;"><label>Apply ${optionName} to ${target.name}?</label></div>
-						<div class="flexrow"style="margin-bottom: 10px;"><label>${usesLeft} uses remaining</label></div>
+						<div class="flexrow"><p>Apply ${optionName} to ${target.name}?</p></div>
+						<div class="flexrow" style="margin-bottom: 10px;"><p>(${usesLeft} uses remaining and requires concentration)</p></div>
 					</div>`;
 
 					let dialog = new Promise((resolve, reject) => {
@@ -55,7 +52,7 @@ try {
 									label: "<p>No</p>",
 									callback: () => { resolve(false) }
 								}
-							},
+							}
 							default: "two"
 						}).render(true);
 					});
@@ -64,6 +61,7 @@ try {
 					if (useFF) {
 						await decrimentFavoredFoe(actor);
 						await markAsFoe(target.uuid, lastArg.uuid);
+						await MidiQOL.addConcentration(lastArg.actor, {item: ff, targets: [target]});
 					}
 					else {
 						await setSkipThisTurn();
@@ -92,38 +90,38 @@ try {
 
 		return {damageRoll: `${diceMult}d4[${damageType}]`, flavor: `${optionName} Damage`};
 	}
-	
+
 } catch (err) {
-    console.error(`${optionName} - ${version}`, err);
+	console.error(`${optionName} - ${version}`, err);
 }
 
 
 // Check to make sure the actor hasn't already applied the damage this turn
 function isAvailableThisTurn() {
 	if (game.combat) {
-	  const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn /100}`;
-	  const lastTime = actor.getFlag("midi-qol", "favoredFoeTime");
-	  if (combatTime === lastTime) {
-	   console.log(`${optionName} - already done favored foe damage this turn`);
-	   return false;
-	  }
-	  
-	  return true;
+		const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn /100}`;
+		const lastTime = actor.getFlag("midi-qol", "favoredFoeTime");
+		if (combatTime === lastTime) {
+			console.log(`${optionName} - already done favored foe damage this turn`);
+			return false;
+		}
+
+		return true;
 	}
-	
+
 	return false;
 }
 
 function isSkipThisTurn() {
 	if (game.combat) {
-	  const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn /100}`;
-	  const lastTime = actor.getFlag("midi-qol", "favoredFoeSkip");
-	  if (combatTime === lastTime) {
-	   console.log(`${optionName} - already chose to skip this turn`);
-	   return true;
-	  }
+		const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn /100}`;
+		const lastTime = actor.getFlag("midi-qol", "favoredFoeSkip");
+		if (combatTime === lastTime) {
+			console.log(`${optionName} - already chose to skip this turn`);
+			return true;
+		}
 	}
-	
+
 	return false;
 }
 
@@ -137,18 +135,18 @@ async function setSkipThisTurn() {
 
 // Decriment available resource
 async function decrimentFavoredFoe(testActor) {
-    let actorDup = duplicate(testActor);
+	let actorDup = duplicate(testActor);
 	let ff = actorDup.items?.find(a => a.name.toLowerCase() === "favored foe");
 	ff.system.uses.value = ff.system.uses.value - 1;
-    await testActor.update(actorDup);
+	await testActor.update(actorDup);
 }
 
 async function markAsFoe(targetId, actorId) {
-    const effectData = {
-        label: `${marking}`,
-        icon: "icons/weapons/bows/longbow-recurve-leather-red.webp",
+	const effectData = {
+		label: `${marking}`,
+		icon: "icons/weapons/bows/longbow-recurve-leather-red.webp",
 		duration: {rounds: 10},
-        origin: actorId,
-    }
-    await MidiQOL.socket().executeAsGM("createEffects", { actorUuid: targetId, effects: [effectData] });
+		origin: actorId,
+	}
+	await MidiQOL.socket().executeAsGM("createEffects", { actorUuid: targetId, effects: [effectData] });
 }
