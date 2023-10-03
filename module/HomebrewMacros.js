@@ -1431,25 +1431,41 @@ class HomebrewMacros {
         }
 
         // move the charger to their target
-        let targetRay = new Ray(chargerToken.center, targetToken.center);
+        // Get the center position of the PC token before they move
+        const startPosition = chargerToken.center;
 
-        let tokenSizeMulti = targetToken.data.height;
-        let moveFactor = tokenSizeMulti * 5 / canvas.dimensions.distance;
-        let moveProjection = targetRay.project(1 - ((canvas.dimensions.size * moveFactor) / targetRay.distance));
-        let newCenter = canvas.grid.getSnappedPosition(moveProjection.x - chargerToken.width / 2, moveProjection.y - chargerToken.height / 2, 1);
+        // Calculate the two token positions and store the values as offsetX and offsetY.
+        const [ offsetX, offsetY ] = [chargerToken.center.x - targetToken.center.x, chargerToken.center.y - targetToken.center.y];
 
-        // check the minimum distance
-        const newPoint = new PIXI.Point(newCenter.x, newCenter.y);
-        const moveRay = new Ray(chargerToken.center, newPoint);
-        const distance = canvas.grid.measureDistances([{ray: moveRay}], {gridSpaces:true})[0];
-        if (distance < minimumDistance) {
-            ui.notifications.error('chargeTarget(): target is too close');
-            return false;
-        }
+        // Determines the offset by comparing the token and target positions to see which direction the token is attacking from.
+        // If it is 0, it comes from the side. If its positive or negative, it is from some corner.
+        const offset = {
+            x: (offsetX === 0 ? 0 : offsetX > 0 ? 1 : -1),
+            y: (offsetY === 0 ? 0 : offsetY > 0 ? 1 : -1)
+        };
 
-        // move the actor
-        const mutationData = { token: {x: newPoint.x, y: newPoint.y}};
-        return await warpgate.mutate(chargerToken.document, mutationData, {}, {permanent: true});
+        new Sequence()
+            .animation()
+            .on(chargerToken)
+            .moveTowards(targetToken, { ease: "easeInOutBack" })
+            .duration(1500)
+            .closestSquare()
+            .effect()
+            .file("jb2a.gust_of_wind.veryfast")
+            .atLocation(startPosition)
+            .stretchTo(chargerToken, {
+                attachTo: true
+            })
+            .belowTokens()
+            .play()
     }
 
+    /*
+                .effect()
+            .file("jb2a.spear.melee.01.blue.2")
+            .attachTo(chargerToken, { offset, gridUnits: true })
+            .scaleToObject(4)
+            .rotateTowards(targetToken, { attachTo: true })
+
+     */
 }

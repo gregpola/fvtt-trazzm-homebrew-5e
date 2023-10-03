@@ -8,9 +8,32 @@ const version = "10.0.0";
 const optionName = "Precision";
 
 try {
+	console.info("%c fvtt-trazzm-homebrew-5e", "color: #D030DE", " | Bag of Tricks (Gray)");
+	// actor
+	// token
+	const theItem = scope.item;
+
+
+
+
+
+
+
+
+
+
+	ui.notifications.error(`${optionName}: ${resourceName}: - no resource found`);
+
 } catch (err) {
 	console.error(`${optionName}: ${version}`, err);
 }
+
+
+
+
+
+
+
 	const lastArg = args[args.length - 1];
 	const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
 	const actorToken = canvas.tokens.get(lastArg.tokenId);

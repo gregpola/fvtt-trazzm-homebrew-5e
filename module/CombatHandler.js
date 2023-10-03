@@ -43,7 +43,41 @@ export class CombatHandler {
             }
         });
 
-        // Hooks.on("updateCombat", NextUP.handleCombatUpdate)
+        Hooks.on("preUpdateActor", async(actor, change, options, user) => {
+            const isHealth = hasProperty(change, "system.attributes.hp.value");
+
+            if (isHealth) {
+                const hpValue = change.system.attributes.hp.value;
+                const isaBoar = actor.name ==="Boar";
+                const isaGiantBoar = actor.name === "Giant Boar";
+                const relentless = actor.items.getName("Relentless");
+                const appliedDamage = options.damageItem?.appliedDamage ?? 0;
+
+                // Check for Boar Relentless
+                // If the boar takes 7 damage or less that would reduce it to 0 hit points, it is reduced to 1 hit point instead.
+                // Only usable once per rest
+                if (relentless && appliedDamage && relentless.system.uses?.value) {
+                    if (isaBoar && (hpValue <= 0) && (appliedDamage <= 7)) {
+                        foundry.utils.setProperty(change, "system.attributes.hp.value", 1);
+                        await relentless.update({ "system.uses.value": 0 });
+
+                        ChatMessage.create({
+                            speaker: {alias: actor.name},
+                            content: actor.name + " is relentless"
+                        });
+                    }
+                    else if (isaGiantBoar && (hpValue <= 0) && (appliedDamage <= 10)) {
+                        foundry.utils.setProperty(change, "system.attributes.hp.value", 1);
+                        await relentless.update({ "system.uses.value": 0 });
+
+                        ChatMessage.create({
+                            speaker: {alias: actor.name},
+                            content: actor.name + " is relentless"
+                        });
+                    }
+                }
+            }
+        });
 
         Hooks.on("updateActor", async(actor, change, options, user) => {
             // special death handling

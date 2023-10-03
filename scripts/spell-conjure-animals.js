@@ -1,16 +1,12 @@
-const version = "10.0.1";
+const version = "11.0";
 const optionName = "Conjure Animals";
 const summonFlag = "conjure-animals";
+const tableIdPrefix = "Compendium.fvtt-trazzm-homebrew-5e.homebrew-roll-tables."
 
 try {
-	const lastArg = args[args.length - 1];
-	const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-	const actorToken = canvas.tokens.get(lastArg.tokenId);
-
 	if (args[0] === "on") {
         if (!game.modules.get("warpgate")?.active) ui.notifications.error("Please enable the Warp Gate module")
 		
-		const sourceItem = await fromUuid(lastArg.origin);
 		const spellLevel = Number(args[1]);
 		let levelMultiplier = {1: 1, 2: 1, 3: 1, 4: 1, 5: 2, 6: 2, 7: 3, 8: 3, 9: 4};
 		const multiplier = levelMultiplier[spellLevel];
@@ -30,22 +26,22 @@ try {
 				{
 					cr14: {
 						label: `<p>CR 1/4</p><p>(${counts[0]})</p>`,
-						callback: () => { resolve(["CR 1/4", counts[0]]) }
+						callback: () => { resolve(["miJocZLE3qCfokF9", counts[0]]) }
 
 					},
 					cr12: {
 						label: `<p>CR 1/2</p><p>(${counts[1]})</p>`,
-						callback: () => { resolve(["CR 1/2", counts[1]]) }
+						callback: () => { resolve(["XXS44yKO6Wq9OcpV", counts[1]]) }
 
 					},
 					cr1: {
 						label: `<p>CR 1</p><p>(${counts[2]})</p>`,
-						callback: () => { resolve(["CR 1", counts[2]]) }
+						callback: () => { resolve(["Esun355kxdEXhCQ7", counts[2]]) }
 
 					},
 					cr2: {
 						label: `<p>CR 2</p><p>(${counts[3]})</p>`,
-						callback: () => { resolve(["CR 2", counts[3]]) }
+						callback: () => { resolve(["XSCitVlt24spsFOJ", counts[3]]) }
 
 					},
 					cancel: {
@@ -59,118 +55,118 @@ try {
 		let choice = await dialog;
 		if (choice) {
 			// get the table
-			let tableName = "Conjure Animals " + choice[0];
-			const table = game.tables.getName(tableName);
-			if (!table) {
-				ui.notifications.error(`${optionName} - unable to find the table: ${tableName}`);
-				return false;
-			}
-			
-			// roll on the table
-			const {roll, results} = await table.draw({ displayChat: false });
-			await table.toMessage(results, {roll, messageData: {speaker: {alias: game.user.name}}});
-			const resultData = results[0].data;
-			const collectionName = resultData.documentCollection;
-			const summonId = resultData.documentId;
-			
-			// Get the actor
-			let entity = await fromUuid("Compendium." + collectionName + "." + summonId);
-			if (!entity) {
-				ui.notifications.error(`${optionName} - unable to find the creature: ${resultData.text}`);
-				return false;
-			}
+			const table = await fromUuid(tableIdPrefix + choice[0]);
 
-			// build the update data to match summoned traits
-			const summonName = `${entity.name} (${actor.name})`;
-			const name = "Summoned (" + entity.name + ")";
-			let updates = {
-				token: {
-					"name": summonName,
-					"disposition": CONST.TOKEN_DISPOSITIONS.FRIENDLY,
-					"displayName": CONST.TOKEN_DISPLAY_MODES.HOVER,
-					"displayBars": CONST.TOKEN_DISPLAY_MODES.ALWAYS,
-					"bar1": { attribute: "attributes.hp" },
-					"actorLink": false,
-					"flags": { "midi-srd": { "Conjured Animal" : { "ActorId": actor.id } } }
-				},
-				"name": summonName,
-				"system.details": { 
-					"type.value": "fey"
-				}
-			};
+			if (table) {
+				const {roll, results} = await table.draw({ displayChat: false });
 
-			if (mightySummoner) {
-				// modify for mighty summoner
-				let originalHPFormula = entity.system.attributes.hp.formula;
-				let hitDice = originalHPFormula.match(/(\d+)d\d+/)[1];
-				if (hitDice === null || hitDice === undefined || hitDice === 0) {
-					hitDice = 1;
-				}
-				const bonusHP = hitDice * 2;
-				let newHPFormula = originalHPFormula + "+" + bonusHP;
-				updates = {
-					token: {
-						"name": summonName,
-						"disposition": CONST.TOKEN_DISPOSITIONS.FRIENDLY,
-						"displayName": CONST.TOKEN_DISPLAY_MODES.HOVER,
-						"displayBars": CONST.TOKEN_DISPLAY_MODES.ALWAYS,
-						"bar1": { attribute: "attributes.hp" },
-						"actorLink": false,
-						"flags": { "midi-srd": { "Conjured Animal" : { "ActorId": actor.id } } }
-					},
-					"name": summonName,
-					"system": {
-						"details": { 
-							"type.value": "fey"
+				if (results) {
+					await table.toMessage(results, {roll, messageData: {speaker: {alias: game.user.name}}});
+
+					// get the summoned critter
+					const collectionName = results[0].documentCollection;
+					const summonId = results[0].documentId;
+					let entity = await fromUuid("Compendium." + collectionName + "." + summonId);
+					if (!entity) {
+						ui.notifications.error(`${optionName} - unable to find the creature: ${results[0].text}`);
+						return;
+					}
+
+					// build the update data to match summoned traits
+					const summonName = `${entity.name} (${actor.name})`;
+					let updates = {
+						token: {
+							"name": summonName,
+							"disposition": CONST.TOKEN_DISPOSITIONS.FRIENDLY,
+							"displayName": CONST.TOKEN_DISPLAY_MODES.HOVER,
+							"displayBars": CONST.TOKEN_DISPLAY_MODES.ALWAYS,
+							"bar1": { attribute: "attributes.hp" },
+							"actorLink": false,
+							"flags": { "midi-srd": { "Conjured Animal" : { "ActorId": actor.id } } }
 						},
-						"attributes": {
-							"hp.formula": newHPFormula
+						"name": summonName,
+						"system.details": {
+							"type.value": "fey"
+						}
+					};
+
+					if (mightySummoner) {
+						// modify for mighty summoner
+						let originalHPFormula = entity.system.attributes.hp.formula;
+						let hitDice = originalHPFormula.match(/(\d+)d\d+/)[1];
+						if (hitDice === null || hitDice === undefined || hitDice === 0) {
+							hitDice = 1;
+						}
+						const bonusHP = hitDice * 2;
+						let newHPFormula = originalHPFormula + "+" + bonusHP;
+						updates = {
+							token: {
+								"name": summonName,
+								"disposition": CONST.TOKEN_DISPOSITIONS.FRIENDLY,
+								"displayName": CONST.TOKEN_DISPLAY_MODES.HOVER,
+								"displayBars": CONST.TOKEN_DISPLAY_MODES.ALWAYS,
+								"bar1": { attribute: "attributes.hp" },
+								"actorLink": false,
+								"flags": { "midi-srd": { "Conjured Animal" : { "ActorId": actor.id } } }
+							},
+							"name": summonName,
+							"system": {
+								"details": {
+									"type.value": "fey"
+								},
+								"attributes": {
+									"hp.formula": newHPFormula
+								}
+							}
+						};
+
+					}
+
+					let summonActor = game.actors.getName(summonName);
+					if (!summonActor) {
+						// import the actor
+						let document = await entity.collection.importFromCompendium(game.packs.get(entity.pack), summonId, updates);
+						if (!document) {
+							ui.notifications.error(`${optionName} - unable to import ${results[0].text} from the compendium`);
+							return;
+						}
+						await warpgate.wait(500);
+						summonActor = game.actors.getName(summonName);
+					}
+
+					// Spawn the result
+					const maxRange = item.system.range.value ? item.system.range.value : 20;
+					let position = await HomebrewMacros.warpgateCrosshairs(token, maxRange, item, summonActor.prototypeToken);
+					if (position) {
+						let options = {duplicates: choice[1], collision: true};
+						let spawned = await warpgate.spawnAt(position, summonName, updates, { controllingActor: actor }, options);
+						if (!spawned || !spawned[0]) {
+							ui.notifications.error(`${optionName} - unable to spawn the animals`);
+							return false;
+						}
+
+						await actor.setFlag("midi-qol", summonFlag, summonName);
+
+						for (let i = 0; i < spawned.length; i++) {
+							let spawnId = spawned[i];
+							let summonedToken = canvas.tokens.get(spawnId);
+							if (summonedToken) {
+								await anime(token, summonedToken);
+								await summonedToken.toggleCombat();
+								await summonedToken.actor.rollInitiative();
+							}
 						}
 					}
-				};
-				
-			}
-			
-			let summonActor = game.actors.getName(summonName);
-			if (!summonActor) {
-				// import the actor
-				let document = await entity.collection.importFromCompendium(game.packs.get(entity.pack), summonId, updates);
-				if (!document) {
-					ui.notifications.error(`${optionName} - unable to import ${resultData.text} from the compendium`);
-					return false;
-				}
-				await warpgate.wait(500);
-
-				// mark attacks as magical
-				let weapons = document.items.filter(i => i.type === "weapon");
-				if (weapons) {
-					for (var w of weapons) {
-						let copy_item = duplicate(w.toObject());
-						copy_item.system.properties.mgc = true;
-						document.updateEmbeddedDocuments("Item", [copy_item]);
+					else {
+						ui.notifications.error(`${optionName} - invalid conjure location`);
 					}
 				}
-
-				summonActor = game.actors.getName(summonName);
-			}
-
-			// Spawn the result
-			const maxRange = sourceItem.system.range.value ? sourceItem.system.range.value : 60;
-			let position = await HomebrewMacros.warpgateCrosshairs(actorToken, maxRange, sourceItem, summonActor.prototypeToken);
-			if (position) {
-				let options = {duplicates: choice[1], collision: true};
-				const spawned = await warpgate.spawnAt(position, summonName, {}, { controllingActor: actor }, options);
-				if (!spawned || !spawned[0]) {
-					ui.notifications.error(`${optionName} - unable to spawn the animals`);
-					return false;
+				else {
+					ui.notifications.error(`${optionName}: the table result is undefined`);
 				}
-
-				// keep track of the spawned critters, so that they can be deleted after the spell expires
-				await actor.setFlag("midi-qol", summonFlag, summonName);
 			}
 			else {
-				ui.notifications.error(`${optionName} - invalid conjure location`);
-				return false;
+				ui.notifications.error(`${optionName}: unable to locate the roll-table in the compendium`);
 			}
 		}
 		else {
@@ -193,4 +189,13 @@ try {
 	
 } catch (err) {
     console.error(`${optionName} ${version}`, err);
+}
+
+async function anime(token, target) {
+	new Sequence()
+		.effect()
+		.file("jb2a.misty_step.01.green")
+		.atLocation(target)
+		.scaleToObject(1)
+		.play();
 }

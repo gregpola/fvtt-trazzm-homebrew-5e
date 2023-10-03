@@ -1,3 +1,10 @@
-2023/09/28-09:35:45.836 2a8c Recovering log #119
-2023/09/28-09:35:45.846 2a8c Delete type=0 #119
-2023/09/28-09:35:45.846 2a8c Delete type=3 #117
+2023/10/02-19:43:04.675 9094 Recovering log #211
+2023/10/02-19:43:04.678 9094 Level-0 table #213: started
+2023/10/02-19:43:04.692 9094 Level-0 table #213: 1191265 bytes OK
+2023/10/02-19:43:04.702 9094 Delete type=0 #211
+2023/10/02-19:43:04.703 9094 Delete type=3 #210
+2023/10/02-19:43:04.777 7ecc Compacting 1@0 + 0@1 files
+2023/10/02-19:43:04.786 7ecc Generated table #215@0: 83 keys, 115997 bytes
+2023/10/02-19:43:04.792 7ecc Generated table #216@0: 58 keys, 30204 bytes
+2023/10/02-19:43:04.792 7ecc Compacted 1@0 + 0@1 files => 146201 bytes
+2023/10/02-19:43:04.795 7ecc compacted to: files[ 0 2 13 0 0 0 0 ]
