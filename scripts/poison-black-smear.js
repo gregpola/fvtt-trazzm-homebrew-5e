@@ -1,7 +1,7 @@
 /*
 	A creature subjected to this poison must succeed on a DC 11 Constitution saving throw. On a failed save the creature takes 4 (1d8) poison damage and is poisoned for 24 hours. While poisoned in this way, the creature smells of black smear. On a successful save, the creature takes half damage and isn't poisoned.
 */
-const version = "10.0.0";
+const version = "11.0";
 const optionName = "Black Smear Poison";
 const flagName = "black-smear-weapon";
 const damageDice = "1d8";
@@ -10,9 +10,7 @@ const saveFlavor = `${CONFIG.DND5E.abilities["con"]} DC${saveDC} ${optionName}`;
 
 try {
 	const lastArg = args[args.length - 1];
-	const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-	const actorToken = canvas.tokens.get(lastArg.tokenId);
-	
+
 	if (args[0].macroPass === "preItemRoll") {
 		// find the actor's items that can be poisoned
 		// must be piercing or slashing
@@ -23,7 +21,6 @@ try {
 		}		
 	}
 	else if (args[0].macroPass === "postActiveEffects") {
-		
 		let weapons = actor.items.filter(i => i.type === `weapon` && (i.system.damage.parts[0][1] === `piercing` || i.system.damage.parts[0][1] === `slashing`));
 		let weapon_content = ``;
 		for (let weapon of weapons) {
@@ -66,7 +63,7 @@ try {
 							};
 							
 							// mutate the selected item
-							await warpgate.mutate(actorToken.document, updates, {}, { name: itemName });
+							await warpgate.mutate(token.document, updates, {}, { name: itemName });
 							
 							// check weapon type to see if it should be single or triple use
 							let useCount = 1;
@@ -97,17 +94,17 @@ try {
 	else if (args[0].macroPass === "DamageBonus") {
 		// poison only lasts one hit for most weapons, three for ammo
 		let flag = DAE.getFlag(actor, flagName);
-		if (flag && lastArg.item._id === flag.itemId) {
+		if (flag && workflow.item._id === flag.itemId && workflow.hitTargets.size > 0) {
 			let apps = flag.applications;
 			const itemName = flag.itemName;
 			const itemId = flag.itemId;
-			
+
 			// check for expiration condition
 			if (apps < 2) {
-				await warpgate.revert(actorToken.document, itemName);
+				await warpgate.revert(token.document, itemName);
 				DAE.unsetFlag(actor, flagName);
 				ChatMessage.create({content: itemName + " returns to normal"});
-			
+
 				// remove the DamageBonus effect from the actor
 				let effect = await findEffect(actor, optionName);
 				if (effect) await MidiQOL.socket().executeAsGM("removeEffects", { actorUuid: actor.uuid, effects: [effect.id] });
@@ -117,25 +114,24 @@ try {
 				await DAE.unsetFlag(actor, flagName);
 				await DAE.setFlag(actor, flagName, {itemName: itemName, itemId: itemId, applications: apps } );
 			}
-						
+
 			// apply the poison damage
-			let targetToken = canvas.tokens.get(lastArg.hitTargets[0].id);
-			let targetActor = (await fromUuid(lastArg.hitTargetUuids[0])).actor;			
-			const uuid = targetActor.uuid;
+			let targetActor = workflow.hitTargets.first().actor;
 			const damageRoll = await new Roll(`${damageDice}`).evaluate({ async: false });
 			await game.dice3d?.showForRoll(damageRoll);
-			
-			// get the target save result
+
 			let saveRoll = await targetActor.rollAbilitySave("con", {flavor: saveFlavor, damageType: "poison"});
 			if (saveRoll.total < saveDC) {
 				await applyPoisonedEffect(actor, targetActor);
-				return {damageRoll: `${damageRoll.total}[poison]`, flavor: `${optionName} Damage`};		
+				return {damageRoll: `${damageRoll.total}[poison]`, flavor: `${optionName} Damage`};
 			}
 			else {
 				const dmg = Math.ceil(damageRoll.total/2);
-				return {damageRoll: `${dmg}[poison]`, flavor: `${optionName} Damage`};		
+				return {damageRoll: `${dmg}[poison]`, flavor: `${optionName} Damage`};
 			}
 		}
+
+		return {};
 	}
 	
 } catch (err) {
@@ -146,13 +142,13 @@ async function wait(ms) { return new Promise(resolve => { setTimeout(resolve, ms
 
 async function findEffect(actor, effectName) {
     let effect = null;
-    effect = actor?.effects.find(ef => ef.label === effectName);
+    effect = actor?.effects.find(ef => ef.name === effectName);
     return effect;
 }
 
 async function applyPoisonedEffect(actor, target) {
     let effectData = [{
-        label: optionName,
+        name: optionName,
         icon: 'icons/consumables/potions/conical-mushroom-poison-red.webp',
         origin: actor.uuid,
         transfer: false,

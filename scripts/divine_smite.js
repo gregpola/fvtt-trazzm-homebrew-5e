@@ -1,27 +1,29 @@
-const version = "10.0.1";
+/*
+	Starting at 2nd level, when you hit a creature with a melee weapon attack, you can expend one spell slot to deal
+	radiant damage to the target, in addition to the weapon’s damage. The extra damage is 2d8 for a 1st-level spell slot,
+	plus 1d8 for each spell level higher than 1st, to a maximum of 5d8. The damage increases by 1d8 if the target is an
+	undead or a fiend, to a maximum of 6d8.
+ */
+const version = "11.0";
 const optionName = "Divine Smite";
 
 try {
-	if (args[0].macroPass === "DamageBonus") {
-		const lastArg = args[args.length - 1];
-		const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-		const actorToken = canvas.tokens.get(lastArg.tokenId);
-		const targetActor = lastArg.hitTargets[0].actor;
-		const targetToken = game.canvas.tokens.get(lastArg.hitTargets[0].id);
-		
+	if ((args[0].macroPass === "DamageBonus") && (workflow.hitTargets.size > 0)) {
+		const targetToken = workflow.hitTargets.first();
+
 		// Must be a melee weapon attack
-		if (!["mwak"].includes(lastArg.itemData.system.actionType)) 
+		if (!["mwak"].includes(workflow.item.system.actionType))
 			return {};
 		
 		// Make sure it's not thrown
-		const reach = lastArg.itemData.system.rch;
+		const reach = workflow.item.system.properties.rch;
 		
 		if (!targetToken) {
 			MidiQOL.error(`${optionName}: no target`);
 			return {};
 		}
 		
-		const ray = new Ray(actorToken.center, targetToken.center);
+		const ray = new Ray(token.center, targetToken.center);
 		const gridDistance = Math.floor(ray.distance / canvas.grid.size);
 		if (gridDistance > 1 && !reach) {
 			console.log(`${optionName} - thrown is not an eligible attack`);
@@ -107,9 +109,9 @@ try {
 		
 		let numDice = 1 + level;
 		if (numDice > 5) numDice = 5;
-		let undead = ["undead", "fiend"].some(type => (targetActor.system.details.type?.value || "").toLowerCase().includes(type));
+		let undead = ["undead", "fiend"].some(type => (targetToken.actor.system.details.type?.value || "").toLowerCase().includes(type));
 		if (undead) numDice += 1;
-		if (lastArg.isCritical) {
+		if (workflow.isCritical) {
 			numDice = numDice * 2;
 		}
 		

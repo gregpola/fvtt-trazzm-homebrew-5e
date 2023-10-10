@@ -12,6 +12,7 @@ try {
 	// actor
 	// token
 	const theItem = scope.item;
+	if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType)) {
 
 
 
@@ -146,7 +147,6 @@ async function consumeResource(actor, resKey, cost) {
 		}
 		
 		const resources = foundry.utils.duplicate(actor.system.resources);
-		const resourcePath = `system.resources.${resKey}`;
 		resources[resKey].value = Math.clamped(value - cost, 0, max);
 		await actor.update({ "system.resources": resources });
 		return true;

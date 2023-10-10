@@ -1,11 +1,14 @@
 /*
-	As an action, you can magically share the darkvision of this feature with willing creatures you can see within 10 feet of you, up to a number of creatures equal to your Wisdom modifier (minimum of one creature). The shared darkvision lasts for 1 hour. Once you share it, you can’t do so again until you finish a long rest, unless you expend a spell slot of any level to share it again.
+	As an action, you can magically share the darkvision of this feature with willing creatures you can see within 10
+	feet of you, up to a number of creatures equal to your Wisdom modifier (minimum of one creature). The shared
+	darkvision lasts for 1 hour. Once you share it, you can’t do so again until you finish a long rest, unless you
+	expend a spell slot of any level to share it again.
 */
-const version = "10.0.0";
+const version = "11.0";
 const optionName = "Eyes of Night";
 
 const effectData = {
-	label: optionName,
+	name: optionName,
 	icon: "icons/magic/perception/eye-slit-orange.webp",
 	origin: null,
 	changes: [
@@ -47,15 +50,11 @@ const effectData = {
 };
 	
 try {
-	const lastArg = args[args.length - 1];
-	const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-	const actorToken = canvas.tokens.get(lastArg.tokenId);
-			
 	if (args[0].macroPass === "postActiveEffects") {
 		const maxTargets = Math.max(1, actor.system.abilities.wis.mod);
 		
-		for (let i=0; i < maxTargets && i < lastArg.targets.length; i++) {
-			let target = lastArg.targets[i];
+		for (let i=0; i < maxTargets && i < workflow.targets.length; i++) {
+			let target = workflow.targets[i];
 			await MidiQOL.socket().executeAsGM("createEffects", { actorUuid: target.actor.uuid, effects: [effectData] });
 		}
 	}

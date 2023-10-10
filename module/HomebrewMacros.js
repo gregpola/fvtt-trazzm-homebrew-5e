@@ -141,7 +141,7 @@ class HomebrewMacros {
             if (!tokenDoc) continue;
 
             let tokenInTemplates = game.modules.get('templatemacro').api.findContainers(tokenDoc);
-            let effect = tokenDoc.actor.effects.find(eff => eff.label === 'Cloudkill');
+            let effect = tokenDoc.actor.effects.find(eff => eff.name === 'Cloudkill');
             let createEffect = false;
             let deleteEffect = false;
             let inCloudkill = false;
@@ -218,7 +218,6 @@ class HomebrewMacros {
 
                 await MidiQOL.socket().executeAsGM("createEffects",
                     { actorUuid: tokenDoc.actor.uuid, effects: [effectData] });
-                //await tokenDoc.actor.createEmbeddedDocuments("ActiveEffect", [effectData]);
             }
         }
     }
@@ -233,8 +232,8 @@ class HomebrewMacros {
 
             let tokenInTemplates = game.modules.get('templatemacro').api.findContainers(tokenDoc);
 
-            let stuckEffect = tokenDoc.actor.effects.find(eff => eff.label === 'Stuck in Webs');
-            let inWebEffect = tokenDoc.actor.effects.find(eff => eff.label === 'Webs');
+            let stuckEffect = tokenDoc.actor.effects.find(eff => eff.name === 'Stuck in Webs');
+            let inWebEffect = tokenDoc.actor.effects.find(eff => eff.name === 'Webs');
             let inWeb = false;
             let deleteStuckEffect = false;
             let deleteWebsEffect = false;
@@ -320,7 +319,6 @@ class HomebrewMacros {
 
                         await MidiQOL.socket().executeAsGM("createEffects",
                             { actorUuid: tokenDoc.actor.uuid, effects: [stuckEffect] });
-                        //await tokenDoc.actor.createEmbeddedDocuments("ActiveEffect", [stuckEffect]);
 
                         // add the break free feature
                         const updates = {
@@ -361,7 +359,7 @@ class HomebrewMacros {
                                                     "name": "Break Free",
                                                     "type": "script",
                                                     "scope": "global",
-                                                    "command": "const dc = " + spelldc + ";\nconst roll = await token.actor.rollAbilityTest('str', {targetValue: " + spelldc +"});\nawait game.dice3d?.showForRoll(roll);\nif (roll.total >= " + spelldc + ") {\nlet effect = token.actor.effects.find(ef => ef.label === 'Stuck in Webs');\nif (effect) await effect.delete();\nawait warpgate.revert(token.document, 'Webbed - Break Free');\nChatMessage.create({'content': '" + tokenDoc.actor.name + " breaks free of the webs!'});\n}"
+                                                    "command": "const dc = " + spelldc + ";\nconst roll = await token.actor.rollAbilityTest('str', {targetValue: " + spelldc +"});\nawait game.dice3d?.showForRoll(roll);\nif (roll.total >= " + spelldc + ") {\nlet effect = token.actor.effects.find(ef => ef.name === 'Stuck in Webs');\nif (effect) await effect.delete();\nawait warpgate.revert(token.document, 'Webbed - Break Free');\nChatMessage.create({'content': '" + tokenDoc.actor.name + " breaks free of the webs!'});\n}"
                                                 }
                                             }
                                         },
@@ -416,7 +414,6 @@ class HomebrewMacros {
 
                     await MidiQOL.socket().executeAsGM("createEffects",
                         { actorUuid: tokenDoc.actor.uuid, effects: [effectData] });
-                    //await tokenDoc.actor.createEmbeddedDocuments("ActiveEffect", [effectData]);
                 }
             }
         }
@@ -432,8 +429,8 @@ class HomebrewMacros {
 
             let tokenInTemplates = game.modules.get('templatemacro').api.findContainers(tokenDoc);
 
-            let stuckEffect = tokenDoc.actor.effects.find(eff => eff.label === 'Stuck in Tentacles');
-            let inTentaclesEffect = tokenDoc.actor.effects.find(eff => eff.label === 'Tentacles');
+            let stuckEffect = tokenDoc.actor.effects.find(eff => eff.name === 'Stuck in Tentacles');
+            let inTentaclesEffect = tokenDoc.actor.effects.find(eff => eff.name === 'Tentacles');
             let inTentacles = false;
             let deleteStuckEffect = false;
             let deleteTentaclesEffect = false;
@@ -523,7 +520,6 @@ class HomebrewMacros {
 
                         await MidiQOL.socket().executeAsGM("createEffects",
                             { actorUuid: tokenDoc.actor.uuid, effects: [stuckEffect] });
-                        //await tokenDoc.actor.createEmbeddedDocuments("ActiveEffect", [stuckEffect]);
 
                         // add the break free feature
                         let bestAbility = tokenDoc.actor.system.abilities.dex.mod > tokenDoc.actor.system.abilities.str.mod ? "dex" : "str";
@@ -565,7 +561,7 @@ class HomebrewMacros {
                                                     "name": "Break Free",
                                                     "type": "script",
                                                     "scope": "global",
-                                                    "command": "const dc = " + spelldc + ";\nconst roll = await token.actor.rollAbilityTest('" + bestAbility + "', {targetValue: " + spelldc +"});\nawait game.dice3d?.showForRoll(roll);\nif (roll.total >= " + spelldc + ") {\nlet effect = token.actor.effects.find(ef => ef.label === 'Stuck in Tentacles');\nif (effect) await effect.delete();\nawait warpgate.revert(token.document, 'Tentacled - Break Free');\nChatMessage.create({'content': '" + tokenDoc.actor.name + " breaks free of the tentacles!'});\n}"
+                                                    "command": "const dc = " + spelldc + ";\nconst roll = await token.actor.rollAbilityTest('" + bestAbility + "', {targetValue: " + spelldc +"});\nawait game.dice3d?.showForRoll(roll);\nif (roll.total >= " + spelldc + ") {\nlet effect = token.actor.effects.find(ef => ef.name === 'Stuck in Tentacles');\nif (effect) await effect.delete();\nawait warpgate.revert(token.document, 'Tentacled - Break Free');\nChatMessage.create({'content': '" + tokenDoc.actor.name + " breaks free of the tentacles!'});\n}"
                                                 }
                                             }
                                         },
@@ -613,7 +609,6 @@ class HomebrewMacros {
 
                     await MidiQOL.socket().executeAsGM("createEffects",
                         { actorUuid: tokenDoc.actor.uuid, effects: [effectData] });
-                    //await tokenDoc.actor.createEmbeddedDocuments("ActiveEffect", [effectData]);
                 }
 
                 if (applyDamage) {
@@ -644,7 +639,7 @@ class HomebrewMacros {
         }
 
         let targetActor = targetToken.actor;
-        let existingGrappled = targetActor.effects.find(eff => eff.label === 'Grappled' && eff.origin === grapplerToken.actor.uuid);
+        let existingGrappled = targetActor.effects.find(eff => eff.name === 'Grappled' && eff.origin === grapplerToken.actor.uuid);
         if (existingGrappled) {
             console.error("applyGrappled() " + targetActor.name + " is already grappled by " + grapplerToken.name);
             return false;
@@ -697,7 +692,7 @@ class HomebrewMacros {
         let bestAbility = targetActor.system.abilities.dex.mod > targetActor.system.abilities.str.mod ? "dex" : "str";
         let escapeMacro = "const dc = " + saveDC + ";\nconst roll = await token.actor.rollAbilityTest('" + bestAbility
             + "', {targetValue: " + saveDC +"});\nif (roll.total >= " + saveDC
-            + ") {\nlet effect = token.actor.effects.find(ef => ef.label === 'Grappled' && ef.origin === '" + grapplerToken.actor.uuid
+            + ") {\nlet effect = token.actor.effects.find(ef => ef.name === 'Grappled' && ef.origin === '" + grapplerToken.actor.uuid
             + "');\nif (effect) {\nawait effect.delete();\nawait warpgate.revert(token.document, 'Escape Grapple');\nChatMessage.create({'content': '"
             + targetActor.name + " escapes the grapple!'});}\n}";
 
@@ -714,7 +709,7 @@ class HomebrewMacros {
                 + "}\n"
                 + "let result = results.flags['monks-tokenbar'][`token${token.id}`].passed;\n"
                 + "if (result === 'won' || result === 'tied') {\n"
-                + "\tlet effect = token.actor.effects.find(ef => ef.label === 'Grappled' && ef.origin === '" + grapplerToken.actor.uuid + "');\n"
+                + "\tlet effect = token.actor.effects.find(ef => ef.name === 'Grappled' && ef.origin === '" + grapplerToken.actor.uuid + "');\n"
                 + "\tif (effect) {\n"
                 + "\t\tawait effect.delete();\n"
                 + "\t\tawait warpgate.revert(token.document, 'Escape Grapple');\n"
@@ -734,7 +729,7 @@ class HomebrewMacros {
                     + "}\n"
                     + "let result = results.flags['monks-tokenbar'][`token${token.id}`].passed;\n"
                     + "if (result === 'won' || result === 'tied') {\n"
-                    + "\tlet effect = token.actor.effects.find(ef => ef.label === 'Grappled' && ef.origin === '" + grapplerToken.actor.uuid + "');\n"
+                    + "\tlet effect = token.actor.effects.find(ef => ef.name === 'Grappled' && ef.origin === '" + grapplerToken.actor.uuid + "');\n"
                     + "\tif (effect) {\n"
                     + "\t\tawait effect.delete();\n"
                     + "\t\tawait warpgate.revert(token.document, 'Escape Grapple');\n"
@@ -747,7 +742,7 @@ class HomebrewMacros {
         else if (sourceActorFlag) {
             escapeMacro = "const dc = " + saveDC + ";\nconst roll = await token.actor.rollAbilityTest('" + bestAbility
                 + "', {targetValue: " + saveDC +"});\nif (roll.total >= " + saveDC
-                + ") {\nlet effect = token.actor.effects.find(ef => ef.label === 'Grappled' && ef.origin === '" + grapplerToken.actor.uuid
+                + ") {\nlet effect = token.actor.effects.find(ef => ef.name === 'Grappled' && ef.origin === '" + grapplerToken.actor.uuid
                 + "');\nif (effect) {\nawait effect.delete();\nawait warpgate.revert(token.document, 'Escape Grapple');\nChatMessage.create({'content': '"
                 + targetActor.name + " escapes the grapple!'});\nlet sactor = await fromUuid('"
                 + grapplerToken.actor.uuid  + "');\nif (sactor) {\nawait sactor.unsetFlag('midi-qol', '" + sourceActorFlag + "');\n}\n}\n}";
@@ -822,7 +817,7 @@ class HomebrewMacros {
         }
 
         let targetActor = targetToken.actor;
-        let existingRestrained = targetActor.effects.find(eff => eff.label === 'Restrained' && eff.origin === sourceToken.actor.uuid);
+        let existingRestrained = targetActor.effects.find(eff => eff.name === 'Restrained' && eff.origin === sourceToken.actor.uuid);
         if (existingRestrained) {
             console.error("applyRestrained() " + targetActor.name + " is already restrained by " + sourceToken.name);
             return false;
@@ -866,13 +861,13 @@ class HomebrewMacros {
 
         let escapeMacro = "const dc = " + checkDC + ";\nconst roll = await token.actor.rollAbilityTest('" + abilityCheck
             + "', {targetValue: " + checkDC +"});\nif (roll.total >= " + checkDC
-            + ") {\nlet effect = token.actor.effects.find(ef => ef.label === 'Restrained' && ef.origin === '" + sourceToken.actor.uuid
+            + ") {\nlet effect = token.actor.effects.find(ef => ef.name === 'Restrained' && ef.origin === '" + sourceToken.actor.uuid
             + "');\nif (effect) {\nawait effect.delete();\nawait warpgate.revert(token.document, 'Break Free');\nChatMessage.create({'content': '"
             + targetActor.name + " breaks free!'});}\n}";
         if (sourceActorFlag) {
             escapeMacro = "const dc = " + checkDC + ";\nconst roll = await token.actor.rollAbilityTest('" + abilityCheck
                 + "', {targetValue: " + checkDC +"});\nif (roll.total >= " + checkDC
-                + ") {\nlet effect = token.actor.effects.find(ef => ef.label === 'Restrained' && ef.origin === '" + sourceToken.actor.uuid
+                + ") {\nlet effect = token.actor.effects.find(ef => ef.name === 'Restrained' && ef.origin === '" + sourceToken.actor.uuid
                 + "');\nif (effect) {\nawait effect.delete();\nawait warpgate.revert(token.document, 'Break Free');\nChatMessage.create({'content': '"
                 + targetActor.name + " breaks free!'});\nlet sactor = MidiQOL.MQfromActorUuid('"
                 + sourceToken.actor.uuid  + "');\nif (sactor) {\nawait sactor.unsetFlag('midi-qol', '" + sourceActorFlag + "');\n}\n}\n}";
@@ -1047,7 +1042,7 @@ class HomebrewMacros {
             if (!tokenDoc) continue;
 
             let tokenInTemplates = game.modules.get('templatemacro').api.findContainers(tokenDoc);
-            let effect = tokenDoc.actor.effects.find(eff => eff.label === 'WallofFire');
+            let effect = tokenDoc.actor.effects.find(eff => eff.name === 'WallofFire');
             let createEffect = false;
             let deleteEffect = false;
             let inFire = false;
@@ -1128,7 +1123,6 @@ class HomebrewMacros {
 
                 await MidiQOL.socket().executeAsGM("createEffects",
                     { actorUuid: tokenDoc.actor.uuid, effects: [effectData] });
-                //await tokenDoc.actor.createEmbeddedDocuments("ActiveEffect", [effectData]);
             }
         }
     }
@@ -1142,7 +1136,7 @@ class HomebrewMacros {
             if (!tokenDoc) continue;
 
             let tokenInTemplates = game.modules.get('templatemacro').api.findContainers(tokenDoc);
-            let effect = tokenDoc.actor.effects.find(eff => eff.label === 'WallofThorns');
+            let effect = tokenDoc.actor.effects.find(eff => eff.name === 'WallofThorns');
             let createEffect = false;
             let deleteEffect = false;
             let inThorns = false;
@@ -1220,7 +1214,6 @@ class HomebrewMacros {
 
                 await MidiQOL.socket().executeAsGM("createEffects",
                     { actorUuid: tokenDoc.actor.uuid, effects: [effectData] });
-                //await tokenDoc.actor.createEmbeddedDocuments("ActiveEffect", [effectData]);
             }
         }
     }
@@ -1234,7 +1227,7 @@ class HomebrewMacros {
             if (!tokenDoc) continue;
 
             let tokenInTemplates = game.modules.get('templatemacro').api.findContainers(tokenDoc);
-            let effect = tokenDoc.actor.effects.find(eff => eff.label === 'Moonbeam');
+            let effect = tokenDoc.actor.effects.find(eff => eff.name === 'Moonbeam');
             let createEffect = false;
             let deleteEffect = false;
             let inBeam = false;
@@ -1316,7 +1309,6 @@ class HomebrewMacros {
 
                 await MidiQOL.socket().executeAsGM("createEffects",
                     { actorUuid: tokenDoc.actor.uuid, effects: [effectData] });
-                //await tokenDoc.actor.createEmbeddedDocuments("ActiveEffect", [effectData]);
             }
         }
     }
@@ -1330,7 +1322,7 @@ class HomebrewMacros {
             if (!tokenDoc) continue;
 
             let tokenInTemplates = game.modules.get('templatemacro').api.findContainers(tokenDoc);
-            let effect = tokenDoc.actor.effects.find(eff => eff.label === 'CreateBonfire');
+            let effect = tokenDoc.actor.effects.find(eff => eff.name === 'CreateBonfire');
             let createEffect = false;
             let deleteEffect = false;
             let inBeam = false;
@@ -1410,7 +1402,6 @@ class HomebrewMacros {
 
                 await MidiQOL.socket().executeAsGM("createEffects",
                     { actorUuid: tokenDoc.actor.uuid, effects: [effectData] });
-                //await tokenDoc.actor.createEmbeddedDocuments("ActiveEffect", [effectData]);
             }
         }
     }

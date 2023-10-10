@@ -1,3 +1,5 @@
-2023/10/02-16:04:57.433 80f4 Recovering log #116
-2023/10/02-16:04:57.450 80f4 Delete type=0 #116
-2023/10/02-16:04:57.450 80f4 Delete type=3 #114
+2023/10/09-09:28:49.595 b5ec Recovering log #157
+2023/10/09-09:28:49.596 b5ec Level-0 table #159: started
+2023/10/09-09:28:49.637 b5ec Level-0 table #159: 42861 bytes OK
+2023/10/09-09:28:49.652 b5ec Delete type=0 #157
+2023/10/09-09:28:49.652 b5ec Delete type=3 #156

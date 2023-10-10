@@ -1,26 +1,24 @@
-const version = "10.0.0";
+const version = "11.0";
 const resourceName = "Channel Divinity";
 const optionName = "Vow of Enmity"
 
 try {
-	const lastArg = args[args.length - 1];
-	let tactor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-	
 	if (args[0].macroPass === "preItemRoll") {
 		// check resources
-		let resKey = findResource(tactor);
+		let resKey = findResource(actor);
 		if (!resKey) {
 			ui.notifications.error(`${resourceName} - no resource found`);
 			return false;
 		}
 
 		// handle resource consumption
-		return await consumeResource(tactor, resKey, 1);
+		return await consumeResource(actor, resKey, 1);
 	}
 	else if (args[0].macroPass === "preAttackRoll") {
-		const workflow = MidiQOL.Workflow.getWorkflow(args[0].uuid)
-		const tactor = (Array.from(workflow.targets))[0]?.actor;
-		if (tactor?.effects.find(i=>i.label === optionName)) {
+		const actorEffect = actor?.effects.find(i=>i.name === optionName);
+		const targetEffect = workflow.targets.first()?.actor.effects.find(i=>i.name === optionName && i.origin === actorEffect?.origin);
+
+		if (actorEffect && targetEffect) {
 			workflow.advantage = "true";
 		}
 	}
@@ -52,7 +50,6 @@ async function consumeResource(actor, resKey, cost) {
 		}
 		
 		const resources = foundry.utils.duplicate(actor.system.resources);
-		const resourcePath = `system.resources.${resKey}`;
 		resources[resKey].value = Math.clamped(value - cost, 0, max);
 		await actor.update({ "system.resources": resources });
 		return true;

@@ -1,16 +1,18 @@
 /*
-	As an action, you can imbue one weapon that you are holding with positive energy, using your Channel Divinity. For 1 minute, you add your Charisma modifier to attack rolls made with that weapon (with a minimum bonus of +1). The weapon also emits bright light in a 20-foot radius and dim light 20 feet beyond that. If the weapon is not already magical, it becomes magical for the duration.
+	As an action, you can imbue one weapon that you are holding with positive energy, using your Channel Divinity.
+	For 1 minute, you add your Charisma modifier to attack rolls made with that weapon (with a minimum bonus of +1).
+	The weapon also emits bright light in a 20-foot radius and dim light 20 feet beyond that. If the weapon is not
+	already magical, it becomes magical for the duration.
 
-	You can end this effect on your turn as part of any other action. If you are no longer holding or carrying this weapon, or if you fall Unconscious, this effect ends.
+	You can end this effect on your turn as part of any other action. If you are no longer holding or carrying this
+	weapon, or if you fall Unconscious, this effect ends.
 */
-const version = "10.1";
+const version = "11.0";
 const resourceName = "Channel Divinity";
 const optionName = "Sacred Weapon";
-const lastArg = args[args.length - 1];
 
 try {
-	let actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-	let actorToken = canvas.tokens.get(lastArg.tokenId);
+	const lastArg = args[args.length - 1];
 
 	if (args[0] === "on") {
 		// check resources
@@ -55,7 +57,7 @@ try {
 
 						let mutations = {};
 						const newName = itemName + ` (${optionName})`;
-						const attackMod = Math.min(actor.system.abilities["cha"].mod, 1);
+						const attackMod = Math.max(actor.system.abilities["cha"].mod, 1);
 						const oldBonus = Number(selectedItem.system.attackBonus);
 						const newBonus = attackMod + oldBonus;
 
@@ -72,11 +74,11 @@ try {
 						};
 						
 						// mutate the selected item
-						await warpgate.mutate(actorToken.document, updates, {}, { name: itemName });
+						await warpgate.mutate(token.document, updates, {}, { name: itemName });
 	
 						// track target info on the source actor
 						DAE.setFlag(actor, `sacred-weapon`, {
-							ttoken: actorToken.id,
+							ttoken: token.id,
 							itemName : itemName
 						});
 						
@@ -85,7 +87,7 @@ try {
 						
 						await consumeResource(actor, resKey, 1);
 						ChatMessage.create({
-							content: `${actorToken.name}'s ${selectedItem.name} is blessed with positive energy`,
+							content: `${token.name}'s ${selectedItem.name} is blessed with positive energy`,
 							speaker: ChatMessage.getSpeaker({ actor: actor })});
 					}
 				},
@@ -100,10 +102,10 @@ try {
 		let flag = DAE.getFlag(actor, `sacred-weapon`);
 		if (flag) {
 			const itemName = flag.itemName;
-			let restore = await warpgate.revert(actorToken.document, itemName);
+			let restore = await warpgate.revert(token.document, itemName);
 			DAE.unsetFlag(actor, `sacred-weapon`);
 			ChatMessage.create({
-				content: `${actorToken.name}'s ${itemName} returns to normal.`,
+				content: `${token.name}'s ${itemName} returns to normal.`,
 				speaker: ChatMessage.getSpeaker({ actor: actor })});
 		}
 	}
@@ -135,7 +137,6 @@ async function consumeResource(actor, resKey, cost) {
 		}
 		
 		const resources = foundry.utils.duplicate(actor.system.resources);
-		const resourcePath = `system.resources.${resKey}`;
 		resources[resKey].value = Math.clamped(value - cost, 0, max);
 		await actor.update({ "system.resources": resources });
 		return true;
@@ -145,7 +146,7 @@ async function consumeResource(actor, resKey, cost) {
 // Add the light effect to the actor
 async function addLightEffects(target, origin) {
     const effectData = {
-        label: "sacred-weapon-light",
+        name: "sacred-weapon-light",
         icon: "icons/magic/light/beam-rays-yellow-blue-large.webp",
         origin: origin,
         changes: [

@@ -27,7 +27,7 @@ export class SpellHandler {
             if (!targetActor) return;
 
             // Mirror Image Handling
-            let targetEffect = targetActor.effects.find(eff => eff.label === 'Mirror Image');
+            let targetEffect = targetActor.effects.find(eff => eff.name === 'Mirror Image');
             if (targetEffect) {
                 let duplicates = getProperty(targetActor, "flags.world.spell.mirrorimage");
                 if (duplicates) {

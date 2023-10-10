@@ -1,7 +1,9 @@
 /*
-	 The target’s hit point maximum is reduced by an amount equal to the necrotic damage taken, and the vampire regains hit points equal to that amount. The reduction lasts until the target finishes a long rest. The target dies if its hit point maximum is reduced to 0.
+	 The target’s hit point maximum is reduced by an amount equal to the necrotic damage taken, and the vampire regains
+	 hit points equal to that amount. The reduction lasts until the target finishes a long rest. The target dies if its
+	 hit point maximum is reduced to 0.
 */
-const version = "10.1";
+const version = "11.0";
 const optionName = "Draining Attack";
 
 try {
@@ -30,7 +32,7 @@ try {
 					speaker: ChatMessage.getSpeaker({ actor: actor })});
 
 				// check for death
-				if (newMax === 0) {
+				if (newMax < 1) {
 					await targetTokenDoc.actor.update({"system.attributes.hp.value": 0});
 					await applyDeathEffect(lastArg.sourceItemUuid, targetTokenDoc.actor);
 				}
@@ -48,7 +50,7 @@ try {
 async function applyDeathEffect(originId, target) {
 
     let effectData = [{
-        label: optionName,
+        name: optionName,
         icon: 'icons/magic/death/grave-tombstone-glow-teal.webp',
         origin: originId,
         transfer: false,

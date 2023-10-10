@@ -5,16 +5,11 @@
 	to the attack’s damage roll (if you chose to make a melee attack and hit) or push the target up to 10 feet away from
 	you (if you chose to shove and you succeed).
 */
-const version = "10.2";
+const version = "11.0";
 const optionName = "Charger";
-const lastArg = args[args.length - 1];
-let actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-let actorToken = canvas.tokens.get(lastArg.tokenId);
-let target = Array.from(game.user.targets)[0];
-let targetToken = game.canvas.tokens.get(lastArg.targets[0].id);
+let target = workflow.targets.first();
 
 try {
-	
 	// Ask which option they want to take
 	new Dialog({
 	  title: `${optionName}`,
@@ -35,15 +30,15 @@ async function MeleeAttack() {
 	const effect_sourceData = {
 		changes: [{ key: "system.bonuses.mwak.damage", mode: CONST.ACTIVE_EFFECT_MODES.ADD, value: +5, priority: 20 }
 		],
-		origin: lastArg.itemUuid,
+		origin: workflow.item.uuid,
 		duration: game.combat ? { rounds: 1, turns:0, startRound: `${game.combat.round}`, startTurn: `${game.combat.turn}`, startTime: `${game.time.worldTime}`} : {seconds: 6, startTime: `${game.time.worldTime}`},
 		icon: "icons/creatures/mammals/deer-movement-leap-green.webp",
 		label: "Charger feat - Bonus to damage",
 		flags: {dae: {specialDuration: ['DamageDealt']}},
 	}
 	
-	if (actor.effects.find(i=>i.label==="Charger feat - Bonus to damage")) {
-		let effect = actor.effects.find(i=>i.label==="Charger feat - Bonus to damage");
+	if (actor.effects.find(i=>i.name==="Charger feat - Bonus to damage")) {
+		let effect = actor.effects.find(i => i.name === "Charger feat - Bonus to damage" );
 		await MidiQOL.socket().executeAsGM("removeEffects", { actorUuid: actor.uuid, effects: [effect.id] });
 	}
 	
@@ -61,11 +56,11 @@ async function ShoveKnockback() {
 	await game.dice3d?.showForRoll(tokenRoll);
 	
 	if (actorRoll.total >= tokenRoll.total) {
-		await HomebrewMacros.pushTarget(actorToken, targetToken, squaresPushed);
-		ChatMessage.create({'content': `${pusher.name} pushes ${target.name} back!`});
+		await HomebrewMacros.pushTarget(token, target, squaresPushed);
+		ChatMessage.create({'content': `${actor.name} pushes ${target.name} back!`});
 	}
 	else {
-		ChatMessage.create({'content': `${pusher.name} is to weak to push ${target.name} back!`});
+		ChatMessage.create({'content': `${actor.name} is to weak to push ${target.name} back!`});
 	}
 }
 
@@ -85,7 +80,7 @@ async function ShoveProne() {
 			await game.dfreds.effectInterface.addEffect({
 				'effectName': 'Prone',
 				'uuid': target.actor.uuid,
-				'origin': shover.uuid,
+				'origin': workflow.item.uuid,
 				'overlay': false
 			});
 		}

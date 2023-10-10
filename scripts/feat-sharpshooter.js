@@ -3,9 +3,10 @@
 
 		* Attacking at long range doesn't impose disadvantage on your ranged weapon attack rolls.
 		* Your ranged weapon attacks ignore half cover and three-quarters cover.
-		* Before you make an attack with a ranged weapon that you are proficient with, you can choose to take a -5 penalty to the attack roll. If the attack hits, you add +10 to the attack's damage.
+		* Before you make an attack with a ranged weapon that you are proficient with, you can choose to take a -5
+		  penalty to the attack roll. If the attack hits, you add +10 to the attack's damage.
  */
-const version = "10.1";
+const version = "11.0";
 const optionName = "Sharpshooter";
 
 try {
@@ -14,10 +15,12 @@ try {
 		// Must be a melee weapon attack
 		if (!["rwak"].includes(workflow.item.system.actionType))
 			return {}; // weapon attack
-		
+
 		// Must be a weapon that the actor is proficient with
-		if (!workflow.item.system.proficient)
+		if (!workflow.item.system.prof.hasProficiency) {
+			console.error(`${optionName}: ${actor.name} is not proficient with ${workflow.item.name}`);
 			return {};
+		}
 
 		let dialog = new Promise((resolve, reject) => {
 			new Dialog({
@@ -52,7 +55,7 @@ try {
                     "startTime": game.time.worldTime,
                 },
                 "icon": "icons/skills/ranged/target-bullseye-arrow-blue.webp",
-                "label": `${optionName}`,
+                "name": `${optionName}`,
                 "flags": {
                     "dae": { "specialDuration": [ "1Attack" ] }
 				}

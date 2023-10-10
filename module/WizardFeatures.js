@@ -42,7 +42,7 @@ export class WizardFeatures {
     }
 
     static getPortentDie(actor) {
-        let portentEffect = actor.effects?.find(f => f.label === "Portent");
+        let portentEffect = actor.effects?.find(f => f.name === "Portent");
         if (portentEffect) {
             return portentEffect.flags['trazzm']?.portentRoll;
         }

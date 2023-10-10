@@ -9,14 +9,12 @@
 
 	Swimming. You gain a swimming speed equal to your walking speed, and you can breathe underwater.
 */
-const version = "10.0.0";
+const version = "11.0";
 const optionName = "Bestial Soul";
 
 try {
 	const lastArg = args[args.length - 1];
-	const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-	const actorToken = canvas.tokens.get(lastArg.tokenId);
-	
+
 	if (args[0] === "on") {
 		// Ask which alteration to take
 		let dialog = new Promise((resolve, reject) => {
@@ -47,18 +45,18 @@ try {
 		let alterationName = await dialog;
 		if (alterationName) {
 			if (alterationName === "climbing") {
-				await applyClimbingAlteration(actorToken, lastArg.sourceItemUuid);
+				await applyClimbingAlteration(token, lastArg.sourceItemUuid);
 			}
 			else if (alterationName === "jumping") {
-				await applyJumpingAlteration(actorToken, lastArg.sourceItemUuid);
+				await applyJumpingAlteration(token, lastArg.sourceItemUuid);
 			}
 			else if (alterationName === "swimming") {
-				await applySwimmingAlteration(actorToken, lastArg.sourceItemUuid);
+				await applySwimmingAlteration(token, lastArg.sourceItemUuid);
 			}
 		}
 	}
 	else if (args[0] === "off") {
-		let effect = actor?.effects.find(ef => ef.label === optionName);
+		let effect = actor?.effects.find(ef => ef.name === optionName);
 		if (effect) {
 			await MidiQOL.socket().executeAsGM("removeEffects", { actorUuid: actor.uuid, effects: [effect.id] });
 		}
@@ -70,7 +68,7 @@ try {
 
 async function applyClimbingAlteration(actorToken, origin) {
 	const effectData = {
-		label: optionName + " - Climbing",
+		name: optionName + " - Climbing",
 		icon: "icons/creatures/invertebrates/spider-dotted-green.webp",
 		origin: origin,
 		changes: [
@@ -102,7 +100,7 @@ async function applyClimbingAlteration(actorToken, origin) {
 
 async function applyJumpingAlteration(actorToken, origin) {
 	const effectData = {
-		label: optionName + " - Jumping",
+		name: optionName + " - Jumping",
 		icon: "icons/creatures/amphibians/bullfrog-glass-teal.webp",
 		origin: origin,
 		changes: [
@@ -128,7 +126,7 @@ async function applyJumpingAlteration(actorToken, origin) {
 
 async function applySwimmingAlteration(actorToken, origin) {
 	const effectData = {
-		label: optionName + " - Swimming",
+		name: optionName + " - Swimming",
 		icon: "icons/creatures/fish/fish-carp-green.webp",
 		origin: origin,
 		changes: [

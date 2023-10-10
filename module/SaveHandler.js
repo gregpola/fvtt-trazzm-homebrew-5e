@@ -147,7 +147,7 @@ export class SaveHandler {
                             if (poisonFeature) {
                                 hasResilience = true;
                             } else {
-                                let poisonEffect = tokenDoc.document.actor.effects.find(f => _poisonResistLabels.has(f.label));
+                                let poisonEffect = tokenDoc.document.actor.effects.find(f => _poisonResistLabels.has(f.name));
                                 if (poisonEffect) {
                                     hasResilience = true;
                                 }
@@ -157,7 +157,7 @@ export class SaveHandler {
                             if (charmFeature) {
                                 hasResilience = true;
                             } else {
-                                let charmEffect = tokenDoc.document.actor.effects.find(f => _charmResistLabels.has(f.label));
+                                let charmEffect = tokenDoc.document.actor.effects.find(f => _charmResistLabels.has(f.name));
                                 if (charmEffect) {
                                     hasResilience = true;
                                 }
@@ -167,7 +167,7 @@ export class SaveHandler {
                             if (frightFeature) {
                                 hasResilience = true;
                             } else {
-                                let frightEffect = tokenDoc.document.actor.effects.find(f => _frightenedResistLabels.has(f.label));
+                                let frightEffect = tokenDoc.document.actor.effects.find(f => _frightenedResistLabels.has(f.name));
                                 if (frightEffect) {
                                     hasResilience = true;
                                 }
@@ -177,7 +177,7 @@ export class SaveHandler {
                             if (paralyzeFeature) {
                                 hasResilience = true;
                             } else {
-                                let paralyzeEffect = tokenDoc.document.actor.effects.find(f => _paralyzedResistLabels.has(f.label));
+                                let paralyzeEffect = tokenDoc.document.actor.effects.find(f => _paralyzedResistLabels.has(f.name));
                                 if (paralyzeEffect) {
                                     hasResilience = true;
                                 }
@@ -187,7 +187,7 @@ export class SaveHandler {
                             if (stunFeature) {
                                 hasResilience = true;
                             } else {
-                                let stunEffect = tokenDoc.document.actor.effects.find(f => _stunResistLabels.has(f.label));
+                                let stunEffect = tokenDoc.document.actor.effects.find(f => _stunResistLabels.has(f.name));
                                 if (stunEffect) {
                                     hasResilience = true;
                                 }
@@ -197,7 +197,7 @@ export class SaveHandler {
                             if (sleepFeature) {
                                 hasResilience = true;
                             } else {
-                                let sleepEffect = tokenDoc.document.actor.effects.find(f => _sleepResistLabels.has(f.label));
+                                let sleepEffect = tokenDoc.document.actor.effects.find(f => _sleepResistLabels.has(f.name));
                                 if (sleepEffect) {
                                     hasResilience = true;
                                 }
@@ -207,7 +207,7 @@ export class SaveHandler {
                 }
 
                 // Check for other features that allow save mods
-                let holyNimbus = tokenDoc.document.actor.effects.find(f => f.label === 'Holy Nimbus');
+                let holyNimbus = tokenDoc.document.actor.effects.find(f => f.name === 'Holy Nimbus');
                 if (holyNimbus) {
                     let undeadOrFiend = ["undead", "fiend"].some(type => (workflow.actor.system.details.type?.value || "").toLowerCase().includes(type));
                     if (undeadOrFiend) {
@@ -236,7 +236,7 @@ export class SaveHandler {
                 // check for concentration save modifiers
                 if (workflow.item.name === 'Concentration') {
                     // Check for Starry Form - Dragon which grants minimum concentration save of 10
-                    let starryFormDragonEffect = tokenDoc.document.actor.effects.find(f => f.label === 'starry-form-dragon');
+                    let starryFormDragonEffect = tokenDoc.document.actor.effects.find(f => f.name === 'starry-form-dragon');
                     if (starryFormDragonEffect) {
                         await MidiQOL.socket().executeAsGM('createEffects', {
                             'actorUuid': tokenDoc.document.actor.uuid,

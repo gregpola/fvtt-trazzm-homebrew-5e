@@ -3,16 +3,12 @@
 
 	Once you use this feature, you can’t use it again until you finish a long rest.
 */
-const version = "10.0.0";
+const version = "11.0";
 const optionName = "Blazing Revival";
 const spiritEffect = "Wildfire Spirit";
 
 try {
 	if (args[0].macroPass === "postActiveEffects") {
-		const lastArg = args[args.length - 1];
-		const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-		const actorToken = canvas.tokens.get(lastArg.tokenId);
-		
 		// make sure the actor is currently knocked out
 		if (actor.system.attributes.hp.value > 0 ) {
 			ui.notifications.error(`${optionName} - not knocked out`);
@@ -25,7 +21,7 @@ try {
 			const healAmount = actor.system.attributes.hp.max / 2;
 			const healingType = "healing";						
 			let healDamage = new Roll(`${healAmount}`).evaluate({ async: false });
-			new MidiQOL.DamageOnlyWorkflow(actor, actorToken, healDamage.total, healingType, [actorToken], healDamage, { flavor: `(${CONFIG.DND5E.healingTypes[healingType]})`, itemCardId: lastArg.itemCardId, useOther: false });
+			new MidiQOL.DamageOnlyWorkflow(actor, token, healDamage.total, healingType, [token], healDamage, { flavor: `(${CONFIG.DND5E.healingTypes[healingType]})`, itemCardId: lastArg.itemCardId, useOther: false });
 			
 			// remove unconscious and prone and Wildfire spirit
 			await game.dfreds.effectInterface.removeEffect({effectName: 'Incapacitated', uuid:actor.uuid});
@@ -43,6 +39,6 @@ try {
 
 function findEffect(actor, effectName) {
     let effectUuid = null;
-    effectUuid = actor?.effects?.find(ef => ef.label === effectName);
+    effectUuid = actor?.effects?.find(ef => ef.name === effectName);
     return effectUuid;
 }

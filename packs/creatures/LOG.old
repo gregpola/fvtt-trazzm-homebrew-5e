@@ -1,3 +1,22 @@
-2023/10/02-16:04:57.120 3f30 Recovering log #193
-2023/10/02-16:04:57.130 3f30 Delete type=0 #193
-2023/10/02-16:04:57.131 3f30 Delete type=3 #177
+2023/10/09-09:28:47.340 b5ec Recovering log #282
+2023/10/09-09:28:47.341 b5ec Level-0 table #284: started
+2023/10/09-09:28:47.489 b5ec Level-0 table #284: 15048 bytes OK
+2023/10/09-09:28:47.509 b5ec Delete type=0 #282
+2023/10/09-09:28:47.509 b5ec Delete type=3 #281
+2023/10/09-09:28:59.103 c330 Moved #284 to level-1 15048 bytes OK: files[ 0 1 13 0 0 0 0 ]
+2023/10/09-15:19:49.586 c330 Compacting 1@1 + 6@2 files
+2023/10/09-15:19:49.626 c330 Generated table #286@1: 601 keys, 2121236 bytes
+2023/10/09-15:19:49.656 c330 Generated table #287@1: 619 keys, 2121719 bytes
+2023/10/09-15:19:49.685 c330 Generated table #288@1: 618 keys, 2120909 bytes
+2023/10/09-15:19:49.715 c330 Generated table #289@1: 1637 keys, 2126578 bytes
+2023/10/09-15:19:49.830 c330 Generated table #290@1: 2358 keys, 2129518 bytes
+2023/10/09-15:19:50.004 c330 Generated table #291@1: 2426 keys, 2131434 bytes
+2023/10/09-15:19:50.004 c330 Compacted 1@1 + 6@2 files => 12751394 bytes
+2023/10/09-15:19:50.007 c330 compacted to: files[ 0 0 13 0 0 0 0 ]
+2023/10/09-15:19:50.007 c330 Delete type=2 #219
+2023/10/09-15:19:50.008 c330 Delete type=2 #265
+2023/10/09-15:19:50.008 c330 Delete type=2 #266
+2023/10/09-15:19:50.008 c330 Delete type=2 #267
+2023/10/09-15:19:50.009 c330 Delete type=2 #268
+2023/10/09-15:19:50.009 c330 Delete type=2 #269
+2023/10/09-15:19:50.009 c330 Delete type=2 #284

@@ -1,9 +1,9 @@
-const version = "10.1";
+const version = "11.0";
 const optionName = "Grappler";
 
 try {
 	let defender = workflow.targets.first();
-	const hasGrappled = defender.actor.effects.find( eff => eff.label === 'Grappled' && eff.origin === actor.uuid);
+	const hasGrappled = defender.actor.effects.find( eff => eff.name === 'Grappled' && eff.origin === actor.uuid);
 
 	if (args[0].macroPass === "preAttackRoll") {
 		if (hasGrappled) {
@@ -17,12 +17,20 @@ try {
 		}
 		else {
 			ChatMessage.create({'content': `${actor.name} tries to pin ${defender.name}!`})
-			let tactorRoll = await actor.rollSkill("ath");
-			let skill = defender.actor.system.skills.ath.total < defender.actor.system.skills.acr.total ? "acr" : "ath";
-			let tokenRoll = await defender.actor.rollSkill(skill);
-			await game.dice3d?.showForRoll(tokenRoll);
-			
-			if (tactorRoll.total >= tokenRoll.total) {
+			// Run the opposed skill check
+			const skilltoberolled = defender.actor.system.skills.ath.total < defender.actor.system.skills.acr.total ? "acr" : "ath";
+			let results = await game.MonksTokenBar.requestContestedRoll({token: token, request: 'skill:ath'},
+				{token: defender, request:`skill:${skilltoberolled}`},
+				{silent:true, fastForward:false, flavor: `${defender.name} tries to resist ${token.name}'s pin attempt`});
+
+			let i=0;
+			while (results.flags['monks-tokenbar'][`token${token.id}`].passed === "waiting" && i < 30) {
+				await new Promise(resolve => setTimeout(resolve, 500));
+				i++;
+			}
+
+			let result = results.flags["monks-tokenbar"][`token${token.id}`].passed;
+			if (result === "won" || result === "tied") {
 				ChatMessage.create({'content': `${grappactorler.name} pins ${defender.name}!`});
 				const hasEffectApplied = await game.dfreds.effectInterface.hasEffectApplied('Restrained', defender.actor.uuid);
 				if (!hasEffectApplied) {
@@ -33,7 +41,7 @@ try {
 						'overlay': false
 					});
 				}
-				
+
 				const hasEffectAppliedGrappler = await game.dfreds.effectInterface.hasEffectApplied('Restrained', actor.uuid);
 				if (!hasEffectAppliedGrappler) {
 					await game.dfreds.effectInterface.addEffect({

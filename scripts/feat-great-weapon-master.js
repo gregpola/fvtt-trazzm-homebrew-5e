@@ -1,21 +1,32 @@
-const version = "10.0.0";
+/*
+	You've learned to put the weight of a weapon to your advantage, letting its momentum empower your strikes. You gain
+	the following benefits:
+
+	* On your turn, when you score a critical hit with a melee weapon or reduce a creature to 0 hit points with one, you
+	  can make one melee weapon attack as a bonus action.
+
+	* Before you make a melee attack with a heavy weapon that you are proficient with, you can choose to take a -5
+	  penalty to the attack roll. If the attack hits, you add +10 to the attack's damage.
+ */
+const version = "11.0";
 const optionName = "Great Weapon Master";
-const lastArg = args[args.length - 1];
 
 try {
-	let workflow = await MidiQOL.Workflow.getWorkflow(lastArg.uuid);
-
 	if (args[0].macroPass === "preAttackRoll") {
-		let tactor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-		
 		// check for eligible attack
 		// Must be a melee weapon attack
-		if (!["mwak"].includes(args[0].itemData.system.actionType))
+		if (!["mwak"].includes(workflow.item.system.actionType))
 			return {}; // weapon attack
 		
 		// Must be a heavy weapon that the actor is proficient with
-		if (!lastArg.itemData.system.properties.hvy || !lastArg.itemData.system.proficient)
+		if (!workflow.item.system.properties.hvy) {
+			console.error(`${optionName}: ${workflow.item.name} is not a heavy weapon`);
 			return {};
+		}
+		if (!workflow.item.system.prof.hasProficiency) {
+			console.error(`${optionName}: ${actor.name} is not proficient with ${workflow.item.name}`);
+			return {};
+		}
 
 		let dialog = new Promise((resolve, reject) => {
 			new Dialog({
@@ -56,7 +67,7 @@ try {
 				}
 			};
 			
-			await MidiQOL.socket().executeAsGM("createEffects", { actorUuid: tactor.uuid, effects: [effectData] });
+			await MidiQOL.socket().executeAsGM("createEffects", { actorUuid: actor.uuid, effects: [effectData] });
 		}
 	}
 	

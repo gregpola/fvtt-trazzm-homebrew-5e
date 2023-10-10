@@ -1,7 +1,7 @@
 /*
 	Starting when you choose this path at 3rd level, spectral warriors appear when you enter your rage. While you’re raging, the first creature you hit with an attack on your turn becomes the target of the warriors, which hinder its attacks. Until the start of your next turn, that target has disadvantage on any attack roll that isn’t against you, and when the target hits a creature other than you with an attack, that creature has resistance to the damage dealt by the attack. The effect on the target ends early if your rage ends.
 */
-const version = "10.0.0";
+const version = "11.0";
 const optionName = "Ancestral Protectors";
 const rageEffectName = "Rage";
 const timeFlag = "ancestralProtectorsTime";
@@ -11,7 +11,6 @@ try {
 	
 	// use damage bonus to make sure the actor hit
 	if (args[0].macroPass === "DamageBonus") {
-		let actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
 		let target = lastArg.hitTargets[0];
 		
 		// make sure the actor is raging
@@ -21,7 +20,7 @@ try {
 		}
 
 		// make sure it's an attack
-		if (!["mwak", "rwak", "msak", "rsak"].includes(lastArg.itemData.system.actionType)) {
+		if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType)) {
 			console.log(`${optionName}: not an eligible attack`);
 			return {};
 		}
@@ -63,13 +62,13 @@ try {
  * @returns true if the effect is found, false otherwise.
  */
 function hasEffectApplied(effectName, actor) {
-  return actor.effects.find((ae) => ae.label === effectName) !== undefined;
+  return actor.effects.find((ae) => ae.name === effectName) !== undefined;
 }
 
 // Mark the target 
 async function markAsTarget(targetActor, actorId, macroData) {
 	const effectData = {
-		label: optionName,
+		name: optionName,
 		icon: "icons/environment/people/charge.webp",
 		origin: actorId,
 		changes: [
@@ -154,7 +153,7 @@ async function handlePreDamageByMarkedTarget(macroData) {
 			disabled: false,
 			duration: { turns: 1 },
 			icon: sourceItem.img,
-			label: `${sourceItem.name} - Damage resistance`,
+			name: `${sourceItem.name} - Damage resistance`,
 		};
 
 		for (let targetUuid of notSourceTargetUuids) {

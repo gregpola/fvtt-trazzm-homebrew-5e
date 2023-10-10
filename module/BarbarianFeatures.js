@@ -90,7 +90,7 @@ export class BarbarianFeatures {
                     for (let ally of allyIter) {
                         if (workflow.token === ally) continue;
 
-                        let rageEffect = ally.actor.effects.find(i => i.label === "Rage");
+                        let rageEffect = ally.actor.effects.find(i => i.name === "Rage");
                         let totemSpiritWolf = ally.actor.items.getName("Totem Spirit - Wolf");
 
                         if (rageEffect && totemSpiritWolf) {
@@ -107,7 +107,7 @@ export class BarbarianFeatures {
             if (nearbyEnemies.length > 0) {
                 const enemyIter = nearbyEnemies.values();
                 for (let enemy of enemyIter) {
-                    let rageEffect = enemy.actor.effects.find(i => i.label === "Rage");
+                    let rageEffect = enemy.actor.effects.find(i => i.name === "Rage");
                     let totemAttunementBear = enemy.actor.items.getName("Totemic Attunement - Bear");
                     if (rageEffect && totemAttunementBear) {
                         totemicBears.add(enemy.actor.uuid);
@@ -129,7 +129,7 @@ export class BarbarianFeatures {
             const targetIterator = workflow.hitTargets.values();
             for (const token of targetIterator) {
                 // Get rage effect
-                let rageEffect = token.actor.effects.find(i => i.label === "Rage");
+                let rageEffect = token.actor.effects.find(i => i.name === "Rage");
 
                 // look for Totem Spirit - Bear
                 let totemSpiritBear = token.actor.items.getName("Totem Spirit - Bear");
@@ -152,7 +152,7 @@ export class BarbarianFeatures {
             let featureItem = targetActor.items.getName("Relentless Rage");
             if (featureItem) {
                 // Bail if the actor is not raging
-                let rageEffect = targetActor.effects.find(i => i.label === "Rage");
+                let rageEffect = targetActor.effects.find(i => i.name === "Rage");
                 if (rageEffect) {
                     if (ditem.newHP < 1) {
                         // Roll the actor's con save

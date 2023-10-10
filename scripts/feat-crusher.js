@@ -1,20 +1,16 @@
-const version = "10.0.0";
+const version = "11.0";
 const optionName = "Crusher";
 const lastArg = args[args.length - 1];
 const effectLabel = "Crusher feat - Grants advantage on all attacks";
 
 try {
-	if (lastArg.macroPass === "DamageBonus") {
-		let workflow = MidiQOL.Workflow.getWorkflow(lastArg.uuid);
-		let actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-
-		const targetActor = lastArg.hitTargets[0].actor;
-		const targetToken = game.canvas.tokens.get(lastArg.hitTargets[0].id);
+	if (args[0].macroPass === "DamageBonus" && workflow.hitTargets.size > 0) {
+		let targetToken = workflow.hitTargets.first();
 
 		// make sure it's an allowed attack
 		if (workflow.damageDetail.filter(i=>i.type === "bludgeoning").length < 1) {
 			console.log(`${optionName} not allowed: not a bludgeoning attack`);
-			return;
+			return {};
 		}
 	
 		// if a critical apply the debuff
@@ -24,13 +20,13 @@ try {
 				origin: lastArg.itemUuid,
 				duration: game.combat ? { rounds: 1, turns:0, startRound: `${game.combat.round}`, startTurn: `${game.combat.turn}`, startTime: `${game.time.worldTime}`} : {seconds: 6, startTime: `${game.time.worldTime}`},
 				icon: "icons/weapons/hammers/hammer-double-stone.webp",
-				label: effectLabel,
+				name: effectLabel,
 				flags: {dae: {specialDuration: ['turnStartSource']}},
 			}
 			
-			let effect = targetActor.effects.find(i=>i.data.label === effectLabel);
+			let effect = targetToken.actor.effects.find(ef => ef.name === effectLabel);
 			if (effect) {
-				await MidiQOL.socket().executeAsGM("removeEffects", { actorUuid: targetActor.uuid, effects: [effect.id] });
+				await MidiQOL.socket().executeAsGM("removeEffects", { actorUuid: targetToken.actor.uuid, effects: [effect.id] });
 			}
 			await MidiQOL.socket().executeAsGM("createEffects", { actorUuid: lastArg.hitTargetUuids[0], effects: [effect_sourceData] });
 		}

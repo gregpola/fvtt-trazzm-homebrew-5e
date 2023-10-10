@@ -1,23 +1,31 @@
-const version = "10.0.1";
+const version = "11.0";
 const optionName = "Draconic Cry";
 
 try {
-	const lastArg = args[args.length - 1];
-	const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-		
-	if (args[0].macroPass === "postActiveEffects") {
+	if (args[0].macroPass === "preItemRoll") {
+		// check for nearby enemies
+		const enemies = MidiQOL.findNearby(-1, token, 10);
+		if (enemies.length < 1) {
+			ChatMessage.create({
+				content: `${optionName} failed - no enemies within range`,
+				speaker: ChatMessage.getSpeaker({ actor: actor })});
+			return false;
+		}
+
+		return true;
+	}
+	else if (args[0].macroPass === "postActiveEffects") {
 		// find nearby enemies
 		const enemies = MidiQOL.findNearby(-1, token, 10);
-		
-		if (enemies.length === 0) {
+		if (enemies.length < 1) {
 			return ui.notifications.error(`${optionName} - no enemies within range`);
 		}
 
 		// apply the effect
 		const effectData = {
-			label: "Draconic Cry",
+			name: "Draconic Cry",
 			icon: "icons/creatures/abilities/dragon-breath-purple.webp",
-			origin: actor.id,
+			origin: workflow.item.uuid,
 			changes: [
 				{
 					key: "flags.midi-qol.grants.advantage.attack.all",
@@ -33,7 +41,7 @@ try {
 					durationExpression: "",
 					macroRepeat: "none",
 					specialDuration: [
-						"turnEndSource"
+						"turnStartSource"
 					],
 					transfer: false
 				}

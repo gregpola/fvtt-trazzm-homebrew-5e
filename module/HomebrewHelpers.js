@@ -33,7 +33,7 @@ class HomebrewHelpers {
     };
 
     static findEffect(actor, name) {
-        return actor.effects.find(eff => eff.label === name);
+        return actor.effects.find(eff => eff.name === name);
     };
 
 

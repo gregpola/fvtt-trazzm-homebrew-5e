@@ -1,16 +1,25 @@
-const version = "10.1"
+/*
+	When you hit a creature with an attack roll, you can call on your mystical bond with nature to mark the target as
+	your favored enemy for 1 minute or until you lose your concentration (as if you were concentrating on a spell).
+
+	The first time on each of your turns that you hit the favored enemy and deal damage to it, including when you mark
+	it, you can increase that damage by 1d4.
+
+	You can use this feature to mark a favored enemy a number of times equal to your proficiency bonus, and you regain
+	all expended uses when you finish a long rest.
+
+	This feature’s extra damage increases when you reach certain levels in this class: to 1d6 at 6th level and to 1d8 at 14th level.
+ */
+const version = "11.0"
 const optionName = "Favored Foe";
 const marking = "Favored Foe Marked";
 
-const lastArg = args[args.length - 1];
-
 try {
-	if (args[0].macroPass === "DamageBonus") {
-		const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-		let target = lastArg.hitTargets[0];
+	if ((args[0].macroPass === "DamageBonus") && (workflow.hitTargets.size > 0)) {
+		const targetToken = workflow.hitTargets.first();
 
 		// make sure it's an allowed attack
-		if (!["mwak", "rwak"].includes(lastArg.itemData.system.actionType)) {
+		if (!["mwak", "rwak"].includes(workflow.item.system.actionType)) {
 			console.log(`${optionName} - not an eligible attack`);
 			return;
 		}
@@ -22,7 +31,7 @@ try {
 		}
 
 		// make sure it is a foe
-		let effect = target.actor.effects?.find(i=> i.label === marking && i.origin.startsWith(lastArg.actorUuid));
+		let effect = targetToken.actor.effects?.find(i=> i.label === marking && i.origin.startsWith(workflow.actorUuid));
 		if (!effect) {
 			// Isn't current marked as a foe, check if there are uses remaining
 			let ff = actor.items?.find(a => a.name.toLowerCase() === "favored foe");
@@ -32,7 +41,7 @@ try {
 					let useFF = false;
 
 					let content = `<div class="flexcol">
-						<div class="flexrow"><p>Apply ${optionName} to ${target.name}?</p></div>
+						<div class="flexrow"><p>Apply ${optionName} to ${targetToken.name}?</p></div>
 						<div class="flexrow" style="margin-bottom: 10px;"><p>(${usesLeft} uses remaining and requires concentration)</p></div>
 					</div>`;
 
@@ -53,15 +62,14 @@ try {
 									callback: () => { resolve(false) }
 								}
 							}
-							default: "two"
 						}).render(true);
 					});
 
 					useFF = await dialog;
 					if (useFF) {
 						await decrimentFavoredFoe(actor);
-						await markAsFoe(target.uuid, lastArg.uuid);
-						await MidiQOL.addConcentration(lastArg.actor, {item: ff, targets: [target]});
+						await markAsFoe(targetToken.uuid, actor.uuid);
+						await MidiQOL.addConcentration(actor, {item: ff, targets: [targetToken]});
 					}
 					else {
 						await setSkipThisTurn();
@@ -77,9 +85,9 @@ try {
 			await actor.setFlag("midi-qol", "favoredFoeTime", combatTime)
 		}
 
-		const diceMult = lastArg.isCritical ? 2: 1;
-		let damageType = lastArg.itemData.system.damage.parts[0][1];
-		const levels = lastArg.rollData.classes?.ranger?.levels ?? 0;
+		const diceMult = workflow.isCritical ? 2: 1;
+		let damageType = workflow.item.system.damage.parts[0][1];
+		const levels = actor.getRollData().classes?.ranger?.levels ?? 0;
 
 		if (levels > 13) {
 			return {damageRoll: `${diceMult}d8[${damageType}]`, flavor: `${optionName} Damage`};

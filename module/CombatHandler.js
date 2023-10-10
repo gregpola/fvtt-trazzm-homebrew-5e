@@ -87,7 +87,7 @@ export class CombatHandler {
                     // look for the death of an actor that is grappling and/or restraining an actor
                     let tokens = canvas.scene.tokens;
                     for (let token of tokens) {
-                        let existingGrappled = token.actor.effects.find(eff => eff.label === 'Grappled' && eff.origin === actor.uuid);
+                        let existingGrappled = token.actor.effects.find(eff => eff.name === 'Grappled' && eff.origin === actor.uuid);
                         if (existingGrappled) {
                             await MidiQOL.socket().executeAsGM('removeEffects', {
                                 actorUuid: token.actor.uuid,
@@ -96,7 +96,7 @@ export class CombatHandler {
                             await warpgate.revert(token, 'Escape Grapple');
                         }
 
-                        let existingRestrained = token.actor.effects.find(eff => eff.label === 'Restrained' && eff.origin === actor.uuid);
+                        let existingRestrained = token.actor.effects.find(eff => eff.name === 'Restrained' && eff.origin === actor.uuid);
                         if (existingRestrained) {
                             await MidiQOL.socket().executeAsGM('removeEffects', {
                                 actorUuid: token.actor.uuid,
@@ -311,7 +311,6 @@ export class CombatHandler {
 
                     await MidiQOL.socket().executeAsGM("createEffects",
                         { actorUuid: actor.uuid, effects: [newEffects] });
-                    //actor.createEmbeddedDocuments("ActiveEffect", newEffects);
                 }
             }
         });

@@ -6,7 +6,7 @@
 		* You grant it temporary hit points equal to 1d6 plus your cleric level.
 		* You end one effect on it causing it to be Charmed or Frightened.
 */
-const version = "10.0.0";
+const version = "11.0";
 const resourceName = "Channel Divinity";
 const optionName = "Twilight Sanctuary"
 
@@ -77,8 +77,8 @@ let originClassLevels = origin.actor.classes.cleric?.system?.levels;
 if (!originClassLevels) originClassLevels = 1;
 
 // check for conditions on the actor
-let charmedEffect = actor?.effects.find(ef => ef.label === 'Charmed');
-let frightenedEffect = actor?.effects.find(ef => ef.label === 'Frightened');
+let charmedEffect = actor?.effects.find(ef => ef.name === 'Charmed');
+let frightenedEffect = actor?.effects.find(ef => ef.name === 'Frightened');
 
 // if no effects, just apply tempHP
 if (!charmedEffect && !frightenedEffect) {

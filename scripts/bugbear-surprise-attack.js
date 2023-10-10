@@ -2,7 +2,7 @@
 	If the bugbear surprises a creature and hits it with an attack during the first round of combat, the target takes
 	an extra 7 (2d6) damage from the attack.
 */
-const version = "10.0";
+const version = "11.0";
 const optionName = "Surprise Attack";
 
 try {
@@ -17,7 +17,7 @@ try {
 		}
 
 		// skip if the target is not marked as surprised
-		let surprised = targetToken.actor.effects.find(eff => eff.label === "Surprised");
+		let surprised = targetToken.actor.effects.find(eff => eff.name === "Surprised");
 		if (!surprised) {
 			ui.notifications.error(`${optionName} - target is not surprised`);
 			console.log(`${optionName} - target is not surprised`);
