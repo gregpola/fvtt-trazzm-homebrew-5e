@@ -14,6 +14,7 @@ try {
 	const theItem = scope.item;
 	if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType)) {
 
+	const rogueLevels = actor.getRollData().classes?.rogue?.levels;
 
 
 
@@ -29,26 +30,24 @@ try {
 	console.error(`${optionName}: ${version}`, err);
 }
 
+	function isAvailableThisTurn() {
+		if (game.combat) {
+			const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn /100}`;
+			const lastTime = actor.getFlag("midi-qol", timeFlag);
+			if (combatTime === lastTime) {
+				return false;
+			}
+			return true;
+		}
+		return false;
+	}
 
-
-
-
-
-
-	const lastArg = args[args.length - 1];
-	const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-	const actorToken = canvas.tokens.get(lastArg.tokenId);
-
-	const targetActor = lastArg.hitTargets[0].actor;
-	const targetToken = game.canvas.tokens.get(lastArg.hitTargets[0].id);
-	const targetActor = lastArg.targets[0].actor;
-	const targetToken = game.canvas.tokens.get(lastArg.targets[0].id);
-
-	const item = fromUuid(lastArg.origin);
-	const sourceItem = fromUuid(lastArg.sourceItemUuid);
-	
-	const workflow = MidiQOL.Workflow.getWorkflow(lastArg.uuid);
-	spell-hideous-laughter.js
+// Check if there is an enemy of the target adjacent to it
+	function checkAllyNearTarget(token, targetToken) {
+		let allNearby = MidiQOL.findNearby(token.document.disposition, targetToken, 5);
+		let nearbyFriendlies = allNearby.filter(i => (i !== token));
+		return (nearbyFriendlies.length > 0);
+	}
 
 
 
@@ -108,17 +107,17 @@ async function wait(ms) { return new Promise(resolve => { setTimeout(resolve, ms
 
 async function findEffect(actor, effectName) {
     let effect = null;
-    effect = actor?.effects.find(ef => ef.label === effectName);
+    effect = actor?.effects.find(ef => ef.name === effectName);
     return effect;
 }
 
 function hasEffectApplied(effectName, actor) {
-  return actor.effects.find((ae) => ae.label === effectName) !== undefined;
+  return actor.effects.find((ae) => ae.name === effectName) !== undefined;
 }
 
 async function findEffect(actor, effectName, origin) {
     let effect = null;
-    effect = actor?.effects?.find(ef => ef.label === effectName && ef.origin === origin);
+    effect = actor?.effects?.find(ef => ef.name === effectName && ef.origin === origin);
     return effect;
 }
 
@@ -151,17 +150,4 @@ async function consumeResource(actor, resKey, cost) {
 		await actor.update({ "system.resources": resources });
 		return true;
 	}
-}
-
-// Check to make sure the actor hasn't already applied the damage this turn
-function isAvailableThisTurn() {
-	if (game.combat) {
-		const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn / 100}`;
-		const lastTime = actor.getFlag("midi-qol", timeFlag);
-		if (combatTime === lastTime) {
-			return false;
-		}
-		return true;
-	}	
-	return false;
 }

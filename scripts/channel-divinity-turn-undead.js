@@ -7,11 +7,12 @@
 	a space within 30 feet of you. It also can’t take reactions. For its action, it can use only the Dash action or try
 	to escape from an effect that prevents it from moving. If there’s nowhere to move, the creature can use the Dodge action.
  */
-const version = "10.1";
+const version = "11.0";
 const resourceName = "Channel Divinity";
 const optionName = "Turn Undead";
 const targetTypes = ["undead"];
 const immunity = ["Turn Immunity"];
+const turnAdvantage = ["Turning Defiance"];
 	
 try {
 	if (args[0].macroPass === "preItemRoll") {
@@ -52,7 +53,36 @@ try {
 
 		game.user.updateTokenTargets(Array.from(workflow.targets).map(t => t.id));
 		
-	}	
+	}
+	else if (args[0].macroPass === "preSave") {
+		for (let target of args[0].targets) {
+			let hasAdvantage = false;
+
+			for (let ename of turnAdvantage) {
+				if (target.actor.effects.find(ef => ef.name === ename)) {
+					hasAdvantage = true;
+					break;
+				}
+			}
+
+			if (hasAdvantage) {
+				const data = {
+					changes: [{
+						key: "flags.midi-qol.advantage.ability.save.all",
+						mode: 0,
+						priority: 20,
+						value: "1"
+					}],
+					"duration": {"seconds": 1, "turns": 1},
+					"flags": {"dae": {"specialDuration": ["isSave"]}},
+					"icon": "icons/skills/melee/shield-damaged-broken-orange.webp",
+					"name": "Turn Advantage",
+					"origin": workflow.item.uuid
+				};
+				await MidiQOL.socket().executeAsGM("createEffects", {actorUuid: target.actor.uuid, effects: [data]});
+			}
+		}
+	}
 	else if (args[0].macroPass === "postSave") {
 		let targets = args[0].failedSaves;
 		if (targets && targets.length > 0) {
@@ -61,14 +91,6 @@ try {
 			for (let target of targets) {
 				if (target.actor.system.details.cr <= maxCR) {
 					await target.actor.update({"system.attributes.hp.value": 0});
-				}
-				else {
-					await game.dfreds.effectInterface.addEffect({
-						'effectName': 'Channel Divinity: Turn Undead',
-						'uuid': target.actor.uuid,
-						'origin': workflow.origin,
-						'overlay': false
-					});
 				}
 			}
 		}

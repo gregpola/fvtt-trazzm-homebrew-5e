@@ -1,15 +1,15 @@
-const version = "10.0.0";
+/*
+	Once per turn, the hobgoblin can deal an extra 7 (2d6) damage to a creature it hits with a weapon attack if that
+	creature is within 5 feet of an ally of the hobgoblin that isn't incapacitated.
+ */
+const version = "11.0";
 const optionName = "Martial Advantage";
 const timeFlag = "martialAdvantageTime";
 
 try {
-	const lastArg = args[args.length - 1];
-	const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-	const actorToken = canvas.tokens.get(lastArg.tokenId);
-	
-	if (args[0].macroPass === "DamageBonus") {
+	if ((args[0].macroPass === "DamageBonus") && (workflow.hitTargets.size > 0)) {
 		// check the action type
-		if (!["mwak", "rwak"].includes(lastArg.itemData.system.actionType)) {
+		if (!["mwak", "rwak"].includes(workflow.item.system.actionType)) {
 			console.log(`${optionName}: is not an applicable action type`);
 			return;
 		}
@@ -20,8 +20,8 @@ try {
 			return;
 		}
 		
-		let targetToken = canvas.tokens.get(args[0].hitTargets[0].id ?? args[0].hitTargers[0]._id);
-		if (checkAllyNearTarget(actorToken, targetToken)) {
+		let targetToken = workflow.hitTargets.first();
+		if (checkAllyNearTarget(token, targetToken)) {
 			const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn /100}`;
 			const lastTime = actor.getFlag("midi-qol", timeFlag);
 			if (combatTime !== lastTime) {
@@ -50,20 +50,8 @@ function isAvailableThisTurn() {
 }
 
 // Check if there is an enemy of the target adjacent to it
-function checkAllyNearTarget(actorToken, targetToken) {
-	let foundEnemy = false;
-	let nearbyEnemy = canvas.tokens.placeables.filter(t => {
-		let nearby = (t.actor &&
-			 t.actor?.id !== actorToken.actor._id && // not me
-			 t.id !== targetToken.id && // not the target
-			 t.actor?.system.attributes?.hp?.value > 0 && // not incapacitated
-			 t.document.disposition !== targetToken.document.disposition && // not an ally
-			 MidiQOL.getDistance(t, targetToken, false) <= 5 // close to the target
-		 );
-		foundEnemy = foundEnemy || (nearby && t.document.disposition === -targetToken.document.disposition);
-		return nearby;
-	});
-	
-	foundEnemy = nearbyEnemy.length > 0;
-	return foundEnemy;
+function checkAllyNearTarget(token, targetToken) {
+	let allNearby = MidiQOL.findNearby(token.document.disposition, targetToken, 5);
+	let nearbyFriendlies = allNearby.filter(i => (i !== token));
+	return (nearbyFriendlies.length > 0);
 }

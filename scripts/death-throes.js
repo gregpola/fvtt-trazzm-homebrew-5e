@@ -3,25 +3,19 @@
 
 	When the dark folk dies, it explodes into a flash of blinding darkness in a 20- foot radius. The darkness lingers for 1 minute.
 */
-const version = "10.0.1";
+const version = "11.0";
 const optionName = "Death Throes";
 
 try {
-	if (args[0].macroPass === "postActiveEffects") {
+	if (args[0].macroPass === "templatePlaced") {
 		// get the template
-		const lastArg = args[args.length - 1];
-		const actorToken = canvas.tokens.get(lastArg.tokenId);
-		
-		let templateDoc = canvas.scene.collections.templates.get(lastArg.templateId);
+		let templateDoc = canvas.scene.collections.templates.get(workflow.templateId);
 		if (templateDoc) {
 			// add the walls to block vision
 			let radius = canvas.grid.size * (templateDoc.distance / canvas.grid.grid.options.dimensions.distance);
 			await circleWall(templateDoc.x, templateDoc.y, radius);
-			
-			// delete the template
-			await canvas.scene.deleteEmbeddedDocuments("MeasuredTemplate", [templateDoc.id]);
 		}
-	}	
+	}
 	else if (args[0] === "off") {
 		async function removeWalls() {
 			let darkWalls = canvas.walls.placeables.filter(w => w.document.flags["midi-srd"]?.DeathThroes?.ActorId === actor.id)

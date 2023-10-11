@@ -1,22 +1,36 @@
-2023/10/09-09:28:47.340 b5ec Recovering log #282
-2023/10/09-09:28:47.341 b5ec Level-0 table #284: started
-2023/10/09-09:28:47.489 b5ec Level-0 table #284: 15048 bytes OK
-2023/10/09-09:28:47.509 b5ec Delete type=0 #282
-2023/10/09-09:28:47.509 b5ec Delete type=3 #281
-2023/10/09-09:28:59.103 c330 Moved #284 to level-1 15048 bytes OK: files[ 0 1 13 0 0 0 0 ]
-2023/10/09-15:19:49.586 c330 Compacting 1@1 + 6@2 files
-2023/10/09-15:19:49.626 c330 Generated table #286@1: 601 keys, 2121236 bytes
-2023/10/09-15:19:49.656 c330 Generated table #287@1: 619 keys, 2121719 bytes
-2023/10/09-15:19:49.685 c330 Generated table #288@1: 618 keys, 2120909 bytes
-2023/10/09-15:19:49.715 c330 Generated table #289@1: 1637 keys, 2126578 bytes
-2023/10/09-15:19:49.830 c330 Generated table #290@1: 2358 keys, 2129518 bytes
-2023/10/09-15:19:50.004 c330 Generated table #291@1: 2426 keys, 2131434 bytes
-2023/10/09-15:19:50.004 c330 Compacted 1@1 + 6@2 files => 12751394 bytes
-2023/10/09-15:19:50.007 c330 compacted to: files[ 0 0 13 0 0 0 0 ]
-2023/10/09-15:19:50.007 c330 Delete type=2 #219
-2023/10/09-15:19:50.008 c330 Delete type=2 #265
-2023/10/09-15:19:50.008 c330 Delete type=2 #266
-2023/10/09-15:19:50.008 c330 Delete type=2 #267
-2023/10/09-15:19:50.009 c330 Delete type=2 #268
-2023/10/09-15:19:50.009 c330 Delete type=2 #269
-2023/10/09-15:19:50.009 c330 Delete type=2 #284
+2023/10/11-07:07:17.674 a3d4 Recovering log #299
+2023/10/11-07:07:17.676 a3d4 Level-0 table #301: started
+2023/10/11-07:07:17.693 a3d4 Level-0 table #301: 832536 bytes OK
+2023/10/11-07:07:17.704 a3d4 Delete type=0 #299
+2023/10/11-07:07:17.705 a3d4 Delete type=3 #298
+2023/10/11-07:07:18.504 dba4 Compacting 1@0 + 0@1 files
+2023/10/11-07:07:18.514 dba4 Generated table #303@0: 54 keys, 72752 bytes
+2023/10/11-07:07:18.528 dba4 Generated table #304@0: 16 keys, 3537 bytes
+2023/10/11-07:07:18.528 dba4 Compacted 1@0 + 0@1 files => 76289 bytes
+2023/10/11-07:07:18.531 dba4 compacted to: files[ 0 2 13 0 0 0 0 ]
+2023/10/11-07:57:35.481 dba4 Compacting 1@1 + 10@2 files
+2023/10/11-07:57:35.521 dba4 Generated table #305@1: 601 keys, 2121973 bytes
+2023/10/11-07:57:35.550 dba4 Generated table #306@1: 619 keys, 2121856 bytes
+2023/10/11-07:57:35.579 dba4 Generated table #307@1: 618 keys, 2121007 bytes
+2023/10/11-07:57:35.607 dba4 Generated table #308@1: 1639 keys, 2127484 bytes
+2023/10/11-07:57:35.722 dba4 Generated table #309@1: 2353 keys, 2130822 bytes
+2023/10/11-07:57:35.893 dba4 Generated table #310@1: 2427 keys, 2131417 bytes
+2023/10/11-07:57:35.924 dba4 Generated table #311@1: 2225 keys, 2131052 bytes
+2023/10/11-07:57:36.106 dba4 Generated table #312@1: 2311 keys, 2129532 bytes
+2023/10/11-07:57:36.135 dba4 Generated table #313@1: 2212 keys, 2128840 bytes
+2023/10/11-07:57:36.164 dba4 Generated table #314@1: 2327 keys, 2130415 bytes
+2023/10/11-07:57:36.169 dba4 Generated table #315@1: 11 keys, 6629 bytes
+2023/10/11-07:57:36.169 dba4 Compacted 1@1 + 10@2 files => 21281027 bytes
+2023/10/11-07:57:36.172 dba4 compacted to: files[ 0 1 14 0 0 0 0 ]
+2023/10/11-07:57:36.172 dba4 Delete type=2 #270
+2023/10/11-07:57:36.172 dba4 Delete type=2 #271
+2023/10/11-07:57:36.172 dba4 Delete type=2 #272
+2023/10/11-07:57:36.173 dba4 Delete type=2 #273
+2023/10/11-07:57:36.173 dba4 Delete type=2 #286
+2023/10/11-07:57:36.173 dba4 Delete type=2 #287
+2023/10/11-07:57:36.173 dba4 Delete type=2 #288
+2023/10/11-07:57:36.174 dba4 Delete type=2 #289
+2023/10/11-07:57:36.174 dba4 Delete type=2 #290
+2023/10/11-07:57:36.174 dba4 Delete type=2 #291
+2023/10/11-07:57:36.175 dba4 Delete type=2 #301
+2023/10/11-07:57:36.175 dba4 Delete type=2 #303

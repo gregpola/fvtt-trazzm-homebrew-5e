@@ -1,3 +1,5 @@
-2023/10/09-09:28:49.108 b5ec Recovering log #161
-2023/10/09-09:28:49.122 b5ec Delete type=0 #161
-2023/10/09-09:28:49.122 b5ec Delete type=3 #160
+2023/10/11-07:07:18.633 b1d0 Recovering log #171
+2023/10/11-07:07:18.633 b1d0 Level-0 table #173: started
+2023/10/11-07:07:18.639 b1d0 Level-0 table #173: 51242 bytes OK
+2023/10/11-07:07:18.653 b1d0 Delete type=0 #171
+2023/10/11-07:07:18.653 b1d0 Delete type=3 #170

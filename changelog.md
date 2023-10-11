@@ -1,3 +1,8 @@
+# 11.5
+* Creatures Updated: Hobgoblin, Hobgoblin Captain, Hobgoblin Devastator, Hobgoblin Iron Shadow, Hobgoblin Warlord
+* Feature Updates: Channel Divinity: Turn Undead, Martial Advantage, Sculpt Spells, Shadow Step, Shadow Walk
+* Spells Updated: Darkness, Fireball, Fog Cloud, Moonbeam, Wall of Fire, Wall of Sand, Wall of Thorns
+
 # 11.4
 * Divine Smite - updated for v11
 * Favored Foe - updated for v11

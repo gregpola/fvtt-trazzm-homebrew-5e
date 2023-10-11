@@ -7,27 +7,26 @@
 
 	At Higher Levels. When you cast this spell using a spell slot of 7th level or higher, both types of damage increase by 1d8 for each slot level above 6th.
 */
-const version = "10.0.0"
+const version = "11.0"
 const optionName = "Wall of Thorns";
 const templateFlag = "wall-of-thorns-template";
 
 try {
 	const lastArg = args[args.length - 1];
 
-	if (args[0].macroPass === "postActiveEffects") {
-		// build the template macro
-		let templateDoc = canvas.scene.collections.templates.get(lastArg.templateId);
-		if (!templateDoc) return;
+	if (args[0].macroPass === "templatePlaced") {
+		let templateDoc = canvas.scene.collections.templates.get(workflow.templateId);
+		if (templateDoc) {
+			// add the walls to block vision
+			await lineWall(templateDoc);
 
-		// add the walls to block vision
-		await lineWall(templateDoc);
-
-		// store the spell data in the template
-		let spellLevel = lastArg.spellLevel;
-		let spelldc = lastArg.actor.system.attributes.spelldc;
-		let touchedTokens = await game.modules.get('templatemacro').api.findContained(templateDoc);
-		await templateDoc.setFlag('world', 'spell.WallofThorns', {spellLevel, spelldc, touchedTokens});
-		await HomebrewMacros.wallOfThornsEffects(touchedTokens);
+			// store the spell data in the template
+			let spellLevel = args[0].spellLevel;
+			let spelldc = actor.system.attributes.spelldc;
+			let touchedTokens = await game.modules.get('templatemacro').api.findContained(templateDoc);
+			await templateDoc.setFlag('world', 'spell.WallofThorns', {spellLevel, spelldc, touchedTokens});
+			await HomebrewMacros.wallOfThornsEffects(touchedTokens);
+		}
 	}
 	else if (args[0] === "off") {
 		async function removeWalls() {

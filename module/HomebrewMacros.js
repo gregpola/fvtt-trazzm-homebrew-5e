@@ -2,31 +2,33 @@ class HomebrewMacros {
 
     /**
      *
-     * @param {Token} actorToken Source of the crosshairs
+     * @param {Token} token Source of the crosshairs
      * @param {Number} maxRange the maximum allowed range
      * @param {Item} item the item for which the function is called
      * @param {Token} targetToken the token that is being moved
      * @returns
      */
-    static async warpgateCrosshairs(actorToken, maxRange, item, targetToken) {
-        const tokenCenter = actorToken.center;
-        let cachedDistance = 0;
-
+    static async warpgateCrosshairs(token, maxRange, item, targetToken) {
+        // get the token texture
         let texture = targetToken.texture.src;
         if (!texture)
             texture = targetToken.document.texture.src;
 
-        const checkDistance = async(crosshairs) => {
+        // check distance versus param while drawing crosshairs
+        let crosshairsDistance = 0;
+
+        const checkDistance = async (crosshairs) => {
             while (crosshairs.inFlight) {
                 //wait for initial render
                 await warpgate.wait(100);
-                const ray = new Ray( tokenCenter, crosshairs );
-                const distance = canvas.grid.measureDistances([{ray}], {gridSpaces:true})[0];
+
+                const ray = new Ray(token.center, crosshairs);
+                const distance = canvas.grid.measureDistances([{ ray }], { gridSpaces: true })[0];
 
                 //only update if the distance has changed
-                if (cachedDistance !== distance) {
-                    cachedDistance = distance;
-                    if(distance > maxRange) {
+                if (crosshairsDistance !== distance) {
+                    crosshairsDistance = distance;
+                    if (distance > maxRange) {
                         crosshairs.icon = 'icons/svg/hazard.svg';
                     } else {
                         crosshairs.icon = texture;
@@ -38,57 +40,61 @@ class HomebrewMacros {
             }
         };
 
-        const callbacks = {
-            show: checkDistance
-        };
+        const location = await warpgate.crosshairs.show(
+            {
+                // swap between targeting the grid square vs intersection based on token's size
+                interval: token.data.width % 2 === 0 ? 1 : -1,
+                size: token.data.width,
+                icon: texture,
+                label: '0 ft.',
+            },
+            {
+                show: checkDistance
+            },
+        );
 
-        const config = {
-            drawIcon: true,
-            interval: 1,
-            size: targetToken.width / canvas.grid.size
-        };
-
-        if (typeof item !== 'undefined') {
-            config.drawIcon = true;
-            config.icon = item.img;
-            config.label = item.name;
+        if (location.cancelled) {
+            return undefined;
         }
 
-        const position = await warpgate.crosshairs.show(config, callbacks);
-
-        if (position.cancelled) return false;
-        if (cachedDistance > maxRange) {
+        if (crosshairsDistance > maxRange) {
             ui.notifications.error(`${name} has a maximum range of ${maxRange} ft.`)
-            return false;
+            return undefined;
         }
-        return position;
+
+        return location;
     }
 
     /**
+     *  Draw a Warpgate crosshair and return the selected position if valid.
      *
      * @param {Token} actorToken Source of the crosshairs
      * @param {Number} maxRange the maximum allowed range
      * @param {Item} item the item for which the function is called
      * @returns
      */
-    static async warpgateCrosshairs(actorToken, maxRange, item) {
-        const tokenCenter = actorToken.center;
-        let cachedDistance = 0;
+    static async warpgateCrosshairs(token, maxRange, item) {
+        // get the token texture
+        let texture = item.img;
 
-        const checkDistance = async(crosshairs) => {
+        // check distance versus param while drawing crosshairs
+        let crosshairsDistance = 0;
+
+        const checkDistance = async (crosshairs) => {
             while (crosshairs.inFlight) {
                 //wait for initial render
                 await warpgate.wait(100);
-                const ray = new Ray( tokenCenter, crosshairs );
-                const distance = canvas.grid.measureDistances([{ray}], {gridSpaces:true})[0]
+
+                const ray = new Ray(token.center, crosshairs);
+                const distance = canvas.grid.measureDistances([{ ray }], { gridSpaces: true })[0];
 
                 //only update if the distance has changed
-                if (cachedDistance !== distance) {
-                    cachedDistance = distance;
-                    if(distance > maxRange) {
+                if (crosshairsDistance !== distance) {
+                    crosshairsDistance = distance;
+                    if (distance > maxRange) {
                         crosshairs.icon = 'icons/svg/hazard.svg';
                     } else {
-                        crosshairs.icon = item.img;
+                        crosshairs.icon = texture;
                     }
 
                     crosshairs.draw();
@@ -97,30 +103,29 @@ class HomebrewMacros {
             }
         };
 
-        const callbacks = {
-            show: checkDistance
-        };
+        const location = await warpgate.crosshairs.show(
+            {
+                // swap between targeting the grid square vs intersection based on token's size
+                interval: token.data.width % 2 === 0 ? 1 : -1,
+                size: token.data.width,
+                icon: texture,
+                label: '0 ft.',
+            },
+            {
+                show: checkDistance
+            },
+        );
 
-        const config = {
-            drawIcon: true,
-            interval: 0,
-            size: 1
-        };
-
-        if (typeof item !== 'undefined') {
-            config.drawIcon = true;
-            config.icon = item.img;
-            config.label = item.name;
+        if (location.cancelled) {
+            return undefined;
         }
 
-        const position = await warpgate.crosshairs.show(config, callbacks);
-
-        if (position.cancelled) return false;
-        if (cachedDistance > maxRange) {
+        if (crosshairsDistance > maxRange) {
             ui.notifications.error(`${name} has a maximum range of ${maxRange} ft.`)
-            return false;
+            return undefined;
         }
-        return position;
+
+        return location;
     }
 
     static checkPosition(ignoreToken, newX, newY) {
@@ -186,7 +191,7 @@ class HomebrewMacros {
                 let templateDoc = canvas.scene.collections.templates.get(templateid);
                 let origin = templateDoc.flags?.dnd5e?.origin;
                 let effectData = {
-                    'label': 'Cloudkill',
+                    'name': 'Cloudkill',
                     'icon': 'icons/magic/air/fog-gas-smoke-swirling-green.webp',
                     'changes': [
                         {
@@ -303,7 +308,7 @@ class HomebrewMacros {
 
                     if (saveRoll.total < spelldc) {
                         let stuckEffect = {
-                            'label': 'Stuck in Webs',
+                            'name': 'Stuck in Webs',
                             'icon': 'icons/creatures/webs/webthin-blue.webp',
                             'changes': [
                                 {
@@ -376,7 +381,7 @@ class HomebrewMacros {
                 // obscured vision - disadvantage on Wisdom (Perception) checks that rely on sight
                 if (!inWebEffect) {
                     let effectData = {
-                        'label': 'Webs',
+                        'name': 'Webs',
                         'icon': 'icons/creatures/webs/web-spider-glowing-purple.webp',
                         'changes': [
                             {
@@ -504,7 +509,7 @@ class HomebrewMacros {
                         applyDamage = true;
 
                         let stuckEffect = {
-                            'label': 'Stuck in Tentacles',
+                            'name': 'Stuck in Tentacles',
                             'icon': 'icons/magic/nature/root-vine-fire-entangled-hand.webp',
                             'changes': [
                                 {
@@ -577,7 +582,7 @@ class HomebrewMacros {
                 // difficult terrain - half movement
                 if (!inTentaclesEffect) {
                     let effectData = {
-                        'label': 'Tentacles',
+                        'name': 'Tentacles',
                         'icon': 'icons/creatures/tentacles/tentacles-suctioncups-pink.webp',
                         'changes': [
                             {
@@ -647,7 +652,7 @@ class HomebrewMacros {
 
         // add the grappled effect to the target
         let grappledEffect = {
-            'label': 'Grappled',
+            'name': 'Grappled',
             'icon': 'icons/magic/nature/root-vine-fire-entangled-hand.webp',
             'changes': [
                 {
@@ -825,7 +830,7 @@ class HomebrewMacros {
 
         // add the Restrained effect to the target
         let restrainedEffect = {
-            'label': 'Restrained',
+            'name': 'Restrained',
             'icon': 'icons/magic/control/encase-creature-spider-hold.webp',
             'changes': [
                 {
@@ -1091,7 +1096,7 @@ class HomebrewMacros {
                 let templateDoc = canvas.scene.collections.templates.get(templateid);
                 let origin = templateDoc.flags?.dnd5e?.origin;
                 let effectData = {
-                    'label': 'WallofFire',
+                    'name': 'WallofFire',
                     'icon': 'icons/magic/fire/flame-burning-fence.webp',
                     'changes': [
                         {
@@ -1182,7 +1187,7 @@ class HomebrewMacros {
                 let templateDoc = canvas.scene.collections.templates.get(templateid);
                 let origin = templateDoc.flags?.dnd5e?.origin;
                 let effectData = {
-                    'label': 'WallofThorns',
+                    'name': 'WallofThorns',
                     'icon': 'icons/magic/nature/root-vine-barrier-wall-brown.webp',
                     'changes': [
                         {
@@ -1276,7 +1281,7 @@ class HomebrewMacros {
                 let templateDoc = canvas.scene.collections.templates.get(templateid);
                 let origin = templateDoc.flags?.dnd5e?.origin;
                 let effectData = {
-                    'label': 'Moonbeam',
+                    'name': 'Moonbeam',
                     'icon': 'icons/magic/light/beam-rays-yellow-blue.webp',
                     'changes': [
                         {
@@ -1370,7 +1375,7 @@ class HomebrewMacros {
                 let templateDoc = canvas.scene.collections.templates.get(templateid);
                 let origin = templateDoc.flags?.dnd5e?.origin;
                 let effectData = {
-                    'label': 'CreateBonfire',
+                    'name': 'CreateBonfire',
                     'icon': 'icons/magic/fire/flame-burning-campfire-orange.webp',
                     'changes': [
                         {
