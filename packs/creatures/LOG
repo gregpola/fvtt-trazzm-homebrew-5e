@@ -1,10 +1,48 @@
-2023/10/11-08:06:46.552 b8f0 Recovering log #302
-2023/10/11-08:06:46.553 b8f0 Level-0 table #317: started
-2023/10/11-08:06:46.559 b8f0 Level-0 table #317: 60644 bytes OK
-2023/10/11-08:06:46.570 b8f0 Delete type=0 #302
-2023/10/11-08:06:46.570 b8f0 Delete type=3 #300
-2023/10/11-08:06:46.648 9fc0 Compacting 1@0 + 1@1 files
-2023/10/11-08:06:46.653 9fc0 Generated table #319@0: 4 keys, 7753 bytes
-2023/10/11-08:06:46.659 9fc0 Generated table #320@0: 17 keys, 5291 bytes
-2023/10/11-08:06:46.659 9fc0 Compacted 1@0 + 1@1 files => 13044 bytes
-2023/10/11-08:06:46.662 9fc0 compacted to: files[ 0 2 14 0 0 0 0 ]
+2023/10/17-09:08:11.292 345c Recovering log #387
+2023/10/17-09:08:11.293 345c Level-0 table #400: started
+2023/10/17-09:08:11.300 345c Level-0 table #400: 301428 bytes OK
+2023/10/17-09:08:11.311 345c Delete type=0 #387
+2023/10/17-09:08:11.311 345c Delete type=3 #385
+2023/10/17-09:08:11.456 6d50 Compacting 1@0 + 1@1 files
+2023/10/17-09:08:11.472 6d50 Generated table #402@0: 4 keys, 13398 bytes
+2023/10/17-09:08:11.482 6d50 Generated table #403@0: 14 keys, 16551 bytes
+2023/10/17-09:08:11.482 6d50 Compacted 1@0 + 1@1 files => 29949 bytes
+2023/10/17-09:08:11.485 6d50 compacted to: files[ 0 2 14 0 0 0 0 ]
+2023/10/17-09:09:32.136 6d50 Level-0 table #405: started
+2023/10/17-09:09:32.136 6d50 Level-0 table #405: 0 bytes OK
+2023/10/17-09:09:32.140 6d50 Delete type=2 #389
+2023/10/17-09:09:32.140 6d50 Delete type=2 #400
+2023/10/17-09:09:32.140 6d50 Delete type=0 #401
+2023/10/17-09:09:32.148 6d50 Manual compaction at level-0 from '!actors!050efhbkvycxeUxN' @ 72057594037927935 : 1 .. '!actors.items.effects!zzArKa0vKLYU1Gvz.c26z4nnrm4bp9au4.ul3iyf0tggp7uafp' @ 0 : 0; will stop at (end)
+2023/10/17-09:09:32.159 6d50 Manual compaction at level-1 from '!actors!050efhbkvycxeUxN' @ 72057594037927935 : 1 .. '!actors.items.effects!zzArKa0vKLYU1Gvz.c26z4nnrm4bp9au4.ul3iyf0tggp7uafp' @ 0 : 0; will stop at '!actors.items.effects!v4rQ1CQE42yEl1bj.36vtapoua4qig4zy.3A5933boierAohNj' @ 27132 : 0
+2023/10/17-09:09:32.159 6d50 Compacting 2@1 + 13@2 files
+2023/10/17-09:09:32.186 6d50 Generated table #406@1: 619 keys, 2122315 bytes
+2023/10/17-09:09:32.215 6d50 Generated table #407@1: 618 keys, 2121244 bytes
+2023/10/17-09:09:32.242 6d50 Generated table #408@1: 1638 keys, 2129281 bytes
+2023/10/17-09:09:32.373 6d50 Generated table #409@1: 2352 keys, 2129552 bytes
+2023/10/17-09:09:32.570 6d50 Generated table #410@1: 2423 keys, 2129692 bytes
+2023/10/17-09:09:32.756 6d50 Generated table #411@1: 2218 keys, 2129878 bytes
+2023/10/17-09:09:32.947 6d50 Generated table #412@1: 2308 keys, 2130472 bytes
+2023/10/17-09:09:33.147 6d50 Generated table #413@1: 2214 keys, 2131359 bytes
+2023/10/17-09:09:33.338 6d50 Generated table #414@1: 2322 keys, 2129294 bytes
+2023/10/17-09:09:33.532 6d50 Generated table #415@1: 2348 keys, 2132261 bytes
+2023/10/17-09:09:33.696 6d50 Generated table #416@1: 2386 keys, 2130127 bytes
+2023/10/17-09:09:33.728 6d50 Generated table #417@1: 3442 keys, 815906 bytes
+2023/10/17-09:09:33.728 6d50 Compacted 2@1 + 13@2 files => 24231381 bytes
+2023/10/17-09:09:33.731 6d50 compacted to: files[ 0 0 13 0 0 0 0 ]
+2023/10/17-09:09:33.731 6d50 Delete type=2 #368
+2023/10/17-09:09:33.731 6d50 Delete type=2 #369
+2023/10/17-09:09:33.732 6d50 Delete type=2 #370
+2023/10/17-09:09:33.732 6d50 Delete type=2 #371
+2023/10/17-09:09:33.732 6d50 Delete type=2 #372
+2023/10/17-09:09:33.732 6d50 Delete type=2 #391
+2023/10/17-09:09:33.733 6d50 Delete type=2 #392
+2023/10/17-09:09:33.733 6d50 Delete type=2 #393
+2023/10/17-09:09:33.733 6d50 Delete type=2 #394
+2023/10/17-09:09:33.733 6d50 Delete type=2 #395
+2023/10/17-09:09:33.734 6d50 Delete type=2 #396
+2023/10/17-09:09:33.734 6d50 Delete type=2 #397
+2023/10/17-09:09:33.734 6d50 Delete type=2 #398
+2023/10/17-09:09:33.734 6d50 Delete type=2 #402
+2023/10/17-09:09:33.734 6d50 Delete type=2 #403
+2023/10/17-09:09:33.743 6d50 Manual compaction at level-1 from '!actors.items.effects!v4rQ1CQE42yEl1bj.36vtapoua4qig4zy.3A5933boierAohNj' @ 27132 : 0 .. '!actors.items.effects!zzArKa0vKLYU1Gvz.c26z4nnrm4bp9au4.ul3iyf0tggp7uafp' @ 0 : 0; will stop at (end)

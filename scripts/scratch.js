@@ -1,61 +1,56 @@
-// https://github.com/gregpola/fvtt-trazzm-homebrew-5e/releases/latest/download/module.json
-const resourceName = "Superiority Dice";
-
 /*
 	
 */
-const version = "10.0.0";
+const version = "11.0";
 const optionName = "Precision";
 
 try {
-	console.info("%c fvtt-trazzm-homebrew-5e", "color: #D030DE", " | Bag of Tricks (Gray)");
-	// actor
-	// token
-	const theItem = scope.item;
-	if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType)) {
-
-	const rogueLevels = actor.getRollData().classes?.rogue?.levels;
-
-
-
-
-
-
-
-
-
-	ui.notifications.error(`${optionName}: ${resourceName}: - no resource found`);
 
 } catch (err) {
 	console.error(`${optionName}: ${version}`, err);
 }
 
-	function isAvailableThisTurn() {
-		if (game.combat) {
-			const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn /100}`;
-			const lastTime = actor.getFlag("midi-qol", timeFlag);
-			if (combatTime === lastTime) {
-				return false;
-			}
-			return true;
+console.info("%c fvtt-trazzm-homebrew-5e", "color: #D030DE", " | Bag of Tricks (Gray)");
+ui.notifications.error(`${optionName}: ${resourceName}: - no resource found`);
+
+// Useful ereferences
+if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType)) {
+
+const tsize = targetTokenDoc.actor.system.traits.size;
+if (!["tiny","sm","med","lg"].includes(tsize)) {
+
+		const rogueLevels = actor.getRollData().classes?.rogue?.levels;
+const pb = actor.system.attributes.prof;
+const actorDC = actor.system.attributes.spelldc ?? 12;
+const spellcastingAbility = actor.system.attributes.spellcasting;
+const abilityBonus = actor.system.abilities[spellcastingAbility].mod;
+
+item.system.prof.hasProficiency
+
+
+
+function isAvailableThisTurn() {
+	if (game.combat) {
+		const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn /100}`;
+		const lastTime = actor.getFlag("midi-qol", timeFlag);
+		if (combatTime === lastTime) {
+			return false;
 		}
-		return false;
+		return true;
 	}
+	return false;
+}
 
 // Check if there is an enemy of the target adjacent to it
-	function checkAllyNearTarget(token, targetToken) {
-		let allNearby = MidiQOL.findNearby(token.document.disposition, targetToken, 5);
-		let nearbyFriendlies = allNearby.filter(i => (i !== token));
-		return (nearbyFriendlies.length > 0);
-	}
+function checkAllyNearTarget(token, targetToken) {
+	let allNearby = MidiQOL.findNearby(token.document.disposition, targetToken, 5);
+	let nearbyFriendlies = allNearby.filter(i => (i !== token));
+	return (nearbyFriendlies.length > 0);
+}
 
 
 
-	const druidLevel = actor.classes.druid?.system.levels ?? 0;
-	const pb = actor.system.attributes.prof;
-	const actorDC = actor.system.attributes.spelldc ?? 12;
-	actor.system.abilities.cha.mod;
-	
+
 	macro.tokenMagic
 	system.attributes.exhaustion = 2;
 	system.attributes.ac.bonus
@@ -104,6 +99,8 @@ saveTotal = message.flags["monks-tokenbar"][tokenid].total;
 
 
 async function wait(ms) { return new Promise(resolve => { setTimeout(resolve, ms); }); }
+
+await MidiQOL.socket().executeAsGM("removeEffects", { actorUuid: originalActor.uuid, effects: [itemEffect.id] });
 
 async function findEffect(actor, effectName) {
     let effect = null;

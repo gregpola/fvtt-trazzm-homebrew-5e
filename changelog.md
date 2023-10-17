@@ -1,3 +1,11 @@
+# 11.6
+* Classes Updated: Ranger (optional class features)
+* Creatures Updated: Air Elemental, Earth Elemental, Fire Elemental, Ghast, Water Elemental
+* Features Updated: Accursed Specter, Agonizing Blast, Elemental Manipulation, Elemental Resistance, Hexblade's Curse, Hex Warrior, Sneak Attack
+* Spells Updated: Bigby's Hand, Frost Fingers (animation), Hex, Spiritual Weapon
+* Subclasses Updated: Circle of the Elements, The Hexblade
+* General: Re-organized the scripts folder with subfolders, updated module list and settings files
+
 # 11.5
 * Creatures Updated: Hobgoblin, Hobgoblin Captain, Hobgoblin Devastator, Hobgoblin Iron Shadow, Hobgoblin Warlord
 * Feature Updates: Channel Divinity: Turn Undead, Martial Advantage, Sculpt Spells, Shadow Step, Shadow Walk

@@ -981,10 +981,6 @@ class HomebrewMacros {
         return false;
     }
 
-    static round5(x) {
-        return (x % 5) >= 2.5 ? parseInt(x / 5) * 5 + 5 : parseInt(x / 5) * 5;
-    }
-
     /**
      * Pushes the target maxSquares number of squares away from the pusher.
      *
@@ -1005,6 +1001,64 @@ class HomebrewMacros {
         let knockBackFactor = knockBackFt / canvas.dimensions.distance;
         const ray = new Ray(pusherToken.center, targetToken.center);
         let newCenter = ray.project(1 + ((canvas.dimensions.size * knockBackFactor) / ray.distance));
+
+        // check for collision
+        let c = canvas.grid.getSnappedPosition(newCenter.x - targetToken.width / 2, newCenter.y - targetToken.height / 2, 1);
+        let isAllowedLocation = !HomebrewMacros.checkPosition(targetToken, c.x, c.y);
+
+        while ((squares > 1) && !isAllowedLocation) {
+            squares = squares - 1;
+            knockBackFt = 5 * squares;
+            knockBackFactor = knockBackFt / canvas.dimensions.distance;
+
+            //movePixels = squares * pixelsPerSquare;
+            let shorterCenter = ray.project(1 + ((canvas.dimensions.size * knockBackFactor) / ray.distance));
+            c = canvas.grid.getSnappedPosition(shorterCenter.x - targetToken.width / 2, shorterCenter.y - targetToken.height / 2, 1);
+            let isShorterAllowed = !HomebrewMacros.checkPosition(targetToken, c.x, c.y);
+
+            if (isShorterAllowed) {
+                isAllowedLocation = true;
+                newCenter = shorterCenter;
+                break;
+            }
+        }
+
+        if (isAllowedLocation) {
+            // finish the pull
+            newCenter = canvas.grid.getSnappedPosition(newCenter.x - targetToken.width / 2, newCenter.y - targetToken.height / 2, 1);
+            const mutationData = { token: {x: newCenter.x, y: newCenter.y}};
+            await warpgate.mutate(targetToken.document, mutationData, {}, {permanent: true});
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Flings the target maxSquares number of squares away from the pusher in a random direction
+     *
+     * @param pusherToken
+     * @param targetToken
+     * @param maxSquares
+     * @returns {Promise<boolean>}
+     */
+    static async flingTarget(targetToken, maxSquares) {
+        // sanity checks
+        if (!targetToken) {
+            console.error("flingTarget() is missing a target");
+            return false;
+        }
+
+        let squares = maxSquares ? maxSquares : 1;
+        let knockBackFt = 5 * squares;
+        let knockBackFactor = knockBackFt / canvas.dimensions.distance;
+        let distance = canvas.dimensions.size * knockBackFactor;
+        //const angle2 = Math.random() * 2.0 * Math.PI;
+        const angle = (Math.random() * 360) * (Math.PI/180);
+        const ray = Ray.fromAngle(targetToken.center.x, targetToken.center.y, angle, distance);
+        let newCenter = ray.project(1);
+        //let newCenter = ray.project(1 + (canvas.dimensions.size * knockBackFactor));
+        //let newCenter = ray.project(1 + ((canvas.dimensions.size * knockBackFactor) / ray.distance));
 
         // check for collision
         let c = canvas.grid.getSnappedPosition(newCenter.x - targetToken.width / 2, newCenter.y - targetToken.height / 2, 1);

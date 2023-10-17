@@ -284,7 +284,8 @@
   ],
   "scripts": [
     "module/HomebrewMacros.js",
-    "module/HomebrewHelpers.js"
+    "module/HomebrewHelpers.js",
+    "module/MonsterMacros.js"
   ],
   "flags": {
     "allowBugReporter": true

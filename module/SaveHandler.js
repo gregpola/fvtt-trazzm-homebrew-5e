@@ -1,10 +1,12 @@
-const VERSION = "10.0.0";
+const VERSION = "11.0";
 const _charmResistLabels = new Set(["Alien Mind", "Countercharm", "Dark Devotion", "Fey Ancestry", "Leviathan Will", "Mental Discipline", "Heart of Hruggek", "Two Heads"]);
 const _frightenedResistLabels = new Set(["Brave", "Countercharm", "Dark Devotion", "Leviathan Will", "Mental Discipline", "Heart of Hruggek", "Two Heads"]);
 const _paralyzedResistLabels = new Set(["Leviathan Will", "Heart of Hruggek"]);
 const _poisonResistLabels = new Set(["Deathless Nature", "Dwarven Resilience", "Hill Rune", "Infernal Constitution", "Leviathan Will", "Poison Resilience", "Stout Resilience", "Heart of Hruggek"]);
 const _sleepResistLabels = new Set(["Leviathan Will", "Heart of Hruggek", "Wakeful"]);
 const _stunResistLabels = new Set(["Leviathan Will", "Heart of Hruggek", "Two Heads"]);
+
+const _elementalResistanceTypes = new Set(["acid", "cold", "fire", "lightning", "thunder"]);
 
 let conditionResilience = {
     'label': 'Condition Resilience',
@@ -105,8 +107,9 @@ export class SaveHandler {
             // sanity checks
             if (!workflow.item.hasSave || !workflow.item.hasTarget) return;
 
-            // get all the conditions in the item
+            // get all the conditions
             let itemConditions = new Set();
+            let appliesToElementalResistance = false;
 
             // first try effects
             if (workflow.item.effects?.size) {
@@ -128,6 +131,10 @@ export class SaveHandler {
                     let damageType = damageParts[i].type.toLowerCase();
                     if (!itemConditions.has(damageType)) {
                         itemConditions.add(damageType);
+                    }
+
+                    if (_elementalResistanceTypes.has(damageType)) {
+                        appliesToElementalResistance = true;
                     }
                 }
             }
@@ -223,6 +230,12 @@ export class SaveHandler {
                         'effects': [conditionSensitivity]
                     });
                     await SaveHandler.wait(100);
+                }
+
+                // Check for Elemental Resistance (Circle of the Elements) applicability
+                let elementalResistance = tokenDoc.document.actor.items.find(f => f.name === "Elemental Resistance");
+                if (elementalResistance && appliesToElementalResistance) {
+                    hasResilience = true;
                 }
 
                 if (hasResilience) {

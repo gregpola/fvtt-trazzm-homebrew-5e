@@ -1,6 +1,11 @@
 {
   "activeModules": [
     {
+      "id": "about-time",
+      "title": "About Time",
+      "version": ""
+    },
+    {
       "id": "ActiveAuras",
       "title": "Active-Auras",
       "version": ""
@@ -13,11 +18,6 @@
     {
       "id": "advanced-macros",
       "title": "Advanced Macros",
-      "version": ""
-    },
-    {
-      "id": "tokenvisibility",
-      "title": "Alternative Token Visibility",
       "version": ""
     },
     {
@@ -41,13 +41,13 @@
       "version": ""
     },
     {
-      "id": "chat-portrait",
-      "title": "Chat Portrait",
+      "id": "compendium-browser",
+      "title": "Compendium Browser",
       "version": ""
     },
     {
-      "id": "compendium-browser",
-      "title": "Compendium Browser",
+      "id": "custom-nameplates",
+      "title": "Custom Nameplates",
       "version": ""
     },
     {
@@ -71,8 +71,18 @@
       "version": ""
     },
     {
+      "id": "dnd5e-scriptlets",
+      "title": "DND5E Scriplets - 5E QOL bits and pieces",
+      "version": ""
+    },
+    {
+      "id": "drider-of-the-underworld",
+      "title": "Drider of the Underworld",
+      "version": ""
+    },
+    {
       "id": "dae",
-      "title": "Dynamic effects using Active Effects",
+      "title": "Dynamic effects using Active Effects (DAE)",
       "version": ""
     },
     {
@@ -81,8 +91,8 @@
       "version": ""
     },
     {
-      "id": "find-the-culprit",
-      "title": "Find the culprit",
+      "id": "forien-copy-environment",
+      "title": "Forien's Copy Environment",
       "version": ""
     },
     {
@@ -93,6 +103,11 @@
     {
       "id": "fxmaster",
       "title": "FXMaster",
+      "version": ""
+    },
+    {
+      "id": "itemcollection",
+      "title": "Item Collection\\Item Container for Dnd5e",
       "version": ""
     },
     {
@@ -261,6 +276,16 @@
       "version": ""
     },
     {
+      "id": "kp-tome-of-beasts-3",
+      "title": "Tome of Beasts III",
+      "version": ""
+    },
+    {
+      "id": "kp-tome-of-beasts-3-lairs",
+      "title": "Tome of Beasts III Lairs",
+      "version": ""
+    },
+    {
       "id": "tome-of-heroes",
       "title": "Tome of Heroes",
       "version": ""
@@ -288,8 +313,13 @@
   ],
   "inactiveModules": [
     {
-      "id": "ambientdoors",
-      "title": "Ambient Doors",
+      "id": "chat-portrait",
+      "title": "Chat Portrait",
+      "version": ""
+    },
+    {
+      "id": "itemacro",
+      "title": "Item Macro",
       "version": ""
     }
   ]
