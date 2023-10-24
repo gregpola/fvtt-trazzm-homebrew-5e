@@ -6,76 +6,20 @@ class HomebrewMacros {
      * @param {Number} maxRange the maximum allowed range
      * @param {Item} item the item for which the function is called
      * @param {Token} targetToken the token that is being moved
+     * @param {Number} minRange the minimum selectable range
      * @returns
      */
-    static async warpgateCrosshairs(token, maxRange, item, targetToken) {
-        // get the token texture
-        let texture = targetToken.texture.src;
-        if (!texture)
-            texture = targetToken.document.texture.src;
-
-        // check distance versus param while drawing crosshairs
-        let crosshairsDistance = 0;
-
-        const checkDistance = async (crosshairs) => {
-            while (crosshairs.inFlight) {
-                //wait for initial render
-                await warpgate.wait(100);
-
-                const ray = new Ray(token.center, crosshairs);
-                const distance = canvas.grid.measureDistances([{ ray }], { gridSpaces: true })[0];
-
-                //only update if the distance has changed
-                if (crosshairsDistance !== distance) {
-                    crosshairsDistance = distance;
-                    if (distance > maxRange) {
-                        crosshairs.icon = 'icons/svg/hazard.svg';
-                    } else {
-                        crosshairs.icon = texture;
-                    }
-
-                    crosshairs.draw();
-                    crosshairs.label = `${distance} ft`;
-                }
-            }
-        };
-
-        const location = await warpgate.crosshairs.show(
-            {
-                // swap between targeting the grid square vs intersection based on token's size
-                interval: token.data.width % 2 === 0 ? 1 : -1,
-                size: token.data.width,
-                icon: texture,
-                label: '0 ft.',
-            },
-            {
-                show: checkDistance
-            },
-        );
-
-        if (location.cancelled) {
-            return undefined;
-        }
-
-        if (crosshairsDistance > maxRange) {
-            ui.notifications.error(`${name} has a maximum range of ${maxRange} ft.`)
-            return undefined;
-        }
-
-        return location;
-    }
-
-    /**
-     *  Draw a Warpgate crosshair and return the selected position if valid.
-     *
-     * @param {Token} actorToken Source of the crosshairs
-     * @param {Number} maxRange the maximum allowed range
-     * @param {Item} item the item for which the function is called
-     * @returns
-     */
-    static async warpgateCrosshairs(token, maxRange, item) {
-        // get the token texture
+    static async warpgateCrosshairs(token, maxRange, item, targetToken, minRange) {
         let texture = item.img;
+        if (targetToken) {
+            texture = targetToken.texture.src;
+            if (!texture) {
+                texture = targetToken.document.texture.src;
+            }
+            if (!texture) {
+                texture = item.img;
+            }
+        }
 
         // check distance versus param while drawing crosshairs
         let crosshairsDistance = 0;
@@ -93,7 +37,11 @@ class HomebrewMacros {
                     crosshairsDistance = distance;
                     if (distance > maxRange) {
                         crosshairs.icon = 'icons/svg/hazard.svg';
-                    } else {
+                    }
+                    else if (minRange && distance < minRange) {
+                        crosshairs.icon = 'icons/svg/hazard.svg';
+                    }
+                    else {
                         crosshairs.icon = texture;
                     }
 
@@ -122,6 +70,11 @@ class HomebrewMacros {
 
         if (crosshairsDistance > maxRange) {
             ui.notifications.error(`${name} has a maximum range of ${maxRange} ft.`)
+            return undefined;
+        }
+
+        if (minRange && crosshairsDistance < minRange) {
+            ui.notifications.error(`${name} has a minimum range of ${maxRange} ft.`)
             return undefined;
         }
 
@@ -1053,12 +1006,9 @@ class HomebrewMacros {
         let knockBackFt = 5 * squares;
         let knockBackFactor = knockBackFt / canvas.dimensions.distance;
         let distance = canvas.dimensions.size * knockBackFactor;
-        //const angle2 = Math.random() * 2.0 * Math.PI;
         const angle = (Math.random() * 360) * (Math.PI/180);
         const ray = Ray.fromAngle(targetToken.center.x, targetToken.center.y, angle, distance);
         let newCenter = ray.project(1);
-        //let newCenter = ray.project(1 + (canvas.dimensions.size * knockBackFactor));
-        //let newCenter = ray.project(1 + ((canvas.dimensions.size * knockBackFactor) / ray.distance));
 
         // check for collision
         let c = canvas.grid.getSnappedPosition(newCenter.x - targetToken.width / 2, newCenter.y - targetToken.height / 2, 1);

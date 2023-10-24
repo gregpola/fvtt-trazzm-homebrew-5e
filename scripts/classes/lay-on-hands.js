@@ -1,38 +1,59 @@
-const version = "10.0.1";
-const resourceName = "Lay on Hands";
-let workflow = MidiQOL.Workflow.getWorkflow(args[0].uuid);
-let target = args[0]?.targets[0];
-let tactor = target?.actor;
-let resKey = findResource(actor);
+/*
+	Your blessed touch can heal wounds. You have a pool of healing power that replenishes when you take a long rest. With
+	that pool, you can restore a total number of hit points equal to your paladin level × 5.
+
+	As an action, you can touch a creature and draw power from the pool to restore a number of hit points to that creature,
+	up to the maximum amount remaining in your pool.
+
+	Alternatively, you can expend 5 hit points from your pool of healing to cure the target of one disease or neutralize
+	one poison affecting it. You can cure multiple diseases and neutralize multiple poisons with a single use of Lay on Hands,
+	expending hit points separately for each one.
+
+	This feature has no effect on undead and constructs.
+ */
+const version = "11.0";
+const optionName = "Lay on Hands";
 
 try {
-	
-	if (args[0].macroPass === "preambleComplete") {
+	let layOnHands = actor.items.find(i => i.name === optionName);
+	let usesLeft = 0;
+	let target = workflow.targets.first();
+
+	if (args[0].macroPass === "preItemRoll") {
 		// check valid target
-		if (!target || ["undead", "construct"].some(type => (tactor?.system.details.type?.value || "").toLowerCase().includes(type))) {
-			return ui.notifications.error(`Please select a valid target.`);
-		}
-		
-		// check resources
-		if (!resKey) {
-			return ui.notifications.error(`${resourceName} - no resource found`);
+		if (!target || ["undead", "construct"].some(type => (target.actor?.system.details.type?.value || "").toLowerCase().includes(type))) {
+			console.error(`${optionName} - not a valid target`);
+			ui.notifications.error(`${optionName} - not a valid target`);
+			return false;
 		}
 
-		const available = actor.system.resources[resKey].value;
-		if (!available) {
-			return ui.notifications.error(`${resourceName} - resource pool is empty`);
+		// check Lay on Hands uses available
+		if (layOnHands) {
+			usesLeft = layOnHands.system.uses?.value ?? 0;
+			if (!usesLeft || usesLeft < 1) {
+				console.error(`${optionName} - no uses left`);
+				ui.notifications.error(`${optionName} - no uses left`);
+				return false;
+			}
+		} else {
+			console.error(`${optionName} - feature not found`);
+			ui.notifications.error(`${optionName} - feature not found`);
+			return false;
 		}
-		
+	}
+	else if (args[0].macroPass === "postActiveEffects") {
+		usesLeft = layOnHands.system.uses.value;
+
 		// calculate the maximum heal possible
-		const maxhp = Number(tactor?.system.attributes.hp.max);
-		const currenthp = Number(tactor?.system.attributes.hp.value);
+		const maxhp = Number(target.actor?.system.attributes.hp.max);
+		const currenthp = Number(target.actor?.system.attributes.hp.value);
 		const targetDamage = maxhp - currenthp;
-		const maxHeal = Math.min(targetDamage, available);
+		const maxHeal = Math.min(targetDamage, usesLeft);
 		
 		// ask which type of healing
 		new Dialog({
 		  title: "Lay on Hands",
-		  content: `<p>Which <strong>Action</strong> would you like to do? (${available} points remaining)</p>
+		  content: `<p>Which <strong>Action</strong> would you like to do? (${usesLeft} points remaining)</p>
 			<p>If Heal, how many hp to heal? (target is off ${targetDamage})<input id="mqlohpoints" type="number" min="0" step="1.0" max="${maxHeal}"></input></p>`,
 		  buttons: {
 			heal: {
@@ -42,21 +63,22 @@ try {
 					const pts = Math.clamped(Math.floor(Number(html.find('#mqlohpoints')[0].value)), 0, maxHeal);
 					const damageRoll = await new Roll(`${pts}`).evaluate({ async: true });
 					await new MidiQOL.DamageOnlyWorkflow(actor, token, damageRoll.total, "healing", [target], damageRoll, {flavor: "Lay on Hands", itemCardId: args[0].itemCardId});
-					await consumeResource(actor, resKey, pts);
+					await reduceUsage(layOnHands, pts - 1);// account for normal usage cost
 				}
 			},
 			cureDisease: {
 				label: "Cure Disease",
 				icon: '<img src = "icons/skills/wounds/blood-cells-disease-green.webp" width="50" height="50"></>',
 				callback: async (html) => {
-					let effect = tactor.effects.find( i=> i.label === "Diseased");
+					let effect = target.actor.effects.find( i=> i.name === "Diseased");
 					if (effect) {
-						let newEffects = tactor.effects.filter( i=> i.label !== "Diseased");
-						await tactor.update({"effects": newEffects});
-						await consumeResource(actor, resKey, 5);
+						let newEffects = target.actor.effects.filter( i=> i.name !== "Diseased");
+						await target.actor.update({"effects": newEffects});
+						await reduceUsage(layOnHands, 4);// account for normal usage cost
 					}
 					else {
-						console.error('${resourceName} - target is not diseased');
+						console.error(`${optionName} - target is not diseased`);
+						await reduceUsage(layOnHands, -1);// account for normal usage cost
 					}
 				}
 			},
@@ -64,14 +86,15 @@ try {
 				label: "Neutralize Poison",
 				icon: '<img src = "icons/skills/toxins/symbol-poison-drop-skull-green.webp" width="50" height="50"></>',
 				callback: async (html) => {
-					let effect = tactor.effects.find( i=> i.label === "Poisoned");
+					let effect = target.actor.effects.find( i=> i.name === "Poisoned");
 					if (effect) {
-						let newEffects = tactor.effects.filter( i=> i.label !== "Poisoned");
-						await tactor.update({"effects": newEffects});
-						await consumeResource(actor, resKey, 5);
+						let newEffects = target.actor.effects.filter( i=> i.name !== "Poisoned");
+						await target.actor.update({"effects": newEffects});
+						await reduceUsage(layOnHands, 4);// account for normal usage cost
 					}
 					else {
-						console.error('${resourceName} - target is not diseased');
+						console.error(`${optionName} - target is not diseased`);
+						await reduceUsage(layOnHands, -1);// account for normal usage cost
 					}
 				}
 			},
@@ -86,35 +109,10 @@ try {
 	}
 	
 } catch (err)  {
-    console.error(`${resourceName} ${version}`, err);
+    console.error(`${optionName} : ${version}`, err);
 }
 
-// find the resource
-function findResource(actor) {
-	if (actor) {
-		for (let res in actor.system.resources) {
-			if (actor.system.resources[res].label === resourceName) {
-			  return res;
-			}
-		}
-	}
-	
-	return null;
-}
-
-// handle resource consumption
-async function consumeResource(actor, resKey, cost) {
-	if (actor && resKey && cost) {
-		const {value, max} = actor.system.resources[resKey];
-		if (!value) {
-			ChatMessage.create({'content': '${resourceName} : Out of resources'});
-			return false;
-		}
-		
-		const resources = foundry.utils.duplicate(actor.system.resources);
-		const resourcePath = `system.resources.${resKey}`;
-		resources[resKey].value = Math.clamped(value - cost, 0, max);
-		await actor.update({ "system.resources": resources });
-		return true;
-	}
+async function reduceUsage(featureItem, cost){
+	const newValue = featureItem.system.uses.value - cost;
+	await featureItem.update({"system.uses.value": newValue});
 }

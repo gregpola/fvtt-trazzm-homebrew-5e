@@ -3,29 +3,28 @@ When you roll damage for a spell, you can spend 1 sorcery point to reroll a numb
 
 You can use Empowered Spell even if you have already used a different Metamagic option during the casting of the spell.
 */
-const version = "10.0.0";
+const version = "11.0";
 const optionName = "Empowered Spell";
-const resourceName = "Sorcery Points";
+const baseName = "Font of Magic";
 const cost = 1;
 const lastArg = args[args.length - 1];
 
 try {
 	if (args[0].macroPass === "DamageBonus") {
-		const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-
-		// check resources
-		let resKey = findResource(actor);
-		if (!resKey) {
-			console.log(`${optionName}: ${resourceName} - no resource found`);
+		let fontOfMagic = actor.items.find(i => i.name === optionName);
+		if (fontOfMagic) {
+			let usesLeft = fontOfMagic.system.uses?.value ?? 0;
+			if (!usesLeft || usesLeft < cost) {
+				console.log(`${optionName} - not enough Sorcery Points left`);
+				return {};
+			}
+		}
+		else {
+			console.error(`${optionName} - no ${baseName} item on actor`);
+			console.log(`${optionName} - no ${baseName} item on actor`);
 			return {};
 		}
 
-		const points = actor.system.resources[resKey].value;
-		if (!points) {
-			console.log(`${optionName}: ${resourceName} - resource pool is empty`);
-			return {};
-		}
-		
 		// collect the damage dice details
 		const maxRerollDice = Math.max(actor.system.abilities["cha"].mod, 1);
 		let rerollDataSet = new Set();
@@ -98,8 +97,9 @@ try {
 
 		let useFeature = await dialog;
 		if (useFeature) {
-			await consumeResource(actor, resKey, cost);
-			
+			const newValue = fontOfMagic.system.uses.value - cost;
+			await fontOfMagic.update({"system.uses.value": newValue});
+
 			// perform the re-rolls
 			let damageRollTerms = "";
 			rerollData.forEach(function (item, index) {
@@ -120,34 +120,4 @@ try {
 	
 } catch (err)  {
     console.error(`Metamagic: ${optionName} ${version}`, err);
-}
-
-// find the resource matching this feature
-function findResource(actor) {
-	if (actor) {
-		for (let res in actor.system.resources) {
-			if (actor.system.resources[res].label === resourceName) {
-			  return res;
-			}
-		}
-	}
-	
-	return null;
-}
-
-// handle resource consumption
-async function consumeResource(actor, resKey, cost) {
-	if (actor && resKey && cost) {
-		const {value, max} = actor.system.resources[resKey];
-		if (!value) {
-			ChatMessage.create({'content': '${resourceName} : Out of resources'});
-			return false;
-		}
-		
-		const resources = foundry.utils.duplicate(actor.system.resources);
-		const resourcePath = `system.resources.${resKey}`;
-		resources[resKey].value = Math.clamped(value - cost, 0, max);
-		await actor.update({ "system.resources": resources });
-		return true;
-	}
 }

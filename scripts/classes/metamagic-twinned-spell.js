@@ -1,33 +1,36 @@
 /*
-	When you cast a spell that targets only one creature and doesn't have a range of self, you can spend a number of sorcery points equal to the spell's level to target a second creature in range with the same spell (1 sorcery point if the spell is a cantrip).
+	When you cast a spell that targets only one creature and doesn't have a range of self, you can spend a number of
+	sorcery points equal to the spell's level to target a second creature in range with the same spell (1 sorcery point
+	if the spell is a cantrip).
 
-	To be eligible, a spell must be incapable of targeting more than one creature at the spell's current level. For example, Magic Missile and Scorching Ray aren't eligible, but Ray of Frost is.
+	To be eligible, a spell must be incapable of targeting more than one creature at the spell's current level. For
+	example, Magic Missile and Scorching Ray aren't eligible, but Ray of Frost is.
 */
-const version = "10.0.1";
-const optionName = "Metamagic: Twinned Spell";
-const resourceName = "Sorcery Points";
+const version = "11.0";
+const optionName = "Twinned Spell";
+const baseName = "Font of Magic";
 const mutationFlag = "twinned-spell-item";
 const exclusionSpells = ["Magic Missile", "Melf's Minute Meteors", "Scorching Ray"];
 
 try {
-	const lastArg = args[args.length - 1];
-	const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-	const actorToken = canvas.tokens.get(lastArg.tokenId);
-
 	if (args[0].macroPass === "preItemRoll") {
-		// check resources
-		let resKey = findResource(actor);
-		if (!resKey) {
-			ui.notifications.error(`${optionName} - no resource found`);
+		let usesLeft = 0;
+
+		let fontOfMagic = actor.items.find(i => i.name === optionName);
+		if (fontOfMagic) {
+			usesLeft = fontOfMagic.system.uses?.value ?? 0;
+			if (!usesLeft || usesLeft < 1) {
+				console.error(`${optionName} - not enough Sorcery Points left`);
+				ui.notifications.error(`${optionName} - not enough Sorcery Points left`);
+				return false;
+			}
+		}
+		else {
+			console.error(`${optionName} - no ${baseName} item on actor`);
+			ui.notifications.error(`${optionName} - no ${baseName} item on actor`);
 			return false;
 		}
 
-		const points = actor.system.resources[resKey].value;
-		if (!points) {
-			ui.notifications.error(`${optionName} - resource pool is empty`);
-			return false;
-		}
-		
 		// Check for spells and slots
 		// Filter out non-eligible spells
 		let spells = actor.items.filter(i => i.type === 'spell' 
@@ -56,7 +59,10 @@ try {
 		for (let spell of spells) {
 			// check for available slot
 			if ((spell.system.level === 0) || (available_spell_slots[spell.system.level-1].value > 0)) {
-				spell_content += `<option value=${spell.id}>${spell.name}</option>`;
+				// make sure they have enough Sorcery Points for the spell level
+				if (spell.system.level <= usesLeft) {
+					spell_content += `<option value=${spell.id}>${spell.name}</option>`;
+				}
 			}
 		}
 		//console.log(spell_content);
@@ -98,11 +104,12 @@ try {
 						};
 						
 						// mutate the selected item
-						await warpgate.mutate(actorToken.document, updates, {}, { name: itemName });
+						await warpgate.mutate(token.document, updates, {}, { name: itemName });
 												
 						// track target info on the actor
 						DAE.setFlag(actor, mutationFlag, {itemName : itemName } );
-						await consumeResource(actor, resKey, Math.max(selectedItem.system.level, 1));
+						const newValue = fontOfMagic.system.uses.value - Math.max(selectedItem.system.level, 1);
+						await fontOfMagic.update({"system.uses.value": newValue});
 					}
 				},
 				Cancel:
@@ -117,41 +124,11 @@ try {
 		let flag = DAE.getFlag(actor, mutationFlag);
 		if (flag) {
 			const itemName = flag.itemName;
-			let restore = await warpgate.revert(actorToken.document, itemName);
+			let restore = await warpgate.revert(token.document, itemName);
 			DAE.unsetFlag(actor, mutationFlag);
 		}
 	}
 	
 } catch (err)  {
     console.error(`${optionName}: ${version}`, err);
-}
-
-// find the resource matching this feature
-function findResource(actor) {
-	if (actor) {
-		for (let res in actor.system.resources) {
-			if (actor.system.resources[res].label === resourceName) {
-			  return res;
-			}
-		}
-	}
-	
-	return null;
-}
-
-// handle resource consumption
-async function consumeResource(actor, resKey, cost) {
-	if (actor && resKey && cost) {
-		const {value, max} = actor.system.resources[resKey];
-		if (!value) {
-			ChatMessage.create({'content': '${resourceName} : Out of resources'});
-			return false;
-		}
-		
-		const resources = foundry.utils.duplicate(actor.system.resources);
-		const resourcePath = `system.resources.${resKey}`;
-		resources[resKey].value = Math.clamped(value - cost, 0, max);
-		await actor.update({ "system.resources": resources });
-		return true;
-	}
 }

@@ -13,7 +13,7 @@
 
 	The amount of the extra damage increases as you gain levels in this class, as shown in the Sneak Attack column of the Rogue table.
 */
-const version = "11.1";
+const version = "11.2";
 const optionName = "Sneak Attack";
 const combatTime = game.combat ? `${game.combat.id}-${game.combat.round + game.combat.turn / 100}` : 1;
 
@@ -107,10 +107,13 @@ try {
 		// Apply the damage
 		if (useSneak) {
 			await actor.setFlag('midi-qol', 'sneakAttackTime', `${combatTime}`);
-			const diceMult = workflow.isCritical ? 2: 1;
-			const baseDice = Math.ceil(rogueLevels/2);
-			const diceCount = baseDice * diceMult;
-			return {damageRoll: `${diceCount}d6`, flavor: optionName};
+			const diceCount = Math.ceil(rogueLevels/2);
+			if (workflow.isCritical) {
+				const critBonus = diceCount * 6;
+				return {damageRoll: `${diceCount}d6 + ${critBonus}`, flavor: optionName};
+			}
+			else
+				return {damageRoll: `${diceCount}d6`, flavor: optionName};
 		}
 	}
 
@@ -120,12 +123,19 @@ try {
 
 // Check if there is an enemy of the target adjacent to it
 function checkAllyNearTarget(rogueToken, targetToken) {
-	let allNearby = MidiQOL.findNearby(CONST.TOKEN_DISPOSITIONS.FRIENDLY, targetToken, 5);
-	let nearbyFriendlies = allNearby.filter(i => (i !== rogueToken));
-	allNearby = MidiQOL.findNearby(CONST.TOKEN_DISPOSITIONS.NEUTRAL, targetToken, 5);
-	let nearbyNeutrals = allNearby.filter(i => (i !== rogueToken));
-
-	return ((nearbyFriendlies.length > 0) || (nearbyNeutrals.length > 0));
+	let foundEnemy = false;
+	let nearbyEnemy = canvas.tokens.placeables.filter(t => {
+		let nearby = (t.actor &&
+			t.actor?.id !== rogueToken.actor._id && // not me
+			t.id !== targetToken.id && // not the target
+			t.actor?.system.attributes?.hp?.value > 0 && // not incapacitated
+			t.document.disposition !== targetToken.document.disposition && // not an ally
+			MidiQOL.getDistance(t, targetToken, false) <= 5 // close to the target
+		);
+		foundEnemy = foundEnemy || (nearby && t.document.disposition === -targetToken.document.disposition)
+		return nearby;
+	});
+	return (nearbyEnemy.length > 0);
 }
 
 function checkRakishAudacity(rogueToken, targetToken) {

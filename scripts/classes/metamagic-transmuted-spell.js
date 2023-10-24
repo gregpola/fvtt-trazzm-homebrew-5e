@@ -1,39 +1,41 @@
 /*
-	When you cast a spell that deals a type of damage from the following list, you can spend 1 sorcery point to change that damage type to one of the other listed types: acid, cold, fire, lightning, poison, thunder.
+	When you cast a spell that deals a type of damage from the following list, you can spend 1 sorcery point to change
+	that damage type to one of the other listed types: acid, cold, fire, lightning, poison, thunder.
 */
-const version = "10.0.0";
+const version = "11.0";
 const optionName = "Metamagic: Transmuted Spell";
-const resourceName = "Sorcery Points";
-const elementalTypes = ["acid", "cold", "fire", "lightning", "poison", "thunder"];
+const baseName = "Font of Magic";
 const cost = 1;
+
+const elementalTypes = ["acid", "cold", "fire", "lightning", "poison", "thunder"];
 
 try {
 	const lastArg = args[args.length - 1];
-	const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-
 	if (args[0].macroPass === "postDamageRoll") {
-		let itemD = lastArg.item;
-				
 		// Must be an elemental spell
-		if (!["spell"].includes(lastArg.itemData.type))
+		if (!["spell"].includes(item.type)) {
 			return {};
+		}
 		
 		// check resources
-		let resKey = findResource(actor);
-		if (!resKey) {
-			ui.notifications.error(`${optionName} - no resource found`);
-			return false;
+		let fontOfMagic = actor.items.find(i => i.name === optionName);
+		if (fontOfMagic) {
+			let usesLeft = fontOfMagic.system.uses?.value ?? 0;
+			if (!usesLeft || usesLeft < cost) {
+				console.error(`${optionName} - not enough Sorcery Points left`);
+				ui.notifications.error(`${optionName} - not enough Sorcery Points left`);
+				return {};
+			}
+		}
+		else {
+			console.error(`${optionName} - no ${baseName} item on actor`);
+			ui.notifications.error(`${optionName} - no ${baseName} item on actor`);
+			return {};
 		}
 
-		const points = actor.system.resources[resKey].value;
-		if (!points || points < cost) {
-			ui.notifications.error(`${optionName} - not enough resource points`);
-			return false;
-		}
-				
 		// check the damage type
 		let itemElementalTypes = new Set();
-		let damageParts = itemD.system.damage.parts;
+		let damageParts = item.system.damage.parts;
 		for (let i = 0; i < damageParts.length; i++) {
 			if (elementalTypes.includes(damageParts[i][1])) {
 				itemElementalTypes.add(damageParts[i][1]);
@@ -43,10 +45,7 @@ try {
 		if (itemElementalTypes.size === 0) {
 			return {};
 		}
-				
-		// Get the manipulation options the actor has
-		//let manipulationOptions = new Set();
-		
+
 		// ask which type to convert the damage to
 		let original_type_content = ``;
 		itemElementalTypes.forEach (function(value) {
@@ -95,51 +94,19 @@ try {
 			}).render(true);
 		});
 		let selectedType = await d;
-		
+
 		if (selectedType) {
-			await consumeResource(actor, resKey, cost);
-			
-			for (let i = 0; i < lastArg.workflow.damageRoll.terms.length; i++) {
-				if (lastArg.workflow.damageRoll.terms[i] instanceof Die) {
-					lastArg.workflow.damageRoll.terms[i].options.flavor = selectedType;
+			for (let i = 0; i < workflow.damageRoll.terms.length; i++) {
+				if (workflow.damageRoll.terms[i] instanceof Die) {
+					workflow.damageRoll.terms[i].options.flavor = selectedType;
 				}
 			}
-			const newDamageRoll = CONFIG.Dice.DamageRoll.fromTerms(lastArg.workflow.damageRoll.terms);
-			await lastArg.workflow.setDamageRoll(newDamageRoll);
-			ChatMessage.create({content: itemD.name + " has been manipulated"});
+			const newDamageRoll = CONFIG.Dice.DamageRoll.fromTerms(workflow.damageRoll.terms);
+			await workflow.setDamageRoll(newDamageRoll);
+			ChatMessage.create({content: item.name + " has been transmuted"});
 		}
 	}
 	
 } catch (err) {
     console.error(`${optionName}: ${version}`, err);
-}
-
-// find the resource matching this feature
-function findResource(actor) {
-	if (actor) {
-		for (let res in actor.system.resources) {
-			if (actor.system.resources[res].label === resourceName) {
-			  return res;
-			}
-		}
-	}
-	
-	return null;
-}
-
-// handle resource consumption
-async function consumeResource(actor, resKey, cost) {
-	if (actor && resKey && cost) {
-		const {value, max} = actor.system.resources[resKey];
-		if (!value) {
-			ChatMessage.create({'content': '${resourceName} : Out of resources'});
-			return false;
-		}
-		
-		const resources = foundry.utils.duplicate(actor.system.resources);
-		const resourcePath = `system.resources.${resKey}`;
-		resources[resKey].value = Math.clamped(value - cost, 0, max);
-		await actor.update({ "system.resources": resources });
-		return true;
-	}
 }

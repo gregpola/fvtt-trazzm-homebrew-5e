@@ -14,7 +14,7 @@
     appears at your feet if it is in the extra-dimensional space when the bond breaks.
  */
 
-const version = "10.0";
+const version = "11.0";
 const optionName = "Pact of the Blade";
 const eligibleWeaponTypes = ["martialM", "simpleM"];
 
@@ -96,7 +96,7 @@ try {
                                                 },
                                             },
                                         };
-                                        await warpgate.mutate(token, updates, {}, { name: optionName });
+                                        await warpgate.mutate(token.document, updates, {}, { name: optionName });
 
                                         ChatMessage.create({content: actor.name + " summoned a Pact Weapon"});
                                         return true;
@@ -162,7 +162,7 @@ try {
                                         };
 
                                         // mutate the selected item
-                                        await warpgate.mutate(token, updates, {}, { name: optionName });
+                                        await warpgate.mutate(token.document, updates, {}, { name: optionName });
                                         ChatMessage.create({content: `${actor.name}'s ${itemName} has become their Pact Weapon`});
                                         return true;
                                     }
@@ -180,7 +180,7 @@ try {
         }
     }
     else if (args[0] === "off") {
-        let restore = await warpgate.revert(token, optionName);
+        let restore = await warpgate.revert(token.document, optionName);
         console.log(`${optionName} - restore is: ${restore}`);
     }
 

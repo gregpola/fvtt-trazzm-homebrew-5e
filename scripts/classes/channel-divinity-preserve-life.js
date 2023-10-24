@@ -1,35 +1,38 @@
 /*
 	Starting at 2nd level, you can use your Channel Divinity to heal the badly injured.
 
-	As an action, you present your holy symbol and evoke healing energy that can restore a number of hit points equal to five times your cleric level. Choose any creatures within 30 feet of you, and divide those hit points among them. This feature can restore a creature to no more than half of its hit point maximum. You can’t use this feature on an undead or a construct.
+	As an action, you present your holy symbol and evoke healing energy that can restore a number of hit points equal to
+	five times your cleric level. Choose any creatures within 30 feet of you, and divide those hit points among them. This
+	feature can restore a creature to no more than half of its hit point maximum. You can’t use this feature on an undead
+	or a construct.
 */
-const version = "10.0.1";
-const resourceName = "Channel Divinity";
+const version = "11.0";
 const optionName = "Preserve Life"
+const channelDivinityName = "Channel Divinity (Cleric)";
+const cost = 1;
 
 try {
 	if (args[0].macroPass === "preItemRoll") {
-		const lastArg = args[args.length - 1];
-		const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-		const actorToken = canvas.tokens.get(lastArg.tokenId);
-		
-		// check resources
-		let resKey = findResource(actor);
-		if (!resKey) {
-			ui.notifications.error(`${resourceName} - no resource found`);
+		// check Channel Divinity uses available
+		let channelDivinity = actor.items.find(i => i.name === channelDivinityName);
+		if (channelDivinity) {
+			let usesLeft = channelDivinity.system.uses?.value ?? 0;
+			if (!usesLeft || usesLeft < cost) {
+				console.error(`${optionName} - not enough ${channelDivinityName} uses left`);
+				ui.notifications.error(`${optionName} - not enough ${channelDivinityName} uses left`);
+				return false;
+			}
+		}
+		else {
+			console.error(`${optionName} - no ${channelDivinityName} item on actor`);
+			ui.notifications.error(`${optionName} - no ${channelDivinityName} item on actor`);
 			return false;
 		}
 
-		const points = actor.system.resources[resKey].value;
-		if (!points) {
-			ui.notifications.error(`${resourceName} - resource pool is empty`);
-			return false;
-		}
-		
 		// find nearby allies
-		const friendlyTargets = MidiQOL.findNearby(1, actorToken, 30);
-		const neutralTargets = MidiQOL.findNearby(0, actorToken, 30);
-		let possibleTargets = [actorToken, ...friendlyTargets, ...neutralTargets];
+		const friendlyTargets = MidiQOL.findNearby(1, token, 30);
+		const neutralTargets = MidiQOL.findNearby(0, token, 30);
+		let possibleTargets = [token, ...friendlyTargets, ...neutralTargets];
 		const recipients = possibleTargets.filter(filterRecipient);
 		
 		// roll the total HP to spend
@@ -69,7 +72,7 @@ try {
 		
 		let dialog = new Promise((resolve, reject) => {
 			new Dialog({
-				title: `${resourceName}: ${optionName}`,
+				title: `${channelDivinityName}: ${optionName}`,
 				content,
 				buttons:
 				{
@@ -95,7 +98,7 @@ try {
 								resolve(false);
 							}
 							else if (spent > totalHealing) {
-								ui.notifications.error(`${resourceName}: ${optionName} - too much healing assigned`);
+								ui.notifications.error(`${channelDivinityName}: ${optionName} - too much healing assigned`);
 								resolve(false);
 							}
 							else {
@@ -105,11 +108,13 @@ try {
 									let pts = rd[1];
 									if (pts > 0) {
 										const damageRoll = await new Roll(`${pts}`).evaluate({ async: true });
-										await new MidiQOL.DamageOnlyWorkflow(actor, actorToken, damageRoll.total, "healing", [ttoken], damageRoll, 
+										await new MidiQOL.DamageOnlyWorkflow(actor, token, damageRoll.total, "healing", [ttoken], damageRoll,
 											{flavor: `${optionName}`, itemCardId: args[0].itemCardId});
 									}
 								}
-								await consumeResource(actor, resKey, 1);
+
+								const newValue = channelDivinity.system.uses.value - cost;
+								await channelDivinity.update({"system.uses.value": newValue});
 							}
 							resolve(true);
 						}
@@ -128,41 +133,11 @@ try {
 	}
 	
 } catch (err) {
-	console.error(`${resourceName}: ${optionName} ${version}`, err);
+	console.error(`${optionName} : ${version}`, err);
 }
 
 function filterRecipient(r) {
 	let half = (r.actor.system.attributes.hp.max / 2);
 	let eligible = ((half > r.actor.system.attributes.hp.value) ? (half - r.actor.system.attributes.hp.value) : 0);
 	return eligible > 0;
-}
-
-// find the resource matching this feature
-function findResource(actor) {
-	if (actor) {
-		for (let res in actor.system.resources) {
-			if (actor.system.resources[res].label === resourceName) {
-			  return res;
-			}
-		}
-	}
-	
-	return null;
-}
-
-// handle resource consumption
-async function consumeResource(actor, resKey, cost) {
-	if (actor && resKey && cost) {
-		const {value, max} = actor.system.resources[resKey];
-		if (!value) {
-			ChatMessage.create({'content': '${resourceName} : Out of resources'});
-			return false;
-		}
-		
-		const resources = foundry.utils.duplicate(actor.system.resources);
-		const resourcePath = `system.resources.${resKey}`;
-		resources[resKey].value = Math.clamped(value - cost, 0, max);
-		await actor.update({ "system.resources": resources });
-		return true;
-	}
 }

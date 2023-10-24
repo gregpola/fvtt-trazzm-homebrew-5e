@@ -1,3 +1,12 @@
+# 11.7
+* Classes Updated: All classes, rebuild suggested
+* Creatures Updated: Air Elemental Myrmidon, Bulette, Dao, Dust Devil, Earth Elemental Myrmidon, Fire Elemental, Fire Elemental Myrmidon, Galeb Duhr, Salamander, Water Elemental Myrmidon, Xorn
+* Feature Additions: Feat - Improved Spell Focus, Warlock - Pact of the Talisman
+* Features Updated: Blessed Strikes, Channel Divinity (all automated), Cutting Words, Eldritch Invocations (most), Harness Divine Power, Hex Warrior, Ki - all features, Lay on Hands, Metamagic - all features, Pact of the Blade, Peerless Skill, Sneak Attack, Thunderbolt Strike
+* Items Updated: Elixir of Health
+* Spells Updated: Aid, Conjure Elemental, Conjure Minor Elementals, Flaming Sphere, Gust, Hunter's Mark
+* Subclasses Updated: College of Shadows
+
 # 11.6
 * Classes Updated: Ranger (optional class features)
 * Creatures Updated: Air Elemental, Earth Elemental, Fire Elemental, Ghast, Water Elemental

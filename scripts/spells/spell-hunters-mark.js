@@ -4,7 +4,7 @@
 	Wisdom (Perception) or Wisdom (Survival) check you make to find it. If the target drops to 0 hit points before this
 	spell ends, you can use a bonus action on a subsequent turn of yours to mark a new creature.
  */
-const version = "10.1";
+const version = "11.0";
 const optionName = "Hunter's Mark";
 const targetOptionName = "Hunter's Marked";
 const targetFlagName = "hunters-mark-target";
@@ -15,7 +15,7 @@ try {
 		if (targetToken) {
 			const targetFlag = actor.getFlag("world", targetFlagName);
 			if (targetFlag) {
-				let isMarked = targetToken.actor.effects.find(i => i.label === targetOptionName && i.origin === targetFlag.origin);
+				let isMarked = targetToken.actor.effects.find(i => i.name === targetOptionName && i.origin === targetFlag.origin);
 
 				if (isMarked) {
 					let damageType = workflow.item.system.damage.parts[0][1];
@@ -60,17 +60,17 @@ try {
 		await applyMoveMark(token);
 	}
 	else if (args[0] === "off") {
-		await warpgate.revert(token, optionName);
+		await warpgate.revert(token.document, optionName);
 
 		const targetFlag = actor.getFlag("world", targetFlagName);
 		if (targetFlag) {
 			await actor.unsetFlag("world", targetFlagName);
-			let targetToken = await fromUuid(targetFlag.targetId);
-			if (targetToken) {
-				let effect = targetToken.actor.effects.find(i => i.label === targetOptionName && i.origin === targetFlag.origin);
+			let targetActor = await fromUuid(targetFlag.targetId);
+			if (targetActor) {
+				let effect = targetActor.effects.find(i => i.name === targetOptionName && i.origin === targetFlag.origin);
 				if (effect) {
 					// this hangs in dae/midi
-					//await MidiQOL.socket().executeAsGM('removeEffects', {'actorUuid': targetToken.actor.uuid, 'effects': [effect.id]});
+					await MidiQOL.socket().executeAsGM('removeEffects', {'actorUuid':targetActor.uuid, 'effects': [effect.id]});
 				}
 			}
 		}
@@ -202,7 +202,7 @@ async function applyMoveMark(actorToken) {
 								"name": "HMM",
 								"type": "script",
 								"scope": "global",
-								"command": "const version = \"10.1\";\nconst optionName = \"Hunter's Mark Re-Mark\";\nconst targetOptionName = \"Hunter's Marked\";\nconst targetFlagName = \"hunters-mark-target\";\n\ntry {\n    if (args[0].macroPass === \"preItemRoll\") {\n        let result = true;\n        let oldEffect;\n        let oldTargetName;\n\n        // make sure the current target is dead\n        const targetFlag = actor.getFlag(\"world\", targetFlagName);\n        if (targetFlag) {\n            let targetToken = await fromUuid(targetFlag.targetId);\n\n            if (targetToken) {\n                if (targetToken.actor.system.attributes.hp.value > 0) {\n                    result = false;\n                    oldTargetName = targetToken.actor.name;\n                }\n                else {\n                    oldEffect = targetToken.actor.effects.find(i => i.label === targetOptionName && i.origin === targetFlag.origin);\n                    if (oldEffect) {\n                        await MidiQOL.socket().executeAsGM(\"removeEffects\", { actorUuid: targetToken.actor.uuid, effects: [oldEffect.id] });\n                    }\n                }\n            }\n        }\n\n        let targetActor = workflow?.targets?.first()?.actor;\n        if (targetActor && result) {\n            actor.setFlag(\"world\", targetFlagName, { targetId: targetActor.uuid, origin: targetFlag.origin});\n\n            // apply effect to the target\n            let targetEffectData = {\n                'label': targetOptionName,\n                'icon': workflow.item.img,\n                'origin': targetFlag.origin,\n                'duration': {\n                    'seconds': 3600\n                },\n                'flags': { 'dae': { 'specialDuration': [\"zeroHP\"] } }\n\n            };\n            await MidiQOL.socket().executeAsGM('createEffects', {'actorUuid': targetActor.uuid, 'effects': [targetEffectData]});\n        }\n\n        if (!result) {\n            ChatMessage.create({\n                content: `Unable to re-apply Hunter's Mark - ${oldTargetName} is still alive`,\n                speaker: ChatMessage.getSpeaker({ actor: actor })});\n        }\n\n        return result;\n    }\n\n} catch (err) {\n    console.error(`${optionName}: ${version}`, err);\n}",
+								"command": "const version=\"11.0\";const optionName=\"Hunter's Mark Re-Mark\";const targetOptionName=\"Hunter's Marked\";const targetFlagName=\"hunters-mark-target\";try{if(args[0].macroPass===\"preItemRoll\"){let result=true;let oldEffect;let oldTargetName;const targetFlag=actor.getFlag(\"world\",targetFlagName);if(targetFlag){let oldTarget=await fromUuid(targetFlag.targetId);if(oldTarget){if(oldTarget.system.attributes.hp.value>0){result=false;oldTargetName=oldTarget.name}else{oldEffect=oldTarget.effects.find(i=>i.name===targetOptionName&&i.origin===targetFlag.origin);if(oldEffect){await MidiQOL.socket().executeAsGM(\"removeEffects\",{actorUuid:oldTarget.uuid,effects:[oldEffect.id]})}}}}let targetActor=workflow?.targets?.first()?.actor;if(targetActor&&result){actor.setFlag(\"world\",targetFlagName,{targetId:targetActor.uuid,origin:targetFlag.origin});let targetEffectData={'name':targetOptionName,'icon':workflow.item.img,'origin':targetFlag.origin,'duration':{'seconds':3600},'flags':{'dae':{'specialDuration':[\"zeroHP\"]}}};await MidiQOL.socket().executeAsGM('createEffects',{'actorUuid':targetActor.uuid,'effects':[targetEffectData]})}if(!result){ChatMessage.create({content:`Unable to re-apply Hunter's Mark-${oldTargetName}is still alive`,speaker:ChatMessage.getSpeaker({actor:actor})})}return result}}catch(err){console.error(`${optionName}:${version}`,err)}",
 								"author": "5vlmE3uiS7OIQTEf",
 								"_id": null,
 								"img": "icons/svg/dice-target.svg",
@@ -242,5 +242,5 @@ async function applyMoveMark(actorToken) {
 		}
 	};
 
-	await warpgate.mutate(actorToken, moveTarget, {}, { name: optionName });
+	await warpgate.mutate(actorToken.document, moveTarget, {}, { name: optionName });
 }

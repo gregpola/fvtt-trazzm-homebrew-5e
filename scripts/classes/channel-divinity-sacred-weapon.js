@@ -7,24 +7,29 @@
 	You can end this effect on your turn as part of any other action. If you are no longer holding or carrying this
 	weapon, or if you fall Unconscious, this effect ends.
 */
-const version = "11.0";
-const resourceName = "Channel Divinity";
+const version = "11.1";
 const optionName = "Sacred Weapon";
+const channelDivinityName = "Channel Divinity (Cleric)";
+const cost = 1;
 
 try {
 	const lastArg = args[args.length - 1];
 
 	if (args[0] === "on") {
-		// check resources
-		let resKey = findResource(actor);
-		if (!resKey) {
-			return ui.notifications.error(`${optionName}: ${resourceName}: - no resource found`);
+		// check Channel Divinity uses available
+		let channelDivinity = actor.items.find(i => i.name === channelDivinityName);
+		if (channelDivinity) {
+			let usesLeft = channelDivinity.system.uses?.value ?? 0;
+			if (!usesLeft || usesLeft < cost) {
+				console.error(`${optionName} - not enough ${channelDivinityName} uses left`);
+				ui.notifications.error(`${optionName} - not enough ${channelDivinityName} uses left`);
+				return false;
+			}
 		}
-
-		// handle resource consumption
-		const points = actor.system.resources[resKey].value;
-		if (!points) {
-			return ui.notifications.error(`${optionName}: ${resourceName}: - out of resources`);
+		else {
+			console.error(`${optionName} - no ${channelDivinityName} item on actor`);
+			ui.notifications.error(`${optionName} - no ${channelDivinityName} item on actor`);
+			return false;
 		}
 
 		// find the actor's weapons
@@ -84,8 +89,10 @@ try {
 						
 						// create the light effect
 						addLightEffects(actor, lastArg.origin);
-						
-						await consumeResource(actor, resKey, 1);
+
+						const newValue = channelDivinity.system.uses.value - cost;
+						await channelDivinity.update({"system.uses.value": newValue});
+
 						ChatMessage.create({
 							content: `${token.name}'s ${selectedItem.name} is blessed with positive energy`,
 							speaker: ChatMessage.getSpeaker({ actor: actor })});
@@ -111,36 +118,7 @@ try {
 	}
 	
 } catch (err) {
-	console.error(`Channel Divinity: Sacred Weapon ${version}`, err);
-}
-
-// find the resource matching this feature
-function findResource(actor) {
-	if (actor) {
-		for (let res in actor.system.resources) {
-			if (actor.system.resources[res].label === resourceName) {
-			  return res;
-			}
-		}
-	}
-	
-	return null;
-}
-
-// handle resource consumption
-async function consumeResource(actor, resKey, cost) {
-	if (actor && resKey && cost) {
-		const {value, max} = actor.system.resources[resKey];
-		if (!value) {
-			ChatMessage.create({'content': '${resourceName} : Out of resources'});
-			return false;
-		}
-		
-		const resources = foundry.utils.duplicate(actor.system.resources);
-		resources[resKey].value = Math.clamped(value - cost, 0, max);
-		await actor.update({ "system.resources": resources });
-		return true;
-	}
+	console.error(`${optionName} : ${version}`, err);
 }
 
 // Add the light effect to the actor

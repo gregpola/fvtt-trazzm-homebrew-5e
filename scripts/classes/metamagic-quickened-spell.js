@@ -1,31 +1,29 @@
 /*
 	When you cast a spell that has a casting time of 1 action, you can spend 2 sorcery points to change the casting time to 1 bonus action for this casting.
 */
-const version = "10.0.0";
-const optionName = "Metamagic: Quickened Spell";
-const resourceName = "Sorcery Points";
+const version = "11.0";
+const optionName = "Quickened Spell";
+const baseName = "Font of Magic";
 const cost = 2;
 const mutationFlag = "quickened-spell-item";
 
 try {
-	const lastArg = args[args.length - 1];
-	const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-	const actorToken = canvas.tokens.get(lastArg.tokenId);
-
 	if (args[0].macroPass === "preItemRoll") {
-		// check resources
-		let resKey = findResource(actor);
-		if (!resKey) {
-			ui.notifications.error(`${optionName} - no resource found`);
+		let fontOfMagic = actor.items.find(i => i.name === optionName);
+		if (fontOfMagic) {
+			let usesLeft = fontOfMagic.system.uses?.value ?? 0;
+			if (!usesLeft || usesLeft < cost) {
+				console.error(`${optionName} - not enough Sorcery Points left`);
+				ui.notifications.error(`${optionName} - not enough Sorcery Points left`);
+				return false;
+			}
+		}
+		else {
+			console.error(`${optionName} - no ${baseName} item on actor`);
+			ui.notifications.error(`${optionName} - no ${baseName} item on actor`);
 			return false;
 		}
 
-		const points = actor.system.resources[resKey].value;
-		if (!points || points < cost) {
-			ui.notifications.error(`${optionName} - not enough resource points`);
-			return false;
-		}
-		
 		// Check for spells and slots
 		// Filter out spells the wrong casting time
 		let spells = actor.items.filter(i => i.type === 'spell' && i.system.activation.type === "action" && i.system.activation.cost === 1);
@@ -93,7 +91,7 @@ try {
 						};
 						
 						// mutate the selected item
-						await warpgate.mutate(actorToken.document, updates, {}, { name: itemName });
+						await warpgate.mutate(token.document, updates, {}, { name: itemName });
 												
 						// track target info on the actor
 						DAE.setFlag(actor, mutationFlag, {itemName : itemName } );
@@ -112,41 +110,11 @@ try {
 		let flag = DAE.getFlag(actor, mutationFlag);
 		if (flag) {
 			const itemName = flag.itemName;
-			let restore = await warpgate.revert(actorToken.document, itemName);
+			let restore = await warpgate.revert(token.document, itemName);
 			DAE.unsetFlag(actor, mutationFlag);
 		}
 	}
 	
 } catch (err)  {
     console.error(`${optionName}: ${version}`, err);
-}
-
-// find the resource matching this feature
-function findResource(actor) {
-	if (actor) {
-		for (let res in actor.system.resources) {
-			if (actor.system.resources[res].label === resourceName) {
-			  return res;
-			}
-		}
-	}
-	
-	return null;
-}
-
-// handle resource consumption
-async function consumeResource(actor, resKey, cost) {
-	if (actor && resKey && cost) {
-		const {value, max} = actor.system.resources[resKey];
-		if (!value) {
-			ChatMessage.create({'content': '${resourceName} : Out of resources'});
-			return false;
-		}
-		
-		const resources = foundry.utils.duplicate(actor.system.resources);
-		const resourcePath = `system.resources.${resKey}`;
-		resources[resKey].value = Math.clamped(value - cost, 0, max);
-		await actor.update({ "system.resources": resources });
-		return true;
-	}
 }

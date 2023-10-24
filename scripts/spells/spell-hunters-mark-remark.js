@@ -1,4 +1,4 @@
-const version = "10.1";
+const version = "11.0";
 const optionName = "Hunter's Mark Re-Mark";
 const targetOptionName = "Hunter's Marked";
 const targetFlagName = "hunters-mark-target";
@@ -12,17 +12,17 @@ try {
         // make sure the current target is dead
         const targetFlag = actor.getFlag("world", targetFlagName);
         if (targetFlag) {
-            let targetToken = await fromUuid(targetFlag.targetId);
+            let oldTarget = await fromUuid(targetFlag.targetId);
 
-            if (targetToken) {
-                if (targetToken.actor.system.attributes.hp.value > 0) {
+            if (oldTarget) {
+                if (oldTarget.system.attributes.hp.value > 0) {
                     result = false;
-                    oldTargetName = targetToken.actor.name;
+                    oldTargetName = oldTarget.name;
                 }
                 else {
-                    oldEffect = targetToken.actor.effects.find(i => i.label === targetOptionName && i.origin === targetFlag.origin);
+                    oldEffect = oldTarget.effects.find(i => i.name === targetOptionName && i.origin === targetFlag.origin);
                     if (oldEffect) {
-                        await MidiQOL.socket().executeAsGM("removeEffects", { actorUuid: targetToken.actor.uuid, effects: [oldEffect.id] });
+                        await MidiQOL.socket().executeAsGM("removeEffects", { actorUuid: oldTarget.uuid, effects: [oldEffect.id] });
                     }
                 }
             }
@@ -34,7 +34,7 @@ try {
 
             // apply effect to the target
             let targetEffectData = {
-                'label': targetOptionName,
+                'name': targetOptionName,
                 'icon': workflow.item.img,
                 'origin': targetFlag.origin,
                 'duration': {

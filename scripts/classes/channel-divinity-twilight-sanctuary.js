@@ -1,70 +1,45 @@
 /*
 	You can use your Channel Divinity to refresh your allies with soothing twilight.
 
-	As an action, you present your holy symbol, and a sphere of twilight emanates from you. The sphere is centered on you, has a 30-foot radius, and is filled with dim light. The sphere moves with you, and it lasts for 1 minute or until you are Incapacitated or die. Whenever a creature (including you) ends its turn in the sphere, you can grant that creature one of these benefits:
+	As an action, you present your holy symbol, and a sphere of twilight emanates from you. The sphere is centered on you,
+	has a 30-foot radius, and is filled with dim light. The sphere moves with you, and it lasts for 1 minute or until
+	you are Incapacitated or die. Whenever a creature (including you) ends its turn in the sphere, you can grant that
+	creature one of these benefits:
 
 		* You grant it temporary hit points equal to 1d6 plus your cleric level.
 		* You end one effect on it causing it to be Charmed or Frightened.
 */
-const version = "11.0";
-const resourceName = "Channel Divinity";
+const version = "11.1";
 const optionName = "Twilight Sanctuary"
+const channelDivinityName = "Channel Divinity (Cleric)";
+const cost = 1;
 
 try {
-	const lastArg = args[args.length - 1];
-
 	if (args[0].macroPass === "preItemRoll") {
-		let actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-		let actorToken = canvas.tokens.get(lastArg.tokenId);
-		
-		// check resources
-		let resKey = findResource(actor);
-		if (!resKey) {
-			ui.notifications.error(`${optionName}: ${resourceName} - no resource found`);
-			return false;
+		// check Channel Divinity uses available
+		let channelDivinity = actor.items.find(i => i.name === channelDivinityName);
+		if (channelDivinity) {
+			let usesLeft = channelDivinity.system.uses?.value ?? 0;
+			if (!usesLeft || usesLeft < cost) {
+				console.error(`${optionName} - not enough ${channelDivinityName} uses left`);
+				ui.notifications.error(`${optionName} - not enough ${channelDivinityName} uses left`);
+			}
+			else {
+				const newValue = channelDivinity.system.uses.value - cost;
+				await channelDivinity.update({"system.uses.value": newValue});
+				return true;
+			}
+		}
+		else {
+			console.error(`${optionName} - no ${channelDivinityName} item on actor`);
+			ui.notifications.error(`${optionName} - no ${channelDivinityName} item on actor`);
 		}
 
-		const points = actor.system.resources[resKey].value;
-		if (!points) {
-			ui.notifications.error(`${optionName}: ${resourceName} - resource pool is empty`);
-			return false;
-		}
-		
-		return await consumeResource(actor, resKey, 1);		
+		return false;
 	}
 	
 } catch (err) {
 	console.error(`${optionName}: ${version}`, err);
-}
-
-// find the resource matching this feature
-function findResource(actor) {
-	if (actor) {
-		for (let res in actor.system.resources) {
-			if (actor.system.resources[res].label === resourceName) {
-			  return res;
-			}
-		}
-	}
-	
-	return null;
-}
-
-// handle resource consumption
-async function consumeResource(actor, resKey, cost) {
-	if (actor && resKey && cost) {
-		const {value, max} = actor.system.resources[resKey];
-		if (!value) {
-			ChatMessage.create({'content': '${resourceName} : Out of resources'});
-			return false;
-		}
-		
-		const resources = foundry.utils.duplicate(actor.system.resources);
-		const resourcePath = `system.resources.${resKey}`;
-		resources[resKey].value = Math.clamped(value - cost, 0, max);
-		await actor.update({ "system.resources": resources });
-		return true;
-	}
 }
 
 // TurnEnd effect macro

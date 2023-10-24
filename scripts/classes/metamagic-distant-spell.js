@@ -3,32 +3,30 @@
 
 	When you cast a spell that has a range of touch, you can spend 1 sorcery point to make the range of the spell 30 feet.
 */
-const version = "10.0.0";
-const optionName = "Metamagic: Distant Spell";
-const resourceName = "Sorcery Points";
+const version = "11.0";
+const optionName = "Distant Spell";
+const baseName = "Font of Magic";
 const cost = 1;
 const mutationFlag = "distant-spell-item";
 
 try {
-	const lastArg = args[args.length - 1];
-	const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-	const actorToken = canvas.tokens.get(lastArg.tokenId);
-
 	if (args[0].macroPass === "preItemRoll") {
-		// check resources
-		let resKey = findResource(actor);
-		if (!resKey) {
-			ui.notifications.error(`${optionName} - no resource found`);
+		let fontOfMagic = actor.items.find(i => i.name === optionName);
+		if (fontOfMagic) {
+			let usesLeft = fontOfMagic.system.uses?.value ?? 0;
+			if (!usesLeft || usesLeft < cost) {
+				console.error(`${optionName} - not enough Sorcery Points left`);
+				ui.notifications.error(`${optionName} - not enough Sorcery Points left`);
+				return false;
+			}
+		}
+		else {
+			console.error(`${optionName} - no ${baseName} item on actor`);
+			ui.notifications.error(`${optionName} - no ${baseName} item on actor`);
 			return false;
 		}
 
-		const points = actor.system.resources[resKey].value;
-		if (!points) {
-			ui.notifications.error(`${optionName} - resource pool is empty`);
-			return false;
-		}
-		
-		// CHeck for spells and slots
+		// Check for spells and slots
 		let spells = actor.items.filter(i => i.type === 'spell');
 		let spellSlots = actor.system.spells;
 		if (!spells || !spellSlots) {
@@ -105,11 +103,12 @@ try {
 							};
 							
 							// mutate the selected item
-							await warpgate.mutate(actorToken.document, updates, {}, { name: itemName });
+							await warpgate.mutate(token.document, updates, {}, { name: itemName });
 													
 							// track target info on the actor
 							DAE.setFlag(actor, mutationFlag, {itemName : itemName } );
-							await consumeResource(actor, resKey, 1);
+							const newValue = fontOfMagic.system.uses.value - cost;
+							await fontOfMagic.update({"system.uses.value": newValue});
 						}
 					}
 				},
@@ -125,41 +124,11 @@ try {
 		let flag = DAE.getFlag(actor, mutationFlag);
 		if (flag) {
 			const itemName = flag.itemName;
-			let restore = await warpgate.revert(actorToken.document, itemName);
+			await warpgate.revert(token.document, itemName);
 			DAE.unsetFlag(actor, mutationFlag);
 		}
 	}
 	
 } catch (err)  {
     console.error(`${optionName}: ${version}`, err);
-}
-
-// find the resource matching this feature
-function findResource(actor) {
-	if (actor) {
-		for (let res in actor.system.resources) {
-			if (actor.system.resources[res].label === resourceName) {
-			  return res;
-			}
-		}
-	}
-	
-	return null;
-}
-
-// handle resource consumption
-async function consumeResource(actor, resKey, cost) {
-	if (actor && resKey && cost) {
-		const {value, max} = actor.system.resources[resKey];
-		if (!value) {
-			ChatMessage.create({'content': '${resourceName} : Out of resources'});
-			return false;
-		}
-		
-		const resources = foundry.utils.duplicate(actor.system.resources);
-		const resourcePath = `system.resources.${resKey}`;
-		resources[resKey].value = Math.clamped(value - cost, 0, max);
-		await actor.update({ "system.resources": resources });
-		return true;
-	}
 }

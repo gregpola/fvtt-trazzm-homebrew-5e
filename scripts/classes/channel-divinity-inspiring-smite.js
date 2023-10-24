@@ -1,33 +1,36 @@
 /*
-	Immediately after you deal damage to a creature with your Divine Smite feature, you can use your Channel Divinity as a bonus action and distribute temporary hit points to creatures of your choice within 30 feet of you, which can include you. The total number of temporary hit points equals 2d8 + your level in this class, divided among the chosen creatures however you like.
+	Immediately after you deal damage to a creature with your Divine Smite feature, you can use your Channel Divinity as
+	a bonus action and distribute temporary hit points to creatures of your choice within 30 feet of you, which can
+	include you. The total number of temporary hit points equals 2d8 + your level in this class, divided among the chosen
+	creatures however you like.
 */
-const version = "10.0.1";
-const resourceName = "Channel Divinity";
+const version = "11.0";
 const optionName = "Inspiring Smite"
-const lastArg = args[args.length - 1];
+const channelDivinityName = "Channel Divinity (Paladin)";
+const cost = 1;
 
 try {
 	if (args[0].macroPass === "preItemRoll") {
-		let actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-		let actorToken = canvas.tokens.get(lastArg.tokenId);
-		
-		// check resources
-		let resKey = findResource(actor);
-		if (!resKey) {
-			ui.notifications.error(`${optionName}: ${resourceName} - no resource found`);
+		// check Channel Divinity uses available
+		let channelDivinity = actor.items.find(i => i.name === channelDivinityName);
+		if (channelDivinity) {
+			let usesLeft = channelDivinity.system.uses?.value ?? 0;
+			if (!usesLeft || usesLeft < cost) {
+				console.error(`${optionName} - not enough ${channelDivinityName} uses left`);
+				ui.notifications.error(`${optionName} - not enough ${channelDivinityName} uses left`);
+				return false;
+			}
+		}
+		else {
+			console.error(`${optionName} - no ${channelDivinityName} item on actor`);
+			ui.notifications.error(`${optionName} - no ${channelDivinityName} item on actor`);
 			return false;
 		}
 
-		const points = actor.system.resources[resKey].value;
-		if (!points) {
-			ui.notifications.error(`${optionName}: ${resourceName} - resource pool is empty`);
-			return false;
-		}
-		
 		// find nearby allies
-		const friendlyTargets = MidiQOL.findNearby(1, actorToken, 30);
-		const neutralTargets = MidiQOL.findNearby(0, actorToken, 30);
-		let recipients = [actorToken, ...friendlyTargets, ...neutralTargets];
+		const friendlyTargets = MidiQOL.findNearby(1, token, 30);
+		const neutralTargets = MidiQOL.findNearby(0, token, 30);
+		let recipients = [token, ...friendlyTargets, ...neutralTargets];
 		
 		// roll the total temp HP to spend
 		const paladinLevel = actor.classes.paladin?.system.levels ?? 0;
@@ -58,7 +61,7 @@ try {
 		
 		let dialog = new Promise((resolve, reject) => {
 			new Dialog({
-				title: `${resourceName}: ${optionName}`,
+				title: `${channelDivinityName}: ${optionName}`,
 				content,
 				buttons:
 				{
@@ -93,10 +96,11 @@ try {
 									let ttoken = recipients[rd[0]];
 									let pts = rd[1];
 									const damageRoll = await new Roll(`${pts}`).evaluate({ async: false });
-									await new MidiQOL.DamageOnlyWorkflow(actor, actorToken, damageRoll.total, "temphp", [ttoken], damageRoll, 
-										{flavor: `${optionName}`, itemCardId: lastArg.itemCardId});
+									await new MidiQOL.DamageOnlyWorkflow(actor, token, damageRoll.total, "temphp", [ttoken], damageRoll,
+										{flavor: `${optionName}`, itemCardId: args[0].itemCardId});
 								}
-								await consumeResource(actor, resKey, 1);
+								const newValue = channelDivinity.system.uses.value - cost;
+								await channelDivinity.update({"system.uses.value": newValue});
 							}
 							resolve(true);
 						}
@@ -115,35 +119,5 @@ try {
 	}
 	
 } catch (err) {
-	console.error(`${resourceName}: ${optionName} ${version}`, err);
-}
-
-// find the resource matching this feature
-function findResource(actor) {
-	if (actor) {
-		for (let res in actor.system.resources) {
-			if (actor.system.resources[res].label === resourceName) {
-			  return res;
-			}
-		}
-	}
-	
-	return null;
-}
-
-// handle resource consumption
-async function consumeResource(actor, resKey, cost) {
-	if (actor && resKey && cost) {
-		const {value, max} = actor.system.resources[resKey];
-		if (!value) {
-			ChatMessage.create({'content': '${resourceName} : Out of resources'});
-			return false;
-		}
-		
-		const resources = foundry.utils.duplicate(actor.system.resources);
-		const resourcePath = `system.resources.${resKey}`;
-		resources[resKey].value = Math.clamped(value - cost, 0, max);
-		await actor.update({ "system.resources": resources });
-		return true;
-	}
+	console.error(`${optionName} : ${version}`, err);
 }

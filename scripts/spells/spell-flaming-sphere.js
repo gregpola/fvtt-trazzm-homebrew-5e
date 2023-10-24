@@ -1,21 +1,28 @@
-const version = "10.0.15";
+/*
+	A 5-foot-diameter Sphere of fire appears in an unoccupied space of your choice within range and lasts for the Duration.
+	Any creature that ends its turn within 5 feet of the sphere must make a Dexterity saving throw. The creature takes
+	2d6 fire damage on a failed save, or half as much damage on a successful one.
+
+	As a Bonus Action, you can move the Sphere up to 30 feet. If you ram the sphere into a creature, that creature must
+	make the saving throw against the sphere’s damage, and the sphere stops moving this turn.
+
+	When you move the Sphere, you can direct it over barriers up to 5 feet tall and jump it across pits up to 10 feet
+	wide. The sphere ignites flammable Objects not being worn or carried, and it sheds bright light in a 20-foot radius
+	and dim light for an additional 20 feet.
+
+	At Higher Levels.When you cast this spell using a spell slot of 3rd level or higher, the damage increases by 1d6 for each slot level above 2nd.
+ */
+const version = "11.0";
 const optionName = "Flaming Sphere";
 const summonFlag = "flaming-sphere";
-const creatureName = "Driftglobe";
 
 try {
-	const lastArg = args[args.length - 1];
-	let caster;
-	if (lastArg.tokenId) caster = canvas.tokens.get(lastArg.tokenId).actor;
-	else caster = game.actors.get(lastArg.actorId);
-	
     if (args[0] === "on") {
-
 		// Build the token updates
-		let summonName = optionName + " (" + caster.name + ")";
-		const spellLevel = lastArg.efData.flags["midi-qol"].castData.castLevel;
+		let summonName = optionName + " (" + actor.name + ")";
+		const spellLevel = lastArgValue.efData.flags["midi-qol"].castData.castLevel;
 		
-        const overTimeValue = `turn=end,saveDC=${caster.system.attributes.spelldc ?? 10},saveAbility=dex,damageRoll=${spellLevel}d6,damageType=fire,saveDamage=halfdamage,saveRemove=false`;
+        const overTimeValue = `turn=end,saveDC=${actor.system.attributes.spelldc ?? 10},saveAbility=dex,damageRoll=${spellLevel}d6,damageType=fire,saveDamage=halfdamage,saveRemove=false`;
 		
         let updates = {
             token: {
@@ -32,14 +39,14 @@ try {
 					"intensity": 5,
 					"type": "torch"
 				},
-				"flags": { "midi-srd": { "Flaming Sphere": { "ActorId": caster.id } } }
+				"flags": { "midi-srd": { "Flaming Sphere": { "ActorId": actor.id } } }
             },
 			"name": summonName,
 			embedded: {
 				Item: {
 					"Flaming Sphere Damage": {
 						"system.damage.parts": [[`${spellLevel}d6`, "fire"]], 
-						"system.save.dc": caster.system.attributes.spelldc
+						"system.save.dc": actor.system.attributes.spelldc
 					}
 				},
 				ActiveEffect: {
@@ -48,12 +55,12 @@ try {
 						"disabled": false,
 						"label": "Flaming Sphere Damage",
 						"icon": "icons/magic/fire/orb-vortex.webp",
-						"origin": lastArg.origin,
+						"origin": lastArgValue.origin,
 						"flags": {
 							"ActiveAuras": {
 								"isAura":true,
 								"aura":"All",
-								"radius":7.5,
+								"radius":5,
 								"alignment":"",
 								"type":"",
 								"ignoreSelf":true,
@@ -98,9 +105,10 @@ try {
 		let summonedToken = canvas.tokens.get(result[0]);
 		if (summonedToken) {
 			await actor.setFlag("midi-qol", summonFlag, summonedToken.id);
-			// players can't do the following:
-			//await summonedToken.toggleCombat();
-			//await summonedToken.actor.rollInitiative();
+			await summonedToken.toggleCombat();
+			const objectInitiative = token.combatant.initiative ? token.combatant.initiative + .01
+				: 1 + (summonedToken.actor.system.abilities.dex.value / 100);
+			await summonedToken.combatant.update({initiative: objectInitiative});
 		}
 
     }
@@ -115,7 +123,7 @@ try {
 		// delete all overTime effects
 		for (let tokenDoc of canvas.scene.tokens) {
 			let uuid = tokenDoc.actor.uuid;
-			let auraEffect = tokenDoc.actor.effects?.find(i => i.label === "Flaming Sphere Proximity Damage" && i.origin === lastArg.origin);
+			let auraEffect = tokenDoc.actor.effects?.find(i => i.label === "Flaming Sphere Proximity Damage" && i.origin === lastArgValue.origin);
 			if (auraEffect) {
 				await MidiQOL.socket().executeAsGM("removeEffects", { actorUuid: uuid, effects: [auraEffect.id] });
 			}

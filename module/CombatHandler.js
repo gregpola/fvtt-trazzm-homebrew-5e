@@ -179,19 +179,14 @@ export class CombatHandler {
             // look for supported features in the combatants
             for (let token of tokens) {
                 let actor = token.actor;
+                let usesValue;
 
                 // look for relentless
                 let featureItem = actor?.items?.getName("Relentless");
                 if (featureItem) {
-                    // add a superiority die if they don't have any left
-                    let resKey = CombatHandler.findResource(actor, "Superiority Dice");
-                    if (resKey) {
-                        let resources = actor.system.resources;
-                        if (resources[resKey].value < 1) {
-                            resources[resKey].value = 1;
-                            actor.update({ "system.resources": resources });
-                            await CombatHandler.wait(500);
-                        }
+                    usesValue = featureItem.system.uses?.value;
+                    if (usesValue && usesValue < 1) {
+                        await featureItem.update({"system.uses.value": 1});
                     }
                 }
 
@@ -199,13 +194,12 @@ export class CombatHandler {
                 featureItem = actor?.items?.getName("Perfect Self");
                 if (featureItem) {
                     // At 20th level, when you roll for initiative and have no ki points remaining, you regain 4 ki points.
-                    let resKey = CombatHandler.findResource(actor, "Ki Points");
-                    if (resKey) {
-                        let resources = actor.system.resources;
-                        if (resources[resKey].value < 1) {
-                            resources[resKey].value = 4;
-                            actor.update({ "system.resources": resources });
-                            await CombatHandler.wait(500);
+                    let kiFeature = actor.items.find(i => i.name === "Ki");
+                    if (kiFeature) {
+                        let usesLeft = kiFeature.system.uses?.value ?? 0;
+                        if (!usesLeft || usesLeft < 1) {
+                            await kiFeature.update({"system.uses.value": 4});
+
                         }
                     }
                 }
@@ -214,13 +208,12 @@ export class CombatHandler {
                 featureItem = actor?.items?.getName("Superior Inspiration");
                 if (featureItem) {
                     // At 20th level, when you roll initiative and have no uses of Bardic Inspiration left, you regain one use.
-                    let resKey = CombatHandler.findResource(actor, "Bardic Inspiration");
-                    if (resKey) {
-                        let resources = actor.system.resources;
-                        if (resources[resKey].value < 1) {
-                            resources[resKey].value = 1;
-                            actor.update({ "system.resources": resources });
-                            await CombatHandler.wait(500);
+                    let bardicInspiration = actor.items.find(i => i.name === "Bardic Inspiration");
+                    if (bardicInspiration) {
+                        let usesLeft = bardicInspiration.system.uses?.value ?? 0;
+                        if (!usesLeft || usesLeft < 1) {
+                            await bardicInspiration.update({"system.uses.value": 1});
+
                         }
                     }
                 }
@@ -317,18 +310,6 @@ export class CombatHandler {
     }
 
     static async wait(ms) { return new Promise(resolve => { setTimeout(resolve, ms); }); }
-
-    static findResource(actor, resourceName) {
-        if (actor) {
-            for (let res in actor.system.resources) {
-                if (actor.system.resources[res].label === resourceName) {
-                    return res;
-                }
-            }
-        }
-
-        return null;
-    }
 
     /**
      * Check the combatant for any turn start options that should be presented.

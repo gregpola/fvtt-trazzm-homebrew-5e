@@ -1,24 +1,21 @@
 /*
 	At 6th level, when you deal lightning damage to a Large or smaller creature, you can also push it up to 10 feet away from you.
 */
-const version = "10.0.1";
+const version = "11.0";
 const optionName = "Thunderbolt Strike";
 
 try {
-	if (args[0].macroPass === "DamageBonus") {	
-		const lastArg = args[args.length - 1];
-		const actorToken = canvas.tokens.get(lastArg.tokenId);
-		const targetActor = lastArg.hitTargets[0].actor;
-		const targetToken = game.canvas.tokens.get(lastArg.hitTargets[0].id);
+	if ((args[0].macroPass === "DamageBonus") && (workflow.hitTargets.size > 0)) {
+		const targetToken = workflow.hitTargets.first();
 		
 		// check the damage type
-		if (lastArg.workflow.damageDetail.filter(i=>i.type === "lightning").length < 1) {
+		if (workflow.damageDetail.filter(i=>i.type === "lightning").length < 1) {
 			console.log(`${optionName} - not lightning damage`);
 			return {};
 		}
 			
 		// check the target's size, must be Large or smaller
-		const tsize = targetActor.system.traits.size;
+		const tsize = targetToken.actor.system.traits.size;
 		if (!["tiny","sm","med","lg"].includes(tsize)) {
 			console.log(`${resourceName} - target is too large to push`);
 			return {};
@@ -49,7 +46,7 @@ try {
 		let useFeature = await dialog;
 		if (useFeature) {
 			// Push the target
-			await HomebrewMacros.pushTarget(actorToken, targetToken, 3);
+			await HomebrewMacros.pushTarget(token, targetToken, 3);
 		}
 	}
 

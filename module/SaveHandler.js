@@ -3,6 +3,7 @@ const _charmResistLabels = new Set(["Alien Mind", "Countercharm", "Dark Devotion
 const _frightenedResistLabels = new Set(["Brave", "Countercharm", "Dark Devotion", "Leviathan Will", "Mental Discipline", "Heart of Hruggek", "Two Heads"]);
 const _paralyzedResistLabels = new Set(["Leviathan Will", "Heart of Hruggek"]);
 const _poisonResistLabels = new Set(["Deathless Nature", "Dwarven Resilience", "Hill Rune", "Infernal Constitution", "Leviathan Will", "Poison Resilience", "Stout Resilience", "Heart of Hruggek"]);
+const _proneResistLabels = new Set(["Sure-Footed"]);
 const _sleepResistLabels = new Set(["Leviathan Will", "Heart of Hruggek", "Wakeful"]);
 const _stunResistLabels = new Set(["Leviathan Will", "Heart of Hruggek", "Two Heads"]);
 
@@ -186,6 +187,16 @@ export class SaveHandler {
                             } else {
                                 let paralyzeEffect = tokenDoc.document.actor.effects.find(f => _paralyzedResistLabels.has(f.name));
                                 if (paralyzeEffect) {
+                                    hasResilience = true;
+                                }
+                            }
+                        } else if (entry === 'Prone' || entry === 'prone') {
+                            let proneFeature = tokenDoc.document.actor.items.find(f => _proneResistLabels.has(f.name));
+                            if (proneFeature) {
+                                hasResilience = true;
+                            } else {
+                                let proneEffect = tokenDoc.document.actor.effects.find(f => _proneResistLabels.has(f.name));
+                                if (proneEffect) {
                                     hasResilience = true;
                                 }
                             }

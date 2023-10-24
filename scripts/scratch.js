@@ -27,9 +27,15 @@ const abilityBonus = actor.system.abilities[spellcastingAbility].mod;
 
 item.system.prof.hasProficiency
 
+	ui.notifications.error(`${optionName}: ${resourceName}: - no resource found`);
+
+	ChatMessage.create({
+		content: `${actorToken.name}'s ${selectedItem.name} is blessed with positive energy`,
+		speaker: ChatMessage.getSpeaker({ actor: actor })});
 
 
-function isAvailableThisTurn() {
+
+	function isAvailableThisTurn() {
 	if (game.combat) {
 		const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn /100}`;
 		const lastTime = actor.getFlag("midi-qol", timeFlag);
@@ -66,12 +72,7 @@ function checkAllyNearTarget(token, targetToken) {
 	
 	await game.dfreds.effectInterface.removeEffect({effectName: 'Incapacitated', uuid:actor.uuid});
 
-	ui.notifications.error(`${optionName}: ${resourceName}: - no resource found`);
 
-	ChatMessage.create({
-		content: `${actorToken.name}'s ${selectedItem.name} is blessed with positive energy`,
-		speaker: ChatMessage.getSpeaker({ actor: actor })});
-		
 	// Hit point level values
 	targetTokenDoc.actor.classes.barbarian.advancement.byType.HitPoints (array, first has the hp rolls)
 	

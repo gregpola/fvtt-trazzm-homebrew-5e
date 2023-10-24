@@ -1,5 +1,49 @@
 class HomebrewHelpers {
 
+    static syntheticItemWorkflowOptions(targets, useSpellSlot, castLevel, consume) {
+        return [
+            {
+                'showFullCard': false,
+                'createWorkflow': true,
+                'consumeResource': consume ?? false,
+                'consumeRecharge': consume ?? false,
+                'consumeQuantity': consume ?? false,
+                'consumeUsage': consume ?? false,
+                'consumeSpellSlot': useSpellSlot ?? false,
+                'consumeSpellLevel': castLevel ?? false
+            },
+            {
+                'targetUuids': targets,
+                'configureDialog': false,
+                'workflowOptions': {
+                    'autoRollDamage': 'always',
+                    'autoFastDamage': true
+                }
+            }
+        ];
+    }
+
+    static isAvailableThisTurn(actor, flagName) {
+        if (game.combat) {
+            const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn /100}`;
+            const lastTime = actor.getFlag("fvtt-trazzm-homebrew-5e", flagName);
+            if (combatTime === lastTime) {
+                return false;
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    static async setUsedThisTurn(actor, flagName) {
+        const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn /100}`;
+        const lastTime = actor.getFlag("fvtt-trazzm-homebrew-5e", flagName);
+        if (combatTime !== lastTime) {
+            await actor.setFlag("fvtt-trazzm-homebrew-5e", flagName, combatTime)
+        }
+    }
+
     static async dialog(title, options) {
         let buttons = options.map(([label,value]) => ({label,value}));
         let selected = await warpgate.buttonDialog(

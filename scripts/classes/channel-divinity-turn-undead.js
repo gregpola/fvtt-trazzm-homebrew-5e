@@ -10,27 +10,35 @@
 const version = "11.0";
 const resourceName = "Channel Divinity";
 const optionName = "Turn Undead";
+const channelDivinityName = "Channel Divinity (Cleric)";
+const cost = 1;
+
 const targetTypes = ["undead"];
 const immunity = ["Turn Immunity"];
 const turnAdvantage = ["Turning Defiance"];
 	
 try {
 	if (args[0].macroPass === "preItemRoll") {
-		// check resources
-		let resKey = findResource(actor);
-		if (!resKey) {
-			ui.notifications.error(`${optionName}: ${resourceName}: - no resource found`);
-			return false;
+		// check Channel Divinity uses available
+		let channelDivinity = actor.items.find(i => i.name === channelDivinityName);
+		if (channelDivinity) {
+			let usesLeft = channelDivinity.system.uses?.value ?? 0;
+			if (!usesLeft || usesLeft < cost) {
+				console.error(`${optionName} - not enough ${channelDivinityName} uses left`);
+				ui.notifications.error(`${optionName} - not enough ${channelDivinityName} uses left`);
+			}
+			else {
+				const newValue = channelDivinity.system.uses.value - cost;
+				await channelDivinity.update({"system.uses.value": newValue});
+				return true;
+			}
+		}
+		else {
+			console.error(`${optionName} - no ${channelDivinityName} item on actor`);
+			ui.notifications.error(`${optionName} - no ${channelDivinityName} item on actor`);
 		}
 
-		// handle resource consumption
-		const points = actor.system.resources[resKey].value;
-		if (!points) {
-			ui.notifications.error(`${optionName}: ${resourceName}: - out of resources`);
-			return false;
-		}
-		await consumeResource(actor, resKey, 1);
-		
+		return false;
 	}
 	else if (args[0].macroPass === "preambleComplete") {
 		// check target types
@@ -86,11 +94,12 @@ try {
 	else if (args[0].macroPass === "postSave") {
 		let targets = args[0].failedSaves;
 		if (targets && targets.length > 0) {
-			let maxCR = getDestroyCR(actor);
-
-			for (let target of targets) {
-				if (target.actor.system.details.cr <= maxCR) {
-					await target.actor.update({"system.attributes.hp.value": 0});
+			const maxCR = actor.system.scale.cleric["destroy-undead"]?.value ?? 0;
+			if (maxCR) {
+				for (let target of targets) {
+					if (target.actor.system.details.cr <= maxCR) {
+						await target.actor.update({"system.attributes.hp.value": 0});
+					}
 				}
 			}
 		}
@@ -101,40 +110,4 @@ try {
 	
 } catch (err) {
 	console.error(`${args[0].itemData.name} - Turn Undead ${version}`, err);
-}
-
-function findResource(actor) {
-	for (let res in actor.system.resources) {
-		if (actor.system.resources[res].label === resourceName) {
-		  return res;
-		}
-    }
-	
-	return null;
-}
-
-// handle resource consumption
-async function consumeResource(actor, resKey, cost) {
-	if (actor && resKey && cost) {
-		const {value, max} = actor.system.resources[resKey];
-		if (!value) {
-			ChatMessage.create({'content': '${resourceName} : Out of resources'});
-			return;
-		}
-		
-		const resources = foundry.utils.duplicate(actor.system.resources);
-		resources[resKey].value = Math.clamped(value - cost, 0, max);
-		await actor.update({ "system.resources": resources });
-	}
-}
-
-function getDestroyCR(actor) {
-	let crDestroy = 0.0;
-	let actorClass = actor.classes.cleric.system.levels;
-	if (actorClass > 16) crDestroy = 4;
-	else if (actorClass > 13) crDestroy = 3;
-	else if (actorClass > 10) crDestroy = 2;
-	else if (actorClass > 7) crDestroy = 1;
-	else if (actorClass > 4) crDestroy = 0.5;
-	return crDestroy;
 }

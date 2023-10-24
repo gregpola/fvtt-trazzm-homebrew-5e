@@ -1,53 +1,43 @@
-const version = "10.0.0";
-const resourceName = "Channel Divinity";
+/*
+	As an action, you present your holy symbol and speak a prayer of denunciation, using your Channel Divinity. Choose
+	one creature within 60 feet of you that you can see. That creature must make a Wisdom saving throw, unless it is
+	immune to being Frightened. Fiends and undead have disadvantage on this saving throw.
+
+	On a failed save, the creature is Frightened for 1 minute or until it takes any damage. While frightened, the creature’s
+	speed is 0, and it can’t benefit from any bonus to its speed.
+
+	On a successful save, the creature’s speed is halved for 1 minute or until the creature takes any damage.
+ */
+const version = "11.0";
+const optionName = "";
+const channelDivinityName = "Channel Divinity (Paladin)";
+const channelDivinityName = "Channel Divinity (Cleric)";
+const cost = 1;
 
 try {
-	const lastArg = args[args.length - 1];
-	let tactor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-	
 	if (args[0].macroPass === "preItemRoll") {
-		// check resources
-		let actor = workflow.actor;
-		let resKey = findResource(actor);
-		if (!resKey) {
-			ui.notifications.error(`${resourceName} - no resource found`);
-			return false;
-		}
-
-		// handle resource consumption
-		return await consumeResource(actor, resKey, 1);
-	}
-	
-} catch (err) {
-	console.error(`Channel Divinity: Sacred Weapon ${version}`, err);
-}
-
-// find the resource matching this feature
-function findResource(actor) {
-	if (actor) {
-		for (let res in actor.system.resources) {
-			if (actor.system.resources[res].label === resourceName) {
-			  return res;
+		// check Channel Divinity uses available
+		let channelDivinity = actor.items.find(i => i.name === channelDivinityName);
+		if (channelDivinity) {
+			let usesLeft = channelDivinity.system.uses?.value ?? 0;
+			if (!usesLeft || usesLeft < cost) {
+				console.error(`${optionName} - not enough ${channelDivinityName} uses left`);
+				ui.notifications.error(`${optionName} - not enough ${channelDivinityName} uses left`);
+			}
+			else {
+				const newValue = channelDivinity.system.uses.value - cost;
+				await channelDivinity.update({"system.uses.value": newValue});
+				return true;
 			}
 		}
-	}
-	
-	return null;
-}
-
-// handle resource consumption
-async function consumeResource(actor, resKey, cost) {
-	if (actor && resKey && cost) {
-		const {value, max} = actor.system.resources[resKey];
-		if (!value) {
-			ChatMessage.create({'content': '${resourceName} : Out of resources'});
-			return false;
+		else {
+			console.error(`${optionName} - no ${channelDivinityName} item on actor`);
+			ui.notifications.error(`${optionName} - no ${channelDivinityName} item on actor`);
 		}
-		
-		const resources = foundry.utils.duplicate(actor.system.resources);
-		const resourcePath = `system.resources.${resKey}`;
-		resources[resKey].value = Math.clamped(value - cost, 0, max);
-		await actor.update({ "system.resources": resources });
-		return true;
+
+		return false;
 	}
+
+} catch (err) {
+	console.error(`${optionName} : ${version}`, err);
 }
