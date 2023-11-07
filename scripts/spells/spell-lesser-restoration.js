@@ -1,18 +1,16 @@
 /*
 	You touch a creature and can end either one disease or one condition afflicting it. The condition can be Blinded, Deafened, Paralyzed, or Poisoned.
 */
-const version = "10.0.0";
+const version = "11.0";
 const optionName = "Lesser Restoration";
 const condition_list = ["Blinded", "Deafened", "Paralyzed", "Diseased", "Poisoned"];
 
 try {
 	if (args[0].macroPass === "postActiveEffects") {
 		const lastArg = args[args.length - 1];
-		const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-		const actorToken = canvas.tokens.get(lastArg.tokenId);
-		const targetToken = game.canvas.tokens.get(lastArg.targets[0].id);
+		const targetToken = workflow.targets.first();
 		
-		const effect = targetToken.actor.effects.filter(i => condition_list.includes(i.label));
+		const effect = targetToken.actor.effects.filter(i => condition_list.includes(i.name));
 		const selectOptions = effect.reduce((list, activeE) => {
 			let condition = activeE.label;
 			list.push(`<option value="${condition}">${condition}</option>`);

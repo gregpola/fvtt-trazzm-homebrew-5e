@@ -1,18 +1,17 @@
 /*
-	At 8th level, you gain the ability to infuse your weapon strikes with the fiery power of the forge. Once on each of your turns when you hit a creature with a weapon attack, you can cause the attack to deal an extra 1d8 fire damage to the target. When you reach 14th level, the extra damage increases to 2d8.
+	At 8th level, you gain the ability to infuse your weapon strikes with the fiery power of the forge. Once on each of
+	your turns when you hit a creature with a weapon attack, you can cause the attack to deal an extra 1d8 fire damage
+	to the target. When you reach 14th level, the extra damage increases to 2d8.
 */
-const version = "10.0.0";
+const version = "11.0";
 const optionName = "Divine Strike (Forge Domain)";
 const timeFlag = "divineStrikeForgeDomain";
 const damageType = game.i18n.localize("fire");
 
 try {
 	if (args[0].macroPass === "DamageBonus") {
-		const lastArg = args[args.length - 1];
-		const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-
 		// make sure it's an allowed attack
-		if (!["mwak", "rwak"].includes(lastArg.itemData.system.actionType)) {
+		if (!["mwak", "rwak"].includes(workflow.item.system.actionType)) {
 			console.log(`${optionName}: not an eligible attack`);
 			return {};
 		}
@@ -55,10 +54,13 @@ try {
 			
 			// add damage bonus
 			const clericLevel = actor.classes.cleric?.system.levels ?? 0;
-			const levelMulti = clericLevel > 13 ? 2 : 1;
-			const critMulti = lastArg.isCritical ? 2: 1;
-			const totalDice = levelMulti * critMulti;
-			return {damageRoll: `${totalDice}d8[${damageType}]`, flavor: optionName};
+			const totalDice = clericLevel > 13 ? 2 : 1;
+			if (workflow.isCritical) {
+				const critBonus = totalDice * 8;
+				return {damageRoll: `${totalDice}d8+${critBonus}[${damageType}]`, flavor: optionName};
+			}
+			else
+				return {damageRoll: `${totalDice}d8[${damageType}]`, flavor: optionName};
 		}
 	}
 

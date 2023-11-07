@@ -121,31 +121,31 @@ async function findEffect(actor, effectName, origin) {
 
 async function wait(ms) { return new Promise(resolve => { setTimeout(resolve, ms); });}
 
-// find the resource matching this feature
-function findResource(actor) {
-	if (actor) {
-		for (let res in actor.system.resources) {
-			if (actor.system.resources[res].label === resourceName) {
-			  return res;
-			}
-		}
-	}
-	
-	return null;
-}
 
-// handle resource consumption
-async function consumeResource(actor, resKey, cost) {
-	if (actor && resKey && cost) {
-		const {value, max} = actor.system.resources[resKey];
-		if (!value) {
-			ChatMessage.create({'content': '${resourceName} : Out of resources'});
-			return false;
+
+		const dependencies = ["dae", "itemacro", "times-up", "midi-qol"];
+		if (!requirementsSatisfied(defaultItemName, dependencies)) {
+			return;
 		}
-		
-		const resources = foundry.utils.duplicate(actor.system.resources);
-		resources[resKey].value = Math.clamped(value - cost, 0, max);
-		await actor.update({ "system.resources": resources });
-		return true;
-	}
-}
+
+		/**
+		 * If the requirements are met, returns true, false otherwise.
+		 *
+		 * @param {string} name - The name of the item for which to check the dependencies.
+		 * @param {Array} dependencies - The array of module ids which are required.
+		 *
+		 * @returns {boolean} true if the requirements are met, false otherwise.
+		 */
+		function requirementsSatisfied(name, dependencies) {
+			let missingDep = false;
+			dependencies.forEach((dep) => {
+				if (!game.modules.get(dep)?.active) {
+					const errorMsg = `${name}: ${dep} must be installed and active.`;
+					ui.notifications.error(errorMsg);
+					console.warn(errorMsg);
+					missingDep = true;
+				}
+			});
+			return !missingDep;
+		}
+

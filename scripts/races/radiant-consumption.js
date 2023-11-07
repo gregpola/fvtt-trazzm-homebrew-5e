@@ -1,17 +1,13 @@
-const version = "10.0.1";
+const version = "11.0";
 const optionName = "Radiant Consumption";
 const timeFlag = "radiantConsumptionTime";
 
 try {
-	const lastArg = args[args.length - 1];
-	const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-	const actorToken = canvas.tokens.get(lastArg.tokenId);
-		
 	if (args[0].macroPass === "DamageBonus") {
 		// Check for availability i.e. once per actors turn
 		if (!isAvailableThisTurn() || !game.combat) {
 			console.log(`${optionName}: is not available for this damage`);
-			return;
+			return {};
 		}
 
 		let useFeature = false;
@@ -22,12 +18,12 @@ try {
 				content: `<p>Apply ${optionName} damage to this attack?</p>`,
 				buttons: {
 					one: {
-						icon: '<p> </p><img src = "icons/magic/light/explosion-star-glow-silhouette.webp" width="30" height="30"></>',
+						icon: '<p> </p><img src = "icons/magic/light/explosion-star-glow-silhouette.webp" width="50" height="50"></>',
 						label: "<p>Yes</p>",
 						callback: () => resolve(true)
 					},
 					two: {
-						icon: '<p> </p><img src = "icons/skills/melee/weapons-crossed-swords-yellow.webp" width="30" height="30"></>',
+						icon: '<p> </p><img src = "icons/skills/melee/weapons-crossed-swords-yellow.webp" width="50" height="50"></>',
 						label: "<p>No</p>",
 						callback: () => { resolve(false) }
 					}
@@ -39,7 +35,7 @@ try {
 		useFeature = await dialog;
 		if (!useFeature) {
 			console.log(`${optionName}: player chose to skip`);
-			return;
+			return {};
 		}
 
 		const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn /100}`;
@@ -51,16 +47,6 @@ try {
 		const pb = actor.system.attributes.prof ?? 2;
 		return {damageRoll: `${pb}[radiant]`, flavor: `${optionName} Damage`};
 		
-	}
-	else if (args[0].macroPass === "postActiveEffects") {
-		// do radiant damage to everyone around the actor
-		const targets = MidiQOL.findNearby(null, token, 10);
-		const rollTerm = actor.system.attributes.prof;
-		let damageRoll = await new Roll(`${rollTerm}`).evaluate({async: false});
-		await game.dice3d?.showForRoll(damageRoll);
-		await new MidiQOL.DamageOnlyWorkflow(actor, actorToken, damageRoll.total, "radiant", targets, 
-			damageRoll, {flavor: `${optionName}`, itemCardId: lastArg.itemCardId});
-			
 	}
 
 } catch (err) {
@@ -79,3 +65,11 @@ function isAvailableThisTurn() {
 	}	
 	return false;
 }
+
+// Effect Macro on turn end
+// do radiant damage to everyone around the actor
+const targets = MidiQOL.findNearby(null, token, 10);
+const rollTerm = actor.system.attributes.prof;
+let damageRoll = await new Roll(`${rollTerm}`).evaluate({async: false});
+await game.dice3d?.showForRoll(damageRoll);
+await new MidiQOL.DamageOnlyWorkflow(actor, token, damageRoll.total, "radiant", targets, damageRoll, {flavor: 'Radiant Consumption', itemCardId: "new"});

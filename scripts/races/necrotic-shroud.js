@@ -1,34 +1,20 @@
 /*
-	Your eyes briefly become pools of darkness, and ghostly, flightless wings sprout from your back temporarily. Creatures other than your allies within 10 feet of you that can see you must succeed on a Charisma saving throw (DC 8 + your proficiency bonus + your Charisma modifier) or become frightened of you until the end of your next turn. Until the transformation ends, once on each of your turns, you can deal extra necrotic damage to one target when you deal damage to it with an attack or a spell. The extra damage equals your proficiency bonus.
+	Your eyes briefly become pools of darkness, and ghostly, flightless wings sprout from your back temporarily.
+	Creatures other than your allies within 10 feet of you that can see you must succeed on a Charisma saving throw
+	(DC 8 + your proficiency bonus + your Charisma modifier) or become frightened of you until the end of your next turn.
+	Until the transformation ends, once on each of your turns, you can deal extra necrotic damage to one target when you
+	deal damage to it with an attack or a spell. The extra damage equals your proficiency bonus.
 */
-const version = "10.0.1";
+const version = "11.0";
 const optionName = "Necrotic Shroud";
 const timeFlag = "necroticShroudTime";
 
-const lastArg = args[args.length - 1];
-const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-
 try {
-	if (args[0].macroPass === "preambleComplete") {
-		// find nearby enemies
-		const enemies = MidiQOL.findNearby(-1, token, 10);
-		const dc = 8 + actor.system.attributes.prof + actor.system.abilities.cha.mod;
-		const flavor = `${CONFIG.DND5E.abilities["cha"]} DC${dc} ${optionName}`;
-		
-		for (let ttoken of enemies) {
-			let saveRoll = await ttoken.actor.rollAbilitySave("cha", {flavor: flavor, damageType: "frightened"});
-			await game.dice3d?.showForRoll(saveRoll);
-			if (saveRoll.total < dc) {
-				await markAsFrightened(ttoken.actor.uuid, actor.uuid);
-			}
-		}
-		
-	}
-	else if (args[0].macroPass === "DamageBonus") {
+	if (args[0].macroPass === "DamageBonus") {
 		// Check for availability i.e. once per actors turn
 		if (!isAvailableThisTurn() || !game.combat) {
 			console.log(`${optionName}: is not available for this damage`);
-			return;
+			return {};
 		}
 
 		let useFeature = false;

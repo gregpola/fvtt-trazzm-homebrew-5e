@@ -3,15 +3,13 @@
 	raging, the first creature you hit on each of your turns with a weapon attack takes extra damage equal to 1d6 + half
 	your barbarian level. The extra damage is necrotic or radiant; you choose the type of damage when you gain this feature.
 */
-const version = "11.0";
+const version = "11.1";
 const optionName = "Divine Fury";
 const rageEffectName = "Rage";
 const timeFlag = "divineFuryTime";
 
 try {
     if (args[0].macroPass === "DamageBonus") {
-        const lastArg = args[args.length - 1];
-
         // make sure the actor is raging
         if (!hasEffectApplied(rageEffectName, actor)) {
             console.log(`${optionName}: not raging`);
@@ -49,10 +47,16 @@ try {
         }
 
         // Build the damage bonus
-        const diceMult = lastArg.isCritical ? 2 : 1;
+        const diceMult = workflow.isCritical ? 2 : 1;
         const barbarianLevel = actor.getRollData().classes.barbarian?.levels ?? 0;
         const bonus = Math.ceil(barbarianLevel / 2);
-        return {damageRoll: `${diceMult}d6+${bonus}[${damageType}]`, flavor: `${optionName} Damage`};
+        if (workflow.isCritical) {
+            return {damageRoll: `1d6+6+${bonus}[${damageType}]`, flavor: `${optionName} Damage`};
+
+        }
+        else {
+            return {damageRoll: `1d6+${bonus}[${damageType}]`, flavor: `${optionName} Damage`};
+        }
     }
 
 } catch (err) {

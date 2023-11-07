@@ -1,17 +1,13 @@
-const version = "10.0.0";
+const version = "11.0";
 const optionName = "Radiant Soul";
 const timeFlag = "radiantSoulTime";
 
 try {
-	const lastArg = args[args.length - 1];
-	const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-	const actorToken = canvas.tokens.get(lastArg.tokenId);
-		
 	if (args[0].macroPass === "DamageBonus") {
 		// Check for availability i.e. once per actors turn
 		if (!isAvailableThisTurn() || !game.combat) {
 			console.log(`${optionName}: is not available for this damage`);
-			return;
+			return {};
 		}
 
 		let useFeature = false;
@@ -22,12 +18,12 @@ try {
 				content: `<p>Apply ${optionName} damage to this attack?</p>`,
 				buttons: {
 					one: {
-						icon: '<p> </p><img src = "icons/magic/holy/saint-glass-portrait-halo.webp" width="30" height="30"></>',
+						icon: '<p> </p><img src = "icons/magic/holy/saint-glass-portrait-halo.webp" width="50" height="50"></>',
 						label: "<p>Yes</p>",
 						callback: () => resolve(true)
 					},
 					two: {
-						icon: '<p> </p><img src = "icons/skills/melee/weapons-crossed-swords-yellow.webp" width="30" height="30"></>',
+						icon: '<p> </p><img src = "icons/skills/melee/weapons-crossed-swords-yellow.webp" width="50" height="50"></>',
 						label: "<p>No</p>",
 						callback: () => { resolve(false) }
 					}
@@ -39,7 +35,7 @@ try {
 		useFeature = await dialog;
 		if (!useFeature) {
 			console.log(`${optionName}: player chose to skip`);
-			return;
+			return {};
 		}
 
 		const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn /100}`;

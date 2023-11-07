@@ -1,28 +1,28 @@
-const version = "10.0.0";
+/*
+	A willing creature you touch is imbued with bravery. Until the spell ends, the creature is immune to being Frightened
+	and gains Temporary Hit Points equal to your Spellcasting ability modifier at the start of each of its turns. When
+	the spell ends, the target loses any remaining temporary hit points from this spell.
+
+	At Higher Levels. When you cast this spell using a spell slot of 2nd level or higher, you can target one additional creature for each slot level above 1st.
+ */
+const version = "11.0";
 const optionName = "Heroism";
 
 try {
-	//DAE Macro Execute, Effect Value = "Macro Name" t @damage (apply @mod damge of none type)
-	const lastArg = args[args.length - 1];
-	let tactor;
-	if (lastArg.tokenId) tactor = canvas.tokens.get(lastArg.tokenId).actor;
-	else tactor = game.actors.get(lastArg.actorId);
-	const target = canvas.tokens.get(lastArg.tokenId)
-
 	let mod = args[1];
 
 	if (args[0] === "on") {
-		ChatMessage.create({ content: `${optionName} is applied to ${tactor.name}` })
+		ChatMessage.create({ content: `${optionName} is applied to ${actor.name}` })
 	}
 
 	else if (args[0] === "off") {
-		ChatMessage.create({ content: `${optionName} ends` });
+		ChatMessage.create({ content: `${optionName} ends for ${actor.name}` });
 	}
 
 	else if(args[0] === "each"){
-		let bonus = mod > tactor.system.attributes.hp.temp ? mod : tactor.system.attributes.hp.temp
-			tactor.update({ "data.attributes.hp.temp": mod });
-			ChatMessage.create({ content: `${optionName} continues on ${tactor.name}` })
+		let bonus = mod > tactor.system.attributes.hp.temp ? mod : tactor.system.attributes.hp.temp;
+		actor.update({ "data.attributes.hp.temp": bonus });
+		ChatMessage.create({ content: `${optionName} continues on ${actor.name}` })
 	}
 	
 } catch (err) {

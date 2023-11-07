@@ -6,7 +6,7 @@
 		* Before you make an attack with a ranged weapon that you are proficient with, you can choose to take a -5
 		  penalty to the attack roll. If the attack hits, you add +10 to the attack's damage.
  */
-const version = "11.0";
+const version = "11.1";
 const optionName = "Sharpshooter";
 
 try {
@@ -47,15 +47,12 @@ try {
 		if (useFeature) {
 			// add the attack penalty and damage bonus to the actor
             const effectData = {
+				"name": `${optionName} (active)`,
+				"icon": "icons/skills/ranged/target-bullseye-arrow-blue.webp",
                 "changes":[
                     { "key": "system.bonuses.rwak.attack", "mode": CONST.ACTIVE_EFFECT_MODES.ADD, "value": "-5", "priority": "20" },
                     { "key": "system.bonuses.rwak.damage", "mode": CONST.ACTIVE_EFFECT_MODES.ADD, "value": "10", "priority": "21" }
                 ],
-                "duration": {
-                    "startTime": game.time.worldTime,
-                },
-                "icon": "icons/skills/ranged/target-bullseye-arrow-blue.webp",
-                "name": `${optionName}`,
                 "flags": {
                     "dae": { "specialDuration": [ "1Attack" ] }
 				}

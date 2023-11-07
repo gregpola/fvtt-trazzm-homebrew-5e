@@ -1,30 +1,34 @@
 /*
-	A stream of acid emanates from you in a line 30 feet long and 5 feet wide in a direction you choose. Each creature in the line must succeed on a Dexterity saving throw or be covered in acid for the spell’s duration or until a creature uses its action to scrape or wash the acid off itself or another creature. A creature covered in the acid takes 2d4 acid damage at start of each of its turns.
+	A stream of acid emanates from you in a line 30 feet long and 5 feet wide in a direction you choose. Each creature
+	in the line must succeed on a Dexterity saving throw or be covered in acid for the spell’s duration or until a
+	creature uses its action to scrape or wash the acid off itself or another creature. A creature covered in the acid
+	takes 2d4 acid damage at start of each of its turns.
 
-	At Higher Levels. When you cast this spell using a spell slot of 2nd level or higher, the damage increases by 2d4 for each slot level above 1st.
+	At Higher Levels. When you cast this spell using a spell slot of 2nd level or higher, the damage increases by 2d4
+	for each slot level above 1st.
 */
-const version = "10.0.0";
+const version = "11.0";
 const optionName = "Tasha's Caustic Brew";
 const damageType = "acid";
 
 try {
-	const lastArg = args[args.length - 1];
-	const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-
 	if (args[0].tag === "OnUse") {
-		if (lastArg.failedSaves.length > 0)
-			return {};
+		if (workflow.failedSaves.size > 0)
+			return;
 		
-		const conc = actor.effects.find(i => i.label === "Concentrating");
+		const conc = actor.effects.find(i => i.name === "Concentrating");
 		await MidiQOL.socket().executeAsGM("removeEffects", { actorUuid: actor.uuid, effects: [conc.id] });
-		
+
+	} else if (args[0] === "on") {
+
+	} else if (args[0] === "off") {
+
 	} else if (args[0] === "each") {
-		let tokenD = canvas.tokens.get(args[1]);
 		let damageDice = `${Number(args[2]) * 2}d4[${damageType}]`;
-		let itemD = lastArg.efData.flags.dae.itemData;
+		let itemD = lastArgValue.efData.flags.dae.itemData;
 		itemD.system.components.concentration = false;
 
-		let target = canvas.tokens.get(lastArg.tokenId);
+		let target = canvas.tokens.get(lastArgValue.tokenId);
 		const damageRoll = await new Roll(damageDice).evaluate({ async: true });
 		const damageWorkflow = await new MidiQOL.DamageOnlyWorkflow(actor, target, damageRoll.total, damageType, [target], damageRoll, { flavor: `(${CONFIG.DND5E.damageTypes[damageType]})`, itemData: itemD, itemCardId: "new" });
 		await new Dialog({
@@ -33,7 +37,7 @@ try {
 			buttons: {
 				yes: {
 					label: "Yes", callback: async () => {
-						await MidiQOL.socket().executeAsGM("removeEffects", { actorUuid: actor.uuid, effects: [lastArg.effectId] });
+						await MidiQOL.socket().executeAsGM("removeEffects", { actorUuid: actor.uuid, effects: [lastArgValue.effectId] });
 						const the_message = `<div class="midi-qol-nobox midi-qol-bigger-text"><b>Condition : Removed</b></div><hr>`;
 						const chatMessage = await game.messages.get(damageWorkflow.itemCard.id);
 						let content = await duplicate(chatMessage.content);

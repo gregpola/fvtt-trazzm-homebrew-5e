@@ -1,3 +1,11 @@
+# 11.8
+* Class Features Updated: Divine Smite, Favored by the Gods, Potent Spellcasting, Rage
+* Feats Updated: Empowered Cantrips, Great Weapon Master, Sharpshooter
+* Items Updated: Luckstone
+* Races Updated: Aasimar
+* Spells Updated: Blindness/Deafness, Faerie Fire, Green-Flame Blade, Heat Metal, Heroism, Lesser Restoration, Light, Magic Weapon, Shocking Grasp, Tasha's Caustic Brew, Tasha's Hideous Laughter, Toll the Dead, Word of Radiance
+* Subclasses Updated: Circle of the Elements, Forge Domain, Path of the Zealot
+
 # 11.7
 * Classes Updated: All classes, rebuild suggested
 * Creatures Updated: Air Elemental Myrmidon, Bulette, Dao, Dust Devil, Earth Elemental Myrmidon, Fire Elemental, Fire Elemental Myrmidon, Galeb Duhr, Salamander, Water Elemental Myrmidon, Xorn

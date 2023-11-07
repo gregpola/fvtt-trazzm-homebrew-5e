@@ -6,14 +6,13 @@
 	At Higher Levels. When you cast this spell using a spell slot of 3rd level or higher, you can target one additional
 	creature for each slot level above 2nd.
 */
-const version = "10.1";
+const version = "11.0";
 const optionName = "Blindness/Deafness";
 
 try {
 	if (args[0].macroPass === "postActiveEffects") {
-		const wf = scope.workflow;
-		const targets = wf.failedSaves;
-		const saveDC = wf.item.system.save.dc;
+		const targets = workflow.failedSaves;
+		const saveDC = workflow.item.system.save.dc;
 
 		// Ask which alteration to take
 		new Dialog({
@@ -23,7 +22,7 @@ try {
 					label: "Blindness",
 					callback: async () => {
 						targets.forEach(target => {
-							applyBlindedEffect(wf.uuid, target.actor, saveDC);
+							applyBlindedEffect(workflow.uuid, target.actor, saveDC);
 						});
 					}
 				},
@@ -31,7 +30,7 @@ try {
 					label: "Deafness",
 					callback: async () => {
 						targets.forEach(target => {
-							applyDeafenedEffect(wf.uuid, target.actor, saveDC);
+							applyDeafenedEffect(workflow.uuid, target.actor, saveDC);
 						});
 					}
 				}
@@ -46,7 +45,7 @@ try {
 async function applyBlindedEffect(origin, target, saveDC) {
 
 	let effectData = [{
-		label: optionName,
+		name: `${optionName} - Blinded`,
 		icon: 'icons/creatures/eyes/humanoid-single-blind.webp',
 		origin: origin,
 		transfer: false,
@@ -63,7 +62,7 @@ async function applyBlindedEffect(origin, target, saveDC) {
 async function applyDeafenedEffect(origin, target, saveDC) {
 
 	let effectData = [{
-		label: optionName,
+		name: `${optionName} - Deafened`,
 		icon: 'icons/commodities/biological/shell-conch-gray.webp',
 		origin: origin,
 		transfer: false,

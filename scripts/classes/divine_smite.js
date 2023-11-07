@@ -4,7 +4,7 @@
 	plus 1d8 for each spell level higher than 1st, to a maximum of 5d8. The damage increases by 1d8 if the target is an
 	undead or a fiend, to a maximum of 6d8.
  */
-const version = "11.0";
+const version = "11.1";
 const optionName = "Divine Smite";
 
 try {
@@ -111,11 +111,14 @@ try {
 		if (numDice > 5) numDice = 5;
 		let undead = ["undead", "fiend"].some(type => (targetToken.actor.system.details.type?.value || "").toLowerCase().includes(type));
 		if (undead) numDice += 1;
+
 		if (workflow.isCritical) {
-			numDice = numDice * 2;
+			const critDamage = numDice * 8;
+			return {damageRoll: `${numDice}d8 + ${critDamage}[radiant]`, flavor: `${optionName}`};
 		}
-		
-		return {damageRoll: `${numDice}d8[radiant]`, flavor: `${optionName}`};
+		else {
+			return {damageRoll: `${numDice}d8[radiant]`, flavor: `${optionName}`};
+		}
 	}
 
 } catch (err) {

@@ -148,28 +148,29 @@ export class BarbarianFeatures {
             }
             if (!targetActor) return;
 
-            // Bail if the target actor does not have Relentless Rage
-            let featureItem = targetActor.items.getName("Relentless Rage");
-            if (featureItem) {
-                // Bail if the actor is not raging
-                let rageEffect = targetActor.effects.find(i => i.name === "Rage");
-                if (rageEffect) {
-                    if (ditem.newHP < 1) {
-                        // Roll the actor's con save
-                        const featureValue = featureItem.system.uses?.value ?? 1;
-                        const targetValue = (10 + (5 * featureValue));
-                        let saveRoll = await targetActor.rollAbilitySave("con", {flavor: "Relentless Rage - DC " + targetValue});
-                        await game.dice3d?.showForRoll(saveRoll);
-                        if (saveRoll.total >= targetValue) {
-                            ditem.totalDamage = ditem.hpDamage = ditem.appliedDamage = ditem.oldHP - 1;
-                            ditem.newHP = 1;
-                        }
+            // Get the Rage effect
+            let rageEffect = targetActor.effects.find(i => i.name === "Rage");
 
-                        await featureItem.update({ "system.uses.value": featureValue + 1 });
-                        await BarbarianFeatures.wait(500);
+            // Check for Relentless Rage
+            let featureItem = targetActor.items.getName("Relentless Rage");
+            if (featureItem && rageEffect) {
+                if (ditem.newHP < 1) {
+                    // Roll the actor's con save
+                    const featureValue = featureItem.system.uses?.value ?? 1;
+                    const targetValue = (10 + (5 * featureValue));
+                    let saveRoll = await targetActor.rollAbilitySave("con", {flavor: "Relentless Rage - DC " + targetValue});
+                    await game.dice3d?.showForRoll(saveRoll);
+                    if (saveRoll.total >= targetValue) {
+                        ditem.totalDamage = ditem.hpDamage = ditem.appliedDamage = ditem.oldHP - 1;
+                        ditem.newHP = 1;
                     }
+
+                    await featureItem.update({ "system.uses.value": featureValue + 1 });
+                    await BarbarianFeatures.wait(500);
                 }
             }
+
+            // TODO Check for 'Rage Beyond Death'
         });
     }
 
