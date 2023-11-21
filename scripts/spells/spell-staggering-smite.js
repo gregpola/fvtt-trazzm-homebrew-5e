@@ -4,82 +4,90 @@
 	throw. On a failed save, it has disadvantage on attack rolls and ability checks, and can’t take reactions, until the
 	end of its next turn.
  */
-const version = "10.0";
+const version = "11.0";
 const optionName = "Staggering Smite";
 
 try {
 	if (args[0].macroPass === "DamageBonus") {
-		const wf = scope.workflow;
+		let targetToken = workflow.hitTargets.first();
 
-		// make sure it's an allowed attack
-		if (!["mwak"].includes(wf.item.system.actionType)) {
-			console.log(`${optionName}: not an eligible attack: ${wf.item.system.actionType}`);
+		// validate targeting
+		if (!actor || !targetToken) {
+			console.log(`${optionName}: no target selected`);
 			return {};
 		}
 
-		// remove the effect, since it is one-time
-		let effect = actor.effects.find(i=>i.label === optionName);
-		if (effect) {
-			await MidiQOL.socket().executeAsGM("removeEffects", { actorUuid: actor.uuid, effects: [effect.id] });
+		// make sure it's an allowed attack
+		if (!["mwak"].includes(workflow.item.system.actionType)) {
+			console.log(`${optionName}: not an eligible attack: ${workflow.item.system.actionType}`);
+			return {};
 		}
 
 		// roll save for target
-		let targetToken = wf.hitTargets.first();
-		if (targetToken) {
-			const saveDC = actor.system.attributes.spelldc;
-			const saveFlavor = `${CONFIG.DND5E.abilities["wis"]} DC${saveDC} ${optionName}`;
+		const saveDC = actor.system.attributes.spelldc;
+		const saveFlavor = `${CONFIG.DND5E.abilities["wis"]} DC${saveDC} ${optionName}`;
 
-			let saveRoll = await targetToken.actor.rollAbilitySave("wis", {flavor: saveFlavor, damageType: "psychic"});
-			if (saveRoll.total < saveDC) {
-				let effectData = {
-					label: `${optionName}`,
-					icon: 'icons/skills/melee/strike-hammer-destructive-orange.webp',
-					changes: [
-						{
-							key: 'flags.midi-qol.disadvantage.attack.all',
-							mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-							value: '1',
-							priority: 20
-						},
-						{
-							key: 'flags.midi-qol.disadvantage.ability.check.all',
-							mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-							value: '1',
-							priority: 20
-						},
-						{
-							key: 'macro.CE',
-							mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-							value: 'Reaction',
-							priority: 20
-						}
-					],
-					origin: wf.origin,
-					flags: {
-						dae: {
-							selfTarget: false,
-							stackable: "none",
-							durationExpression: "",
-							macroRepeat: "none",
-							specialDuration: [
-								"turnEnd"
-							],
-							transfer: false
-						}
+		let saveRoll = await targetToken.actor.rollAbilitySave("wis", {flavor: saveFlavor, damageType: "psychic"});
+		if (saveRoll.total < saveDC) {
+			let effectData = {
+				name: 'Staggering Smite effects',
+				icon: 'icons/skills/melee/strike-hammer-destructive-orange.webp',
+				changes: [
+					{
+						key: 'flags.midi-qol.disadvantage.attack.all',
+						mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
+						value: '1',
+						priority: 20
 					},
-				};
+					{
+						key: 'flags.midi-qol.disadvantage.ability.check.all',
+						mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
+						value: '1',
+						priority: 20
+					},
+					{
+						key: 'macro.CE',
+						mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
+						value: 'Reaction',
+						priority: 20
+					}
+				],
+				origin: workflow.origin,
+				flags: {
+					dae: {
+						selfTarget: false,
+						stackable: "none",
+						durationExpression: "",
+						macroRepeat: "none",
+						specialDuration: [
+							"turnEnd"
+						],
+						transfer: false
+					}
+				},
+			};
 
-				await MidiQOL.socket().executeAsGM("createEffects",
-					{ actorUuid: targetToken.actor.uuid, effects: [effectData] });
+			await MidiQOL.socket().executeAsGM("createEffects",
+				{ actorUuid: targetToken.actor.uuid, effects: [effectData] });
 
-			}
 		}
 
-		const critMulti = wf.isCritical ? 2: 1;
-		const totalDice = 4 * critMulti;
-		return {damageRoll: `${totalDice}d6[psychic]`, flavor: `${optionName} Damage`};
+		await anime(token, targetToken);
+		if (workflow.isCritical)
+			return {damageRoll: `1d6+6[psychic]`, flavor: `${optionName} Damage`};
+		return {damageRoll: `1d6[psychic]`, flavor: `${optionName} Damage`};
 	}
 
 } catch (err) {
     console.error(`${optionName}:  ${version}`, err);
 }
+
+async function anime(token, target) {
+	new Sequence()
+		.effect()
+		.file("jb2a.misty_step.01.grey")
+		.atLocation(target)
+		.scaleToObject(2)
+		.play();
+}
+

@@ -7,9 +7,9 @@
 	You can end this effect on your turn as part of any other action. If you are no longer holding or carrying this
 	weapon, or if you fall Unconscious, this effect ends.
 */
-const version = "11.1";
+const version = "11.2";
 const optionName = "Sacred Weapon";
-const channelDivinityName = "Channel Divinity (Cleric)";
+const channelDivinityName = "Channel Divinity (Paladin)";
 const cost = 1;
 
 try {

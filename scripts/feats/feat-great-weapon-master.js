@@ -8,7 +8,7 @@
 	* Before you make a melee attack with a heavy weapon that you are proficient with, you can choose to take a -5
 	  penalty to the attack roll. If the attack hits, you add +10 to the attack's damage.
  */
-const version = "11.1";
+const version = "11.2";
 const optionName = "Great Weapon Master";
 
 try {
@@ -32,7 +32,7 @@ try {
 			new Dialog({
 				// localize this text
 				title: `${optionName}`,
-				content: `<p>Do you want to apply ${optionName} to your attack?</p>`,
+				content: `<p>Do you want to apply ${optionName} to your attack?</p><p></p>(-5 to hit, +10 to damage)</p>`,
 				buttons: {
 					one: {
 						icon: '<p> </p><img src = "icons/weapons/axes/axe-battle-skull-black.webp" width="30" height="30"></>',

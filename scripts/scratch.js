@@ -13,19 +13,25 @@ try {
 console.info("%c fvtt-trazzm-homebrew-5e", "color: #D030DE", " | Bag of Tricks (Gray)");
 ui.notifications.error(`${optionName}: ${resourceName}: - no resource found`);
 
-// Useful ereferences
+// Useful references
 if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType)) {
 
 const tsize = targetTokenDoc.actor.system.traits.size;
 if (!["tiny","sm","med","lg"].includes(tsize)) {
 
-		const rogueLevels = actor.getRollData().classes?.rogue?.levels;
+const characterLevel = actor.type === "character" ? actor.system.details.level : actor.system.details.cr;
+const rogueLevels = actor.getRollData().classes?.rogue?.levels;
 const pb = actor.system.attributes.prof;
 const actorDC = actor.system.attributes.spelldc ?? 12;
 const spellcastingAbility = actor.system.attributes.spellcasting;
 const abilityBonus = actor.system.abilities[spellcastingAbility].mod;
+const spellLevel = workflow.castData.castLevel;
 
 item.system.prof.hasProficiency
+
+	await actor.setFlag("fvtt-trazzm-homebrew-5e", flagName, target.actor.uuid);
+	let flag = actor.getFlag("fvtt-trazzm-homebrew-5e", flagName);
+	await actor.unsetFlag("fvtt-trazzm-homebrew-5e", flagName);
 
 	ui.notifications.error(`${optionName}: ${resourceName}: - no resource found`);
 
@@ -65,8 +71,7 @@ function checkAllyNearTarget(token, targetToken) {
 
 	await game.dice3d?.showForRoll(saveRoll);
 	
-	if (!["mwak", "rwak", "msak", "rsak", "save", "heal"].includes(lastArg.itemData.system.actionType)) {
-		
+
 	// bluish color
 	// #5570B8
 	
@@ -96,7 +101,7 @@ let tokenid = 'token' + targetToken.id;
 saveTotal = message.flags["monks-tokenbar"][tokenid].total;
 
 
-"fvtt-trazzm-homebrew-5e.homebrew-items"
+
 
 
 async function wait(ms) { return new Promise(resolve => { setTimeout(resolve, ms); }); }

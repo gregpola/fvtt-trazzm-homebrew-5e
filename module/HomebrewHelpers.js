@@ -1,28 +1,5 @@
 class HomebrewHelpers {
 
-    static syntheticItemWorkflowOptions(targets, useSpellSlot, castLevel, consume) {
-        return [
-            {
-                'showFullCard': false,
-                'createWorkflow': true,
-                'consumeResource': consume ?? false,
-                'consumeRecharge': consume ?? false,
-                'consumeQuantity': consume ?? false,
-                'consumeUsage': consume ?? false,
-                'consumeSpellSlot': useSpellSlot ?? false,
-                'consumeSpellLevel': castLevel ?? false
-            },
-            {
-                'targetUuids': targets,
-                'configureDialog': false,
-                'workflowOptions': {
-                    'autoRollDamage': 'always',
-                    'autoFastDamage': true
-                }
-            }
-        ];
-    }
-
     static isAvailableThisTurn(actor, flagName) {
         if (game.combat) {
             const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn /100}`;
@@ -232,46 +209,54 @@ class HomebrewHelpers {
         );
     };
 
-    static async getItemFromCompendium(key, name, ignoreNotFound) {
-        let gamePack = game.packs.get(key);
-        if (!gamePack) {
-            ui.notifications.warn('Invalid compendium specified!');
-            return false;
-        }
-        let packItems = await gamePack.getDocuments();
-        let itemData = packItems.find(item => item.name === name);
-        if (!itemData) {
-            if (!ignoreNotFound) ui.notifications.warn('Item not found in specified compendium! Check spelling?');
-            return false;
-        }
-        return itemData.toObject();
-    };
-
     static raceOrType(actor) {
         return actor.type === "npc" ? actor.system.details?.type?.value : actor.system.details?.race;
     };
 
-    static async getItemFromCompendium(key, name, packFolderId) {
+    static async getItemFromCompendium(key, name) {
         const gamePack = game.packs.get(key);
         if (!gamePack) {
-            ui.notifications.warn('Invalid compendium specified!');
+            ui.notifications.warn(`Invalid compendium specified (${key})`);
             return false;
         }
-        let packIndex;
-        let match;
-        if (!isNewerVersion(game.version, '11.293')) {
-            packIndex = await gamePack.getIndex({fields: ['name', 'type', 'flags.cf.id']});
-            match = packIndex.find(item => item.name === name && (!packFolderId || (packFolderId && item.flags.cf?.id === packFolderId)));
-        } else {
-            packIndex = await gamePack.getIndex({fields: ['name', 'type', 'folder']});
-            match = packIndex.find(item => item.name === name && (!packFolderId || (packFolderId && item.folder === packFolderId)));
+
+        let packIndex = await gamePack.getIndex({fields: ['name', 'type', 'folder']});
+        if (packIndex) {
+            let match = packIndex.find(item => item.name === name);
+            if (match) {
+                return (await gamePack.getDocument(match._id))?.toObject();
+            } else {
+                ui.notifications.warn('Item not found in specified compendium!');
+                return undefined;
+            }
         }
-        if (match) {
-            return (await gamePack.getDocument(match._id))?.toObject();
-        } else {
-            ui.notifications.warn('Item not found in specified compendium! Check spelling?');
+        else {
+            ui.notifications.warn('Pack not found in compendium!');
             return undefined;
         }
+    }
+
+    static syntheticItemWorkflowOptions(targets, useSpellSlot, castLevel, consume) {
+        return [
+            {
+                'showFullCard': false,
+                'createWorkflow': true,
+                'consumeResource': consume ?? false,
+                'consumeRecharge': consume ?? false,
+                'consumeQuantity': consume ?? false,
+                'consumeUsage': consume ?? false,
+                'consumeSpellSlot': useSpellSlot ?? false,
+                'consumeSpellLevel': castLevel ?? false
+            },
+            {
+                'targetUuids': targets,
+                'configureDialog': false,
+                'workflowOptions': {
+                    'autoRollDamage': 'always',
+                    'autoFastDamage': true
+                }
+            }
+        ];
     }
 
     static syntheticItemWorkflowOptions(targets, useSpellSlot, castLevel) {

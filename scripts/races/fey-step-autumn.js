@@ -1,28 +1,24 @@
-const version = "10.3";
+const version = "11.0";
 const optionName = "Fey Step (Autumn)";
 
 try {
 	if (args[0].macroPass === "postActiveEffects") {
-		const lastArg = args[args.length - 1];
-		let actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-		let actorToken = canvas.tokens.get(lastArg.tokenId);
-		const maxRange = lastArg.item.system.range.value ?? 30;
+		const maxRange = item.system.range.value ?? 30;
 
-		// transport the caster		
-		let position = await HomebrewMacros.warpgateCrosshairs(actorToken, maxRange, lastArg.item, actorToken);
+		// transport the caster
+		let position = await HomebrewMacros.warpgateCrosshairs(token, maxRange, item, token);
 		if (position) {
 			// check for token collision
-			const newCenter = canvas.grid.getSnappedPosition(position.x - actorToken.width / 2, position.y - actorToken.height / 2, 1);
-			if (HomebrewMacros.checkPosition(actorToken, newCenter.x, newCenter.y)) {
-				ui.notifications.error(`${optionName} - can't teleport on top of another token`);
-				return false;
+			const newCenter = canvas.grid.getSnappedPosition(position.x - token.width / 2, position.y - token.height / 2, 1);
+			if (HomebrewMacros.checkPosition(token, newCenter.x, newCenter.y)) {
+				return ui.notifications.error(`${optionName} - can't teleport on top of another token`);
 			}
-			
-			const portalScale = actorToken.w / canvas.grid.size * 0.7;		
+
+			const portalScale = token.w / canvas.grid.size * 0.7;
 			new Sequence()
 				.effect()
-				.file("jb2a.misty_step.01.green")       
-				.atLocation(actorToken)
+				.file("jb2a.misty_step.01.green")
+				.atLocation(token)
 				.scale(portalScale)
 				.fadeOut(200)
 				.wait(500)
@@ -30,7 +26,7 @@ try {
 					canvas.pan(position)
 				})
 				.animation()
-				.on(actorToken)
+				.on(token)
 				.teleportTo(position, { relativeToCenter: true })
 				.fadeIn(200)
 				.effect()
@@ -39,28 +35,28 @@ try {
 				.scale(portalScale)
 				.anchor(0.5,0.5)
 				.play();
+
 		}
 		else {
-			ui.notifications.error(`${optionName} - invalid teleport location`);
-			return false;
+			return ui.notifications.error(`${optionName} - invalid fey step location`);
 		}
-			
+
 		// Ask which targets to try to charm
 		await wait(1000);
-		const potentialTargets = MidiQOL.findNearby(null, actorToken, 10);
+		const potentialTargets = MidiQOL.findNearby(null, token, 10);
 		if (potentialTargets.length === 0) {
 			console.log(`${optionName} - no targets within 10 feet to charm`);
 			return;
 		}
-		
+
 		let charmTargets = new Set();
-		
+
 		let rows = "";
 		for(let t of potentialTargets) {
 			let row = `<div class="flexrow"><label>${t.name}</label><input type="checkbox" value=${t.actor.uuid} style="margin-right:10px;"/></div>`;
 			rows += row;
 		}
-		
+
 		let content = `
 		  <form>
 			<div class="flexcol">
@@ -71,57 +67,56 @@ try {
 			</div>
 		  </form>
 		`;
-		
+
 		let dialog = new Promise((resolve, reject) => {
 			new Dialog({
 				title: optionName,
 				content,
 				buttons:
-				{
-					Ok:
 					{
-						label: `Ok`,
-						callback: async (html) => {
-							let spent = 0;
-							var grid = document.getElementById("targetRows");
-							var checkBoxes = grid.getElementsByTagName("INPUT");
-							for (var i = 0; i < checkBoxes.length; i++) {
-								if (checkBoxes[i].checked) {
-									charmTargets.add(checkBoxes[i].value);
-									spent += 1;
-								}
-							}
-							
-							if (!spent) {
-								resolve(false);
-							}
-							else if (spent > 2) {
-								ui.notifications.error(`${optionName} - too many targets selected`);
-								resolve(false);
-							}
+						Ok:
+							{
+								label: `Ok`,
+								callback: async (html) => {
+									let spent = 0;
+									var grid = document.getElementById("targetRows");
+									var checkBoxes = grid.getElementsByTagName("INPUT");
+									for (var i = 0; i < checkBoxes.length; i++) {
+										if (checkBoxes[i].checked) {
+											charmTargets.add(checkBoxes[i].value);
+											spent += 1;
+										}
+									}
 
-							resolve(true);
-						}
-					},
-					Cancel:
-					{
-						label: `Cancel`,
-						callback: () => { resolve(false) }
+									if (!spent) {
+										resolve(false);
+									}
+									else if (spent > 2) {
+										ui.notifications.error(`${optionName} - too many targets selected`);
+										resolve(false);
+									}
+
+									resolve(true);
+								}
+							},
+						Cancel:
+							{
+								label: `Cancel`,
+								callback: () => { resolve(false) }
+							}
 					}
-						}
 			}).render(true);
 		});
-		
+
 		let proceed = await dialog;
 		if (proceed) {
 			const saveDC = actor.system.attributes.spelldc;
 			const saveFlavor = `${CONFIG.DND5E.abilities["wis"]} DC${saveDC} ${optionName}`;
-			const sourceOrigin = args[0]?.tokenUuid;
-			
+
 			const charmedEffectData = {
-				label: "Charmed",
+				name: "Fey Step - Charmed",
 				icon: "modules/dfreds-convenient-effects/images/charmed.svg",
-				origin: lastArg.itemUuid,
+				origin: actor.uuid,
 				duration: {startTime: game.time.worldTime, seconds: 60},
 				changes: [
 					{
@@ -145,7 +140,7 @@ try {
 				},
 				disabled: false
 			};
-			
+
 			for (let uuid of charmTargets.values()) {
 				let targetActor = MidiQOL.MQfromActorUuid(uuid);
 				if (targetActor) {
@@ -157,9 +152,9 @@ try {
 					}
 				}
 			}
-		}		
+		}
 	}
-	
+
 } catch (err) {
     console.error(`${optionName} ${version}`, err);
 }

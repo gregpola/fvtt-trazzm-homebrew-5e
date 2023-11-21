@@ -7,41 +7,73 @@
 
 	At Higher Levels. When you cast this spell using a spell slot of 5th level or higher, you can target one additional creature for each slot level above 4th.
 */
-const version = "10.0.0";
+const version = "11.0";
 const optionName = "Banishment";
 
 try {
 	const lastArg = args[args.length - 1];
-	const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-	const origin = lastArg.uuid;
-	
+
 	if (args[0].macroPass === "preambleComplete") {
+		const spellLevel = workflow.castData.castLevel;
+		let maxTargets = spellLevel - 3;
+
 		// check target count
-		let targetCount = 1 + lastArg.spellLevel - 4;
-		if (lastArg.workflow.targets.size > targetCount) {
+		if (workflow.targets.size > maxTargets) {
 			ui.notifications.warn(`${optionName} - incorrect number of targets`);
 
 			let index = 0;
-			for (let t of lastArg.workflow.targets) {
+			for (let t of workflow.targets) {
 				if (index++ < targetCount)
 					continue;
 				
-				lastArg.workflow.targets.delete(t);
+				workflow.targets.delete(t);
 			}
 			
-			game.user.updateTokenTargets(Array.from(lastArg.workflow.targets).map(t => t.id));
+			game.user.updateTokenTargets(Array.from(workflow.targets).map(t => t.id));
 		}
 		
 	}
 	else if (args[0] === "on") {
 		const targetToken = canvas.tokens.get(lastArg.tokenId);
-		await ChatMessage.create({ content: `${targetToken.name} was banished`, whisper: [game.user] });
+
+		// disable all active effects
+		let disabledEffects = [];
+		for (let effect of targetToken.actor.effects) {
+			if (!effect.disabled) {
+				await effect.update({disabled: true});
+				disabledEffects.push(effect.id);
+			}
+		}
+		await targetToken.actor.setFlag("fvtt-trazzm-homebrew-5e", flagName, disabledEffects);
+
+		const updates = {
+			actor: {
+				'system.traits.di.all': true,
+				'system.details.type.custom' : 'NoTarget'
+			}
+		};
+		await warpgate.mutate(targetToken.document, updates, {}, { name: mutationFlag });
+
 		await targetToken.document.update({ "hidden": true });
+		await ChatMessage.create({ content: `${targetToken.name} was banished`, whisper: [game.user] });
 	}
 	else if (args[0] === "off") {
 		const targetToken = canvas.tokens.get(lastArg.tokenId);
-		await ChatMessage.create({ content: `${targetToken.name} returns`, whisper: [game.user] });
+		const flag = targetToken.actor.getFlag("fvtt-trazzm-homebrew-5e", flagName);
+		if (flag) {
+			await targetToken.actor.unsetFlag("fvtt-trazzm-homebrew-5e", flagName);
+
+			for (let effectId of flag) {
+				let effect = targetToken.actor.effects.find(e => e.id === effectId);
+				if (effect) {
+					await effect.update({disabled: false});
+				}
+			}
+		}
+
+		await warpgate.revert(targetToken.document, mutationFlag);
 		await targetToken.document.update({ "hidden": false });
+		await ChatMessage.create({ content: `${targetToken.name} returns`, whisper: [game.user] });
 	}
 
 } catch (err) {

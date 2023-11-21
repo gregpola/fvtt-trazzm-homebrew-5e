@@ -9,13 +9,12 @@
 	At Higher Levels. When you cast this spell using a spell slot of 7th level or higher, one additional bolt leaps from
 	the first target to another target for each slot level above 6th.
 */
-const version = "10.0";
+const version = "11.0";
 const optionName = "Chain Lightning";
 
 try {
 	if (args[0].macroPass === "postActiveEffects") {
-		const wf = scope.workflow;
-		const saveDC = wf.item.system.save.dc;
+		const saveDC = item.system.save.dc;
 
 		let maxTargets = workflow.castData.castLevel - 3;
 		let targetToken = workflow.targets.first();
@@ -86,7 +85,7 @@ try {
 		}
 
 		// add animation
-		new Sequence().effect().atLocation(wf.token).stretchTo(targetToken).file('jb2a.chain_lightning.secondary.blue').play();
+		new Sequence().effect().atLocation(workflow.token).stretchTo(targetToken).file('jb2a.chain_lightning.secondary.blue').play();
 
 		// apply the arcing to other targets
 		if (addedTargets.length > 0) {
@@ -94,8 +93,8 @@ try {
 				new Sequence().effect().atLocation(targetToken).stretchTo(i).file('jb2a.chain_lightning.secondary.blue').play();
 			}
 
-			let featureData = await getLightningArcItem(wf.damageRoll.total, saveDC);
-			let feature = new CONFIG.Item.documentClass(featureData, {'parent': wf.actor});
+			let featureData = await getLightningArcItem(workflow.damageRoll.total, saveDC);
+			let feature = new CONFIG.Item.documentClass(featureData, {'parent': workflow.actor});
 			let [config, options] = HomebrewHelpers.syntheticItemWorkflowOptions(addedTargetUuids);
 			await MidiQOL.completeItemUse(feature, config, options);
 			await featureData.delete();

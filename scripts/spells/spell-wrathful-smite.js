@@ -1,13 +1,18 @@
-const version = "10.0.0";
+/*
+	The next time you hit with a melee weapon attack during this spell’s duration, your attack deals an extra 1d6 psychic
+	damage. Additionally, if the target is a creature, it must make a Wisdom saving throw or be Frightened of you until
+	the spell ends. As an action, the creature can make a Wisdom check against your spell save DC to steel its resolve
+	and end this spell.
+ */
+const version = "11.0";
 const optionName = "Wrathful Smite";
+const flagName = "wrathful-smite-used";
+const damageType = game.i18n.localize("psychic");
 const gameRound = game.combat ? game.combat.round : 0;
 
 try {
-	if (args[0].macroPass === "DamageBonus") {	
-		let workflow = MidiQOL.Workflow.getWorkflow(args[0].uuid);
-		let actor = workflow?.actor;
-		const target = args[0].hitTargets[0];
-		let tactor = target?.actor;
+	if (args[0].macroPass === "DamageBonus") {
+		const target = workflow.hitTargets.first();
 
 		// validate targeting
 		if (!actor || !target) {
@@ -16,16 +21,26 @@ try {
 		}
 
 		// make sure it's an allowed attack
-		const at = args[0].item?.system?.actionType;
-		if (!at || !["mwak"].includes(at)) {
-			console.log(`${optionName}: not an eligible attack: ${at}`);
+		if (!["mwak"].includes(workflow.item.system.actionType)) {
+			console.log(`${optionName}: not an eligible attack`);
 			return {};
 		}
-		
-		// remove the effect, since it is one-time
-		let effect = actor.effects?.find(i=>i.label === optionName);
-		if (effect) {
-			await MidiQOL.socket().executeAsGM("removeEffects", { actorUuid: actor.uuid, effects: [effect.id] });
+
+		// check if used (for handling frightened)
+		let flag = actor.getFlag("fvtt-trazzm-homebrew-5e", flagName);
+		if (flag) {
+			console.log(`${optionName}: already applied the damage bonus`);
+			return {};
+		}
+
+		// set the flag
+		await actor.setFlag("fvtt-trazzm-homebrew-5e", flagName, target.actor.uuid);
+
+		// get the remaining time from the spell
+		let frightenedDuration = undefined;
+		const spellEffect = actor.effects.find(e => e.name === optionName);
+		if (spellEffect) {
+			frightenedDuration = deepClone(spellEffect.duration);
 		}
 
 		// save versus frightened
@@ -33,58 +48,43 @@ try {
 		const abilityBonus = actor.system.abilities[ability].mod;
 		const dc = 8 + actor.system.attributes.prof + abilityBonus;
 		let saveType = game.i18n.localize("wis");
-		let save = await MidiQOL.socket().executeAsGM("rollAbility", { request: "save", targetUuid: tactor.uuid, ability: saveType, 
+		let save = await MidiQOL.socket().executeAsGM("rollAbility", { request: "save", targetUuid: target.actor.uuid, ability: saveType,
 			options: { chatMessage: true, fastForward: false } });
 			
 	    if (save.total < dc) {
-			await markAsFrightened(tactor.uuid, actor.uuid, dc, saveType);
+			await game.dfreds.effectInterface.addEffect({
+				'effectName': 'Frightened',
+				'uuid': target.actor.uuid,
+				'origin': workflow.origin,
+				'overlay': false
+			});
 		}
-		else {
-			// if it saves, just drop the concentration
-			let conc = actor.effects?.find(i=>i.label === game.i18n.localize("Concentrating"));
-			if (conc) {
-				await MidiQOL.socket().executeAsGM("removeEffects", { actorUuid: actor.uuid, effects: [conc.id] });
-			}
-		}
+
+		await anime(token, target);
 
 		// add damage bonus
-		const diceMult = args[0].isCritical ? 2: 1;
-		let damageType = game.i18n.localize("psychic");
-		return {damageRoll: `${diceMult}d6[${damageType}]`, flavor: optionName};
+		if (workflow.isCritical)
+			return {damageRoll: `1d6+6[${damageType}]`, flavor: optionName};
+		return {damageRoll: `1d6[${damageType}]`, flavor: optionName};
 	}
-
+	else if (args[0] === "off") {
+		// delete the used flag
+		const lastFlag = actor.getFlag("fvtt-trazzm-homebrew-5e", flagName);
+		if (lastFlag) {
+			await actor.unsetFlag("fvtt-trazzm-homebrew-5e", flagName);
+			await game.dfreds.effectInterface.removeEffect({effectName: 'Frightened', uuid:lastFlag});
+		}
+	}
 
 } catch (err) {
     console.error(`${optionName}:  ${version}`, err);
 }
 
-async function markAsFrightened(targetId, actorId, spellDC, saveType) {
-    let condition = game.i18n.localize("Frightened");
-    let conditionFlags = { "dae": { "token": actorId } };
-
-	const effectData = {
-		label: condition,
-		icon: "icons/svg/terror.svg",
-		origin: actorId,
-		changes: [
-			{
-				key: 'macro.CE',
-				mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-				value: "Frightened",
-				priority: 20
-			},
-            {
-				key: `flags.midi-qol.OverTime`, 
-				mode: CONST.ACTIVE_EFFECT_MODES.OVERRIDE, 
-				value: `turn=start,label=${condition},saveDC=${spellDC},saveAbility=${saveType}`, 
-				priority: 20
-			}
-		],
-		duration: { 
-			rounds: 10, seconds: 60, startRound: gameRound, startTime: game.time.worldTime 
-		},
-		flags: conditionFlags,
-		disabled: false
-	};
-    await MidiQOL.socket().executeAsGM("createEffects", { actorUuid: targetId, effects: [effectData] });
+async function anime(token, target) {
+	new Sequence()
+		.effect()
+		.file("jb2a.misty_step.01.green")
+		.atLocation(target)
+		.scaleToObject(2)
+		.play();
 }

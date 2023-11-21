@@ -8,33 +8,25 @@ You have achieved a penetrating precision in combat, granting you the following 
 	* When you score a critical hit that deals piercing damage to a creature, you can roll one additional damage die when determining the extra piercing damage the target takes.
 
 */
-const version = "10.1";
+const version = "11.0";
 const optionName = "Piercer";
-const lastArg = args[args.length - 1];
 
 try {
-	if (lastArg.macroPass === "DamageBonus") {
-		let workflow = MidiQOL.Workflow.getWorkflow(lastArg.uuid);
-		let actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-		let actorToken = canvas.tokens.get(lastArg.tokenId);
-		
-		const targetActor = lastArg.hitTargets[0].actor;
-		const targetToken = game.canvas.tokens.get(lastArg.hitTargets[0].id);
-
+	if (args[0].macroPass === "DamageBonus") {
 		// make sure it's an allowed attack
-		if (!["msak", "rsak", "mwak", "rwak"].includes(lastArg.itemData.system.actionType)) {
+		if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType)) {
 			console.log(`${optionName} not allowed: not an attack`);
-			return;
+			return {};
 		}
 		
 		if (workflow.damageDetail.filter(i=>i.type === "piercing").length < 1) {
 			console.log(`${optionName} not allowed: not piercing damage`);
-			return;
+			return {};
 		}
 
 		// get the die roll data
 		var dieRolls = [];
-		var terms = lastArg.damageRoll.terms;
+		var terms = workflow.damageRoll.terms;
 		
 		for (i = 0; i < terms.length; i++) {
 			if (isNaN(terms[i].faces)) continue;

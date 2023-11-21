@@ -7,9 +7,9 @@
 	a space within 30 feet of you. It also can’t take reactions. For its action, it can use only the Dash action or try
 	to escape from an effect that prevents it from moving. If there’s nowhere to move, the creature can use the Dodge action.
 */
-const version = "11.0";
+const version = "11.1";
 const optionName = "Turn the Unholy";
-const channelDivinityName = "Channel Divinity (Cleric)";
+const channelDivinityName = "Channel Divinity (Paladin)";
 const cost = 1;
 
 const targetTypes = ["undead", "fiend"];

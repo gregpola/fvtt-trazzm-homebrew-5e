@@ -1,14 +1,17 @@
-const version = "10.0.1";
+const version = "11.0";
 const optionName = "Repelling Blast";
 
 try {
 	if (args[0].macroPass === "DamageBonus") {
-		const lastArg = args[args.length - 1];
-		const attacker = canvas.tokens.get(args[0].tokenId);
-		let ttoken = canvas.tokens.get(args[0].hitTargets[0].object.id);
+		const token = canvas.tokens.get(args[0].tokenId);
+		const target = workflow.hitTargets.first();
+
+		if (!target) {
+			return {};
+		}
 		
 		// make sure it's an allowed attack
-		if (lastArg.item.name !== "Eldritch Blast") {
+		if (workflow.item.name !== "Eldritch Blast" && workflow.item.name !== "Eldritch Blast Beam") {
 			console.log(`${optionName}: not Eldricth Blast`);
 			return {};
 		}
@@ -18,15 +21,15 @@ try {
 			new Dialog({
 				// localize this text
 				title: `Eldritch Invocation: ${optionName}`,
-				content: `<p>Use ${optionName} to push ${ttoken.name} 10 feet?</p>`,
+				content: `<p>Use ${optionName} to push ${target.name} 10 feet?</p>`,
 				buttons: {
 					one: {
-						icon: '<p> </p><img src = "icons/magic/sonic/projectile-shock-wave-blue.webp" width="30" height="30"></>',
+						icon: '<p> </p><img src = "icons/magic/sonic/projectile-shock-wave-blue.webp" width="50" height="50"></>',
 						label: "<p>Yes</p>",
 						callback: () => resolve(true)
 					},
 					two: {
-						icon: '<p> </p><img src = "icons/skills/melee/weapons-crossed-swords-yellow.webp" width="30" height="30"></>',
+						icon: '<p> </p><img src = "icons/skills/melee/weapons-crossed-swords-yellow.webp" width="50" height="50"></>',
 						label: "<p>No</p>",
 						callback: () => { resolve(false) }
 					}
@@ -37,7 +40,7 @@ try {
 		
 		let useManeuver = await dialog;
 		if (useManeuver) {
-			await HomebrewMacros.pushTarget(attacker, ttoken, 2);
+			await HomebrewMacros.pushTarget(token, target, 2);
 		}
 		
 	}

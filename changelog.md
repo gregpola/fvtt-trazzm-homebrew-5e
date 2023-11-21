@@ -1,10 +1,19 @@
+# 11.9
+* Classes Updated: Paladin (added Harness Divine Power)
+* Class Features Added: Invocation: Grasp of Hadar
+* Class Features Updated: Channel Divinity: Sacred Weapon, Channel Divinity: Turn the Unholy, Invocation: Agonizing Blast, Invocation: Repelling Blast
+* Creatures Updated: Stone Golem
+* Feats Updated: Piercer
+* Race Features Updated: Fey Step (Autumn)
+* Spells Updated: Banishment, Banishing Smite, Blinding Smite, Booming Blade, Branding Smite, Chain Lightning, Eldritch Blast, Feather Fall, Magic Missile, Slow, Staggering Smite, Thunderous Smite, Wrathful Smite
+
 # 11.8
 * Class Features Updated: Divine Smite, Favored by the Gods, Potent Spellcasting, Rage
 * Feats Updated: Empowered Cantrips, Great Weapon Master, Sharpshooter
 * Items Updated: Luckstone
 * Races Updated: Aasimar
 * Spells Updated: Blindness/Deafness, Faerie Fire, Green-Flame Blade, Heat Metal, Heroism, Lesser Restoration, Light, Magic Weapon, Shocking Grasp, Tasha's Caustic Brew, Tasha's Hideous Laughter, Toll the Dead, Word of Radiance
-* Subclasses Updated: Circle of the Elements, Forge Domain, Path of the Zealot
+* Subclasses Updated: Circle of the Elements, Forge Domain, Path of the Zealot`
 
 # 11.7
 * Classes Updated: All classes, rebuild suggested
