@@ -1,6 +1,3 @@
-
-
-
 /*
 	When Entered
 */

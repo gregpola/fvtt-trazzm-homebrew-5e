@@ -1,3 +1,10 @@
+# 11.10
+* Class Features Updated: Elemental Manipulation
+* Creatures Updated: Giant Spider, Ghost, Specter, Water Mephit, Wight
+* Creature Features Updated: Life Drain, Web Attack
+* Items Updated: Wand of Magic Missiles
+* Spells Updated: Banishment, Melf's Acid Arrow, Scorching Ray, Spike Growth
+
 # 11.9
 * Classes Updated: Paladin (added Harness Divine Power)
 * Class Features Added: Invocation: Grasp of Hadar

@@ -7,12 +7,12 @@
 
 	At Higher Levels. When you cast this spell using a spell slot of 5th level or higher, you can target one additional creature for each slot level above 4th.
 */
-const version = "11.0";
+const version = "11.1";
 const optionName = "Banishment";
+const flagName = "banishment-flag";
+const mutationFlag = "banishment-mutation";
 
 try {
-	const lastArg = args[args.length - 1];
-
 	if (args[0].macroPass === "preambleComplete") {
 		const spellLevel = workflow.castData.castLevel;
 		let maxTargets = spellLevel - 3;
@@ -34,12 +34,12 @@ try {
 		
 	}
 	else if (args[0] === "on") {
-		const targetToken = canvas.tokens.get(lastArg.tokenId);
+		const targetToken = canvas.tokens.get(lastArgValue.tokenId);
 
 		// disable all active effects
 		let disabledEffects = [];
 		for (let effect of targetToken.actor.effects) {
-			if (!effect.disabled) {
+			if (!effect.disabled && effect.name !== optionName) {
 				await effect.update({disabled: true});
 				disabledEffects.push(effect.id);
 			}
@@ -58,7 +58,7 @@ try {
 		await ChatMessage.create({ content: `${targetToken.name} was banished`, whisper: [game.user] });
 	}
 	else if (args[0] === "off") {
-		const targetToken = canvas.tokens.get(lastArg.tokenId);
+		const targetToken = canvas.tokens.get(lastArgValue.tokenId);
 		const flag = targetToken.actor.getFlag("fvtt-trazzm-homebrew-5e", flagName);
 		if (flag) {
 			await targetToken.actor.unsetFlag("fvtt-trazzm-homebrew-5e", flagName);

@@ -4,19 +4,26 @@
 	of your known elemental substitutions instead of the original element. You learn one element you can use for
 	substitution at 2nd level and additional ones at 6th, 10th and 14th level.
  */
-const version = "11.0";
+const version = "11.1";
 const optionName = "Elemental Manipulation";
 const elementalTypes = ["acid", "cold", "fire", "lightning"];
 try {
 	if (args[0].macroPass === "postDamageRoll") {
 		// Must be an spell
-		if (!["spell"].includes(item.type)) {
+		if (!["spell"].includes(workflow.item.type)) {
+			console.log("Not a spell");
 			return;
 		}
-		
+
+		// make sure it hit
+		if (workflow.hitTargets.size === 0) {
+			console.log("Didn't hit");
+			return;
+		}
+
 		// Must be an elemental damage type
 		let itemElementalTypes = new Set();
-		let damageParts = item.system.damage.parts;
+		let damageParts = workflow.item.system.damage.parts;
 		for (let i = 0; i < damageParts.length; i++) {
 			if (elementalTypes.includes(damageParts[i][1])) {
 				itemElementalTypes.add(damageParts[i][1]);
@@ -108,7 +115,7 @@ try {
 			}
 			const newDamageRoll = CONFIG.Dice.DamageRoll.fromTerms(workflow.damageRoll.terms);
 			await workflow.setDamageRoll(newDamageRoll);
-			ChatMessage.create({content: item.name + " has been manipulated"});
+			ChatMessage.create({content: workflow.item.name + " has been manipulated"});
 		}
 	}
 	
