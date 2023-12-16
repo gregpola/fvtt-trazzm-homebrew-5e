@@ -1,5 +1,184 @@
 class HomebrewHelpers {
 
+    static hasAvailableGold(actor, amount) {
+        let currentPlatinum = actor.system.currency.pp;
+        let currentGold = actor.system.currency.gp;
+        let currentElectrum = actor.system.currency.ep;
+        let currentSilver = actor.system.currency.sp;
+        let currentCopper = actor.system.currency.cp;
+
+        let remaining = amount;
+
+        // for testing
+        console.log(`hasAvailableGold(end) - PP: ${currentPlatinum}, GP: ${currentGold}, EP: ${currentElectrum}, SP: ${currentSilver}, CP: ${currentCopper}`);
+
+        // pull from copper
+        let calc = Math.floor(currentCopper / 100);
+        if (calc > 0) {
+            if (calc >= remaining) {
+                remaining = 0;
+                currentCopper -= (remaining * 100);
+            }
+            else {
+                remaining -= calc;
+                currentCopper -= (calc * 100);
+            }
+        }
+
+        if (remaining > 0) {
+            // pull from silver
+            calc = Math.floor(currentSilver / 10);
+            if (calc > 0) {
+                if (calc >= remaining) {
+                    remaining = 0;
+                    currentSilver -= (remaining * 10);
+                } else {
+                    remaining -= calc;
+                    currentSilver -= (calc * 10);
+                }
+            }
+
+            if (remaining > 0) {
+                // pull from electrum
+                calc = Math.floor(currentElectrum / 2);
+                if (calc > 0) {
+                    if (calc >= remaining) {
+                        remaining = 0;
+                        currentElectrum -= (remaining * 2);
+                    } else {
+                        remaining -= calc;
+                        currentElectrum -= (calc * 2);
+                    }
+                }
+
+                if (remaining > 0) {
+                    // pull from gold
+                    if (currentGold >= remaining) {
+                        remaining = 0;
+                        currentGold -= remaining;
+                    }
+                    else if (currentGold > 0) {
+                        remaining -= currentGold;
+                        currentGold = 0;
+                    }
+
+                    if (remaining > 0) {
+                        // pull from platinum
+                        const platNeeded = Math.ceil(remaining / 10);
+                        const goldReturned = (10 - (remaining % 10));
+
+                        if (currentPlatinum >= platNeeded) {
+                            remaining = 0;
+                            currentPlatinum -= platNeeded;
+                            currentGold += goldReturned;
+                        }
+                        else {
+                            console.error("hasAvailableGold() - failed, not enough platinum");
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+
+        // for testing
+        console.log(`hasAvailableGold(end) - PP: ${currentPlatinum}, GP: ${currentGold}, EP: ${currentElectrum}, SP: ${currentSilver}, CP: ${currentCopper}`);
+
+        if (remaining > 0) {
+            console.log("hasAvailableGold() - failed, not enough coins");
+            return false;
+        }
+
+        return true;
+    }
+
+    static async subtractGoldCost(actor, cost) {
+        let currentPlatinum = actor.system.currency.pp;
+        let currentGold = actor.system.currency.gp;
+        let currentElectrum = actor.system.currency.ep;
+        let currentSilver = actor.system.currency.sp;
+        let currentCopper = actor.system.currency.cp;
+
+        let remaining = cost;
+
+        // pull from copper
+        let calc = Math.floor(currentCopper / 100);
+        if (calc > 0) {
+            if (calc >= remaining) {
+                remaining = 0;
+                currentCopper -= (remaining * 100);
+            }
+            else {
+                remaining -= calc;
+                currentCopper -= (calc * 100);
+            }
+        }
+
+        if (remaining > 0) {
+            // pull from silver
+            calc = Math.floor(currentSilver / 10);
+            if (calc > 0) {
+                if (calc >= remaining) {
+                    remaining = 0;
+                    currentSilver -= (remaining * 10);
+                } else {
+                    remaining -= calc;
+                    currentSilver -= (calc * 10);
+                }
+            }
+
+            if (remaining > 0) {
+                // pull from electrum
+                calc = Math.floor(currentElectrum / 2);
+                if (calc > 0) {
+                    if (calc >= remaining) {
+                        remaining = 0;
+                        currentElectrum -= (remaining * 2);
+                    } else {
+                        remaining -= calc;
+                        currentElectrum -= (calc * 2);
+                    }
+                }
+
+                if (remaining > 0) {
+                    // pull from gold
+                    if (currentGold >= remaining) {
+                        remaining = 0;
+                        currentGold -= remaining;
+                    }
+                    else if (currentGold > 0) {
+                        remaining -= currentGold;
+                        currentGold = 0;
+                    }
+
+                    if (remaining > 0) {
+                        // pull from platinum
+                        const platNeeded = Math.ceil(remaining / 10);
+                        const goldReturned = (10 - (remaining % 10));
+
+                        if (currentPlatinum >= platNeeded) {
+                            remaining = 0;
+                            currentPlatinum -= platNeeded;
+                            currentGold += goldReturned;
+                        }
+                        else {
+                            console.error("subtractGoldCost() - failed, not enough platinum, very strange???");
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (remaining > 0) {
+            console.log("subtractGoldCost() - failed, not enough coins");
+            return false;
+        }
+
+        await actor.update({"system.currency": {pp: currentPlatinum, gp: currentGold, ep: currentElectrum, sp: currentSilver, cp: currentCopper}});
+        return true;
+    }
+
     static isAvailableThisTurn(actor, flagName) {
         if (game.combat) {
             const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn /100}`;

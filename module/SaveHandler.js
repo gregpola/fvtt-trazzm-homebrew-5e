@@ -1,8 +1,7 @@
-const VERSION = "11.0";
-const _charmResistLabels = new Set(["Alien Mind", "Countercharm", "Dark Devotion", "Fey Ancestry", "Leviathan Will", "Mental Discipline", "Heart of Hruggek", "Two Heads"]);
+const _charmResistLabels = new Set(["Alien Mind", "Countercharm", "Dark Devotion", "Duergar Resilience", "Fey Ancestry", "Leviathan Will", "Mental Discipline", "Heart of Hruggek", "Two Heads"]);
 const _frightenedResistLabels = new Set(["Brave", "Countercharm", "Dark Devotion", "Leviathan Will", "Mental Discipline", "Heart of Hruggek", "Two Heads"]);
-const _paralyzedResistLabels = new Set(["Leviathan Will", "Heart of Hruggek"]);
-const _poisonResistLabels = new Set(["Deathless Nature", "Dwarven Resilience", "Hill Rune", "Infernal Constitution", "Leviathan Will", "Poison Resilience", "Stout Resilience", "Heart of Hruggek"]);
+const _paralyzedResistLabels = new Set(["Duergar Resilience", "Leviathan Will", "Heart of Hruggek"]);
+const _poisonResistLabels = new Set(["Duergar Resilience", "Deathless Nature", "Dwarven Resilience", "Hill Rune", "Infernal Constitution", "Leviathan Will", "Poison Resilience", "Stout Resilience", "Heart of Hruggek"]);
 const _proneResistLabels = new Set(["Sure-Footed"]);
 const _sleepResistLabels = new Set(["Leviathan Will", "Heart of Hruggek", "Wakeful"]);
 const _stunResistLabels = new Set(["Leviathan Will", "Heart of Hruggek", "Two Heads"]);

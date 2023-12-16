@@ -1,3 +1,9 @@
+# 11.11
+* Class Features Updated: Action - Hide, 
+* Creatures Updated: Duergar, Flesh Golem, Medusa, Stone Golem
+* Feats Updated: Poisoner, Resilient (all)
+* Spells Updated: Command, Healing Spirit, Heat Metal, Mass Cure Wounds, Mass Healing Word, Wysard's Snowball
+
 # 11.10
 * Class Features Updated: Elemental Manipulation
 * Creatures Updated: Giant Spider, Ghost, Specter, Water Mephit, Wight
