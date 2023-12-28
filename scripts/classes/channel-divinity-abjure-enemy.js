@@ -8,7 +8,7 @@
 
 	On a successful save, the creature’s speed is halved for 1 minute or until the creature takes any damage.
  */
-const version = "11.1";
+const version = "11.2";
 const optionName = "Abjure Enemy";
 const channelDivinityName = "Channel Divinity (Paladin)";
 const cost = 1;
@@ -37,8 +37,8 @@ try {
 		return false;
 	}
 	else if (args[0].macroPass === "preSave") {
-		for(let target of args[0].targets) {
-			if (["undead", "fiend"].some(type => (target.actor.system.details.type?.value || "").toLowerCase().includes(type))) {
+		for(let t of workflow.targets) {
+			if (["undead", "fiend"].some(type => (t.actor.system.details.type?.value || "").toLowerCase().includes(type))) {
 				const data = {
 					changes: [{
 						key: "flags.midi-qol.disadvantage.ability.save.all",
@@ -52,7 +52,7 @@ try {
 					"name": optionName,
 					"origin": workflow.item.uuid
 				};
-				await MidiQOL.socket().executeAsGM("createEffects", {actorUuid: target.actor.uuid, effects: [data]});
+				await MidiQOL.socket().executeAsGM("createEffects", {actorUuid: t.actor.uuid, effects: [data]});
 			}
 		}
 	}
@@ -60,7 +60,7 @@ try {
 		const sourceOrigin = args[0]?.tokenUuid;
 
 		// Handle the saved actors that get half movement
-		let targets = args[0].saves;
+		let targets = workflow.saves;
 		if (targets && targets.length > 0) {
 			const effectData = {
 				name: `${optionName}`,
@@ -112,16 +112,16 @@ try {
 				disabled: false
 			};
 
-			for (let target of targets) {
-				if (!hasFearImmunity(target.actor)) {
-					const uuid = target.actor.uuid
+			for (let t of targets) {
+				if (!hasFearImmunity(t.actor)) {
+					const uuid = t.actor.uuid
 					await MidiQOL.socket().executeAsGM("createEffects", {actorUuid: uuid, effects: [effectData]});
 				}
 			}
 		}
 
 		// Handle the save failed actors
-		targets = args[0].failedSaves;
+		targets = workflow.failedSaves;
 		if (targets && targets.length > 0) {
 			const fearEffectData = {
 				name: `${optionName}`,
@@ -179,10 +179,9 @@ try {
 				disabled: false
 			};
 
-			for (let target of targets) {
-				if (!hasFearImmunity(target.actor)) {
-					const uuid = target.actor.uuid
-					await MidiQOL.socket().executeAsGM("createEffects", {actorUuid: uuid, effects: [fearEffectData]});
+			for (let t of targets) {
+				if (!hasFearImmunity(t.actor)) {
+					await MidiQOL.socket().executeAsGM("createEffects", {actorUuid: t.actor.uuid, effects: [fearEffectData]});
 				}
 			}
 		}
@@ -200,3 +199,4 @@ function hasFearImmunity(actor) {
 
 	return false;
 }
+

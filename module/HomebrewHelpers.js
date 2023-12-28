@@ -179,6 +179,25 @@ class HomebrewHelpers {
         return true;
     }
 
+    static hasSharedLanguage(actor1, actor2) {
+        // check common
+        for (let lang of actor1.system.traits.languages.value) {
+            if (actor2.system.traits.languages.value.has(lang))
+                return true;
+        }
+
+        // check custom
+        let custom1 = actor1.system.traits.languages.custom.split(";");
+        let custom2 = actor2.system.traits.languages.custom.split(";");
+        for (let cl of custom1) {
+            if (custom2.includes(cl)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     static isAvailableThisTurn(actor, flagName) {
         if (game.combat) {
             const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn /100}`;

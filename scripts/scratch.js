@@ -10,6 +10,9 @@ try {
 	console.error(`${optionName}: ${version}`, err);
 }
 
+JournalEntry.CyFt4pR11pRG0OaK.JournalEntryPage.cH2pquYuhwqTkTwK
+
+
 console.info("%c fvtt-trazzm-homebrew-5e", "color: #D030DE", " | Bag of Tricks (Gray)");
 ui.notifications.error(`${optionName}: ${resourceName}: - no resource found`);
 
@@ -29,11 +32,14 @@ const spellLevel = workflow.castData.castLevel;
 
 item.system.prof.hasProficiency
 
-	await actor.setFlag("fvtt-trazzm-homebrew-5e", flagName, target.actor.uuid);
-	let flag = actor.getFlag("fvtt-trazzm-homebrew-5e", flagName);
-	await actor.unsetFlag("fvtt-trazzm-homebrew-5e", flagName);
 
-	ui.notifications.error(`${optionName}: ${resourceName}: - no resource found`);
+	const _flagGroup = "fvtt-trazzm-homebrew-5e";
+	await actor.setFlag(_flagGroup, flagName, target.actor.uuid);
+	let flag = actor.getFlag(_flagGroup, flagName);
+	await actor.unsetFlag(_flagGroup, flagName);
+
+	ui.notifications.error(`${optionName}: ${version} - no shared language`);
+
 
 	ChatMessage.create({
 		content: `${actorToken.name}'s ${selectedItem.name} is blessed with positive energy`,
@@ -101,6 +107,24 @@ let tokenid = 'token' + targetToken.id;
 saveTotal = message.flags["monks-tokenbar"][tokenid].total;
 
 
+	const userID = MidiQOL.playerForActor(target.actor)?.active?.id ?? game.users.activeGM?.id;
+	if (!userID) {
+
+		return;
+	}
+	const data = {
+		request: 'save',
+		targetUuid: targetToken.document.uuid,
+		ability: 'str',
+		options: {
+			skipDialogue: true,
+			saveDC,
+		},
+	};
+	const save = await MidiQOL.socket().executeAsUser('rollAbility', userID, data);
+	if (save.total < save.options.targetValue) {
+//do the deed
+	}
 
 
 

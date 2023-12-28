@@ -1,9 +1,10 @@
-const VERSION = "10.0.0";
-
 import {socket} from "./module.js";
 import {playerForActor} from "./utils.js";
+import {handleRegeneration, checkForRegeneration, applyDamageTypes} from "./regeneration.js";
 
+const _flagGroup = "fvtt-trazzm-homebrew-5e";
 const _zombieId = "UBlzKwy8bHtN42NQ";
+const _theDeadWalkFlag = "the-dead-walk";
 
 export class CombatHandler {
 
@@ -14,13 +15,12 @@ export class CombatHandler {
 
     static hooks() {
         Hooks.on("dnd5e.preRollInitiative", (actor, roll) => {
-
         });
 
-        Hooks.on("dnd5e.rollInitiative", async(actor, combatants) => {
+        Hooks.on("dnd5e.rollInitiative", async (actor, combatants) => {
         });
 
-        Hooks.on("deleteCombat", async(combat) => {
+        Hooks.on("deleteCombat", async (combat) => {
             let tokens = combat.combatants.map(c => c.token);
 
             // remove temporary mutations related to combat
@@ -30,7 +30,7 @@ export class CombatHandler {
             }
         });
 
-        Hooks.on("updateCombat", async(combat, update, context, userId) => {
+        Hooks.on("updateCombat", async (combat, update, context, userId) => {
             console.log("updateCombat");
 
             // check for any turn start options
@@ -41,14 +41,28 @@ export class CombatHandler {
                 if (player)
                     await socket.executeAsUser("doTurnStartOptions", player.id, combat.combatant.actor.uuid, turnStartOptions);
             }
+
+            let actor = combat?.combatant?.actor;
+            if (actor) {
+                // check for regeneration
+                await checkForRegeneration(actor);
+                await handleRegeneration(combat, update, context);
+
+                // check for The Dead Walk
+                let theDeadWalkFlag = actor.getFlag(_flagGroup, _theDeadWalkFlag);
+                if (theDeadWalkFlag) {
+                    await actor.unsetFlag(_flagGroup, _theDeadWalkFlag);
+                    await CombatHandler.transformToZombie(combat.combatant);
+                }
+            }
         });
 
-        Hooks.on("preUpdateActor", async(actor, change, options, user) => {
+        Hooks.on("preUpdateActor", async (actor, change, options, user) => {
             const isHealth = hasProperty(change, "system.attributes.hp.value");
 
             if (isHealth) {
                 const hpValue = change.system.attributes.hp.value;
-                const isaBoar = actor.name ==="Boar";
+                const isaBoar = actor.name === "Boar";
                 const isaGiantBoar = actor.name === "Giant Boar";
                 const relentless = actor.items.getName("Relentless");
                 const appliedDamage = options.damageItem?.appliedDamage ?? 0;
@@ -59,16 +73,15 @@ export class CombatHandler {
                 if (relentless && appliedDamage && relentless.system.uses?.value) {
                     if (isaBoar && (hpValue <= 0) && (appliedDamage <= 7)) {
                         foundry.utils.setProperty(change, "system.attributes.hp.value", 1);
-                        await relentless.update({ "system.uses.value": 0 });
+                        await relentless.update({"system.uses.value": 0});
 
                         ChatMessage.create({
                             speaker: {alias: actor.name},
                             content: actor.name + " is relentless"
                         });
-                    }
-                    else if (isaGiantBoar && (hpValue <= 0) && (appliedDamage <= 10)) {
+                    } else if (isaGiantBoar && (hpValue <= 0) && (appliedDamage <= 10)) {
                         foundry.utils.setProperty(change, "system.attributes.hp.value", 1);
-                        await relentless.update({ "system.uses.value": 0 });
+                        await relentless.update({"system.uses.value": 0});
 
                         ChatMessage.create({
                             speaker: {alias: actor.name},
@@ -79,11 +92,11 @@ export class CombatHandler {
             }
         });
 
-        Hooks.on("updateActor", async(actor, change, options, user) => {
+        Hooks.on("updateActor", async (actor, change, options, user) => {
             // special death handling
             const hpUpdate = getProperty(change, "system.attributes.hp.value");
             if (hpUpdate !== undefined) {
-                if (actor.system.attributes.hp.value <= 0) {
+                if (hpUpdate <= 0) {
                     // look for the death of an actor that is grappling and/or restraining an actor
                     let tokens = canvas.scene.tokens;
                     for (let token of tokens) {
@@ -109,67 +122,22 @@ export class CombatHandler {
                     // check for The Dead Walk handling
                     let theDeadWalk = game.settings.get("fvtt-trazzm-homebrew-5e", "dead-walk");
                     if (theDeadWalk) {
-                        let riseAsZombieRoll = await new Roll('1d100').evaluate({async: false});
-                        await game.dice3d?.showForRoll(riseAsZombieRoll);
-                        if (riseAsZombieRoll.total < 26) {
-                            let zombieActorName = "Zombie (" + actor.name + ")";
+                        const actorType = actor.system.details.type;
 
-                            let updates = {
-                                token: {
-                                    "name": zombieActorName,
-                                    "disposition": CONST.TOKEN_DISPOSITIONS.HOSTILE,
-                                    "displayName": CONST.TOKEN_DISPLAY_MODES.HOVER,
-                                    "displayBars": CONST.TOKEN_DISPLAY_MODES.ALWAYS
-                                },
-                                "name": zombieActorName
-                            };
-
-                            let zombieActor = game.actors.getName(zombieActorName);
-                            if (!zombieActor) {
-                                // Get from the compendium
-                                let entity = await fromUuid("Compendium.fvtt-trazzm-homebrew-5e.homebrew-creatures." + _zombieId);
-                                if (!entity) {
-                                    ui.notifications.error(`${optionName} - unable to find the actor`);
-                                    return false;
-                                }
-
-                                // import the actor
-                                let document = await entity.collection.importFromCompendium(game.packs.get(entity.pack), _zombieId, updates);
-                                if (!document) {
-                                    ui.notifications.error(`${optionName} - unable to import from the compendium`);
-                                    return false;
-                                }
-                                zombieActor = game.actors.getName(zombieActorName);
-                            }
-
-                            if (zombieActor) {
-                                if ((!(game.modules.get("jb2a_patreon")?.active) && !(game.modules.get("sequencer")?.active))) {
-                                    await actor.transformInto(zombieActor, { keepBio: true, transformTokens: true });
-                                } else {
-                                    let tok = canvas.tokens.get(actor.token?.id);
-                                    if (!tok) {
-                                        tok = canvas.scene.tokens.find(t => t.actor.id === actor.id);
-                                    }
-
-                                    new Sequence()
-                                        .effect()
-                                        .atLocation(tok)
-                                        .file("jb2a.misty_step.02.grey")
-                                        .scaleToObject(1.5)
-                                        .thenDo(async function () {
-                                            await actor.transformInto(zombieActor, { keepBio: true, transformTokens: true });
-                                        })
-                                        .play()
-                                }
-                                await warpgate.wait(1000);
-                                ChatMessage.create({
-                                    speaker: {alias: actor.name},
-                                    content: actor.name + " rises as a zombie"
-                                });
+                        if (actorType && actorType.value.toLowerCase() === "humanoid") {
+                            let riseAsZombieRoll = await new Roll('1d100').evaluate({async: false});
+                            //await game.dice3d?.showForRoll(riseAsZombieRoll, game.user, true);
+                            if (riseAsZombieRoll.total < 26) {
+                                console.info(`${actor.name} will rise as a zombie next round`);
+                                // add flag to the actor, so that is rises as a Zombie next turn
+                                await actor.setFlag("fvtt-trazzm-homebrew-5e", _theDeadWalkFlag, actor.uuid);
                             }
                         }
                     }
                 }
+
+                // Check for regeneration impact
+                await applyDamageTypes(actor, change, options);
             }
         });
 
@@ -303,13 +271,17 @@ export class CombatHandler {
                     newEffects.push(damageBonusEffect);
 
                     await MidiQOL.socket().executeAsGM("createEffects",
-                        { actorUuid: actor.uuid, effects: [newEffects] });
+                        {actorUuid: actor.uuid, effects: [newEffects]});
                 }
             }
         });
     }
 
-    static async wait(ms) { return new Promise(resolve => { setTimeout(resolve, ms); }); }
+    static async wait(ms) {
+        return new Promise(resolve => {
+            setTimeout(resolve, ms);
+        });
+    }
 
     /**
      * Check the combatant for any turn start options that should be presented.
@@ -348,5 +320,87 @@ export class CombatHandler {
         }
 
         return undefined;
+    }
+
+    static async transformToZombie(combatant) {
+        let zombieActorName = "Zombie (" + combatant.actor.name + "-" + combatant.actor.id + ")";
+
+        let updates = {
+            token: {
+                "name": zombieActorName,
+                "disposition": CONST.TOKEN_DISPOSITIONS.HOSTILE,
+                "displayName": CONST.TOKEN_DISPLAY_MODES.HOVER,
+                "displayBars": CONST.TOKEN_DISPLAY_MODES.ALWAYS,
+                "bar1": { attribute: "attributes.hp" },
+                "actorLink": false
+            },
+            "name": zombieActorName
+        };
+
+        let zombieActor = game.actors.getName(zombieActorName);
+        if (!zombieActor) {
+            // Get from the compendium
+            let entity = await fromUuid("Compendium.fvtt-trazzm-homebrew-5e.homebrew-creatures." + _zombieId);
+            if (!entity) {
+                ui.notifications.error("The Dead Walk - unable to find the zombie actor");
+                return;
+            }
+
+            // import the actor
+            let document = await entity.collection.importFromCompendium(game.packs.get(entity.pack), _zombieId, updates);
+            if (!document) {
+                ui.notifications.error("The Dead Walk - unable to import the zombie actor from the compendium");
+                return;
+            }
+            zombieActor = game.actors.getName(zombieActorName);
+        }
+
+        if (zombieActor) {
+            let tok = canvas.tokens.get(combatant.actor.token?.id);
+            if (!tok) {
+                tok = canvas.scene.tokens.find(t => t.actor.id === combatant.actor.id);
+                if (!tok) {
+                    ui.notifications.error("The Dead Walk - unable to find the source token");
+                    return;
+                }
+            }
+
+            // hide the original token
+            await tok.document.update({ "hidden": true });
+
+            // spawn the Zombie
+            let position = tok.center;
+            if (position) {
+                //let options = {duplicates: 0, collision: false};
+                let spawned = await warpgate.spawnAt(position, zombieActorName, updates, {}, {}); // last param is options
+                if (!spawned || !spawned[0]) {
+                    ui.notifications.error("The Dead Walk - unable to spawn the zombie");
+                    return;
+                }
+
+                let spawnId = spawned[0];
+                let summonedToken = canvas.tokens.get(spawnId);
+                if (summonedToken) {
+                    new Sequence()
+                        .effect()
+                        .atLocation(summonedToken)
+                        .file("jb2a.misty_step.02.grey")
+                        .scaleToObject(1.5)
+                        .thenDo(async function () {
+                            await summonedToken.toggleCombat();
+                            const zombieInitiative = combatant.initiative ? combatant.initiative - .01
+                                : 1 + (summonedToken.actor.system.abilities.dex.value / 100);
+                            await summonedToken.combatant.update({initiative: zombieInitiative});
+                        })
+                        .play()
+
+                    await warpgate.wait(500);
+                    ChatMessage.create({
+                        speaker: {alias: combatant.actor.name},
+                        content: combatant.actor.name + " rises as a zombie"
+                    });
+                }
+            }
+        }
     }
 }

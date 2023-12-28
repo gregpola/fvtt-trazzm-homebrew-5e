@@ -9,7 +9,7 @@ const _stunResistLabels = new Set(["Leviathan Will", "Heart of Hruggek", "Two He
 const _elementalResistanceTypes = new Set(["acid", "cold", "fire", "lightning", "thunder"]);
 
 let conditionResilience = {
-    'label': 'Condition Resilience',
+    'name': 'Condition Resilience',
     'icon': 'icons/magic/defensive/shield-barrier-glowing-triangle-teal.webp',
     'duration': {
         'seconds': 6
@@ -37,7 +37,7 @@ let conditionResilience = {
 };
 
 let conditionSensitivity = {
-    'label': 'Condition Sensitivity',
+    'name': 'Condition Sensitivity',
     'icon': 'icons/skills/toxins/symbol-poison-drop-skull-green.webp',
     'duration': {
         'seconds': 6
@@ -65,7 +65,7 @@ let conditionSensitivity = {
 };
 
 let starryFormDragonConcentration = {
-    'label': 'Starry Form - Dragon concentration',
+    'name': 'Starry Form - Dragon concentration',
     'icon': 'icons/creatures/reptiles/dragon-horned-blue.webp',
     'duration': {
         'seconds': 6

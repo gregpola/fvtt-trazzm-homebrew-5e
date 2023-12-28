@@ -4,7 +4,7 @@
 	plus 1d8 for each spell level higher than 1st, to a maximum of 5d8. The damage increases by 1d8 if the target is an
 	undead or a fiend, to a maximum of 6d8.
  */
-const version = "11.1";
+const version = "11.2";
 const optionName = "Divine Smite";
 
 try {
@@ -22,15 +22,14 @@ try {
 			MidiQOL.error(`${optionName}: no target`);
 			return {};
 		}
-		
-		const ray = new Ray(token.center, targetToken.center);
-		const gridDistance = Math.floor(ray.distance / canvas.grid.size);
-		if (gridDistance > 1 && !reach) {
+
+		const tokenDistance = MidiQOL.computeDistance(token, targetToken, true);
+		if (tokenDistance > 5 && !reach) {
 			console.log(`${optionName} - thrown is not an eligible attack`);
 			return {};
 		}
 		
-		if (gridDistance > 2) {
+		if (tokenDistance > 10) {
 			console.log(`${optionName} - target is out of range`);
 			return {};
 		}

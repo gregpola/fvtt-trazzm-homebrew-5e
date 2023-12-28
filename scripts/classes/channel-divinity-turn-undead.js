@@ -7,11 +7,12 @@
 	a space within 30 feet of you. It also can’t take reactions. For its action, it can use only the Dash action or try
 	to escape from an effect that prevents it from moving. If there’s nowhere to move, the creature can use the Dodge action.
  */
-const version = "11.0";
+const version = "11.1";
 const resourceName = "Channel Divinity";
 const optionName = "Turn Undead";
 const channelDivinityName = "Channel Divinity (Cleric)";
 const cost = 1;
+const conditionName = "Channel Divinity: Turn Undead";
 
 const targetTypes = ["undead"];
 const immunity = ["Turn Immunity"];
@@ -42,20 +43,20 @@ try {
 	}
 	else if (args[0].macroPass === "preambleComplete") {
 		// check target types
-		for (let target of workflow.targets) {
-			let creatureType = target.actor.system.details.type;
+		for (let t of workflow.targets) {
+			let creatureType = t.actor.system.details.type;
 
 			// remove targets that are not applicable creatures (aka PCs etc)
 			if ((creatureType === null) || (creatureType === undefined)) {
-				workflow.targets.delete(target);
+				workflow.targets.delete(t);
 			}
 			// remove creatures that are not undead 
-			else if (!targetTypes.some(type => (target?.actor.system.details.type?.value || "").toLowerCase().includes(type))) {
-				workflow.targets.delete(target);
+			else if (!targetTypes.some(type => (t?.actor.system.details.type?.value || "").toLowerCase().includes(type))) {
+				workflow.targets.delete(t);
 			}
 			// remove creatures with turn immunity
-			else if (target.actor.items.find(i => immunity.includes(i.name))) {
-				workflow.targets.delete(target);
+			else if (t.actor.items.find(i => immunity.includes(i.name))) {
+				workflow.targets.delete(t);
 			}
 		}
 
@@ -63,11 +64,11 @@ try {
 		
 	}
 	else if (args[0].macroPass === "preSave") {
-		for (let target of args[0].targets) {
+		for (let t of workflow.targets) {
 			let hasAdvantage = false;
 
 			for (let ename of turnAdvantage) {
-				if (target.actor.effects.find(ef => ef.name === ename)) {
+				if (t.actor.effects.find(ef => ef.name === ename)) {
 					hasAdvantage = true;
 					break;
 				}
@@ -87,18 +88,28 @@ try {
 					"name": "Turn Advantage",
 					"origin": workflow.item.uuid
 				};
-				await MidiQOL.socket().executeAsGM("createEffects", {actorUuid: target.actor.uuid, effects: [data]});
+				await MidiQOL.socket().executeAsGM("createEffects", {actorUuid: t.actor.uuid, effects: [data]});
 			}
 		}
 	}
 	else if (args[0].macroPass === "postSave") {
-		let targets = args[0].failedSaves;
-		if (targets && targets.length > 0) {
+		let targets = workflow.failedSaves;
+		if (targets && targets.size > 0) {
 			const maxCR = actor.system.scale.cleric["destroy-undead"]?.value ?? 0;
-			if (maxCR) {
-				for (let target of targets) {
-					if (target.actor.system.details.cr <= maxCR) {
-						await target.actor.update({"system.attributes.hp.value": 0});
+
+			for (let t of targets) {
+				if (maxCR && (t.actor.system.details.cr <= maxCR)) {
+					await t.actor.update({"system.attributes.hp.value": 0});
+				}
+				else {
+					const hasEffectApplied = await game.dfreds.effectInterface.hasEffectApplied(conditionName, t.actor.uuid);
+					if (!hasEffectApplied) {
+						await game.dfreds.effectInterface.addEffect({
+							'effectName': conditionName,
+							'uuid': t.actor.uuid,
+							'origin': workflow.origin,
+							'overlay': false
+						});
 					}
 				}
 			}
@@ -109,5 +120,5 @@ try {
 	}
 	
 } catch (err) {
-	console.error(`${args[0].itemData.name} - Turn Undead ${version}`, err);
+	console.error(`${workflow.itemData.name}: ${version}`, err);
 }

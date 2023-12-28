@@ -10,7 +10,7 @@
  */
 const version = "11.0";
 const optionName = "";
-const channelDivinityName = "Channel Divinity (Paladin)";
+//const channelDivinityName = "Channel Divinity (Paladin)";
 const channelDivinityName = "Channel Divinity (Cleric)";
 const cost = 1;
 

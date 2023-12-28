@@ -1,5 +1,17 @@
+# 11.12
+* Class Features Updated: Channel Divinity (Cleric), Channel Divinity (Paladin), Channel Divinity - Abjure Enemy, Channel Divinity - Turn Undead, Channel Divinity - Turn the Unholy, Divine Smite, Lay on Hands, Panache, Rage
+* Creatures Updated: Trolls (all), Zombie
+* Items Updated: Keoghtom's Ointment
+* Macros Added: Fully Hide Tokens, Unhide Fully Hidden Tokens
+* Spells Updated: Spiritual Weapon, Vicious Mockery
+* added automatic handling of regeneration. Remove Simbul's Creature Aid support of it in your world. The actor must have a feature named Regeneration with a  of the form:
+  "The troll regains 10 hit points at the start of its turn. If the troll takes acid or fire damage, this trait doesn't function at the start of the troll's next turn. The troll dies only if it starts its turn with 0 hit points and doesn't regenerate."
+    - First sentence must specify how many hit points are recovered and when in it's turn the recovery takes place
+    - Second sentence must specify the damage types that stop regeneration
+* added Undead Fortitude Creature Feature. This needs to be added to the creature to enable it. Disable Simbul's Creature Aide support for Undead Fortitude.
+
 # 11.11
-* Class Features Updated: Action - Hide, 
+* Class Features Updated: Action - Hide
 * Creatures Updated: Duergar, Flesh Golem, Medusa, Stone Golem
 * Feats Updated: Poisoner, Resilient (all)
 * Spells Updated: Command, Healing Spirit, Heat Metal, Mass Cure Wounds, Mass Healing Word, Wysard's Snowball

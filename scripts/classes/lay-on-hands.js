@@ -11,7 +11,7 @@
 
 	This feature has no effect on undead and constructs.
  */
-const version = "11.0";
+const version = "11.1";
 const optionName = "Lay on Hands";
 
 try {
@@ -72,8 +72,7 @@ try {
 				callback: async (html) => {
 					let effect = target.actor.effects.find( i=> i.name === "Diseased");
 					if (effect) {
-						let newEffects = target.actor.effects.filter( i=> i.name !== "Diseased");
-						await target.actor.update({"effects": newEffects});
+						await MidiQOL.socket().executeAsGM("removeEffects", { actorUuid: target.actor.uuid, effects: [effect.id] });
 						await reduceUsage(layOnHands, 4);// account for normal usage cost
 					}
 					else {
@@ -88,8 +87,7 @@ try {
 				callback: async (html) => {
 					let effect = target.actor.effects.find( i=> i.name === "Poisoned");
 					if (effect) {
-						let newEffects = target.actor.effects.filter( i=> i.name !== "Poisoned");
-						await target.actor.update({"effects": newEffects});
+						await MidiQOL.socket().executeAsGM("removeEffects", { actorUuid: target.actor.uuid, effects: [effect.id] });
 						await reduceUsage(layOnHands, 4);// account for normal usage cost
 					}
 					else {

@@ -7,7 +7,7 @@
 
 	Higher Levels. When you cast this spell using a spell slot of 3rd level or higher, the damage increases by 1d8 for every two slot levels above the 2nd.
 */
-const version = "11.0";
+const version = "11.1";
 const optionName = "Spiritual Weapon";
 const actorName = "Spiritual Weapon";
 const summonFlag = "spiritual-weapon";
@@ -82,7 +82,7 @@ try {
 				"displayName": CONST.TOKEN_DISPLAY_MODES.HOVER,
 				"displayBars": CONST.TOKEN_DISPLAY_MODES.ALWAYS,
 				"bar1": { attribute: "attributes.hp" },
-				"elevation": 10
+				"elevation": 5
 			},
 			"name": summonName,	
 			embedded: {
@@ -131,7 +131,7 @@ try {
 						"disposition": CONST.TOKEN_DISPOSITIONS.NEUTRAL,
 						"displayName": CONST.TOKEN_DISPLAY_MODES.HOVER,
 						"displayBars": CONST.TOKEN_DISPLAY_MODES.ALWAYS,
-						"elevation": 10,
+						"elevation": 5,
 						"bar1": { attribute: "attributes.hp" },
 						'texture': {
 							'src': `modules/jb2a_patreon/Library/2nd_Level/Spiritual_Weapon/${tokenImage}`
@@ -143,7 +143,7 @@ try {
 						"displayName": CONST.TOKEN_DISPLAY_MODES.HOVER,
 						"displayBars": CONST.TOKEN_DISPLAY_MODES.ALWAYS,
 						"bar1": { attribute: "attributes.hp" },
-						"elevation": 10,
+						"elevation": 5,
 						'texture': {
 							'src': `modules/jb2a_patreon/Library/2nd_Level/Spiritual_Weapon/${tokenImage}`
 						}
