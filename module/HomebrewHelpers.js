@@ -255,7 +255,6 @@ class HomebrewHelpers {
         return actor.effects.find(eff => eff.name === name);
     };
 
-
     static async updateEffect(effect, updates) {
         if (game.user.isGM) {
             await effect.update(updates);

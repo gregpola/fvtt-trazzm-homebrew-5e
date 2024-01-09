@@ -29,6 +29,7 @@ const actorDC = actor.system.attributes.spelldc ?? 12;
 const spellcastingAbility = actor.system.attributes.spellcasting;
 const abilityBonus = actor.system.abilities[spellcastingAbility].mod;
 const spellLevel = workflow.castData.castLevel;
+const abilityBonus = Math.max(rollingActor.system.abilities.str.mod, rollingActor.system.abilities.dex.mod);
 
 item.system.prof.hasProficiency
 

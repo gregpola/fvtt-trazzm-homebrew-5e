@@ -1,6 +1,7 @@
-const version = "11.0";
+const version = "11.1";
 const optionName = "Radiant Consumption";
 const timeFlag = "radiantConsumptionTime";
+const _flagGroup = "fvtt-trazzm-homebrew-5e";
 
 try {
 	if (args[0].macroPass === "DamageBonus") {
@@ -34,14 +35,14 @@ try {
 
 		useFeature = await dialog;
 		if (!useFeature) {
-			console.log(`${optionName}: player chose to skip`);
+			console.log(`${optionName}: player chose to skip this turn`);
 			return {};
 		}
 
 		const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn /100}`;
-		const lastTime = actor.getFlag("midi-qol", timeFlag);
+		const lastTime = actor.getFlag(_flagGroup, timeFlag);
 		if (combatTime !== lastTime) {
-			await actor.setFlag("midi-qol", timeFlag, combatTime)
+			await actor.setFlag(_flagGroup, timeFlag, combatTime)
 		}
 
 		const pb = actor.system.attributes.prof ?? 2;
@@ -57,7 +58,7 @@ try {
 function isAvailableThisTurn() {
 	if (game.combat) {
 		const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn /100}`;
-		const lastTime = actor.getFlag("midi-qol", timeFlag);
+		const lastTime = actor.getFlag(_flagGroup, timeFlag);
 		if (combatTime === lastTime) {
 			return false;
 		}

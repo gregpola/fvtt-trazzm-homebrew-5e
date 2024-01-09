@@ -31,7 +31,10 @@ export class CombatHandler {
         });
 
         Hooks.on("updateCombat", async (combat, update, context, userId) => {
-            console.log("updateCombat");
+            if (!combat?.combatant?.isOwner) {
+                console.log("updateCombat - not owner")
+                return;
+            }
 
             // check for any turn start options
             let turnStartOptions = await CombatHandler.hasTurnStartOption(combat?.combatant);

@@ -3,12 +3,12 @@
 	 to the damage taken. This reduction lasts until the creature finishes a long rest. The target dies if this effect
 	 reduces its hit point maximum to 0.
 */
-const version = "11.0";
+const version = "11.1";
 const optionName = "Life Drain";
 const hpMaxFlag = "original-max-hp";
 
 try {
-    if (args[0].macroPass === "postActiveEffects") {
+    if (args[0].macroPass === "postSave") {
         let target = workflow.failedSaves.first();
         if (target) {
             const nectroticDamage = workflow.damageDetail.find(i => i.type === "necrotic");
@@ -55,7 +55,7 @@ try {
 async function applyDeathEffect(originId, target) {
 
     let effectData = [{
-        label: optionName,
+        name: optionName,
         icon: 'icons/magic/death/grave-tombstone-glow-teal.webp',
         origin: originId,
         transfer: false,

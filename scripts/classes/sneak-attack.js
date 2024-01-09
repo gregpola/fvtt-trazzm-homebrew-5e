@@ -13,7 +13,7 @@
 
 	The amount of the extra damage increases as you gain levels in this class, as shown in the Sneak Attack column of the Rogue table.
 */
-const version = "11.2";
+const version = "11.3";
 const optionName = "Sneak Attack";
 const combatTime = game.combat ? `${game.combat.id}-${game.combat.round + game.combat.turn / 100}` : 1;
 
@@ -46,7 +46,10 @@ try {
 	}
 
 	// check for rogue levels
-	const rogueLevels = actor.getRollData().classes?.rogue?.levels;
+	let rogueLevels = actor.getRollData().classes?.rogue?.levels;
+	if (actor.type === "npc")
+		rogueLevels = actor.system.details.cr;
+
 	if (!rogueLevels) {
 		console.debug(`${optionName} - no rogue levels`);
 		return {};
