@@ -3,7 +3,7 @@
 	a melee weapon attack, you can spend 1 ki point to attempt a stunning strike. The target must succeed on a Constitution
 	saving throw or be stunned until the end of your next turn.
 */	
-const version = "11.0";
+const version = "11.1";
 const kiName = "Ki";
 const optionName = "Stunning Strike";
 const cost = 1;
@@ -15,6 +15,14 @@ try {
 		// make sure it's an allowed attack
 		if (!["mwak"].includes(workflow.item.system.actionType)) {
 			console.log(`${optionName} not allowed: not an mwak`);
+			return {};
+		}
+
+		const reach = workflow.item.system.properties.rch;
+		const thrown = workflow.item.system.properties.thr;
+		const tokenDistance = MidiQOL.computeDistance(token, targetToken, true);
+		if ((tokenDistance > 5) && thrown && !reach) {
+			console.log(`${optionName} not allowed: ranged attack`);
 			return {};
 		}
 

@@ -8,7 +8,7 @@
     proficiency, regardless of your weapon proficiencies, and the missile counts as a monk weapon for the attack, which
     has a normal range of 20 feet and a long range of 60 feet.
 */
-const version = "11.1";
+const version = "11.2";
 const optionName = "Deflect Missiles";
 const damageReductionEffectName = "Deflect Missiles - Damage Reduction";
 const kiName = "Ki";
@@ -22,8 +22,25 @@ try {
     if (macroPass === "isHit") {
         if (reactionActor) {
             const hasUsedReaction = MidiQOL.hasUsedReaction(reactionActor);
+            let applyFeature = false;
 
-            if (rollingItem.system.actionType === "rwak" && !hasUsedReaction) {
+            if (!hasUsedReaction) {
+                // check attack type
+                if (rollingItem.system.actionType === "rwak") {
+                    applyFeature = true;
+                }
+                else if (rollingItem.system.actionType === "mwak") {
+                    const reach = rollingItem.system.properties.rch;
+                    const thrown = rollingItem.system.properties.thr;
+                    const tokenDistance = MidiQOL.computeDistance(token, rolledItem.actor, true);
+
+                    if ((tokenDistance > 5) && thrown && !reach) {
+                        applyFeature = true;
+                    }
+                }
+            }
+
+            if (applyFeature) {
                 const reactionItem = reactionActor.items.getName(optionName);
                 if (reactionItem) {
                     const activation = deepClone(reactionItem.system.activation)

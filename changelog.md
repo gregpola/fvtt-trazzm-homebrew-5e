@@ -1,3 +1,8 @@
+# 11.14
+* Features Updated: Deflect Missiles, Lay on Hands, Pack Tactics, Reckless Attack, Stunning Strike
+* Races Updated for dnd5e 2.4 through Human
+* General: More fixes for inappropriate player error messages
+
 # 11.13
 * Backgrounds Updated: all for dnd5e 2.4+
 * Classes Updated: all for dnd5e 2.4+
@@ -7,7 +12,7 @@
 * Macros Added: Draw Darkness Walls
 * Racial Traits Updated: Radiant Consumption
 * Spells Updated: Darkness, Fog Cloud
-* General: Fix for lack permission error when initiative is advanced
+* General: Fix for lack of permission error when initiative is advanced
 
 # 11.12
 * Class Features Updated: Channel Divinity (Cleric), Channel Divinity (Paladin), Channel Divinity - Abjure Enemy, Channel Divinity - Turn Undead, Channel Divinity - Turn the Unholy, Divine Smite, Lay on Hands, Panache, Rage

@@ -11,8 +11,10 @@
 
 	This feature has no effect on undead and constructs.
  */
-const version = "11.1";
+const version = "11.2";
 const optionName = "Lay on Hands";
+const flagName = "lay-on-hands-uses";
+const _flagGroup = "fvtt-trazzm-homebrew-5e";
 
 try {
 	let layOnHands = actor.items.find(i => i.name === optionName);
@@ -35,6 +37,8 @@ try {
 				ui.notifications.error(`${optionName} - no uses left`);
 				return false;
 			}
+			await actor.setFlag(_flagGroup, flagName, usesLeft);
+
 		} else {
 			console.error(`${optionName} - feature not found`);
 			ui.notifications.error(`${optionName} - feature not found`);
@@ -43,6 +47,11 @@ try {
 	}
 	else if (args[0].macroPass === "postActiveEffects") {
 		usesLeft = layOnHands.system.uses.value;
+		let flag = actor.getFlag(_flagGroup, flagName);
+		if (flag) {
+			usesLeft = flag;
+			await actor.unsetFlag(_flagGroup, flagName);
+		}
 
 		// calculate the maximum heal possible
 		const maxhp = Number(target.actor?.system.attributes.hp.max);

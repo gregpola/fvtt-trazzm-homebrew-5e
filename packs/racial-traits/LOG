@@ -1,3 +1,5 @@
-2024/01/08-21:36:35.687 121c Recovering log #530
-2024/01/08-21:36:35.708 121c Delete type=0 #530
-2024/01/08-21:36:35.708 121c Delete type=3 #529
+2024/01/22-17:26:59.309 5cec Recovering log #597
+2024/01/22-17:26:59.310 5cec Level-0 table #599: started
+2024/01/22-17:26:59.327 5cec Level-0 table #599: 14769 bytes OK
+2024/01/22-17:26:59.345 5cec Delete type=0 #597
+2024/01/22-17:26:59.346 5cec Delete type=3 #596

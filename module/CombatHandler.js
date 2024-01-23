@@ -61,8 +61,12 @@ export class CombatHandler {
         });
 
         Hooks.on("preUpdateActor", async (actor, change, options, user) => {
-            const isHealth = hasProperty(change, "system.attributes.hp.value");
+            if (!actor.isOwner) {
+                console.log("preUpdateActor - not owner")
+                return;
+            }
 
+            const isHealth = hasProperty(change, "system.attributes.hp.value");
             if (isHealth) {
                 const hpValue = change.system.attributes.hp.value;
                 const isaBoar = actor.name === "Boar";
@@ -96,6 +100,11 @@ export class CombatHandler {
         });
 
         Hooks.on("updateActor", async (actor, change, options, user) => {
+            if (!actor.isOwner) {
+                console.log("updateActor - not owner")
+                return;
+            }
+
             // special death handling
             const hpUpdate = getProperty(change, "system.attributes.hp.value");
             if (hpUpdate !== undefined) {

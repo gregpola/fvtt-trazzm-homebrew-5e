@@ -2,7 +2,7 @@
     In response to being hit by a ranged weapon attack, the brawler deflects the missile. The damage it takes from the
     attack is reduced by 10 (1d10 + 5).
 */
-const version = "11.0";
+const version = "11.1";
 const optionName = "Deflect Missiles";
 const damageReductionEffectName = "Deflect Missiles - Damage Reduction";
 
@@ -13,8 +13,25 @@ try {
     if (macroPass === "isHit") {
         if (reactionActor) {
             const hasUsedReaction = MidiQOL.hasUsedReaction(reactionActor);
+            let applyFeature = false;
 
-            if (rollingItem.system.actionType === "rwak" && !hasUsedReaction) {
+            if (!hasUsedReaction) {
+                // check attack type
+                if (rollingItem.system.actionType === "rwak") {
+                    applyFeature = true;
+                }
+                else if (rollingItem.system.actionType === "mwak") {
+                    const reach = rollingItem.system.properties.rch;
+                    const thrown = rollingItem.system.properties.thr;
+                    const tokenDistance = MidiQOL.computeDistance(token, rolledItem.actor, true);
+
+                    if ((tokenDistance > 5) && thrown && !reach) {
+                        applyFeature = true;
+                    }
+                }
+            }
+
+            if (applyFeature) {
                 const reactionItem = reactionActor.items.getName(optionName);
                 if (reactionItem) {
                     const activation = deepClone(reactionItem.system.activation)
