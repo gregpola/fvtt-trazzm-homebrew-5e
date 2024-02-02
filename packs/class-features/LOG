@@ -1,3 +1,5 @@
-2024/01/22-17:26:56.547 5cec Recovering log #628
-2024/01/22-17:26:56.561 5cec Delete type=0 #628
-2024/01/22-17:26:56.561 5cec Delete type=3 #627
+2024/02/02-10:29:30.127 3cac Recovering log #690
+2024/02/02-10:29:30.127 3cac Level-0 table #692: started
+2024/02/02-10:29:30.132 3cac Level-0 table #692: 36317 bytes OK
+2024/02/02-10:29:30.144 3cac Delete type=0 #690
+2024/02/02-10:29:30.144 3cac Delete type=3 #689

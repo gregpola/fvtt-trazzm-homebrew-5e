@@ -1,7 +1,7 @@
 /*
 	This poison is typically made only by the drow, and only in a place far removed from sunlight. A creature subjected to this poison must succeed on a DC 13 Constitution saving throw or be Poisoned for 1 hour. If the saving throw fails by 5 or more, the creature is also Unconscious while poisoned in this way. The creature wakes up if it takes damage or if another creature takes an action to shake it awake.
 */
-const version = "11.0";
+const version = "11.1";
 const optionName = "Drow Poison";
 const flagName = "drow-poison-weapon";
 const saveDC = 13;
@@ -115,14 +115,10 @@ try {
 				await DAE.setFlag(actor, flagName, {itemName: itemName, itemId: itemId, applications: apps } );
 			}
 
-			// apply the poison damage
+			// apply the effect
 			let targetActor = workflow.hitTargets.first().actor;
-			const damageRoll = await new Roll(`${damageDice}`).evaluate({ async: false });
-			await game.dice3d?.showForRoll(damageRoll);
-
 			let saveRoll = await targetActor.rollAbilitySave("con", {flavor: saveFlavor, damageType: "poison"});
 			if (saveRoll.total < (saveDC - 5)) {
-				await applyPoisonedEffect(actor, targetActor);
 				await applyUnconsciousEffect(actor, targetActor);
 			}
 			else if (saveRoll.total < saveDC) {
@@ -169,7 +165,8 @@ async function applyUnconsciousEffect(actor, target) {
         disabled: false,
 		duration: {startTime: game.time.worldTime, seconds: 3600},
         changes: [
-            { key: `macro.CE`, mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM, value: "Unconscious", priority: 20 }
+			{ key: `macro.CE`, mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM, value: "Poisoned", priority: 20 },
+            { key: `macro.CE`, mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM, value: "Unconscious", priority: 21 }
         ]
     }];
     await MidiQOL.socket().executeAsGM("createEffects", { actorUuid: target.uuid, effects: effectData });

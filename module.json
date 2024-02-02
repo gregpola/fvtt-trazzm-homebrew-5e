@@ -209,6 +209,17 @@
         "PLAYER": "OBSERVER",
         "ASSISTANT": "OWNER"
       }
+    },
+    {
+      "name": "homebrew-general-features",
+      "label": "Homebrew General Features",
+      "path": "packs/general-features",
+      "type": "Item",
+      "system": "dnd5e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
     }
   ],
   "compatibility": {
@@ -274,7 +285,7 @@
         "id": "dnd5e",
         "type": "system",
         "compatibility": {
-          "minimum": "2.1.2"
+          "minimum": "2.4.1"
         }
       }
     ]

@@ -96,6 +96,21 @@ export class CombatHandler {
                         });
                     }
                 }
+
+                // Check for Orc Relentless Endurance
+                const relentlessEndurance = actor.items.getName("Relentless Endurance");
+                if (relentlessEndurance && appliedDamage && relentlessEndurance.system.uses?.value) {
+                    if (hpValue <= 0) {
+                        foundry.utils.setProperty(change, "system.attributes.hp.value", 1);
+                        const newUses = relentlessEndurance.system.uses?.value - 1;
+                        await relentless.update({"system.uses.value": newUses});
+
+                        ChatMessage.create({
+                            speaker: {alias: actor.name},
+                            content: actor.name + " shrugs off death!"
+                        });
+                    }
+                }
             }
         });
 
@@ -132,7 +147,7 @@ export class CombatHandler {
                     }
 
                     // check for The Dead Walk handling
-                    let theDeadWalk = game.settings.get("fvtt-trazzm-homebrew-5e", "dead-walk");
+                    let theDeadWalk = game.settings.get(_flagGroup, "dead-walk");
                     if (theDeadWalk) {
                         const actorType = actor.system.details.type;
 
@@ -142,7 +157,10 @@ export class CombatHandler {
                             if (riseAsZombieRoll.total < 26) {
                                 console.info(`${actor.name} will rise as a zombie next round`);
                                 // add flag to the actor, so that is rises as a Zombie next turn
-                                await actor.setFlag("fvtt-trazzm-homebrew-5e", _theDeadWalkFlag, actor.uuid);
+                                await actor.setFlag(_flagGroup, _theDeadWalkFlag, actor.uuid);
+                            }
+                            else {
+                                console.info("%c fvtt-trazzm-homebrew-5e", "color: #DE7554", " | The Dead Walk - failed roll");
                             }
                         }
                     }
@@ -368,10 +386,10 @@ export class CombatHandler {
         }
 
         if (zombieActor) {
-            let tok = canvas.tokens.get(combatant.actor.token?.id);
+            let tok = canvas.tokens.get(combatant.tokenId);
             if (!tok) {
                 tok = canvas.scene.tokens.find(t => t.actor.id === combatant.actor.id);
-                if (!tok) {
+                if (!tok || !tok.document) {
                     ui.notifications.error("The Dead Walk - unable to find the source token");
                     return;
                 }

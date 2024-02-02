@@ -1,5 +1,5 @@
-2024/01/22-17:26:59.177 6f54 Recovering log #580
-2024/01/22-17:26:59.178 6f54 Level-0 table #582: started
-2024/01/22-17:26:59.195 6f54 Level-0 table #582: 210091 bytes OK
-2024/01/22-17:26:59.208 6f54 Delete type=0 #580
-2024/01/22-17:26:59.209 6f54 Delete type=3 #579
+2024/02/02-10:29:32.813 3cac Recovering log #650
+2024/02/02-10:29:32.818 3cac Level-0 table #652: started
+2024/02/02-10:29:33.021 3cac Level-0 table #652: 1696061 bytes OK
+2024/02/02-10:29:33.038 3cac Delete type=0 #650
+2024/02/02-10:29:33.039 3cac Delete type=3 #649

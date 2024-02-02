@@ -1,5 +1,7 @@
 /*
-	As a bonus action, you can touch a simple or martial weapon and infuse it with one of the following damage types: acid, cold, fire, lightning, or poison. For the next minute, the weapon deals an extra 1d4 damage of the chosen type when it hits. After you use this bonus action, you can't do so again until you finish a long rest.
+	As a bonus action, you can touch a simple or martial weapon and infuse it with one of the following damage types:
+	acid, cold, fire, lightning, or poison. For the next minute, the weapon deals an extra 1d4 damage of the chosen type
+	when it hits. After you use this bonus action, you can't do so again until you finish a long rest.
 */
 const version = "10.0.0";
 const optionName = "Gift of the Chromatic Dragon - Chromatic Infusion";

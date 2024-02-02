@@ -1,3 +1,12 @@
+# 11.15
+* Races Updated for dnd5e 2.4
+* General Features Added: Action - Stabilize (used to stabilize a downed actor)
+* Items Updated: Drow Poison, Potion of Heroism
+* Race Features Updated: Draconic Cry, Metallic Breath Weapon
+* Races Added: Kender
+* Spells Updated: Green-Flame Blade
+* General: Added a General Features compendium, where items like 'Action - Ready' are stored
+
 # 11.14
 * Features Updated: Deflect Missiles, Lay on Hands, Pack Tactics, Reckless Attack, Stunning Strike
 * Races Updated for dnd5e 2.4 through Human

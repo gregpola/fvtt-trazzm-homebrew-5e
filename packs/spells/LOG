@@ -1,3 +1,5 @@
-2024/01/22-17:26:59.426 5cec Recovering log #647
-2024/01/22-17:26:59.439 5cec Delete type=0 #647
-2024/01/22-17:26:59.439 5cec Delete type=3 #646
+2024/02/02-10:29:33.239 a9a0 Recovering log #703
+2024/02/02-10:29:33.239 a9a0 Level-0 table #705: started
+2024/02/02-10:29:33.250 a9a0 Level-0 table #705: 18338 bytes OK
+2024/02/02-10:29:33.264 a9a0 Delete type=0 #703
+2024/02/02-10:29:33.264 a9a0 Delete type=3 #702

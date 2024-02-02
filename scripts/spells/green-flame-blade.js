@@ -8,7 +8,7 @@
 	damage to the target on a hit, and the fire damage to the second creature increases to 1d8 + your spellcasting ability
 	modifier. Both damage rolls increase by 1d8 at 11th level (2d8 and 2d8) and 17th level (3d8 and 3d8).
  */
-const version = "11.0";
+const version = "11.1";
 const optionName = "Green-Flame Blade";
 const damageType = "fire";
 
@@ -151,9 +151,7 @@ async function attackNearby(originWorkflow, primaryTargetToken, ignoreIds, cantr
 	const casterToken = originWorkflow.token;
 
 	// Get tokens 5 ft from primary target visible by caster
-	const potentialTargets = await MidiQOL.findNearby(null, primaryTargetToken, 5)
-		.filter((tok) => !ignoreIds.includes(tok.actor?.id) && MidiQOL.canSense(casterToken, tok))
-		.sort((t1, t2) => t1.document.disposition - t2.document.disposition);
+	const potentialTargets = await MidiQOL.findNearby([0, 1], primaryTargetToken, 5, {canSee: true});
 	if (potentialTargets.length === 0) {
 		console.warn(`${optionName}: No potential secondary target.`);
 		return;
