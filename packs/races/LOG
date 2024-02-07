@@ -1,5 +1,3 @@
-2024/02/02-10:29:32.813 3cac Recovering log #650
-2024/02/02-10:29:32.818 3cac Level-0 table #652: started
-2024/02/02-10:29:33.021 3cac Level-0 table #652: 1696061 bytes OK
-2024/02/02-10:29:33.038 3cac Delete type=0 #650
-2024/02/02-10:29:33.039 3cac Delete type=3 #649
+2024/02/07-10:20:49.246 84f8 Recovering log #694
+2024/02/07-10:20:49.259 84f8 Delete type=0 #694
+2024/02/07-10:20:49.259 84f8 Delete type=3 #693

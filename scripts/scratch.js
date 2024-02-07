@@ -10,8 +10,6 @@ try {
 	console.error(`${optionName}: ${version}`, err);
 }
 
-JournalEntry.CyFt4pR11pRG0OaK.JournalEntryPage.cH2pquYuhwqTkTwK
-
 
 console.info("%c fvtt-trazzm-homebrew-5e", "color: #D030DE", " | Bag of Tricks (Gray)");
 ui.notifications.error(`${optionName}: ${resourceName}: - no resource found`);

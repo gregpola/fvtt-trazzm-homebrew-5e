@@ -1,5 +1,5 @@
-2024/02/02-10:29:33.239 a9a0 Recovering log #703
-2024/02/02-10:29:33.239 a9a0 Level-0 table #705: started
-2024/02/02-10:29:33.250 a9a0 Level-0 table #705: 18338 bytes OK
-2024/02/02-10:29:33.264 a9a0 Delete type=0 #703
-2024/02/02-10:29:33.264 a9a0 Delete type=3 #702
+2024/02/07-10:20:49.325 43d0 Recovering log #751
+2024/02/07-10:20:49.325 43d0 Level-0 table #753: started
+2024/02/07-10:20:49.349 43d0 Level-0 table #753: 3245 bytes OK
+2024/02/07-10:20:49.361 43d0 Delete type=0 #751
+2024/02/07-10:20:49.361 43d0 Delete type=3 #750

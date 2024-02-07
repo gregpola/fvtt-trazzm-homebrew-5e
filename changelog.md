@@ -1,3 +1,9 @@
+# 11.16
+* Class Features Updated: Jack of all Trades
+* Feat: Sentinel - added automatic reaction attack prompt
+* Racial: Long-Limbed - added +5 to range of melee weapons automatically (no need to modify your weapons anymore)
+* Some general cleanup and fixing of features
+
 # 11.15
 * Races Updated for dnd5e 2.4
 * General Features Added: Action - Stabilize (used to stabilize a downed actor)
