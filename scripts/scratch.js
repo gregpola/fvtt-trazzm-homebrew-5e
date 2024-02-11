@@ -58,13 +58,22 @@ item.system.prof.hasProficiency
 	return false;
 }
 
-// Check if there is an enemy of the target adjacent to it
-function checkAllyNearTarget(token, targetToken) {
-	let allNearby = MidiQOL.findNearby(token.document.disposition, targetToken, 5);
-	let nearbyFriendlies = allNearby.filter(i => (i !== token));
-	return (nearbyFriendlies.length > 0);
-}
-
+	await game.MonksTokenBar.requestRoll(targets, {
+		request:[{"type": "save", "key": "con"}],
+		dc:saveDC, showdc:true, silent:true, fastForward:false,
+		flavor:`${optionName} - Enervating Breath`,
+		rollMode:'roll',
+		callback: async (result) => {
+			console.log(result);
+			for (let tr of result.tokenresults) {
+				if (!tr.passed) {
+					// mark incapacitated
+					await MidiQOL.socket().executeAsGM("createEffects",
+						{ actorUuid: tr.actor.uuid, effects: [enervationEffectData] });
+				}
+			}
+		}
+	});
 
 
 

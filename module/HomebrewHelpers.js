@@ -1,3 +1,11 @@
+const _charmResistLabels = new Set(["alien mind", "countercharm", "dark devotion", "duergar resilience", "fey ancestry", "leviathan will", "mental discipline", "heart of hruggek", "psionic fortitude", "two heads"]);
+const _frightenedResistLabels = new Set(["brave", "countercharm", "dark devotion", "fearless", "leviathan will", "mental discipline", "heart of hruggek", "two heads", "kobold legacy - defiance"]);
+const _paralyzedResistLabels = new Set(["duergar resilience", "leviathan will", "heart of hruggek"]);
+const _poisonResistLabels = new Set(["duergar resilience", "deathless nature (reborn)", "dwarven resilience", "hill rune", "infernal constitution", "leviathan will", "poison resilience", "stout resilience", "heart of hruggek"]);
+const _proneResistLabels = new Set(["sure-footed"]);
+const _sleepResistLabels = new Set(["leviathan will", "heart of hruggek", "wakeful"]);
+const _stunResistLabels = new Set(["leviathan will", "heart of hruggek", "psionic fortitude", "two heads"]);
+
 class HomebrewHelpers {
 
     static hasAvailableGold(actor, amount) {
@@ -479,4 +487,116 @@ class HomebrewHelpers {
         ];
     }
 
+    static hasSaveAdvantage(actor, conditionType) {
+        return HomebrewHelpers.hasResilience(actor, conditionType);
+    }
+
+    static hasSaveDisadvantage(actor, conditionType) {
+        // TODO hasSaveDisadvantage
+        return false;
+    }
+
+    static hasResilience(actor, conditionType) {
+        // sanity checks
+        if (!actor) {
+            console.error("fvtt-trazzm-homebrew-5e | ", "hasResilience() - No actor specified");
+            return false;
+        }
+
+        if (!conditionType || conditionType.length === 0) {
+            console.error("fvtt-trazzm-homebrew-5e | ", "hasResilience() - No conditionType specified");
+            return false;
+        }
+
+        let ct = conditionType.toLowerCase();
+        switch (ct) {
+            case "charm":
+            case "charmed":
+                let charmFeature = actor.items.find(f => _charmResistLabels.has(f.name.toLowerCase()));
+                if (charmFeature) {
+                    return true;
+                } else {
+                    let charmEffect = actor.effects.find(f => _charmResistLabels.has(f.name.toLowerCase()));
+                    if (charmEffect) {
+                        return true;
+                    }
+                }
+                break;
+            case "fear":
+            case "fright":
+            case "frightened":
+                let frightFeature = actor.items.find(f => _frightenedResistLabels.has(f.name.toLowerCase()));
+                if (frightFeature) {
+                    return true;
+                } else {
+                    let frightEffect = actor.effects.find(f => _frightenedResistLabels.has(f.name.toLowerCase()));
+                    if (frightEffect) {
+                        return true;
+                    }
+                }
+                break;
+            case "paralyze":
+            case "paralyzed":
+            case "paralysis":
+                let paralyzeFeature = actor.items.find(f => _paralyzedResistLabels.has(f.name.toLowerCase()));
+                if (paralyzeFeature) {
+                    return true;
+                } else {
+                    let paralyzeEffect = actor.effects.find(f => _paralyzedResistLabels.has(f.name.toLowerCase()));
+                    if (paralyzeEffect) {
+                        return true;
+                    }
+                }
+                break;
+            case "poison":
+            case "poisoned":
+                let poisonFeature = actor.items.find(f => _poisonResistLabels.has(f.name.toLowerCase()));
+                if (poisonFeature) {
+                    return true;
+                } else {
+                    let poisonEffect = actor.effects.find(f => _poisonResistLabels.has(f.name.toLowerCase()));
+                    if (poisonEffect) {
+                        return true;
+                    }
+                }
+                break;
+            case "prone":
+                let proneFeature = actor.items.find(f => _proneResistLabels.has(f.name.toLowerCase()));
+                if (proneFeature) {
+                    return true;
+                } else {
+                    let proneEffect = actor.effects.find(f => _proneResistLabels.has(f.name.toLowerCase()));
+                    if (proneEffect) {
+                        return true;
+                    }
+                }
+                break;
+            case "asleep":
+            case "sleep":
+                let sleepFeature = actor.items.find(f => _sleepResistLabels.has(f.name.toLowerCase()));
+                if (sleepFeature) {
+                    return true;
+                } else {
+                    let sleepEffect = actor.effects.find(f => _sleepResistLabels.has(f.name.toLowerCase()));
+                    if (sleepEffect) {
+                        return true;
+                    }
+                }
+                break;
+            case "stun":
+            case "stunned":
+                let stunFeature = actor.items.find(f => _stunResistLabels.has(f.name.toLowerCase()));
+                if (stunFeature) {
+                    return true;
+                } else {
+                    let stunEffect = actor.effects.find(f => _stunResistLabels.has(f.name.toLowerCase()));
+                    if (stunEffect) {
+                        return true;
+                    }
+                }
+                break;
+        }
+
+        return false;
+    }
 }

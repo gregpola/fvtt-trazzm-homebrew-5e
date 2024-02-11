@@ -1,4 +1,4 @@
-const version = "11.0";
+const version = "11.1";
 const optionName = "Poisoner Potent Poison";
 const flagName = "poisoner-poison-weapon";
 const damageDice = "2d8";
@@ -16,7 +16,6 @@ try {
         }
     }
     else if (args[0].macroPass === "postActiveEffects") {
-
         let weapons = actor.items.filter(i => i.type === `weapon` && (i.system.damage.parts[0][1] === `piercing` || i.system.damage.parts[0][1] === `slashing`));
         let weapon_content = ``;
         for (let weapon of weapons) {
@@ -90,9 +89,11 @@ try {
         return result;
     }
     else if (args[0].macroPass === "DamageBonus") {
+        const targetToken = workflow.hitTargets.first();
+
         // poison only lasts one hit for most weapons, three for ammo
         let flag = actor.getFlag("fvtt-trazzm-homebrew-5e", flagName);
-        if (flag && workflow.item._id === flag.itemId && workflow.hitTargets.size > 0) {
+        if (flag && workflow.item._id === flag.itemId && targetToken) {
             let apps = flag.applications;
             const itemName = flag.itemName;
             const itemId = flag.itemId;
@@ -113,20 +114,31 @@ try {
                 await actor.setFlag("fvtt-trazzm-homebrew-5e", flagName, {itemName: itemName, itemId: itemId, applications: apps });
             }
 
-            // apply the poison damage
-            let targetActor = workflow.hitTargets.first().actor;
-            const damageRoll = await new Roll(`${damageDice}`).evaluate({ async: false });
-            await game.dice3d?.showForRoll(damageRoll);
+            // request the saving throw
+            await game.MonksTokenBar.requestRoll([{token: targetToken}], {
+                request: [{"type": "save", "key": "con"}],
+                dc: saveDC, showdc: true,
+                silent: true, fastForward: false,
+                flavor: `${optionName} (poison)`,
+                rollMode: 'roll',
+                callback: async (result) => {
+                    for (let tr of result.tokenresults) {
+                        const damageRoll = await new Roll(`${damageDice}`).evaluate({async: false});
 
-            let saveRoll = await targetActor.rollAbilitySave("con", {flavor: saveFlavor, damageType: "poison"});
-            if (saveRoll.total < saveDC) {
-                await applyPoisonedEffect(workflow.hitTargets.first().actor, actor);
-                return {damageRoll: `${damageRoll.total}[poison]`, flavor: `${optionName} Damage`};
-            }
-            else {
-                const savedDamage = Math.floor(damageRoll.total / 2);
-                return {damageRoll: `${savedDamage}[poison]`, flavor: `${optionName} Damage`};
-            }
+                        if (!tr.passed) {
+                            await applyPoisonedEffect(targetToken.actor, actor);
+                            await new MidiQOL.DamageOnlyWorkflow(targetToken.actor, token, damageRoll.total, "poison", [targetToken], damageRoll, { flavor: `(${optionName})`, itemData: item, itemCardId: args[0].itemCardId });
+                        }
+                        else {
+                            const damageTaken = Math.ceil(damageRoll.total / 2);
+                            const halfDamageRoll = await new Roll(`${damageTaken}`).evaluate({ async: false });
+                            await new MidiQOL.DamageOnlyWorkflow(targetToken.actor, token, damageTaken, "poison", [targetToken], halfDamageRoll, { flavor: `(${optionName})`, itemData: item, itemCardId: args[0].itemCardId });
+                        }
+
+                        await game.dice3d?.showForRoll(damageRoll);
+                    }
+                }
+            });
         }
 
         return {};

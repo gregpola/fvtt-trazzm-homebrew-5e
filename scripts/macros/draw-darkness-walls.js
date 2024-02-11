@@ -3,7 +3,7 @@
 
     Remember to manually delete the walls after the spell expires.
  */
-const version = "11.0";
+const version = "11.1";
 
 // get the darkness tile
 const darknessTile = canvas.tiles.controlled[0];
@@ -13,6 +13,8 @@ if (darknessTile) {
 }
 
 async function circleWall(cx, cy, radius) {
+    const templateId = darknessTile.id;
+
     let data = [];
     const step = 15;
     for (let i = step; i <= 360; i += step) {
@@ -30,7 +32,8 @@ async function circleWall(cx, cy, radius) {
             sense: CONST.WALL_SENSE_TYPES.NORMAL,
             dir: CONST.WALL_DIRECTIONS.BOTH,
             door: CONST.WALL_DOOR_TYPES.NONE,
-            ds: CONST.WALL_DOOR_STATES.CLOSED
+            ds: CONST.WALL_DOOR_STATES.CLOSED,
+            flags: { "fvtt-trazzm-homebrew-5e": { TemplateId: templateId } }
         });
     }
 

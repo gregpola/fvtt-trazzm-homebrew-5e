@@ -1,11 +1,3 @@
-const _charmResistLabels = new Set(["Alien Mind", "Countercharm", "Dark Devotion", "Duergar Resilience", "Fey Ancestry", "Leviathan Will", "Mental Discipline", "Heart of Hruggek", "Psionic Fortitude", "Two Heads"]);
-const _frightenedResistLabels = new Set(["Brave", "Countercharm", "Dark Devotion", "Fearless", "Leviathan Will", "Mental Discipline", "Heart of Hruggek", "Two Heads", "Kobold Legacy - Defiance"]);
-const _paralyzedResistLabels = new Set(["Duergar Resilience", "Leviathan Will", "Heart of Hruggek"]);
-const _poisonResistLabels = new Set(["Duergar Resilience", "Deathless Nature (Reborn)", "Dwarven Resilience", "Hill Rune", "Infernal Constitution", "Leviathan Will", "Poison Resilience", "Stout Resilience", "Heart of Hruggek"]);
-const _proneResistLabels = new Set(["Sure-Footed"]);
-const _sleepResistLabels = new Set(["Leviathan Will", "Heart of Hruggek", "Wakeful"]);
-const _stunResistLabels = new Set(["Leviathan Will", "Heart of Hruggek", "Psionic Fortitude", "Two Heads"]);
-
 const _elementalResistanceTypes = new Set(["acid", "cold", "fire", "lightning", "thunder"]);
 
 let conditionResilience = {
@@ -148,77 +140,8 @@ export class SaveHandler {
                 if (itemConditions.size > 0) {
                     const condIterator = itemConditions.values();
                     for (const entry of condIterator) {
-                        // poison
-                        if (entry === 'poisoned' || entry === 'poison') {
-                            let poisonFeature = tokenDoc.document.actor.items.find(f => _poisonResistLabels.has(f.name));
-                            if (poisonFeature) {
-                                hasResilience = true;
-                            } else {
-                                let poisonEffect = tokenDoc.document.actor.effects.find(f => _poisonResistLabels.has(f.name));
-                                if (poisonEffect) {
-                                    hasResilience = true;
-                                }
-                            }
-                        } else if (entry === 'charmed' || entry === 'charm') {
-                            let charmFeature = tokenDoc.document.actor.items.find(f => _charmResistLabels.has(f.name));
-                            if (charmFeature) {
-                                hasResilience = true;
-                            } else {
-                                let charmEffect = tokenDoc.document.actor.effects.find(f => _charmResistLabels.has(f.name));
-                                if (charmEffect) {
-                                    hasResilience = true;
-                                }
-                            }
-                        } else if (entry === 'frightened' || entry === 'fright') {
-                            let frightFeature = tokenDoc.document.actor.items.find(f => _frightenedResistLabels.has(f.name));
-                            if (frightFeature) {
-                                hasResilience = true;
-                            } else {
-                                let frightEffect = tokenDoc.document.actor.effects.find(f => _frightenedResistLabels.has(f.name));
-                                if (frightEffect) {
-                                    hasResilience = true;
-                                }
-                            }
-                        } else if (entry === 'paralyzed' || entry === 'paralyze' || entry === 'paralysis') {
-                            let paralyzeFeature = tokenDoc.document.actor.items.find(f => _paralyzedResistLabels.has(f.name));
-                            if (paralyzeFeature) {
-                                hasResilience = true;
-                            } else {
-                                let paralyzeEffect = tokenDoc.document.actor.effects.find(f => _paralyzedResistLabels.has(f.name));
-                                if (paralyzeEffect) {
-                                    hasResilience = true;
-                                }
-                            }
-                        } else if (entry === 'Prone' || entry === 'prone') {
-                            let proneFeature = tokenDoc.document.actor.items.find(f => _proneResistLabels.has(f.name));
-                            if (proneFeature) {
-                                hasResilience = true;
-                            } else {
-                                let proneEffect = tokenDoc.document.actor.effects.find(f => _proneResistLabels.has(f.name));
-                                if (proneEffect) {
-                                    hasResilience = true;
-                                }
-                            }
-                        } else if (entry === 'stunned' || entry === 'stun') {
-                            let stunFeature = tokenDoc.document.actor.items.find(f => _stunResistLabels.has(f.name));
-                            if (stunFeature) {
-                                hasResilience = true;
-                            } else {
-                                let stunEffect = tokenDoc.document.actor.effects.find(f => _stunResistLabels.has(f.name));
-                                if (stunEffect) {
-                                    hasResilience = true;
-                                }
-                            }
-                        } else if (entry === 'sleep' || entry === 'asleep') {
-                            let sleepFeature = tokenDoc.document.actor.items.find(f => _sleepResistLabels.has(f.name));
-                            if (sleepFeature) {
-                                hasResilience = true;
-                            } else {
-                                let sleepEffect = tokenDoc.document.actor.effects.find(f => _sleepResistLabels.has(f.name));
-                                if (sleepEffect) {
-                                    hasResilience = true;
-                                }
-                            }
+                        if (HomebrewHelpers.hasResilience(tokenDoc.document.actor, entry)) {
+                            hasResilience = true;
                         }
                     }
                 }
@@ -284,37 +207,8 @@ export class SaveHandler {
 
             if (itemConditions.size > 0) {
                 for (const condition of itemConditions) {
-                    // poison
-                    if (condition === 'poisoned' || condition === 'poison') {
-                        let poisonFeature = actor.items.find(f => _poisonResistLabels.has(f.name));
-                        if (poisonFeature) {
-                            rollData.advantage = true;
-                        }
-                    } else if (condition === 'frightened' || condition === 'fright') {
-                        let frightFeature = actor.items.find(f => _frightenedResistLabels.has(f.name));
-                        if (frightFeature) {
-                            rollData.advantage = true;
-                        }
-                    } else if (condition === 'charmed' || condition === 'charm') {
-                        let charmFeature = actor.items.find(f => _charmResistLabels.has(f.name));
-                        if (charmFeature) {
-                            rollData.advantage = true;
-                        }
-                    } else if (condition === 'paralyzed' || condition === 'paralyze' || condition === 'paralysis') {
-                        let paralyzeFeature = actor.items.find(f => _paralyzedResistLabels.has(f.name));
-                        if (paralyzeFeature) {
-                            rollData.advantage = true;
-                        }
-                    } else if (condition === 'stunned' || condition === 'stun') {
-                        let stunFeature = actor.items.find(f => _stunResistLabels.has(f.name));
-                        if (stunFeature) {
-                            rollData.advantage = true;
-                        }
-                    } else if (condition === 'sleep' || condition === 'asleep') {
-                        let sleepFeature = actor.items.find(f => _sleepResistLabels.has(f.name));
-                        if (sleepFeature) {
-                            rollData.advantage = true;
-                        }
+                    if (HomebrewHelpers.hasResilience(actor, condition)) {
+                        rollData.advantage = true;
                     }
                 }
             }

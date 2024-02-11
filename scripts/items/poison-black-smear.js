@@ -1,7 +1,9 @@
 /*
-	A creature subjected to this poison must succeed on a DC 11 Constitution saving throw. On a failed save the creature takes 4 (1d8) poison damage and is poisoned for 24 hours. While poisoned in this way, the creature smells of black smear. On a successful save, the creature takes half damage and isn't poisoned.
+	A creature subjected to this poison must succeed on a DC 11 Constitution saving throw. On a failed save the creature
+	takes 4 (1d8) poison damage and is poisoned for 24 hours. While poisoned in this way, the creature smells of black
+	smear. On a successful save, the creature takes half damage and isn't poisoned.
 */
-const version = "11.0";
+const version = "11.1";
 const optionName = "Black Smear Poison";
 const flagName = "black-smear-weapon";
 const damageDice = "1d8";
@@ -9,8 +11,6 @@ const saveDC = 11;
 const saveFlavor = `${CONFIG.DND5E.abilities["con"]} DC${saveDC} ${optionName}`;
 
 try {
-	const lastArg = args[args.length - 1];
-
 	if (args[0].macroPass === "preItemRoll") {
 		// find the actor's items that can be poisoned
 		// must be piercing or slashing
@@ -92,42 +92,58 @@ try {
 		return result;
 	}
 	else if (args[0].macroPass === "DamageBonus") {
-		// poison only lasts one hit for most weapons, three for ammo
-		let flag = DAE.getFlag(actor, flagName);
-		if (flag && workflow.item._id === flag.itemId && workflow.hitTargets.size > 0) {
-			let apps = flag.applications;
-			const itemName = flag.itemName;
-			const itemId = flag.itemId;
+		const targetToken = workflow.hitTargets.first();
+		if (targetToken) {
+			// poison only lasts one hit for most weapons, three for ammo
+			let flag = DAE.getFlag(actor, flagName);
+			if (flag && workflow.item._id === flag.itemId) {
+				let apps = flag.applications;
+				const itemName = flag.itemName;
+				const itemId = flag.itemId;
 
-			// check for expiration condition
-			if (apps < 2) {
-				await warpgate.revert(token.document, itemName);
-				DAE.unsetFlag(actor, flagName);
-				ChatMessage.create({content: itemName + " returns to normal"});
+				// check for expiration condition
+				if (apps < 2) {
+					await warpgate.revert(token.document, itemName);
+					DAE.unsetFlag(actor, flagName);
+					ChatMessage.create({content: itemName + " returns to normal"});
 
-				// remove the DamageBonus effect from the actor
-				let effect = await findEffect(actor, optionName);
-				if (effect) await MidiQOL.socket().executeAsGM("removeEffects", { actorUuid: actor.uuid, effects: [effect.id] });
-			}
-			else {
-				apps -= 1;
-				await DAE.unsetFlag(actor, flagName);
-				await DAE.setFlag(actor, flagName, {itemName: itemName, itemId: itemId, applications: apps } );
-			}
+					// remove the DamageBonus effect from the actor
+					let effect = await findEffect(actor, optionName);
+					if (effect) await MidiQOL.socket().executeAsGM("removeEffects", {
+						actorUuid: actor.uuid,
+						effects: [effect.id]
+					});
+				} else {
+					apps -= 1;
+					await DAE.unsetFlag(actor, flagName);
+					await DAE.setFlag(actor, flagName, {itemName: itemName, itemId: itemId, applications: apps});
+				}
 
-			// apply the poison damage
-			let targetActor = workflow.hitTargets.first().actor;
-			const damageRoll = await new Roll(`${damageDice}`).evaluate({ async: false });
-			await game.dice3d?.showForRoll(damageRoll);
+				// request the saving throw
+				await game.MonksTokenBar.requestRoll([{token: targetToken}], {
+					request: [{"type": "save", "key": "con"}],
+					dc: saveDC, showdc: true,
+					silent: true, fastForward: false,
+					flavor: `${optionName} (poison)`,
+					rollMode: 'roll',
+					callback: async (result) => {
+						for (let tr of result.tokenresults) {
+							const damageRoll = await new Roll(`${damageDice}`).evaluate({async: false});
 
-			let saveRoll = await targetActor.rollAbilitySave("con", {flavor: saveFlavor, damageType: "poison"});
-			if (saveRoll.total < saveDC) {
-				await applyPoisonedEffect(actor, targetActor);
-				return {damageRoll: `${damageRoll.total}[poison]`, flavor: `${optionName} Damage`};
-			}
-			else {
-				const dmg = Math.ceil(damageRoll.total/2);
-				return {damageRoll: `${dmg}[poison]`, flavor: `${optionName} Damage`};
+							if (!tr.passed) {
+								await applyPoisonedEffect(actor, targetToken.actor);
+								await new MidiQOL.DamageOnlyWorkflow(targetToken.actor, token, damageRoll.total, "poison", [targetToken], damageRoll, { flavor: `(${optionName})`, itemData: item, itemCardId: args[0].itemCardId });
+							}
+							else {
+								const damageTaken = Math.ceil(damageRoll.total / 2);
+								const halfDamageRoll = await new Roll(`${damageTaken}`).evaluate({ async: false });
+								await new MidiQOL.DamageOnlyWorkflow(targetToken.actor, token, damageTaken, "poison", [targetToken], halfDamageRoll, { flavor: `(${optionName})`, itemData: item, itemCardId: args[0].itemCardId });
+							}
+
+							await game.dice3d?.showForRoll(damageRoll);
+						}
+					}
+				});
 			}
 		}
 

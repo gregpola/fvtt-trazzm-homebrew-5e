@@ -1,4 +1,4 @@
-const version = "11.0";
+const version = "11.1";
 const optionName = "Wyvern Poison";
 const flagName = "wyvern-poison-weapon";
 const damageDice = "7d6";
@@ -16,7 +16,6 @@ try {
 		}		
 	}
 	else if (args[0].macroPass === "postActiveEffects") {
-		
 		let weapons = actor.items.filter(i => i.type === `weapon` && (i.system.damage.parts[0][1] === `piercing` || i.system.damage.parts[0][1] === `slashing`));
 		let weapon_content = ``;
 		for (let weapon of weapons) {
@@ -88,41 +87,57 @@ try {
 		return result;
 	}
 	else if (args[0].macroPass === "DamageBonus") {
-		// poison only lasts one hit for most weapons, three for ammo
-		let flag = DAE.getFlag(actor, flagName);
-		if (flag && workflow.item._id === flag.itemId && workflow.hitTargets.size > 0) {
-			let apps = flag.applications;
-			const itemName = flag.itemName;
-			const itemId = flag.itemId;
+		const targetToken = workflow.hitTargets.first();
+		if (targetToken) {
+			// poison only lasts one hit for most weapons, three for ammo
+			let flag = DAE.getFlag(actor, flagName);
+			if (flag && workflow.item._id === flag.itemId) {
+				let apps = flag.applications;
+				const itemName = flag.itemName;
+				const itemId = flag.itemId;
 
-			// check for expiration condition
-			if (apps < 2) {
-				await warpgate.revert(token.document, itemName);
-				DAE.unsetFlag(actor, flagName);
-				ChatMessage.create({content: itemName + " returns to normal"});
+				// check for expiration condition
+				if (apps < 2) {
+					await warpgate.revert(token.document, itemName);
+					DAE.unsetFlag(actor, flagName);
+					ChatMessage.create({content: itemName + " returns to normal"});
 
-				// remove the DamageBonus effect from the actor
-				let effect = await findEffect(actor, optionName);
-				if (effect) await MidiQOL.socket().executeAsGM("removeEffects", { actorUuid: actor.uuid, effects: [effect.id] });
-			}
-			else {
-				apps -= 1;
-				await DAE.unsetFlag(actor, flagName);
-				await DAE.setFlag(actor, flagName, {itemName: itemName, itemId: itemId, applications: apps } );
-			}
+					// remove the DamageBonus effect from the actor
+					let effect = await findEffect(actor, optionName);
+					if (effect) await MidiQOL.socket().executeAsGM("removeEffects", {
+						actorUuid: actor.uuid,
+						effects: [effect.id]
+					});
+				} else {
+					apps -= 1;
+					await DAE.unsetFlag(actor, flagName);
+					await DAE.setFlag(actor, flagName, {itemName: itemName, itemId: itemId, applications: apps});
+				}
 
-			// apply the poison damage
-			let targetActor = workflow.hitTargets.first().actor;
-			const damageRoll = await new Roll(`${damageDice}`).evaluate({ async: false });
-			await game.dice3d?.showForRoll(damageRoll);
+				// request the saving throw
+				await game.MonksTokenBar.requestRoll([{token: targetToken}], {
+					request: [{"type": "save", "key": "con"}],
+					dc: saveDC, showdc: true,
+					silent: true, fastForward: false,
+					flavor: `${optionName} (poison)`,
+					rollMode: 'roll',
+					callback: async (result) => {
+						for (let tr of result.tokenresults) {
+							const damageRoll = await new Roll(`${damageDice}`).evaluate({async: false});
 
-			let saveRoll = await targetActor.rollAbilitySave("con", {flavor: saveFlavor, damageType: "poison"});
-			if (saveRoll.total < saveDC) {
-				return {damageRoll: `${damageRoll.total}[poison]`, flavor: `${optionName} Damage`};
-			}
-			else {
-				const dmg = Math.ceil(damageRoll.total/2);
-				return {damageRoll: `${dmg}[poison]`, flavor: `${optionName} Damage`};
+							if (!tr.passed) {
+								await new MidiQOL.DamageOnlyWorkflow(targetToken.actor, token, damageRoll.total, "poison", [targetToken], damageRoll, { flavor: `(${optionName})`, itemData: item, itemCardId: args[0].itemCardId });
+							}
+							else {
+								const damageTaken = Math.ceil(damageRoll.total / 2);
+								const halfDamageRoll = await new Roll(`${damageTaken}`).evaluate({ async: false });
+								await new MidiQOL.DamageOnlyWorkflow(targetToken.actor, token, damageTaken, "poison", [targetToken], halfDamageRoll, { flavor: `(${optionName})`, itemData: item, itemCardId: args[0].itemCardId });
+							}
+
+							await game.dice3d?.showForRoll(damageRoll);
+						}
+					}
+				});
 			}
 		}
 

@@ -1,3 +1,11 @@
+# 11.17
+* Creature Features Updated: Pack Tactics
+* Feats Updated: Poisoner
+* General Features Added: Action - Wake Up
+* Items Updated: Basic Poison, Black Smear Poison, Dagger of Venom, Drow Poison, Poisonous Snake Venom, Purple Worm Poison, Serpent Venom, Spider Poison, Wyvern Poison
+* General: Started updating items/features that have saving throws to prompt players to roll their own save. The player is responsible for rolling the correct type (adv, disadv, normal) based on the save flavor and their character's features.
+* Macros Added: Delete Walled Template
+
 # 11.16
 * Class Features Updated: Jack of all Trades
 * Feat: Sentinel - added automatic reaction attack prompt
