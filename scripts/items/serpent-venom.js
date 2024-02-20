@@ -1,9 +1,9 @@
-const version = "11.1";
+const version = "11.2";
 const optionName = "Serpent Venom";
 const flagName = "serpent-venom-poison-weapon";
 const damageDice = "3d6";
 const saveDC = 11;
-const saveFlavor = `${CONFIG.DND5E.abilities["con"]} DC${saveDC} ${optionName}`;
+const saveFlavor = `${CONFIG.DND5E.abilities["con"].label} DC${saveDC} ${optionName}`;
 
 try {
 	if (args[0].macroPass === "preItemRoll") {

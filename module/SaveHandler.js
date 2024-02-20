@@ -131,6 +131,20 @@ export class SaveHandler {
                 }
             }
 
+            if (workflow.otherDamageDetail) {
+                const otherDamageParts = workflow.otherDamageDetail;
+                for (let i = 0; i < otherDamageParts.length; i++) {
+                    let damageType = otherDamageParts[i].type.toLowerCase();
+                    if (!itemConditions.has(damageType)) {
+                        itemConditions.add(damageType);
+                    }
+
+                    if (_elementalResistanceTypes.has(damageType)) {
+                        appliesToElementalResistance = true;
+                    }
+                }
+            }
+
             // look for options that allow save modifiers
             const targetIterator = workflow.targets.values();
             for (const tokenDoc of targetIterator) {

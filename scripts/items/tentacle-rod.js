@@ -5,12 +5,11 @@ const version = "10.0.1s";
 const optionName = "Tentacle Rod";
 const flagName = "tentacle-rod-hits";
 const combatTime = game.combat ? `${game.combat.id}-${game.combat.round + game.combat.turn / 100}` : 1;
-const saveFlavor = `${CONFIG.DND5E.abilities["con"]} DC15 ${optionName}`;
+const saveFlavor = `${CONFIG.DND5E.abilities["con"].label} DC15 ${optionName}`;
 
 try {
 	const lastArg = args[args.length - 1];
 	const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-	const actorToken = canvas.tokens.get(lastArg.tokenId);
 	const targetToken = game.canvas.tokens.get(lastArg.hitTargets[0].id);
 
 	if (args[0].macroPass === "postActiveEffects") {

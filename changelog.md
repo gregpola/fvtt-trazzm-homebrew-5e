@@ -1,3 +1,11 @@
+# 11.18
+* Creatures Updated: Most spiders, also changed the Creatures compendium name to Monsters and Monster Features
+* Feats Updated: Second Chance
+* Features Updated: Dread Ambusher, Perfect Self, Superior Inspiration, Uncanny Dodge
+* General: Better handling of features that provide advantage on certain saving throws
+* Race Features Updated: Savage Attacks
+* Subclasses Updated: Battle Master (including all maneuvers)
+
 # 11.17
 * Creature Features Updated: Pack Tactics
 * Feats Updated: Poisoner

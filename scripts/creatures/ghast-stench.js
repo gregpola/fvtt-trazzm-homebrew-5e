@@ -3,10 +3,10 @@
 	poisoned until the start of its next turn. On a successful saving throw, the creature is immune to the ghast's
 	Stench for 24 hours.
  */
-const version = "11.0";
+const version = "11.1";
 const optionName = "Ghast Stench";
 const immunityEffect = "ghast-stench-immunity";
-const saveFlavor = `${CONFIG.DND5E.abilities["wis"]} DC${10} ${optionName}`;
+const saveFlavor = `${CONFIG.DND5E.abilities["wis"].label} DC${10} ${optionName}`;
 
 try {
 	if (args[0] === "on") {

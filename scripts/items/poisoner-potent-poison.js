@@ -1,9 +1,9 @@
-const version = "11.1";
+const version = "11.2";
 const optionName = "Poisoner Potent Poison";
 const flagName = "poisoner-poison-weapon";
 const damageDice = "2d8";
 const saveDC = 14;
-const saveFlavor = `${optionName} - ${CONFIG.DND5E.abilities["con"]} DC ${saveDC}`;
+const saveFlavor = `${optionName} - ${CONFIG.DND5E.abilities["con"].label} DC ${saveDC}`;
 
 try {
     if (args[0].macroPass === "preItemRoll") {

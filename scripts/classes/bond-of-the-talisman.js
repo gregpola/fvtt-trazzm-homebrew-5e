@@ -4,7 +4,7 @@
     using their action to teleport to you. The teleportation can be used a number of times equal to your proficiency bonus,
     and all expended uses are restored when you finish a long rest.
  */
-const version = "11.0";
+const version = "11.1";
 const optionName = "Bond of the Talisman";
 
 try {
@@ -120,8 +120,7 @@ try {
         let proceed = await dialog;
         if (proceed) {
             const saveDC = actor.system.attributes.spelldc;
-            const saveFlavor = `${CONFIG.DND5E.abilities["wis"]} DC${saveDC} ${optionName}`;
-            const sourceOrigin = args[0]?.tokenUuid;
+            const saveFlavor = `${CONFIG.DND5E.abilities["wis"].label} DC${saveDC} ${optionName}`;
 
             const charmedEffectData = {
                 label: "Charmed",

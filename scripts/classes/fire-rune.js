@@ -63,7 +63,7 @@ try {
 			const conMod = actor.system.abilities.con.mod;
 			const saveDC = 8 + pb + conMod;
 
-			const saveFlavor = `${CONFIG.DND5E.abilities["str"]} DC${saveDC} ${optionName}`;
+			const saveFlavor = `${CONFIG.DND5E.abilities["str"].label} DC${saveDC} ${optionName}`;
 			let saveRoll = await targetActor.rollAbilitySave("str", {flavor: saveFlavor, damageType: "fire"});
 			await game.dice3d?.showForRoll(saveRoll);
 			

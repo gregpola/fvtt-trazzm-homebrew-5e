@@ -3,12 +3,12 @@
 	takes 4 (1d8) poison damage and is poisoned for 24 hours. While poisoned in this way, the creature smells of black
 	smear. On a successful save, the creature takes half damage and isn't poisoned.
 */
-const version = "11.1";
+const version = "11.2";
 const optionName = "Black Smear Poison";
 const flagName = "black-smear-weapon";
 const damageDice = "1d8";
 const saveDC = 11;
-const saveFlavor = `${CONFIG.DND5E.abilities["con"]} DC${saveDC} ${optionName}`;
+const saveFlavor = `${CONFIG.DND5E.abilities["con"].label} DC${saveDC} ${optionName}`;
 
 try {
 	if (args[0].macroPass === "preItemRoll") {

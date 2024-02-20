@@ -1,45 +1,44 @@
 /*
-	When you’re within 5 feet of a creature on your turn, you can expend one superiority die and switch places with that creature, provided you spend at least 5 feet of movement and the creature is willing and isn’t Incapacitated. This movement doesn’t provoke opportunity attacks.
+	When you’re within 5 feet of a creature on your turn, you can expend one superiority die and switch places with that
+	creature, provided you spend at least 5 feet of movement and the creature is willing and isn’t incapacitated. This
+	movement doesn’t provoke opportunity attacks.
 
-	Roll the superiority die. Until the start of your next turn, you or the other creature (your choice) gains a bonus to AC equal to the number rolled.
+	Roll the superiority die. Until the start of your next turn, you or the other creature (your choice) gains a bonus
+	to AC equal to the number rolled.
 */
-const version = "10.0.0";
-const resourceName = "Superiority Dice";
+const version = "11.0";
+const featureName = "Superiority Dice";
 const optionName = "Bait and Switch";
+const cost = 1;
 const gameRound = game.combat ? game.combat.round : 0;
 
 try {
-	const lastArg = args[args.length - 1];
-	const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-	const actorToken = canvas.tokens.get(lastArg.tokenId);
-	
 	if (args[0].macroPass === "preItemRoll") {
-		// check resources
-		let resKey = findResource(actor);
-		if (!resKey) {
-			ui.notifications.error(`${resourceName} - no resource found`);
-			return false;
+		// check for available uses
+		let featureItem = actor.items.find(i => i.name === featureName);
+		if (featureItem) {
+			let usesLeft = featureItem.system.uses?.value ?? 0;
+			if (!usesLeft || usesLeft < cost) {
+				console.error(`${optionName} - not enough ${featureName} uses left`);
+				ui.notifications.error(`${optionName} - not enough ${featureName} uses left`);
+			}
+			else {
+				const newValue = featureItem.system.uses.value - cost;
+				await featureItem.update({"system.uses.value": newValue});
+				return true;
+			}
+		}
+		else {
+			console.error(`${optionName} - no ${featureName} item on actor`);
+			ui.notifications.error(`${optionName} - no ${featureName} item on actor`);
 		}
 
-		const points = actor.system.resources[resKey].value;
-		if (!points) {
-			ui.notifications.error(`${optionName} - resource pool is empty`);
-			return false;
-		}
-		
-		// check target
-		if (lastArg.targets.length === 0) {
-			ui.notifications.error(`${optionName} - no switch target selected`);
-			return false;
-		}
-
-		// handle resource consumption
-		return await consumeResource(actor, resKey, 1);
+		ui.notifications.error(`${featureName} - feature not found`);
+		return false;
 	}
 	else if (args[0].macroPass === "postActiveEffects") {
-		const targetActor = lastArg.targets[0].actor;
-		const targetToken = game.canvas.tokens.get(lastArg.targets[0].id);
-		
+		const targetToken = workflow.targets.first();
+
 		// ask who gets the AC bpnus
 		let dialog = new Promise((resolve, reject) => {
 			new Dialog({
@@ -54,14 +53,14 @@ try {
 					},
 					them:
 					{
-						label: `${targetActor.name}`,
-						callback: () => { resolve(targetActor) }
+						label: `${targetToken.actor.name}`,
+						callback: () => { resolve(targetToken.actor) }
 					}
 						}
 			}).render(true);
 		});
+
 		let buffTarget = await dialog;
-		
 		if (!buffTarget) {
 			buffTarget = actor;
 		}
@@ -70,22 +69,22 @@ try {
 		const fullSupDie = actor.system.scale["battle-master"]["superiority-die"];
 		let bonusRoll = new Roll(`${fullSupDie.die}`).evaluate({ async: false });
 		await game.dice3d?.showForRoll(bonusRoll);
-		await applyArmorBonus(lastArg.uuid, buffTarget.uuid, bonusRoll.total);
+		await applyArmorBonus(item.uuid, buffTarget.uuid, bonusRoll.total);
 		
-		const actorCenter = { x: actorToken.center.x, y: actorToken.center.y };
+		const actorCenter = { x: token.center.x, y: token.center.y };
 		const targetCenter = { x: targetToken.center.x, y: targetToken.center.y };
 
 		// Swap places
-		const portalScale = actorToken.w / canvas.grid.size * 0.7;		
+		const portalScale = token.w / canvas.grid.size * 0.7;
 		new Sequence()
 			.effect()
 			.file("jb2a.misty_step.01.green")       
-			.atLocation(actorToken)
+			.atLocation(token)
 			.scale(portalScale)
 			.fadeOut(200)
 			.wait(500)
 			.animation()
-			.on(actorToken)
+			.on(token)
 			.teleportTo(targetCenter, { relativeToCenter: true })
 			.fadeIn(200)
 			.effect()
@@ -102,37 +101,7 @@ try {
 	}
 
 } catch (err) {
-    console.error(`${resourceName}: ${optionName} - ${version}`, err);
-}
-
-// find the resource matching this feature
-function findResource(actor) {
-	if (actor) {
-		for (let res in actor.system.resources) {
-			if (actor.system.resources[res].label === resourceName) {
-			  return res;
-			}
-		}
-	}
-	
-	return null;
-}
-
-// handle resource consumption
-async function consumeResource(actor, resKey, cost) {
-	if (actor && resKey && cost) {
-		const {value, max} = actor.system.resources[resKey];
-		if (!value) {
-			ChatMessage.create({'content': '${resourceName} : Out of resources'});
-			return false;
-		}
-		
-		const resources = foundry.utils.duplicate(actor.system.resources);
-		const resourcePath = `system.resources.${resKey}`;
-		resources[resKey].value = Math.clamped(value - cost, 0, max);
-		await actor.update({ "system.resources": resources });
-		return true;
-	}
+    console.error(`${optionName} - ${version}`, err);
 }
 
 async function applyArmorBonus(sourceOrigin, targetId, bonus) {

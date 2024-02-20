@@ -1,123 +1,120 @@
-const version = "10.0.0";
-const resourceName = "Superiority Dice";
+/*
+	When you make a melee weapon attack on your turn, you can expend one superiority die to increase your reach for that
+	attack by 5 feet. If you hit, you add the superiority die to the attack’s damage roll.
+ */
+const version = "11.0";
 const optionName = "Lunging Attack";
+const featureName = "Superiority Dice";
+const cost = 1;
+const _flagGroup = "fvtt-trazzm-homebrew-5e";
+const flagName = "lunging-attack-weapon";
 
 try {
-	const lastArg = args[args.length - 1];
-	let tactor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-	
 	if (args[0].macroPass === "preItemRoll") {
-		// check resources
-		let resKey = findResource(tactor);
-		if (!resKey) {
-			ui.notifications.error(`${resourceName} - no resource found`);
-			return false;
-		}
-
-		// handle resource consumption
-		return await consumeResource(tactor, resKey, 1);
-	}
-	else if (args[0] === "on") {
-		const target = Array.from(game.user.targets)[0];
-		
-		// find the actor's weapons
-		let weapons = tactor.items.filter(i => i.data.type === `weapon`);
-		let weapon_content = ``;
-		for (let weapon of weapons) {
-			if (weapon.data.data.actionType === "mwak") {
-				weapon_content += `<option value=${weapon.id}>${weapon.name}</option>`;
+		// check for available uses
+		let featureItem = actor.items.find(i => i.name === featureName);
+		if (featureItem) {
+			let usesLeft = featureItem.system.uses?.value ?? 0;
+			if (!usesLeft || usesLeft < cost) {
+				console.error(`${optionName} - not enough ${featureName} uses left`);
+				ui.notifications.error(`${optionName} - not enough ${featureName} uses left`);
+			}
+			else {
+				const newValue = featureItem.system.uses.value - cost;
+				await featureItem.update({"system.uses.value": newValue});
+				return true;
 			}
 		}
-		
+		else {
+			console.error(`${optionName} - no ${featureName} item on actor`);
+			ui.notifications.error(`${optionName} - no ${featureName} item on actor`);
+		}
+
+		ui.notifications.error(`${featureName} - feature not found`);
+		return false;
+	}
+	else if (args[0] === "on") {
+		// find the actor's weapons
+		let weapons = actor.items.filter(i => i.type === `weapon` && i.system.actionType === "mwak");
+		let weapon_content = ``;
+		for (let weapon of weapons) {
+			weapon_content += `<option value=${weapon.id}>${weapon.name}</option>`;
+		}
+
 		if (weapon_content.length === 0) {
-			return ui.notifications.error(`${resourceName} - no melee weapons found`);
+			return ui.notifications.error(`${optionName} - no melee weapons found`);
 		}
 
 		let content = `
 			<div class="form-group">
-			  <label>Weapons : </label>
-			  <select name="weapons">
+			  <p><label>Weapons : </label></p>
+			  <p><select name="weapons">
 				${weapon_content}
-			  </select>
+			  </select></p>
 			</div>`;
 
 		new Dialog({
 			title: "Choose your weapon",
 			content,
 			buttons:
-			{
-				Ok:
 				{
-					label: `Ok`,
-					callback: async (html) => {
-						let itemId = html.find('[name=weapons]')[0].value;
-						let weaponItem = tactor.items.get(itemId);
+					Ok:
+						{
+							label: `Ok`,
+							callback: async (html) => {
+								let itemId = html.find('[name=weapons]')[0].value;
+								let weaponItem = actor.items.get(itemId);
+								const itemName = weaponItem.name;
 
-						let copy_item = duplicate(weaponItem.toObject());
-						DAE.setFlag(tactor, `lunging-attack-weapon`, {
-							id : itemId,
-							damage : copy_item.system.damage.parts[0][0],
-							range : copy_item.system.range.value
-						});
-						let damage = copy_item.system.damage.parts[0][0];
-						const fullSupDie = tactor.system.scale["battle-master"]["superiority-die"];
-						var newdamage = damage + " + " + fullSupDie.die;
-						copy_item.system.damage.parts[0][0] = newdamage;
-						copy_item.system.range.value += 5;
-						await tactor.updateEmbeddedDocuments("Item", [copy_item]);
-						let theItem = actor.items.get(itemId);
-						await theItem.roll();
-					}
-				},
-				Cancel:
-				{
-					label: `Cancel`
+
+								let mutations = {};
+								const newName = itemName + ` (${optionName})`;
+								const oldReach = weaponItem.system.range.value;
+
+								mutations[weaponItem.name] = {
+									"name": newName,
+									"system.range.value": oldReach + 5
+								};
+
+								const updates = {
+									embedded: {
+										Item: mutations
+									}
+								};
+
+								// mutate the selected item
+								await warpgate.mutate(token.document, updates, {}, { name: itemName });
+
+								// track the effect
+								await actor.setFlag(_flagGroup, flagName, {
+									weaponId : itemId,
+									weaponName: itemName
+								});
+
+								// get the mutated weapon and make the attack
+								let theItem = actor.items.get(itemId);
+								const options = {
+									showFullCard: false,
+									configureDialog: false
+								};
+								await MidiQOL.completeItemUse(theItem, {}, options);
+							}
+						},
+					Cancel:
+						{
+							label: `Cancel`
+						}
 				}
-			}
 		}).render(true);
 	}
 	else if (args[0] === "off") {
-		let flag = DAE.getFlag(tactor, `lunging-attack-weapon`);
+		let flag = actor.getFlag(_flagGroup, flagName);
 		if (flag) {
-			let weaponItem = tactor.items.get(flag.id);
-			let copy_item = duplicate(weaponItem.toObject());
-			copy_item.system.damage.parts[0][0] = flag.damage;
-			copy_item.system.range.value = flag.range;
-			await tactor.updateEmbeddedDocuments("Item", [copy_item]);
-			DAE.unsetFlag(tactor, `lunging-attack-weapon`);
+			await actor.unsetFlag(_flagGroup, flagName);
+			await warpgate.revert(token.document, flag.weaponName);
 		}
 	}
 
 } catch (err) {
-    console.error(`${resourceName}: ${optionName} - ${version}`, err);
-}
-
-// find the resource matching this feature
-function findResource(actor) {
-	if (actor) {
-		for (let res in actor.system.resources) {
-			if (actor.system.resources[res].label === resourceName) {
-			  return res;
-			}
-		}
-	}
-	
-	return null;
-}
-
-// handle resource consumption
-async function consumeResource(actor, resKey, cost) {
-	if (actor && resKey && cost) {
-		const {value, max} = actor.system.resources[resKey];
-		if (!value) {
-			ChatMessage.create({'content': '${resourceName} : Out of resources'});
-			return false;
-		}
-		
-		const resources = foundry.utils.duplicate(actor.system.resources);
-		const resourcePath = `system.resources.${resKey}`;
-		resources[resKey].value = Math.clamped(value - cost, 0, max);
-		await actor.update({ "system.resources": resources });
-		return true;
-	}
+    console.error(`${optionName} - ${version}`, err);
 }

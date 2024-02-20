@@ -6,7 +6,7 @@
 	At the end of each of its turns, and each time it takes damage, the target can make another Wisdom saving throw. The
 	target has advantage on the saving throw if it’s triggered by damage. On a success, the spell ends.
 */
-const version = "11.0";
+const version = "11.1";
 const optionName = "Tashas Hideous Laughter";
 
 try {
@@ -36,7 +36,7 @@ try {
 				dc = Number(snippet);
 			}
 
-			const saveFlavor = `${CONFIG.DND5E.abilities["wis"]} DC${dc} ${optionName}`;
+			const saveFlavor = `${CONFIG.DND5E.abilities["wis"].label} DC${dc} ${optionName}`;
 			let saveRoll = await actor.rollAbilitySave("wis", {flavor: saveFlavor, advantage: true});
 			await game.dice3d?.showForRoll(saveRoll);
 

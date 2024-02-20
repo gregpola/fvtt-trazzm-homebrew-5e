@@ -1,56 +1,32 @@
-const version = "10.0.0";
-const resourceName = "Superiority Dice";
+const version = "11.0";
 const optionName = "Rally";
+const featureName = "Superiority Dice";
+const cost = 1;
 
 try {
-	if (args[0].macroPass === "postDamageRoll") {
-		let workflow = MidiQOL.Workflow.getWorkflow(args[0].uuid);
-		let actor = workflow.actor;
-
-		// check resources
-		let resKey = findResource(actor);
-		if (!resKey) {
-			return ui.notifications.error(`${resourceName} - no resource found`);
+	if (args[0].macroPass === "preItemRoll") {
+		// check for available uses
+		let featureItem = actor.items.find(i => i.name === featureName);
+		if (featureItem) {
+			let usesLeft = featureItem.system.uses?.value ?? 0;
+			if (!usesLeft || usesLeft < cost) {
+				console.error(`${optionName} - not enough ${featureName} uses left`);
+				ui.notifications.error(`${optionName} - not enough ${featureName} uses left`);
+			}
+			else {
+				const newValue = featureItem.system.uses.value - cost;
+				await featureItem.update({"system.uses.value": newValue});
+				return true;
+			}
+		}
+		else {
+			console.error(`${optionName} - no ${featureName} item on actor`);
+			ui.notifications.error(`${optionName} - no ${featureName} item on actor`);
 		}
 
-		const points = actor.data.data.resources[resKey].value;
-		if (!points) {
-			return ui.notifications.error(`${resourceName} - resource pool is empty`);
-		}
-		
-		await consumeResource(actor, resKey, 1);
+		return false;
 	}
 
 } catch (err) {
-    console.error(`${resourceName}: ${optionName} - ${version}`, err);
-}
-
-// find the resource matching this feature
-function findResource(actor) {
-	if (actor) {
-		for (let res in actor.system.resources) {
-			if (actor.system.resources[res].label === resourceName) {
-			  return res;
-			}
-		}
-	}
-	
-	return null;
-}
-
-// handle resource consumption
-async function consumeResource(actor, resKey, cost) {
-	if (actor && resKey && cost) {
-		const {value, max} = actor.system.resources[resKey];
-		if (!value) {
-			ChatMessage.create({'content': '${resourceName} : Out of resources'});
-			return false;
-		}
-		
-		const resources = foundry.utils.duplicate(actor.system.resources);
-		const resourcePath = `system.resources.${resKey}`;
-		resources[resKey].value = Math.clamped(value - cost, 0, max);
-		await actor.update({ "system.resources": resources });
-		return true;
-	}
+	console.error(`${optionName} - ${version}`, err);
 }

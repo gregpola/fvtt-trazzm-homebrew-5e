@@ -1,4 +1,4 @@
-const version = "11.0";
+const version = "11.1";
 const optionName = "Fey Step";
 
 try {
@@ -86,7 +86,7 @@ async function attemptCharm(actor, token) {
 			if (spellDCFlag) {
 				saveDC = spellDCFlag;
 			}
-			const saveFlavor = `${CONFIG.DND5E.abilities["wis"]} DC${saveDC} ${optionName}`;
+			const saveFlavor = `${CONFIG.DND5E.abilities["wis"].label} DC${saveDC} ${optionName}`;
 			let saveRoll = await targetActor.rollAbilitySave("wis", {flavor: saveFlavor, damageType: "charm"});
 			await game.dice3d?.showForRoll(saveRoll);
 

@@ -3,7 +3,7 @@
 	the target is Large or smaller, it must make a Strength saving throw against your DC of 8 + your proficiency bonus
 	+ your Strength modifier. On a failed save, you knock the target Prone.
  */
-const version = "10.0";
+const version = "11.0";
 const optionName = "Goring Charge";
 
 try {
@@ -16,7 +16,7 @@ try {
 			// build DC
 			const saveDC = 8 + actor.system.attributes.prof + actor.system.abilities.str.mod;
 
-			const saveFlavor = `${CONFIG.DND5E.abilities["str"]} Save DC: ${saveDC} - ${optionName}`;
+			const saveFlavor = `${CONFIG.DND5E.abilities["str"].label} Save DC: ${saveDC} - ${optionName}`;
 			let saveRoll = await targetToken.actor.rollAbilitySave("str", {flavor: saveFlavor});
 			if (saveRoll.total < saveDC) {
 				shoveProne(actor, targetToken)

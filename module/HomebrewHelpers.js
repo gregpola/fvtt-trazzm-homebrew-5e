@@ -1,10 +1,13 @@
-const _charmResistLabels = new Set(["alien mind", "countercharm", "dark devotion", "duergar resilience", "fey ancestry", "leviathan will", "mental discipline", "heart of hruggek", "psionic fortitude", "two heads"]);
-const _frightenedResistLabels = new Set(["brave", "countercharm", "dark devotion", "fearless", "leviathan will", "mental discipline", "heart of hruggek", "two heads", "kobold legacy - defiance"]);
+// These values must be lower case
+const _blindedResistLabels = new Set(["second head"]);
+const _charmResistLabels = new Set(["alien mind", "countercharm", "dark devotion", "duergar resilience", "fey ancestry", "leviathan will", "mental discipline", "heart of hruggek", "psionic fortitude", "second head", "two heads"]);
+const _deafenedResistLabels = new Set(["second head"]);
+const _frightenedResistLabels = new Set(["brave", "countercharm", "dark devotion", "fearless", "leviathan will", "mental discipline", "heart of hruggek", "second head", "two heads", "kobold legacy - defiance"]);
 const _paralyzedResistLabels = new Set(["duergar resilience", "leviathan will", "heart of hruggek"]);
 const _poisonResistLabels = new Set(["duergar resilience", "deathless nature (reborn)", "dwarven resilience", "hill rune", "infernal constitution", "leviathan will", "poison resilience", "stout resilience", "heart of hruggek"]);
 const _proneResistLabels = new Set(["sure-footed"]);
 const _sleepResistLabels = new Set(["leviathan will", "heart of hruggek", "wakeful"]);
-const _stunResistLabels = new Set(["leviathan will", "heart of hruggek", "psionic fortitude", "two heads"]);
+const _stunResistLabels = new Set(["leviathan will", "heart of hruggek", "psionic fortitude", "second head", "two heads"]);
 
 class HomebrewHelpers {
 
@@ -510,6 +513,18 @@ class HomebrewHelpers {
 
         let ct = conditionType.toLowerCase();
         switch (ct) {
+            case "blind":
+            case "blinded":
+                let blindFeature = actor.items.find(f => _blindedResistLabels.has(f.name.toLowerCase()));
+                if (blindFeature) {
+                    return true;
+                } else {
+                    let blindFeature = actor.effects.find(f => _blindedResistLabels.has(f.name.toLowerCase()));
+                    if (blindFeature) {
+                        return true;
+                    }
+                }
+                break;
             case "charm":
             case "charmed":
                 let charmFeature = actor.items.find(f => _charmResistLabels.has(f.name.toLowerCase()));
@@ -518,6 +533,18 @@ class HomebrewHelpers {
                 } else {
                     let charmEffect = actor.effects.find(f => _charmResistLabels.has(f.name.toLowerCase()));
                     if (charmEffect) {
+                        return true;
+                    }
+                }
+                break;
+            case "deaf":
+            case "deafened":
+                let deafFeature = actor.items.find(f => _deafenedResistLabels.has(f.name.toLowerCase()));
+                if (deafFeature) {
+                    return true;
+                } else {
+                    let deafFeature = actor.effects.find(f => _deafenedResistLabels.has(f.name.toLowerCase()));
+                    if (deafFeature) {
                         return true;
                     }
                 }

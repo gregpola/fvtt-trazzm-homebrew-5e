@@ -75,7 +75,7 @@ try {
 						const spellcastingAbility = actor.system.attributes.spellcasting;
 						const abilityBonus = actor.system.abilities[spellcastingAbility].mod;
 						const dc = 8 + actor.system.attributes.prof + abilityBonus;
-						const flavor = `${CONFIG.DND5E.abilities["str"]} DC${dc} ${optionName}`;
+						const flavor = `${CONFIG.DND5E.abilities["str"].label} DC${dc} ${optionName}`;
 						let saveRoll = await targetToken.actor.rollAbilitySave("str", {flavor: flavor, damageType: "push"});
 						await game.dice3d?.showForRoll(saveRoll);
 						if (saveRoll.total < dc) {

@@ -73,7 +73,7 @@ try {
 			const pb = actor.system.attributes.prof ?? 2;
 			const conMod = actor.system.abilities.con.mod;
 			const saveDC = 8 + pb + conMod;
-			const saveFlavor = `${CONFIG.DND5E.abilities["wis"]} DC${saveDC} ${optionName}`;
+			const saveFlavor = `${CONFIG.DND5E.abilities["wis"].label} DC${saveDC} ${optionName}`;
 
 			if (useFeature === 1) {
 				// reduce feature uses

@@ -3,7 +3,7 @@
 	a melee weapon attack, you can spend 1 ki point to attempt a stunning strike. The target must succeed on a Constitution
 	saving throw or be stunned until the end of your next turn.
 */	
-const version = "11.1";
+const version = "11.2";
 const kiName = "Ki";
 const optionName = "Stunning Strike";
 const cost = 1;
@@ -66,7 +66,7 @@ try {
 		if (useFeature) {
 			const abilityBonus = actor.system.abilities.wis.mod;
 			const dc = 8 + actor.system.attributes.prof + abilityBonus;
-			const saveFlavor = `${CONFIG.DND5E.abilities["con"]} DC${dc} ${optionName || ""}`;
+			const saveFlavor = `${CONFIG.DND5E.abilities["con"].label} DC${dc} ${optionName || ""}`;
 			
 			let saveRoll = await targetToken.actor.rollAbilitySave("con", {flavor: saveFlavor, damageType: "stun"});
 			await game.dice3d?.showForRoll(saveRoll);

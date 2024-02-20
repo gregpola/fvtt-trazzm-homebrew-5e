@@ -1,53 +1,44 @@
-const version = "10.1.0";
-const resourceName = "Superiority Dice";
+const version = "11.0";
 const optionName = "Feinting Attack";
+const featureName = "Superiority Dice";
+const cost = 1;
 
 try {
-	const lastArg = args[args.length - 1];
-	let tactor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-	
 	if (args[0].macroPass === "preItemRoll") {
-		// check resources
-		let resKey = findResource(tactor);
-		if (!resKey) {
-			ui.notifications.error(`${resourceName} - no resource found`);
-			return false;
+		// check for available uses
+		let featureItem = actor.items.find(i => i.name === featureName);
+		if (featureItem) {
+			let usesLeft = featureItem.system.uses?.value ?? 0;
+			if (!usesLeft || usesLeft < cost) {
+				console.error(`${optionName} - not enough ${featureName} uses left`);
+				ui.notifications.error(`${optionName} - not enough ${featureName} uses left`);
+			}
+			else {
+				const newValue = featureItem.system.uses.value - cost;
+				await featureItem.update({"system.uses.value": newValue});
+				return true;
+			}
+		}
+		else {
+			console.error(`${optionName} - no ${featureName} item on actor`);
+			ui.notifications.error(`${optionName} - no ${featureName} item on actor`);
 		}
 
-		// handle resource consumption
-		return await consumeResource(tactor, resKey, 1);
+		ui.notifications.error(`${featureName} - feature not found`);
+		return false;
 	}
+	else if (args[0].macroPass === "preAttackRoll") {
+		let targetToken = workflow.targets.first();
+		if (targetToken) {
+			const actorEffect = actor.effects.find(i=>i.name === optionName);
+			const targetEffect = targetToken.actor.effects.find(i=>i.name === optionName && i.origin === actorEffect?.origin);
 
-} catch (err) {
-    console.error(`${resourceName}: ${optionName} - ${version}`, err);
-}
-
-// find the resource matching this feature
-function findResource(actor) {
-	if (actor) {
-		for (let res in actor.system.resources) {
-			if (actor.system.resources[res].label === resourceName) {
-			  return res;
+			if (actorEffect && targetEffect) {
+				workflow.advantage = "true";
 			}
 		}
 	}
-	
-	return null;
-}
 
-// handle resource consumption
-async function consumeResource(actor, resKey, cost) {
-	if (actor && resKey && cost) {
-		const {value, max} = actor.system.resources[resKey];
-		if (!value) {
-			ChatMessage.create({'content': '${resourceName} : Out of resources'});
-			return false;
-		}
-		
-		const resources = foundry.utils.duplicate(actor.system.resources);
-		const resourcePath = `system.resources.${resKey}`;
-		resources[resKey].value = Math.clamped(value - cost, 0, max);
-		await actor.update({ "system.resources": resources });
-		return true;
-	}
+} catch (err) {
+	console.error(`${optionName} - ${version}`, err);
 }

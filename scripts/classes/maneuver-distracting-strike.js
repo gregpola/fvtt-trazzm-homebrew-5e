@@ -1,136 +1,112 @@
 /*
-When you hit a creature with a weapon attack, you can expend one superiority die to distract the creature, giving your allies an opening. You add the superiority die to the attack’s damage roll. The next attack roll against the target by an attacker other than you has advantage if the attack is made before the start of your next turn.
+	When you hit a creature with a weapon attack, you can expend one superiority die to distract the creature, giving your
+	allies an opening. You add the superiority die to the attack’s damage roll. The next attack roll against the target
+	by an attacker other than you has advantage if the attack is made before the start of your next turn.
 */
-const version = "10.0.0";
-const resourceName = "Superiority Dice";
+const version = "11.0";
 const optionName = "Distracting Strike";
-
-const lastArg = args[args.length - 1];
+const featureName = "Superiority Dice";
+const cost = 1;
 
 try {
 	if (args[0].macroPass === "DamageBonus") {
-		let tactor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-		let target = lastArg.hitTargets[0];
+		let targetToken = workflow.hitTargets.first();
 
-		// make sure it's an allowed attack
-		if (!["mwak", "rwak"].includes(lastArg.itemData.system.actionType)) {
-			console.log(`${optionName}: not an eligible attack`);
-			return {};
-		}
+		if (targetToken) {
+			// make sure the actor has a superiority die remaining
+			let usesLeft = 0;
+			let featureItem = actor.items.find(i => i.name === featureName);
+			if (featureItem) {
+				usesLeft = featureItem.system.uses?.value ?? 0;
+				if (!usesLeft || usesLeft < cost) {
+					console.info(`${optionName} - not enough ${featureName} uses left`);
+				}
+			}
 
-		// check resources
-		let resKey = findResource(tactor);
-		if (!resKey) {
-			console.log(`${optionName} : ${resourceName} - no resource found`);
-			return {};
-		}
+			if (usesLeft) {
+				// make sure it's an allowed attack
+				if (["mwak", "rwak"].includes(workflow.item.system.actionType)) {
+					// ask if they want to use the option
+					let dialog = new Promise((resolve, reject) => {
+						new Dialog({
+							// localize this text
+							title: `Combat Maneuver: ${optionName}`,
+							content: `<p>Use ${optionName}? (${usesLeft} superiority dice remaining)</p>`,
+							buttons: {
+								one: {
+									icon: '<p> </p><img src = "icons/magic/control/hypnosis-mesmerism-eye-tan.webp" width="50" height="50"></>',
+									label: "<p>Yes</p>",
+									callback: () => resolve(true)
+								},
+								two: {
+									icon: '<p> </p><img src = "icons/skills/melee/weapons-crossed-swords-yellow.webp" width="50" height="50"></>',
+									label: "<p>No</p>",
+									callback: () => {
+										resolve(false)
+									}
+								}
+							},
+							default: "two"
+						}).render(true);
+					});
 
-		const points = tactor.system.resources[resKey].value;
-		if (!points) {
-			console.log(`${optionName} : ${resourceName} - resource pool is empty`);
-			return {};
-		}
-				
-		// ask if they want to use the option
-		let dialog = new Promise((resolve, reject) => {
-			new Dialog({
-				// localize this text
-				title: `Combat Maneuver: ${optionName}`,
-				content: `<p>Use ${optionName}? (${points} superiority dice remaining)</p>`,
-				buttons: {
-					one: {
-						icon: '<p> </p><img src = "icons/magic/control/hypnosis-mesmerism-eye-tan.webp" width="30" height="30"></>',
-						label: "<p>Yes</p>",
-						callback: () => resolve(true)
-					},
-					two: {
-						icon: '<p> </p><img src = "icons/skills/melee/weapons-crossed-swords-yellow.webp" width="30" height="30"></>',
-						label: "<p>No</p>",
-						callback: () => { resolve(false) }
+					let useManeuver = await dialog;
+					if (useManeuver) {
+						// pay the cost
+						const newValue = featureItem.system.uses.value - cost;
+						await featureItem.update({"system.uses.value": newValue});
+
+						// apply the damage bonus
+						const fullSupDie = actor.system.scale["battle-master"]["superiority-die"];
+						ChatMessage.create({'content': `Combat Maneuver: ${optionName} - ${targetToken.name} is distracted by ${actor.name}`});
+
+						// apply advantage - doesn't work because the effect ends with this workflow
+						await markGrantsAdvantage(targetToken.actor.uuid, actor.uuid);
+
+						// add damage bonus
+						const diceMult = workflow.isCritical ? 2 : 1;
+						let damageType = workflow.item.system.damage.parts[0][1];
+						return {damageRoll: `${diceMult}${fullSupDie.die}[${damageType}]`, flavor: optionName};
 					}
-				},
-				default: "two"
-			}).render(true);
-		});
-		
-		let useManeuver = await dialog;
-		if (useManeuver) {
-			consumeResource(tactor, resKey, 1);
-			
-			// apply the damage bonus
-			const fullSupDie = tactor.system.scale["battle-master"]["superiority-die"];
-			ChatMessage.create({'content': `Combat Maneuver: ${optionName} - ${target.name} is distracted by ${actor.name}`});
-			
-			// apply advantage - doesn't work because the effect ends with this workflow
-			//await markGrantsAdvantage(target.actor.uuid, tactor.uuid, lastArg);
-
-			// add damage bonus
-			const diceMult = lastArg.isCritical ? 2: 1;
-			let damageType = lastArg.item.system.damage.parts[0][1];
-			return {damageRoll: `${diceMult}${fullSupDie.die}[${damageType}]`, flavor: optionName};
+				}
+			}
 		}
 	}
 
 } catch (err) {
-    console.error(`${resourceName}: ${optionName} - ${version}`, err);
+    console.error(`${optionName} - ${version}`, err);
 }
 
-async function markGrantsAdvantage(targetId, actorId, macroData) {
+async function markGrantsAdvantage(targetId, actorId) {
 	const effectData = {
-		label: "Distracted",
+		name: `${optionName} - Distracted`,
 		icon: "icons/magic/control/hypnosis-mesmerism-eye-tan.webp",
 		origin: actorId,
 		changes: [
 			{
 				key: 'flags.midi-qol.grants.advantage.attack.all',
 				mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-				value: "1",
+				value: 'workflow.token.id != "' + workflow.token.id + '"',
 				priority: 20
+			},
+			{
+				key: 'flags.midi-qol.onUseMacroName',
+				mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
+				value: 'function.HomebrewMacros.handleDistractingStrike,isAttacked',
+				priority: 21
 			}
 		],
+		duration: {
+			rounds: 1
+		},
 		flags: {
 			dae: {
-				selfTarget: false,
-				stackable: "none",
-				durationExpression: "",
-				macroRepeat: "none",
 				specialDuration: [
-					"isAttacked"
-				],
-				transfer: false
+					"turnStartSource"
+				]
 			}
 		},
 		disabled: false
 	};
     await MidiQOL.socket().executeAsGM("createEffects", { actorUuid: targetId, effects: [effectData] });
-}
-
-// find the resource matching this feature
-function findResource(actor) {
-	if (actor) {
-		for (let res in actor.system.resources) {
-			if (actor.system.resources[res].label === resourceName) {
-			  return res;
-			}
-		}
-	}
-	
-	return null;
-}
-
-// handle resource consumption
-async function consumeResource(actor, resKey, cost) {
-	if (actor && resKey && cost) {
-		const {value, max} = actor.system.resources[resKey];
-		if (!value) {
-			ChatMessage.create({'content': '${resourceName} : Out of resources'});
-			return false;
-		}
-		
-		const resources = foundry.utils.duplicate(actor.system.resources);
-		const resourcePath = `system.resources.${resKey}`;
-		resources[resKey].value = Math.clamped(value - cost, 0, max);
-		await actor.update({ "system.resources": resources });
-		return true;
-	}
 }

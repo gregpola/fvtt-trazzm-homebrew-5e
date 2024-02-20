@@ -1,4 +1,4 @@
-const version = "11.0";
+const version = "11.1";
 const optionName = "Fey Step (Autumn)";
 
 try {
@@ -111,7 +111,7 @@ try {
 		let proceed = await dialog;
 		if (proceed) {
 			const saveDC = actor.system.attributes.spelldc;
-			const saveFlavor = `${CONFIG.DND5E.abilities["wis"]} DC${saveDC} ${optionName}`;
+			const saveFlavor = `${CONFIG.DND5E.abilities["wis"].label} DC${saveDC} ${optionName}`;
 
 			const charmedEffectData = {
 				name: "Fey Step - Charmed",

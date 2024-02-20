@@ -1,4 +1,4 @@
-const version = "10.3";
+const version = "10.4";
 const optionName = "Fey Step (Winter)";
 
 try {
@@ -31,9 +31,8 @@ try {
 			frightTarget = await selectedTarget;
 			
 			if (frightTarget) {
-				// TODO await anime();
 				const saveDC = actor.system.attributes.spelldc;
-				const saveFlavor = `${CONFIG.DND5E.abilities["wis"]} DC${saveDC} ${optionName}`;
+				const saveFlavor = `${CONFIG.DND5E.abilities["wis"].label} DC${saveDC} ${optionName}`;
 				const sourceOrigin = args[0]?.tokenUuid;
 			
 				const effectData = {

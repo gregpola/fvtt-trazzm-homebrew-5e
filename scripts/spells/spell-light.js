@@ -1,4 +1,4 @@
-const version = "11.0";
+const version = "11.1";
 const optionName = "Light Spell";
 
 try {
@@ -7,7 +7,7 @@ try {
 			const targetToken = game.canvas.tokens.get(workflow.targets.first().id);
 			if (targetToken.actor?.type === "npc") {
 				const saveDC = actor.system.attributes.spelldc;
-				const saveFlavor = `${CONFIG.DND5E.abilities["dex"]} DC${saveDC} ${optionName}`;
+				const saveFlavor = `${CONFIG.DND5E.abilities["dex"].label} DC${saveDC} ${optionName}`;
 
 				let saveRoll = await targetToken.actor.rollAbilitySave("dex", {flavor: saveFlavor, damageType: "light"});
 				await game.dice3d?.showForRoll(saveRoll);

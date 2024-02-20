@@ -58,7 +58,7 @@
     },
     {
       "name": "homebrew-creatures",
-      "label": "Homebrew Creatures",
+      "label": "Homebrew Monsters",
       "path": "packs/creatures",
       "type": "Actor",
       "system": "dnd5e",
@@ -69,7 +69,7 @@
     },
     {
       "name": "homebrew-creature-features",
-      "label": "Homebrew Creature Features",
+      "label": "Homebrew Monster Features",
       "path": "packs/creature-features",
       "type": "Item",
       "system": "dnd5e",

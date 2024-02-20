@@ -4,7 +4,7 @@
 	throw. On a failed save, it has disadvantage on attack rolls and ability checks, and can’t take reactions, until the
 	end of its next turn.
  */
-const version = "11.0";
+const version = "11.1";
 const optionName = "Staggering Smite";
 
 try {
@@ -25,7 +25,7 @@ try {
 
 		// roll save for target
 		const saveDC = actor.system.attributes.spelldc;
-		const saveFlavor = `${CONFIG.DND5E.abilities["wis"]} DC${saveDC} ${optionName}`;
+		const saveFlavor = `${CONFIG.DND5E.abilities["wis"].label} DC${saveDC} ${optionName}`;
 
 		let saveRoll = await targetToken.actor.rollAbilitySave("wis", {flavor: saveFlavor, damageType: "psychic"});
 		if (saveRoll.total < saveDC) {

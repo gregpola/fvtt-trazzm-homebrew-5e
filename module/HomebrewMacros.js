@@ -604,8 +604,9 @@ class HomebrewMacros {
         }
 
         // add the grappled effect to the target
+        const grappledEffectName = `Grappled (${grapplerToken.name})`;
         let grappledEffect = {
-            'name': 'Grappled',
+            'name': grappledEffectName,
             'icon': 'icons/magic/nature/root-vine-fire-entangled-hand.webp',
             'changes': [
                 {
@@ -650,57 +651,49 @@ class HomebrewMacros {
         let bestAbility = targetActor.system.abilities.dex.mod > targetActor.system.abilities.str.mod ? "dex" : "str";
         let escapeMacro = "const dc = " + saveDC + ";\nconst roll = await token.actor.rollAbilityTest('" + bestAbility
             + "', {targetValue: " + saveDC +"});\nif (roll.total >= " + saveDC
-            + ") {\nlet effect = token.actor.effects.find(ef => ef.name === 'Grappled' && ef.origin === '" + grapplerToken.actor.uuid
+            + ") {\nlet effect = token.actor.effects.find(ef => ef.name === '" + grappledEffectName + "' && ef.origin === '" + grapplerToken.actor.uuid
             + "');\nif (effect) {\nawait effect.delete();\nawait warpgate.revert(token.document, 'Escape Grapple');\nChatMessage.create({'content': '"
             + targetActor.name + " escapes the grapple!'});}\n}";
 
         if (saveDC === 'opposed') {
             const bestSkill = targetActor.system.skills.ath.total < targetActor.system.skills.acr.total ? "acr" : "ath";
             escapeMacro = "let grappler = canvas.tokens.get('" + grapplerToken.id  + "');\n"
-                + "let results = await game.MonksTokenBar.requestContestedRoll({token: grappler, request: 'skill:ath'},\n"
-                + "\t{token: token, request:'skill:" + bestSkill + "'},\n"
-                + "\t{silent:true, fastForward:false, flavor: `${token.name} tries to break free`});\n"
-                + "let i=0;\n"
-                + "while (results.flags['monks-tokenbar'][`token${token.id}`].passed === 'waiting' && i < 30) {\n"
-                + "\tawait new Promise(resolve => setTimeout(resolve, 1000));\n"
-                + "\ti++;\n"
-                + "}\n"
-                + "let result = results.flags['monks-tokenbar'][`token${token.id}`].passed;\n"
-                + "if (result === 'won' || result === 'tied') {\n"
-                + "\tlet effect = token.actor.effects.find(ef => ef.name === 'Grappled' && ef.origin === '" + grapplerToken.actor.uuid + "');\n"
-                + "\tif (effect) {\n"
-                + "\t\tawait effect.delete();\n"
-                + "\t\tawait warpgate.revert(token.document, 'Escape Grapple');\n"
-                + "\t\tChatMessage.create({'content': `${token.name} escapes the grapple!`});\n"
-                + "\t}\n"
-                + "}";
+                + "await game.MonksTokenBar.requestContestedRoll({token: token, request:'skill:" + bestSkill + "'},\n"
+                + "\t{token: grappler, request: 'skill:ath'},\n"
+                + "\t{silent:true, fastForward:false, flavor: `${token.name} tries to break free`,"
+                + "\tcallback: async (result) => {\n"
+                + "\t\tif (result.tokenresults[0].passed) {\n"
+                + "\t\t\tlet effect = token.actor.effects.find(ef => ef.name === '" + grappledEffectName + "' && ef.origin === '" + grapplerToken.actor.uuid + "');\n"
+                + "\t\t\tif (effect) {\n"
+                + "\t\t\t\tawait effect.delete();\n"
+                + "\t\t\t\tawait warpgate.revert(token.document, 'Escape Grapple');\n"
+                + "\t\t\t\tChatMessage.create({'content': `${token.name} escapes the grapple!`});\n"
+                + "\t\t\t}\n"
+                + "\t\t}\n"
+                + "\t}});";
 
             if (sourceActorFlag) {
                 escapeMacro = "let grappler = canvas.tokens.get('" + grapplerToken.id  + "');\n"
-                    + "let results = await game.MonksTokenBar.requestContestedRoll({token: grappler, request: 'skill:ath'},\n"
-                    + "\t{token: token, request:'skill:" + bestSkill + "'},\n"
-                    + "\t{silent:true, fastForward:false, flavor: `${token.name} tries to break free`});\n"
-                    + "let i=0;\n"
-                    + "while (results.flags['monks-tokenbar'][`token${token.id}`].passed === 'waiting' && i < 30) {\n"
-                    + "\tawait new Promise(resolve => setTimeout(resolve, 1000));\n"
-                    + "\ti++;\n"
-                    + "}\n"
-                    + "let result = results.flags['monks-tokenbar'][`token${token.id}`].passed;\n"
-                    + "if (result === 'won' || result === 'tied') {\n"
-                    + "\tlet effect = token.actor.effects.find(ef => ef.name === 'Grappled' && ef.origin === '" + grapplerToken.actor.uuid + "');\n"
-                    + "\tif (effect) {\n"
-                    + "\t\tawait effect.delete();\n"
-                    + "\t\tawait warpgate.revert(token.document, 'Escape Grapple');\n"
-                    + "\t\tChatMessage.create({'content': `${token.name} escapes the grapple!`});\n"
-                    + "\t}\n"
-                    + "\tawait grappler.actor.unsetFlag('midi-qol', '" + sourceActorFlag + "');\n"
-                    + "}";
+                    + "await game.MonksTokenBar.requestContestedRoll({token: token, request:'skill:" + bestSkill + "'},\n"
+                    + "\t{token: grappler, request: 'skill:ath'},\n"
+                    + "\t{silent:true, fastForward:false, flavor: `${token.name} tries to break free`,"
+                    + "\tcallback: async (result) => {\n"
+                    + "\t\tif (result.tokenresults[0].passed) {\n"
+                    + "\t\t\tlet effect = token.actor.effects.find(ef => ef.name === '" + grappledEffectName + "' && ef.origin === '" + grapplerToken.actor.uuid + "');\n"
+                    + "\t\t\tif (effect) {\n"
+                    + "\t\t\t\tawait effect.delete();\n"
+                    + "\t\t\t\tawait warpgate.revert(token.document, 'Escape Grapple');\n"
+                    + "\t\t\t\tChatMessage.create({'content': `${token.name} escapes the grapple!`});\n"
+                    + "\t\t\t}\n"
+                    + "\t\t\tawait grappler.actor.unsetFlag('midi-qol', '" + sourceActorFlag + "');\n"
+                    + "\t\t}\n"
+                    + "\t}});";
             }
         }
         else if (sourceActorFlag) {
             escapeMacro = "const dc = " + saveDC + ";\nconst roll = await token.actor.rollAbilityTest('" + bestAbility
                 + "', {targetValue: " + saveDC +"});\nif (roll.total >= " + saveDC
-                + ") {\nlet effect = token.actor.effects.find(ef => ef.name === 'Grappled' && ef.origin === '" + grapplerToken.actor.uuid
+                + ") {\nlet effect = token.actor.effects.find(ef => ef.name === '" + grappledEffectName + "' && ef.origin === '" + grapplerToken.actor.uuid
                 + "');\nif (effect) {\nawait effect.delete();\nawait warpgate.revert(token.document, 'Escape Grapple');\nChatMessage.create({'content': '"
                 + targetActor.name + " escapes the grapple!'});\nlet sactor = await fromUuid('"
                 + grapplerToken.actor.uuid  + "');\nif (sactor) {\nawait sactor.unsetFlag('midi-qol', '" + sourceActorFlag + "');\n}\n}\n}";
@@ -782,8 +775,9 @@ class HomebrewMacros {
         }
 
         // add the Restrained effect to the target
+        const restrainedEffectName = `Restrained (${sourceToken.name})`;
         let restrainedEffect = {
-            'name': 'Restrained',
+            'name': restrainedEffectName,
             'icon': 'icons/magic/control/encase-creature-spider-hold.webp',
             'changes': [
                 {
@@ -819,19 +813,19 @@ class HomebrewMacros {
 
         let escapeMacro = "const dc = " + checkDC + ";\nconst roll = await token.actor.rollAbilityTest('" + abilityCheck
             + "', {targetValue: " + checkDC +"});\nif (roll.total >= " + checkDC
-            + ") {\nlet effect = token.actor.effects.find(ef => ef.name === 'Restrained' && ef.origin === '" + sourceToken.actor.uuid
+            + ") {\nlet effect = token.actor.effects.find(ef => ef.name === '" + restrainedEffectName + "' && ef.origin === '" + sourceToken.actor.uuid
             + "');\nif (effect) {\nawait effect.delete();\nawait warpgate.revert(token.document, 'Break Free');\nChatMessage.create({'content': '"
             + targetActor.name + " breaks free!'});}\n}";
         if (sourceActorFlag) {
             escapeMacro = "const dc = " + checkDC + ";\nconst roll = await token.actor.rollAbilityTest('" + abilityCheck
                 + "', {targetValue: " + checkDC +"});\nif (roll.total >= " + checkDC
-                + ") {\nlet effect = token.actor.effects.find(ef => ef.name === 'Restrained' && ef.origin === '" + sourceToken.actor.uuid
+                + ") {\nlet effect = token.actor.effects.find(ef => ef.name === '" + restrainedEffectName + "' && ef.origin === '" + sourceToken.actor.uuid
                 + "');\nif (effect) {\nawait effect.delete();\nawait warpgate.revert(token.document, 'Break Free');\nChatMessage.create({'content': '"
                 + targetActor.name + " breaks free!'});\nlet sactor = MidiQOL.MQfromActorUuid('"
                 + sourceToken.actor.uuid  + "');\nif (sactor) {\nawait sactor.unsetFlag('midi-qol', '" + sourceActorFlag + "');\n}\n}\n}";
         }
 
-        const abilityName = CONFIG.DND5E.abilities[abilityCheck];
+        const abilityName = CONFIG.DND5E.abilities[abilityCheck].label;
         const updates = {
             embedded: {
                 Item: {
@@ -1460,12 +1454,14 @@ class HomebrewMacros {
             .play()
     }
 
-    /*
-                .effect()
-            .file("jb2a.spear.melee.01.blue.2")
-            .attachTo(chargerToken, { offset, gridUnits: true })
-            .scaleToObject(4)
-            .rotateTowards(targetToken, { attachTo: true })
-
-     */
+    static async handleDistractingStrike({speaker, actor, token, character, item, args, scope, workflow}) {
+        if (args[0].macroPass === "isAttacked") {
+            if (actor) {
+                let maneuverEffect = actor.effects.find(e => e.name === 'Distracting Strike - Distracted');
+                if (maneuverEffect.origin !== item.actor.uuid) {
+                    await MidiQOL.socket().executeAsGM('removeEffects', {'actorUuid':actor.uuid, 'effects': [maneuverEffect.id]});
+                }
+            }
+        }
+    }
 }

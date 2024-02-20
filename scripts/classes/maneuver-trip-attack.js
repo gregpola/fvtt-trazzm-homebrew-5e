@@ -1,123 +1,93 @@
-const version = "10.0.1";
-const resourceName = "Superiority Dice";
+const version = "11.0";
 const optionName = "Trip Attack";
-
-const lastArg = args[args.length - 1];
+const featureName = "Superiority Dice";
+const cost = 1;
 
 try {
 	if (args[0].macroPass === "DamageBonus") {
-		let workflow = MidiQOL.Workflow.getWorkflow(lastArg.uuid);
-		let actor = workflow?.actor;
-		let target = lastArg.hitTargets[0];
-		let ttoken = canvas.tokens.get(target.object.id);
-		
-		// make sure it's an allowed attack
-		if (!["mwak", "rwak"].includes(lastArg.itemData.system.actionType)) {
-			console.log(`${optionName}: not an eligible attack`);
-			return {};
-		}
+		let targetToken = workflow.hitTargets.first();
 
-		// check resources
-		let resKey = findResource(actor);
-		if (!resKey) {
-			return ui.notifications.error(`${resourceName} - no resource found`);
-		}
-
-		const points = actor.system.resources[resKey].value;
-		if (!points) {
-			console.log(`${resourceName} - resource pool is empty`);
-			return {};
-		}
-		
-		// ask if they want to use the option
-		let dialog = new Promise((resolve, reject) => {
-			new Dialog({
-				// localize this text
-				title: `Combat Maneuver: ${optionName}`,
-				content: `<p>Use ${optionName}? (${points} superiority dice remaining)</p>`,
-				buttons: {
-					one: {
-						icon: '<p> </p><img src = "icons/equipment/feet/boots-collared-simple-brown.webp" width="30" height="30"></>',
-						label: "<p>Yes</p>",
-						callback: () => resolve(true)
-					},
-					two: {
-						icon: '<p> </p><img src = "icons/skills/melee/weapons-crossed-swords-yellow.webp" width="30" height="30"></>',
-						label: "<p>No</p>",
-						callback: () => { resolve(false) }
-					}
-				},
-				default: "two"
-			}).render(true);
-		});
-		
-		let useManeuver = await dialog;
-		if (useManeuver) {
-			await consumeResource(actor, resKey, 1);
-			
-			// todo check the target's size, must be Large or smaller
-			const tsize = target.actor.system.traits.size;
-			if (!["tiny","sm","med","lg"].includes(tsize)) {
-				ui.notifications.info(`${resourceName} - target is too large to trip`);
-			}
-			else {
-				const abilityBonus = Math.max(actor.system.abilities.str.mod, actor.system.abilities.dex.mod);
-				const dc = 8 + actor.system.attributes.prof + abilityBonus;
-				
-				const saveFlavor = `${CONFIG.DND5E.abilities["str"]} DC${dc} ${optionName || ""}`;
-				let saveRoll = await target.actor.rollAbilitySave("str", {flavor: saveFlavor, damageType: "prone"});
-				await game.dice3d?.showForRoll(saveRoll);
-
-				if (saveRoll.total < dc) { 
-					ChatMessage.create({'content': `${actor.name} trips ${target.name}!`});
-					const hasEffectApplied = await game.dfreds.effectInterface.hasEffectApplied('Prone', target.actor.uuid);
-					if (!hasEffectApplied) {
-						const uuid = target.actor.uuid;
-						await game.dfreds?.effectInterface.addEffect({ effectName: 'Prone', uuid });
-					}
-				} else {
-					ChatMessage.create({'content': `${actor.name} fails to trip ${target.name}`});
+		if (targetToken) {
+			// make sure the actor has a superiority die remaining
+			let usesLeft = 0;
+			let featureItem = actor.items.find(i => i.name === featureName);
+			if (featureItem) {
+				usesLeft = featureItem.system.uses?.value ?? 0;
+				if (!usesLeft || usesLeft < cost) {
+					console.info(`${optionName} - not enough ${featureName} uses left`);
 				}
 			}
-			
-			// add damage bonus
-			const fullSupDie = actor.system.scale["battle-master"]["superiority-die"];
-			const diceMult = lastArg.isCritical ? 2: 1;
-			let damageType = lastArg.itemData.system.damage.parts[0][1];
-			return {damageRoll: `${diceMult}${fullSupDie.die}[${damageType}]`, flavor: optionName};
+
+			if (usesLeft) {
+				// make sure it's an allowed attack
+				const tsize = targetToken.actor.system.traits.size;
+				if (["mwak", "rwak"].includes(workflow.item.system.actionType) && ["tiny","sm","med","lg"].includes(tsize)) {
+					// ask if they want to use the option
+					let dialog = new Promise((resolve, reject) => {
+						new Dialog({
+							// localize this text
+							title: `Combat Maneuver: ${optionName}`,
+							content: `<p>Use ${optionName}? (${usesLeft} superiority dice remaining)</p>`,
+							buttons: {
+								one: {
+									icon: '<p><img src = "icons/equipment/feet/boots-collared-simple-brown.webp" width="50" height="50"></></p>',
+									label: "<p>Yes</p>",
+									callback: () => resolve(true)
+								},
+								two: {
+									icon: '<p><img src = "icons/skills/melee/weapons-crossed-swords-yellow.webp" width="50" height="50"></></p>',
+									label: "<p>No</p>",
+									callback: () => { resolve(false) }
+								}
+							},
+							default: "two"
+						}).render(true);
+					});
+
+					let useManeuver = await dialog;
+					if (useManeuver) {
+						// pay the cost
+						const newValue = featureItem.system.uses.value - cost;
+						await featureItem.update({"system.uses.value": newValue});
+
+						// build needed values
+						const abilityBonus = Math.max(actor.system.abilities.str.mod, actor.system.abilities.dex.mod);
+						const saveDC = 8 + actor.system.attributes.prof + abilityBonus;
+						const fullSupDie = actor.system.scale["battle-master"]["superiority-die"];
+
+						// request the target saving throw
+						const actorName = actor.name;
+						const targetName = targetToken.name;
+						const targetActorUuid = targetToken.actor.uuid;
+						await game.MonksTokenBar.requestRoll([{token: targetToken}], {
+							request: [{"type": "save", "key": "str"}],
+							dc: saveDC, showdc: true,
+							silent: true, fastForward: false,
+							flavor: `${optionName}`,
+							rollMode: 'roll',
+							callback: async (result) => {
+								for (let tr of result.tokenresults) {
+									if (!tr.passed) {
+										ChatMessage.create({'content': `${actorName} trips ${targetName}!`});
+										const hasEffectApplied = await game.dfreds.effectInterface.hasEffectApplied('Prone', targetActorUuid);
+										if (!hasEffectApplied) {
+											await game.dfreds.effectInterface.addEffect({ effectName: 'Prone', uuid: targetActorUuid });
+										}
+									}
+								}
+							}
+						});
+
+						// add damage bonus
+						const diceMult = workflow.isCritical ? 2: 1;
+						let damageType = workflow.item.system.damage.parts[0][1];
+						return {damageRoll: `${diceMult}${fullSupDie.die}[${damageType}]`, flavor: optionName};
+					}
+				}
+			}
 		}
 	}
 
 } catch (err) {
-    console.error(`Combat Maneuver: ${optionName} ${version}`, err);
-}
-
-// find the resource matching this feature
-function findResource(actor) {
-	if (actor) {
-		for (let res in actor.system.resources) {
-			if (actor.system.resources[res].label === resourceName) {
-			  return res;
-			}
-		}
-	}
-	
-	return null;
-}
-
-// handle resource consumption
-async function consumeResource(actor, resKey, cost) {
-	if (actor && resKey && cost) {
-		const {value, max} = actor.system.resources[resKey];
-		if (!value) {
-			ChatMessage.create({'content': '${resourceName} : Out of resources'});
-			return false;
-		}
-		
-		const resources = foundry.utils.duplicate(actor.system.resources);
-		const resourcePath = `system.resources.${resKey}`;
-		resources[resKey].value = Math.clamped(value - cost, 0, max);
-		await actor.update({ "system.resources": resources });
-		return true;
-	}
+    console.error(`Combat Maneuver: ${optionName}: ${version}`, err);
 }

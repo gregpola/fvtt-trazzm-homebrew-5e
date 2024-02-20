@@ -3,25 +3,21 @@
 
 	This spell’s damage increases by 1d6 when you reach 5th level (2d6), 11th level (3d6), and 17th level (4d6).
 */
-const version = "10.0.2";
+const version = "11.0";
 const optionName = "Bounding Boulder";
-
-const lastArg = args[args.length - 1];
 
 try {
 	if (args[0].macroPass === "postActiveEffects") {
-		let actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-		const actorToken = await canvas.tokens.get(lastArg.tokenId);
-		let template = fromUuidSync(lastArg.templateUuid);
+		const template = await fromUuidSync(args[0].templateUuid);
 		if (template) {
-			await anime(actorToken, template);
+			await anime(token, template);
 		}
 		
 		// handle the strength saves or be knocked prone
-		let targets = args[0].failedSaves;
+		let targets = workflow.failedSaves;
 		if (targets && targets.length > 0) {
 			const saveDC = actor.system.attributes.spelldc;
-			const saveFlavor = `${CONFIG.DND5E.abilities["str"]} DC${saveDC} ${optionName}`;
+			const saveFlavor = `${CONFIG.DND5E.abilities["str"].label} DC${saveDC} ${optionName}`;
 			
 			for(let target of targets) {
 				let targetToken = game.canvas.tokens.get(target.id);
@@ -58,7 +54,7 @@ async function wait(ms) { return new Promise(resolve => { setTimeout(resolve, ms
 async function anime(token, template) {
 	new Sequence()
 		.effect()
-		.file("jb2a.boulder.toss.01.60ft")
+		.file("jb2a.boulder.toss.01.01.60ft")
 		.fadeIn(100)
 		.fadeOut(500)
 		.atLocation(token)

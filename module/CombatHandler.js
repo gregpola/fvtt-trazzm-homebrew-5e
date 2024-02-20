@@ -103,7 +103,7 @@ export class CombatHandler {
                     if (hpValue <= 0) {
                         foundry.utils.setProperty(change, "system.attributes.hp.value", 1);
                         const newUses = relentlessEndurance.system.uses?.value - 1;
-                        await relentless.update({"system.uses.value": newUses});
+                        await relentlessEndurance.update({"system.uses.value": newUses});
 
                         ChatMessage.create({
                             speaker: {alias: actor.name},
@@ -176,133 +176,7 @@ export class CombatHandler {
 
             // look for supported features in the combatants
             for (let token of tokens) {
-                let actor = token.actor;
-                let usesValue;
-
-                // look for relentless
-                let featureItem = actor?.items?.getName("Relentless");
-                if (featureItem) {
-                    usesValue = featureItem.system.uses?.value;
-                    if (usesValue && usesValue < 1) {
-                        await featureItem.update({"system.uses.value": 1});
-                    }
-                }
-
-                // Look for Perfect Self
-                featureItem = actor?.items?.getName("Perfect Self");
-                if (featureItem) {
-                    // At 20th level, when you roll for initiative and have no ki points remaining, you regain 4 ki points.
-                    let kiFeature = actor.items.find(i => i.name === "Ki");
-                    if (kiFeature) {
-                        let usesLeft = kiFeature.system.uses?.value ?? 0;
-                        if (!usesLeft || usesLeft < 1) {
-                            await kiFeature.update({"system.uses.value": 4});
-
-                        }
-                    }
-                }
-
-                // Look for Superior Inspiration
-                featureItem = actor?.items?.getName("Superior Inspiration");
-                if (featureItem) {
-                    // At 20th level, when you roll initiative and have no uses of Bardic Inspiration left, you regain one use.
-                    let bardicInspiration = actor.items.find(i => i.name === "Bardic Inspiration");
-                    if (bardicInspiration) {
-                        let usesLeft = bardicInspiration.system.uses?.value ?? 0;
-                        if (!usesLeft || usesLeft < 1) {
-                            await bardicInspiration.update({"system.uses.value": 1});
-
-                        }
-                    }
-                }
-
-                // Look for Second Chance
-                featureItem = actor?.items?.getName("Second Chance");
-                if (featureItem) {
-                    // Once you use this ability, you can’t use it again until you roll initiative at the start of combat or until you finish a short or long rest.
-                    // if this check fails, something is wrong with the feature setup
-                    if (featureItem.system.uses) {
-                        let uses = featureItem.system.uses.value ?? 0;
-                        if (!uses) {
-                            await featureItem.update({"system.uses.value": 1});
-                            await CombatHandler.wait(500);
-                        }
-                    }
-                }
-
-                // Look for Dread Ambusher
-                featureItem = actor?.items?.getName("Dread Ambusher");
-                if (featureItem) {
-                    let newEffects = [];
-                    const featureOrigin = actor.uuid; // ????
-
-                    // Movement bonus effect
-                    const movementBonusEffect = {
-                        label: "Dread Ambusher - Movement Bonus",
-                        icon: "icons/skills/movement/feet-winged-boots-brown.webp",
-                        origin: featureOrigin,
-                        changes: [
-                            {
-                                key: 'system.attributes.movement.walk',
-                                mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-                                value: 10,
-                                priority: 20
-                            }
-                        ],
-                        flags: {
-                            dae: {
-                                selfTarget: false,
-                                stackable: "none",
-                                durationExpression: "",
-                                macroRepeat: "none",
-                                specialDuration: [
-                                    "turnStartSource"
-                                ],
-                                transfer: false
-                            }
-                        },
-                        disabled: false
-                    };
-                    newEffects.push(movementBonusEffect);
-
-                    // Damage bonus effect
-                    const damageBonusEffect = {
-                        label: "Dread Ambusher - Bonus Damage",
-                        icon: "icons/magic/nature/stealth-hide-beast-eyes-green.webp",
-                        origin: featureOrigin,
-                        changes: [
-                            {
-                                key: 'system.bonuses.mwak.damage',
-                                mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-                                value: '1d8',
-                                priority: 20
-                            },
-                            {
-                                key: 'system.bonuses.rwak.damage',
-                                mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-                                value: '1d8',
-                                priority: 20
-                            }
-                        ],
-                        flags: {
-                            dae: {
-                                selfTarget: false,
-                                stackable: "none",
-                                durationExpression: "",
-                                macroRepeat: "none",
-                                specialDuration: [
-                                    "1Attack", "turnStartSource"
-                                ],
-                                transfer: false
-                            }
-                        },
-                        disabled: false
-                    };
-                    newEffects.push(damageBonusEffect);
-
-                    await MidiQOL.socket().executeAsGM("createEffects",
-                        {actorUuid: actor.uuid, effects: [newEffects]});
-                }
+                //let actor = token.actor;
             }
         });
     }

@@ -1,89 +1,98 @@
-const version = "10.0.1";
-const resourceName = "Superiority Dice";
+const version = "11.0";
 const optionName = "Menacing Attack";
-
-const lastArg = args[args.length - 1];
+const featureName = "Superiority Dice";
+const cost = 1;
 
 try {
 	if (args[0].macroPass === "DamageBonus") {
-		let tactor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-		let target = lastArg.hitTargets[0];
+		let targetToken = workflow.hitTargets.first();
 
-		// make sure it's an allowed attack
-		if (!["mwak", "rwak"].includes(lastArg.itemData.system.actionType)) {
-			console.log(`${optionName}: not an eligible attack`);
-			return {};
-		}
-
-		// check resources
-		let resKey = findResource(tactor);
-		if (!resKey) {
-			console.log(`${optionName} : ${resourceName} - no resource found`);
-			return {};
-		}
-
-		const points = tactor.system.resources[resKey].value;
-		if (!points) {
-			console.log(`${optionName} : ${resourceName} - resource pool is empty`);
-			return {};
-		}
-		
-		// ask if they want to use Goading Attack
-		let dialog = new Promise((resolve, reject) => {
-			new Dialog({
-				// localize this text
-				title: `Combat Maneuver: ${optionName}`,
-				content: `<p>Use ${optionName}? (${points} superiority dice remaining)</p>`,
-				buttons: {
-					one: {
-						icon: '<p> </p><img src = "icons/magic/control/fear-fright-monster-green.webp" width="30" height="30"></>',
-						label: "<p>Yes</p>",
-						callback: () => resolve(true)
-					},
-					two: {
-						icon: '<p> </p><img src = "icons/skills/melee/weapons-crossed-swords-yellow.webp" width="30" height="30"></>',
-						label: "<p>No</p>",
-						callback: () => { resolve(false) }
-					}
-				},
-				default: "two"
-			}).render(true);
-		});
-		
-		let useGA = await dialog;
-		if (useGA) {
-			await consumeResource(tactor, resKey, 1);
-
-			const fullSupDie = tactor.system.scale["battle-master"]["superiority-die"];
-			const abilityBonus = Math.max(tactor.system.abilities.str.mod, tactor.system.abilities.dex.mod);
-			const dc = 8 + tactor.system.attributes.prof + abilityBonus;
-			const saveFlavor = `${CONFIG.DND5E.abilities["wis"]} DC${dc} ${optionName || ""}`;
-			let saveRoll = await target.actor.rollAbilitySave("wis", {flavor: saveFlavor, damageType: "frightened"});
-			await game.dice3d?.showForRoll(saveRoll);
-
-			if (saveRoll.total < dc) {
-				await markAsFrightened(target.actor.uuid, tactor.uuid);
+		if (targetToken) {
+			// make sure the actor has a superiority die remaining
+			let usesLeft = 0;
+			let featureItem = actor.items.find(i => i.name === featureName);
+			if (featureItem) {
+				usesLeft = featureItem.system.uses?.value ?? 0;
+				if (!usesLeft || usesLeft < cost) {
+					console.info(`${optionName} - not enough ${featureName} uses left`);
+				}
 			}
-			
-			// add damage bonus
-			const diceMult = lastArg.isCritical ? 2: 1;
-			let damageType = lastArg.itemData.system.damage.parts[0][1];
-			return {damageRoll: `${diceMult}${fullSupDie.die}[${damageType}]`, flavor: optionName};
+
+			if (usesLeft) {
+				// make sure it's an allowed attack
+				if (["mwak", "rwak"].includes(workflow.item.system.actionType)) {
+					// ask if they want to use Menacing Attack
+					let dialog = new Promise((resolve, reject) => {
+						new Dialog({
+							// localize this text
+							title: `Combat Maneuver: ${optionName}`,
+							content: `<p>Use ${optionName}? (${usesLeft} superiority dice remaining)</p>`,
+							buttons: {
+								one: {
+									icon: '<p> </p><img src = "icons/magic/control/fear-fright-monster-green.webp" width="50" height="50"></>',
+									label: "<p>Yes</p>",
+									callback: () => resolve(true)
+								},
+								two: {
+									icon: '<p> </p><img src = "icons/skills/melee/weapons-crossed-swords-yellow.webp" width="50" height="50"></>',
+									label: "<p>No</p>",
+									callback: () => { resolve(false) }
+								}
+							},
+							default: "two"
+						}).render(true);
+					});
+
+					let useGA = await dialog;
+					if (useGA) {
+						// pay the cost
+						const newValue = featureItem.system.uses.value - cost;
+						await featureItem.update({"system.uses.value": newValue});
+
+						// build needed values
+						const abilityBonus = Math.max(actor.system.abilities.str.mod, actor.system.abilities.dex.mod);
+						const saveDC = 8 + actor.system.attributes.prof + abilityBonus;
+						const fullSupDie = actor.system.scale["battle-master"]["superiority-die"];
+
+						// request the target saving throw
+						const effectOrigin = actor.uuid;
+						const targetActorId = targetToken.actor.uuid;
+
+						await game.MonksTokenBar.requestRoll([{token: targetToken}], {
+							request: [{"type": "save", "key": "wis"}],
+							dc: saveDC, showdc: true,
+							silent: true, fastForward: false,
+							flavor: `${optionName}`,
+							rollMode: 'roll',
+							callback: async (result) => {
+								for (let tr of result.tokenresults) {
+									if (!tr.passed) {
+										await markAsFrightened(effectOrigin, targetActorId);
+									}
+								}
+							}
+						});
+
+						// add damage bonus
+						const diceMult = workflow.isCritical ? 2: 1;
+						let damageType = workflow.item.system.damage.parts[0][1];
+						return {damageRoll: `${diceMult}${fullSupDie.die}[${damageType}]`, flavor: optionName};
+					}
+				}
+			}
 		}
-		
 	}
 
 } catch (err) {
     console.error(`${resourceName}: ${optionName} - ${version}`, err);
 }
 
-async function markAsFrightened(targetId, actorId) {
-    let condition = game.i18n.localize("Frightened");
+async function markAsFrightened(origin, targetId) {
 
 	const effectData = {
-		label: condition,
+		name: `${optionName} - Frightened`,
 		icon: "icons/magic/control/fear-fright-monster-green.webp",
-		origin: actorId,
+		origin: origin,
 		changes: [
 			{
 				key: 'macro.CE',
@@ -94,47 +103,11 @@ async function markAsFrightened(targetId, actorId) {
 		],
 		flags: {
 			dae: {
-				selfTarget: false,
-				stackable: "none",
-				durationExpression: "",
-				macroRepeat: "none",
 				specialDuration: [
 					"turnEndSource"
-				],
-				transfer: false
+				]
 			}
-		},
-		disabled: false
+		}
 	};
     await MidiQOL.socket().executeAsGM("createEffects", { actorUuid: targetId, effects: [effectData] });
-}
-
-// find the resource matching this feature
-function findResource(actor) {
-	if (actor) {
-		for (let res in actor.system.resources) {
-			if (actor.system.resources[res].label === resourceName) {
-			  return res;
-			}
-		}
-	}
-	
-	return null;
-}
-
-// handle resource consumption
-async function consumeResource(actor, resKey, cost) {
-	if (actor && resKey && cost) {
-		const {value, max} = actor.system.resources[resKey];
-		if (!value) {
-			ChatMessage.create({'content': '${resourceName} : Out of resources'});
-			return false;
-		}
-		
-		const resources = foundry.utils.duplicate(actor.system.resources);
-		const resourcePath = `system.resources.${resKey}`;
-		resources[resKey].value = Math.clamped(value - cost, 0, max);
-		await actor.update({ "system.resources": resources });
-		return true;
-	}
 }
