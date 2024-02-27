@@ -6,47 +6,38 @@
 	To be eligible, a spell must be incapable of targeting more than one creature at the spell's current level. For
 	example, Magic Missile and Scorching Ray aren't eligible, but Ray of Frost is.
 */
-const version = "11.0";
+const version = "11.1";
 const optionName = "Twinned Spell";
-const baseName = "Font of Magic";
-const mutationFlag = "twinned-spell-item";
+const flagName = "twinned-spell-item";
+const _flagGroup = "fvtt-trazzm-homebrew-5e";
+const cost = 1;
 const exclusionSpells = ["Magic Missile", "Melf's Minute Meteors", "Scorching Ray"];
 
 try {
 	if (args[0].macroPass === "preItemRoll") {
-		let usesLeft = 0;
-
-		let fontOfMagic = actor.items.find(i => i.name === optionName);
-		if (fontOfMagic) {
-			usesLeft = fontOfMagic.system.uses?.value ?? 0;
-			if (!usesLeft || usesLeft < 1) {
-				console.error(`${optionName} - not enough Sorcery Points left`);
-				ui.notifications.error(`${optionName} - not enough Sorcery Points left`);
-				return false;
-			}
-		}
-		else {
-			console.error(`${optionName} - no ${baseName} item on actor`);
-			ui.notifications.error(`${optionName} - no ${baseName} item on actor`);
+		let usesLeft = HomebrewHelpers.getAvailableSorceryPoints(actor);
+		if (!usesLeft || usesLeft < cost) {
+			console.error(`${optionName} - not enough Sorcery Points left`);
+			ui.notifications.error(`${optionName} - not enough Sorcery Points left`);
 			return false;
 		}
 
 		// Check for spells and slots
 		// Filter out non-eligible spells
-		let spells = actor.items.filter(i => i.type === 'spell' 
+		let spells = actor.items.filter(i => i.type === 'spell'
 			&& !exclusionSpells.includes(i.name)
 			&& i.system.target.type === 'creature'
 			&& i.system.target.value === 1);
 		let spellSlots = actor.system.spells;
 		if (!spells || !spellSlots) {
-			ui.notifications.error(`${actor.name} - unable to use ${optionName} because they have no spells`);
+			ui.notifications.error(`${actor.name} - unable to use ${optionName} because they have no applicable spells`);
 			return false;
 		}
-		
+
 		const available_spell_slots = Object.values(spellSlots).filter(({value, max}) => {
 			return (value > 0 && max > 0);
 		});
-		
+
 		// ask the character which spell to alter
 		spells.sort((a, b)=> {
 			if (a.system.level === b.system.level) {
@@ -73,10 +64,10 @@ try {
 
 		let content = `
 			<div class="form-group">
-			  <label>Choose the spell to twin: </label>
-			  <select name="spell-select">
+			  <p><label>Choose the spell to twin: </label></p>
+			  <p><select name="spell-select">
 				${spell_content}
-			  </select>
+			  </select></p>
 			</div>`;
 
 		new Dialog({
@@ -96,20 +87,19 @@ try {
 						mutations[selectedItem.name] = {
 							"system.target.value": 2
 						};
-												
+
 						const updates = {
 							embedded: {
 								Item: mutations
 							}
 						};
-						
+
 						// mutate the selected item
 						await warpgate.mutate(token.document, updates, {}, { name: itemName });
-												
+
 						// track target info on the actor
-						DAE.setFlag(actor, mutationFlag, {itemName : itemName } );
-						const newValue = fontOfMagic.system.uses.value - Math.max(selectedItem.system.level, 1);
-						await fontOfMagic.update({"system.uses.value": newValue});
+						await HomebrewHelpers.reduceAvailableSorceryPoints(actor, cost);
+						await actor.setFlag(_flagGroup, flagName, {itemName : itemName });
 					}
 				},
 				Cancel:
@@ -121,14 +111,14 @@ try {
 
 	}
 	else if (args[0] === "off") {
-		let flag = DAE.getFlag(actor, mutationFlag);
+		let flag = actor.getFlag(_flagGroup, flagName);
 		if (flag) {
+			await actor.unsetFlag(_flagGroup, flagName);
 			const itemName = flag.itemName;
-			let restore = await warpgate.revert(token.document, itemName);
-			DAE.unsetFlag(actor, mutationFlag);
+			await warpgate.revert(token.document, itemName);
 		}
 	}
-	
+
 } catch (err)  {
     console.error(`${optionName}: ${version}`, err);
 }

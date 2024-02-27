@@ -29,8 +29,7 @@ class HomebrewHelpers {
             if (calc >= remaining) {
                 remaining = 0;
                 currentCopper -= (remaining * 100);
-            }
-            else {
+            } else {
                 remaining -= calc;
                 currentCopper -= (calc * 100);
             }
@@ -67,8 +66,7 @@ class HomebrewHelpers {
                     if (currentGold >= remaining) {
                         remaining = 0;
                         currentGold -= remaining;
-                    }
-                    else if (currentGold > 0) {
+                    } else if (currentGold > 0) {
                         remaining -= currentGold;
                         currentGold = 0;
                     }
@@ -82,8 +80,7 @@ class HomebrewHelpers {
                             remaining = 0;
                             currentPlatinum -= platNeeded;
                             currentGold += goldReturned;
-                        }
-                        else {
+                        } else {
                             console.error("hasAvailableGold() - failed, not enough platinum");
                             return false;
                         }
@@ -118,8 +115,7 @@ class HomebrewHelpers {
             if (calc >= remaining) {
                 remaining = 0;
                 currentCopper -= (remaining * 100);
-            }
-            else {
+            } else {
                 remaining -= calc;
                 currentCopper -= (calc * 100);
             }
@@ -156,8 +152,7 @@ class HomebrewHelpers {
                     if (currentGold >= remaining) {
                         remaining = 0;
                         currentGold -= remaining;
-                    }
-                    else if (currentGold > 0) {
+                    } else if (currentGold > 0) {
                         remaining -= currentGold;
                         currentGold = 0;
                     }
@@ -171,8 +166,7 @@ class HomebrewHelpers {
                             remaining = 0;
                             currentPlatinum -= platNeeded;
                             currentGold += goldReturned;
-                        }
-                        else {
+                        } else {
                             console.error("subtractGoldCost() - failed, not enough platinum, very strange???");
                             return false;
                         }
@@ -186,7 +180,15 @@ class HomebrewHelpers {
             return false;
         }
 
-        await actor.update({"system.currency": {pp: currentPlatinum, gp: currentGold, ep: currentElectrum, sp: currentSilver, cp: currentCopper}});
+        await actor.update({
+            "system.currency": {
+                pp: currentPlatinum,
+                gp: currentGold,
+                ep: currentElectrum,
+                sp: currentSilver,
+                cp: currentCopper
+            }
+        });
         return true;
     }
 
@@ -211,7 +213,7 @@ class HomebrewHelpers {
 
     static isAvailableThisTurn(actor, flagName) {
         if (game.combat) {
-            const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn /100}`;
+            const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn / 100}`;
             const lastTime = actor.getFlag("fvtt-trazzm-homebrew-5e", flagName);
             if (combatTime === lastTime) {
                 return false;
@@ -223,7 +225,7 @@ class HomebrewHelpers {
     }
 
     static async setUsedThisTurn(actor, flagName) {
-        const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn /100}`;
+        const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn / 100}`;
         const lastTime = actor.getFlag("fvtt-trazzm-homebrew-5e", flagName);
         if (combatTime !== lastTime) {
             await actor.setFlag("fvtt-trazzm-homebrew-5e", flagName, combatTime)
@@ -231,7 +233,7 @@ class HomebrewHelpers {
     }
 
     static async dialog(title, options) {
-        let buttons = options.map(([label,value]) => ({label,value}));
+        let buttons = options.map(([label, value]) => ({label, value}));
         let selected = await warpgate.buttonDialog(
             {
                 buttons,
@@ -271,7 +273,10 @@ class HomebrewHelpers {
             await effect.update(updates);
         } else {
             updates._id = effect.id;
-            await MidiQOL.socket().executeAsGM('updateEffects', {'actorUuid': effect.parent.uuid, 'updates': [updates]});
+            await MidiQOL.socket().executeAsGM('updateEffects', {
+                'actorUuid': effect.parent.uuid,
+                'updates': [updates]
+            });
         }
     };
 
@@ -366,6 +371,7 @@ class HomebrewHelpers {
                 isFirst = false;
             }
         }
+
         function dialogRender(html) {
             let trs = html[0].getElementsByTagName('tr');
             for (let t of trs) {
@@ -373,7 +379,9 @@ class HomebrewHelpers {
                 t.style.flexFlow = 'row-reverse';
                 t.style.alignItems = 'center';
                 t.style.justifyContent = 'flex-end';
-                if (!multiple) t.addEventListener('click', function () {t.getElementsByTagName('input')[0].checked = true});
+                if (!multiple) t.addEventListener('click', function () {
+                    t.getElementsByTagName('input')[0].checked = true
+                });
             }
             let ths = html[0].getElementsByTagName('th');
             for (let t of ths) {
@@ -404,6 +412,7 @@ class HomebrewHelpers {
                 });
             }
         }
+
         let config = {
             'title': title,
             'render': dialogRender
@@ -437,8 +446,7 @@ class HomebrewHelpers {
                 ui.notifications.warn('Item not found in specified compendium!');
                 return undefined;
             }
-        }
-        else {
+        } else {
             ui.notifications.warn('Pack not found in compendium!');
             return undefined;
         }
@@ -622,6 +630,56 @@ class HomebrewHelpers {
                     }
                 }
                 break;
+        }
+
+        return false;
+    }
+
+    static getAvailableSorceryPoints(actor) {
+        let usesLeft = 0;
+
+        if (actor) {
+            let fontOfMagic = actor.items.find(i => i.name === "Font of Magic");
+            if (fontOfMagic) {
+                usesLeft += fontOfMagic.system.uses?.value ?? 0;
+            }
+
+            let metaMagicAdept = actor.items.find(i => i.name === "Metamagic Adept");
+            if (metaMagicAdept) {
+                usesLeft += metaMagicAdept.system.uses?.value ?? 0;
+            }
+        }
+
+        return usesLeft;
+    }
+
+    static async reduceAvailableSorceryPoints(actor, points) {
+        let cost = points ? points : 1;
+
+        if (actor) {
+            let metaMagicAdept = actor.items.find(i => i.name === "Metamagic Adept");
+            if (metaMagicAdept) {
+                let val = metaMagicAdept.system.uses?.value ?? 0;
+                if (val >= cost) {
+                    const newValue = metaMagicAdept.system.uses.value - cost;
+                    await metaMagicAdept.update({"system.uses.value": newValue});
+                    return true;
+                }
+                else if (val > 0) {
+                    await metaMagicAdept.update({"system.uses.value": 0});
+                    cost -= val;
+                }
+            }
+
+            let fontOfMagic = actor.items.find(i => i.name === "Font of Magic");
+            if (fontOfMagic) {
+                let val2 = fontOfMagic.system.uses?.value ?? 0;
+                if (val2 >= cost) {
+                    const newValue = fontOfMagic.system.uses.value - cost;
+                    await fontOfMagic.update({"system.uses.value": newValue});
+                    return true;
+                }
+            }
         }
 
         return false;

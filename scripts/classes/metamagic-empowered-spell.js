@@ -3,25 +3,15 @@ When you roll damage for a spell, you can spend 1 sorcery point to reroll a numb
 
 You can use Empowered Spell even if you have already used a different Metamagic option during the casting of the spell.
 */
-const version = "11.0";
+const version = "11.1";
 const optionName = "Empowered Spell";
-const baseName = "Font of Magic";
 const cost = 1;
-const lastArg = args[args.length - 1];
 
 try {
 	if (args[0].macroPass === "DamageBonus") {
-		let fontOfMagic = actor.items.find(i => i.name === optionName);
-		if (fontOfMagic) {
-			let usesLeft = fontOfMagic.system.uses?.value ?? 0;
-			if (!usesLeft || usesLeft < cost) {
-				console.log(`${optionName} - not enough Sorcery Points left`);
-				return {};
-			}
-		}
-		else {
-			console.error(`${optionName} - no ${baseName} item on actor`);
-			console.log(`${optionName} - no ${baseName} item on actor`);
+		let usesLeft = HomebrewHelpers.getAvailableSorceryPoints(actor);
+		if (!usesLeft || usesLeft < cost) {
+			console.log(`${optionName} - not enough Sorcery Points left`);
 			return {};
 		}
 
@@ -30,7 +20,7 @@ try {
 		let rerollDataSet = new Set();
 		
 		let rows = "";
-		for (let t of lastArg.damageRoll.terms) {
+		for (let t of workflow.damageRoll.terms) {
 			let row = `<div class="flexrow"><label>${t.number}d${t.faces}</label></div>`;
 			rows += row;
 			for (let r of t.results) {
@@ -97,8 +87,7 @@ try {
 
 		let useFeature = await dialog;
 		if (useFeature) {
-			const newValue = fontOfMagic.system.uses.value - cost;
-			await fontOfMagic.update({"system.uses.value": newValue});
+			await HomebrewHelpers.reduceAvailableSorceryPoints(actor, cost)
 
 			// perform the re-rolls
 			let damageRollTerms = "";
@@ -119,5 +108,5 @@ try {
 	}
 	
 } catch (err)  {
-    console.error(`Metamagic: ${optionName} ${version}`, err);
+    console.error(`${optionName}: ${version}`, err);
 }

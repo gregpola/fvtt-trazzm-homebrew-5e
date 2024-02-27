@@ -2,9 +2,8 @@
 	When you cast a spell that deals a type of damage from the following list, you can spend 1 sorcery point to change
 	that damage type to one of the other listed types: acid, cold, fire, lightning, poison, thunder.
 */
-const version = "11.0";
-const optionName = "Metamagic: Transmuted Spell";
-const baseName = "Font of Magic";
+const version = "11.1";
+const optionName = "Transmuted Spell";
 const cost = 1;
 
 const elementalTypes = ["acid", "cold", "fire", "lightning", "poison", "thunder"];
@@ -16,21 +15,12 @@ try {
 		if (!["spell"].includes(item.type)) {
 			return {};
 		}
-		
-		// check resources
-		let fontOfMagic = actor.items.find(i => i.name === optionName);
-		if (fontOfMagic) {
-			let usesLeft = fontOfMagic.system.uses?.value ?? 0;
-			if (!usesLeft || usesLeft < cost) {
-				console.error(`${optionName} - not enough Sorcery Points left`);
-				ui.notifications.error(`${optionName} - not enough Sorcery Points left`);
-				return {};
-			}
-		}
-		else {
-			console.error(`${optionName} - no ${baseName} item on actor`);
-			ui.notifications.error(`${optionName} - no ${baseName} item on actor`);
-			return {};
+
+		let usesLeft = HomebrewHelpers.getAvailableSorceryPoints(actor);
+		if (!usesLeft || usesLeft < cost) {
+			console.error(`${optionName} - not enough Sorcery Points left`);
+			ui.notifications.error(`${optionName} - not enough Sorcery Points left`);
+			return false;
 		}
 
 		// check the damage type
@@ -104,6 +94,7 @@ try {
 			const newDamageRoll = CONFIG.Dice.DamageRoll.fromTerms(workflow.damageRoll.terms);
 			await workflow.setDamageRoll(newDamageRoll);
 			ChatMessage.create({content: item.name + " has been transmuted"});
+			await HomebrewHelpers.reduceAvailableSorceryPoints(actor, cost);
 		}
 	}
 	

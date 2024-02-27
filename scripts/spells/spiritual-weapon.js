@@ -7,10 +7,11 @@
 
 	Higher Levels. When you cast this spell using a spell slot of 3rd level or higher, the damage increases by 1d8 for every two slot levels above the 2nd.
 */
-const version = "11.1";
+const version = "11.2";
 const optionName = "Spiritual Weapon";
 const actorName = "Spiritual Weapon";
 const summonFlag = "spiritual-weapon";
+const _flagGroup = "fvtt-trazzm-homebrew-5e";
 
 const weaponTypes = ["Club", "Dagger", "Falchion", "Greataxe", "Greatsword", "Halberd", "Hammer", "Handaxe", "Katana", "Longsword", "Mace", "Maul", "Quarterstaff", "Rapier", "Scimitar", "Scythe", "Shortsword", "Spear", "Trident", "Warhammer"];
 const colorButtons = [{label: "Blue", value: 0}, {label: "Green", value: 1}, {label: "Purple", value: 2}];
@@ -184,9 +185,9 @@ try {
 			let summonedToken = canvas.tokens.get(result[0]);
 			if (summonedToken) {
 				await anime(token, summonedToken);
-				await actor.setFlag("midi-qol", summonFlag, summonedToken.id);
+				await actor.setFlag(_flagGroup, summonFlag, summonedToken.id);
 				await summonedToken.toggleCombat();
-				const objectInitiative = token.combatant.initiative ? token.combatant.initiative + .01
+				const objectInitiative = token.combatant.initiative ? token.combatant.initiative - 0.01
 					: 1 + (summonedToken.actor.system.abilities.dex.value / 100);
 				await summonedToken.combatant.update({initiative: objectInitiative});
 			}
@@ -199,9 +200,9 @@ try {
 	}
 	else if (args[0] === "off") {
 		// delete the summon
-		const lastSummon = actor.getFlag("midi-qol", summonFlag);
+		const lastSummon = actor.getFlag(_flagGroup, summonFlag);
 		if (lastSummon) {
-			await actor.unsetFlag("midi-qol", summonFlag);
+			await actor.unsetFlag(_flagGroup, summonFlag);
 			await warpgate.dismiss(lastSummon, game.canvas.scene.id);
 		}
 	}

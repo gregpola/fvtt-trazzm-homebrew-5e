@@ -1,26 +1,19 @@
 /*
 	When you cast a spell that has a casting time of 1 action, you can spend 2 sorcery points to change the casting time to 1 bonus action for this casting.
 */
-const version = "11.0";
+const version = "11.1";
 const optionName = "Quickened Spell";
 const baseName = "Font of Magic";
 const cost = 2;
-const mutationFlag = "quickened-spell-item";
+const flagName = "quickened-spell-item";
+const _flagGroup = "fvtt-trazzm-homebrew-5e";
 
 try {
 	if (args[0].macroPass === "preItemRoll") {
-		let fontOfMagic = actor.items.find(i => i.name === optionName);
-		if (fontOfMagic) {
-			let usesLeft = fontOfMagic.system.uses?.value ?? 0;
-			if (!usesLeft || usesLeft < cost) {
-				console.error(`${optionName} - not enough Sorcery Points left`);
-				ui.notifications.error(`${optionName} - not enough Sorcery Points left`);
-				return false;
-			}
-		}
-		else {
-			console.error(`${optionName} - no ${baseName} item on actor`);
-			ui.notifications.error(`${optionName} - no ${baseName} item on actor`);
+		let usesLeft = HomebrewHelpers.getAvailableSorceryPoints(actor);
+		if (!usesLeft || usesLeft < cost) {
+			console.error(`${optionName} - not enough Sorcery Points left`);
+			ui.notifications.error(`${optionName} - not enough Sorcery Points left`);
 			return false;
 		}
 
@@ -60,10 +53,10 @@ try {
 
 		let content = `
 			<div class="form-group">
-			  <label>Choose the spell to extend: </label>
-			  <select name="spell-select">
+			  <p><label>Choose the spell to quicken: </label></p>
+			  <p><select name="spell-select">
 				${spell_content}
-			  </select>
+			  </select></p>
 			</div>`;
 
 		new Dialog({
@@ -92,10 +85,10 @@ try {
 						
 						// mutate the selected item
 						await warpgate.mutate(token.document, updates, {}, { name: itemName });
-												
+
 						// track target info on the actor
-						DAE.setFlag(actor, mutationFlag, {itemName : itemName } );
-						await consumeResource(actor, resKey, cost);
+						await HomebrewHelpers.reduceAvailableSorceryPoints(actor, cost)
+						await actor.setFlag(_flagGroup, flagName, {itemName : itemName });
 					}
 				},
 				Cancel:
@@ -107,11 +100,11 @@ try {
 
 	}
 	else if (args[0] === "off") {
-		let flag = DAE.getFlag(actor, mutationFlag);
+		let flag = actor.getFlag(_flagGroup, flagName);
 		if (flag) {
+			await actor.unsetFlag(_flagGroup, flagName);
 			const itemName = flag.itemName;
-			let restore = await warpgate.revert(token.document, itemName);
-			DAE.unsetFlag(actor, mutationFlag);
+			await warpgate.revert(token.document, itemName);
 		}
 	}
 	

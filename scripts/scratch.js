@@ -29,6 +29,8 @@ const abilityBonus = actor.system.abilities[spellcastingAbility].mod;
 const spellLevel = workflow.castData.castLevel;
 const abilityBonus = Math.max(rollingActor.system.abilities.str.mod, rollingActor.system.abilities.dex.mod);
 
+flags.midi-qol.neverTarget
+
 item.system.prof.hasProficiency
 
 

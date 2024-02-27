@@ -1,5 +1,5 @@
-2024/02/20-11:49:08.915 2350 Recovering log #857
-2024/02/20-11:49:08.915 2350 Level-0 table #859: started
-2024/02/20-11:49:08.920 2350 Level-0 table #859: 12521 bytes OK
-2024/02/20-11:49:08.933 2350 Delete type=0 #857
-2024/02/20-11:49:08.933 2350 Delete type=3 #856
+2024/02/27-11:31:00.431 fdc Recovering log #908
+2024/02/27-11:31:00.432 fdc Level-0 table #910: started
+2024/02/27-11:31:00.446 fdc Level-0 table #910: 100975 bytes OK
+2024/02/27-11:31:00.459 fdc Delete type=0 #908
+2024/02/27-11:31:00.459 fdc Delete type=3 #907

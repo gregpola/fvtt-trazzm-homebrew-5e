@@ -1,26 +1,18 @@
 /*
 	When you cast a spell that has a duration of 1 minute or longer, you can spend 1 sorcery point to double its duration, to a maximum duration of 24 hours.
 */
-const version = "11.0";
+const version = "11.1";
 const optionName = "Extended Spell";
-const baseName = "Font of Magic";
 const cost = 1;
-const mutationFlag = "extended-spell-item";
+const flagName = "extended-spell-item";
+const _flagGroup = "fvtt-trazzm-homebrew-5e";
 
 try {
 	if (args[0].macroPass === "preItemRoll") {
-		let fontOfMagic = actor.items.find(i => i.name === optionName);
-		if (fontOfMagic) {
-			let usesLeft = fontOfMagic.system.uses?.value ?? 0;
-			if (!usesLeft || usesLeft < cost) {
-				console.error(`${optionName} - not enough Sorcery Points left`);
-				ui.notifications.error(`${optionName} - not enough Sorcery Points left`);
-				return false;
-			}
-		}
-		else {
-			console.error(`${optionName} - no ${baseName} item on actor`);
-			ui.notifications.error(`${optionName} - no ${baseName} item on actor`);
+		let usesLeft = HomebrewHelpers.getAvailableSorceryPoints(actor);
+		if (!usesLeft || usesLeft < cost) {
+			console.error(`${optionName} - not enough Sorcery Points left`);
+			ui.notifications.error(`${optionName} - not enough Sorcery Points left`);
 			return false;
 		}
 
@@ -60,10 +52,10 @@ try {
 
 		let content = `
 			<div class="form-group">
-			  <label>Choose the spell to extend: </label>
-			  <select name="spell-select">
+			  <p><label>Choose the spell to extend: </label></p>
+			  <p><select name="spell-select">
 				${spell_content}
-			  </select>
+			  </select></p>
 			</div>`;
 
 		new Dialog({
@@ -105,11 +97,10 @@ try {
 							
 							// mutate the selected item
 							await warpgate.mutate(token.document, updates, {}, { name: itemName });
-													
+
 							// track target info on the actor
-							DAE.setFlag(actor, mutationFlag, {itemName : itemName } );
-							const newValue = fontOfMagic.system.uses.value - cost;
-							await fontOfMagic.update({"system.uses.value": newValue});
+							await HomebrewHelpers.reduceAvailableSorceryPoints(actor, cost)
+							await actor.setFlag(_flagGroup, flagName, {itemName : itemName });
 						}
 					}
 				},
@@ -122,11 +113,11 @@ try {
 
 	}
 	else if (args[0] === "off") {
-		let flag = DAE.getFlag(actor, mutationFlag);
+		let flag = actor.getFlag(_flagGroup, flagName);
 		if (flag) {
+			await actor.unsetFlag(_flagGroup, flagName);
 			const itemName = flag.itemName;
-			let restore = await warpgate.revert(token.document, itemName);
-			DAE.unsetFlag(actor, mutationFlag);
+			await warpgate.revert(token.document, itemName);
 		}
 	}
 	

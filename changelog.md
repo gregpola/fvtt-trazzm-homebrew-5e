@@ -1,3 +1,9 @@
+# 11.19
+* Automation Actors: removed the NoTarget creature type flag, which has been replaced by a NeverTarget effect
+* Feats Updated: Metamagic Adept
+* Features Updated: All meta-magic options, Rage
+* Spells Updated: Spiritual Weapon (set initiative right after caster), Updated all cantrips that have save for damage to not do damage if the targets save
+
 # 11.18
 * Creatures Updated: Most spiders, also changed the Creatures compendium name to Monsters and Monster Features
 * Feats Updated: Second Chance
