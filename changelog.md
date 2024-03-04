@@ -1,3 +1,8 @@
+# 11.20
+* Feats Updated: Dual Wielder, Sentinel
+* Spells Updated: Absorb Elements, Chaos Bolt, Chromatic Orb, Find Steed, Spirit Guardians
+* Subclasses Updated: College of Shadows, The Hexblade
+
 # 11.19
 * Automation Actors: removed the NoTarget creature type flag, which has been replaced by a NeverTarget effect
 * Feats Updated: Metamagic Adept
