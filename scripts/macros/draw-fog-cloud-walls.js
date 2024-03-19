@@ -30,7 +30,8 @@ async function circleWall(cx, cy, radius) {
             sense: CONST.WALL_SENSE_TYPES.NORMAL,
             dir: CONST.WALL_DIRECTIONS.BOTH,
             door: CONST.WALL_DOOR_TYPES.NONE,
-            ds: CONST.WALL_DOOR_STATES.CLOSED
+            ds: CONST.WALL_DOOR_STATES.CLOSED,
+            flags: { "fvtt-trazzm-homebrew-5e": { TemplateId: templateId } }
         });
     }
 

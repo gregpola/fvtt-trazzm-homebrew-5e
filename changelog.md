@@ -1,3 +1,9 @@
+# 11.21
+* Feats Updated: Dual Wielder, Sentinel
+* General Actions Updated: Grapple
+* Macros Updated: Draw Darkness Walls, Draw Fog Cloud Walls
+* Regeneration fixed to not bring trolls back from the dead
+
 # 11.20
 * Feats Updated: Dual Wielder, Sentinel
 * Spells Updated: Absorb Elements, Chaos Bolt, Chromatic Orb, Find Steed, Spirit Guardians

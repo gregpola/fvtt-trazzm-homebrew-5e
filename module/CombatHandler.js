@@ -179,6 +179,49 @@ export class CombatHandler {
                 //let actor = token.actor;
             }
         });
+
+        Hooks.on("updateItem", async(item, updates, options, userId) => {
+            const actor = item.actor;
+            if ((item.type === 'weapon' || item.type === 'equipment') && actor) {
+                // Handle dual wielder feat
+                let dualWielderFeat = actor.effects.find(ef => ef.name === 'Dual Wielder AC Bonus');
+                if (dualWielderFeat) {
+                    let getsACBonus = true;
+
+                    let currentWeapons = actor.items.filter(i => (i.type === `weapon`) && i.system.equipped && i.system.actionType === "mwak");
+                    if (currentWeapons.length < 2) {
+                        console.log('Dual Wielder - no AC bonus, not enough weapons equipped');
+                        getsACBonus = false;
+                    }
+
+                    if (currentWeapons.length > 2) {
+                        console.log('Dual Wielder - no AC bonus, too many weapons equipped');
+                        getsACBonus = false;
+                    }
+
+                    // check for two-handed weapons
+                    if ((currentWeapons[0] && currentWeapons[0].system.properties.two) || (currentWeapons[1] && currentWeapons[1].system.properties.two)) {
+                        console.log('Dual Wielder - no AC bonus, weapon is two handed');
+                        getsACBonus = false;
+                    }
+
+                    // check for a shield equipped
+                    let shields = actor.items.filter(i => i.system.armor?.type === 'shield' && i.system.equipped);
+                    if (shields.length) {
+                        console.log('Dual Wielder - no AC bonus, a shield is equipped');
+                        getsACBonus = false;
+                    }
+
+                    if (getsACBonus) {
+                        dualWielderFeat.update({'disabled': false});
+                    }
+                    else {
+                        dualWielderFeat.update({'disabled': true});
+                    }
+                }
+
+            }
+        });
     }
 
     static async wait(ms) {

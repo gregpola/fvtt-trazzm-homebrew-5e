@@ -1,8 +1,14 @@
-const version = "11.0";
+const version = "11.1";
 const optionName = "Sentinel";
 
 // On Attack Rolls effect macro
 console.log("Sentinel - Reprisal Attack - On Attack Rolls");
+
+// make sure the attacker is not the Sentinel Actor
+if (origin.parent === actor) {
+    console.log(`${optionName} - sentinel actor is the attacker`);
+    return;
+}
 
 // make sure the sentinel actor has their reaction available
 if (MidiQOL.hasUsedReaction(origin.parent)) {

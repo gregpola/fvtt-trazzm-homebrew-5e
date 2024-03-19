@@ -79,6 +79,23 @@ item.system.prof.hasProficiency
 	});
 
 
+	await game.MonksTokenBar.requestContestedRoll(
+		{ token: token, request: 'skill:ath' },
+		{ token: targetToken, request:`skill:${skilltoberolled}` },
+		{ silent:true,
+			fastForward:false,
+			flavor: `${targetToken.name} tries to resist ${token.name}'s grapple attempt`,
+			callback: async (result) => {
+				if (result.tokenresults[0].passed) {
+					await HomebrewMacros.applyGrappled(token, targetToken, 'opposed', null, null);
+					ChatMessage.create({'content': `${token.name} grapples ${targetToken.name}`})
+				}
+				else {
+					ChatMessage.create({'content': `${actor.name} fails to grapple ${targetToken.name}`});
+				}
+			}
+		});
+
 
 	macro.tokenMagic
 	system.attributes.exhaustion = 2;

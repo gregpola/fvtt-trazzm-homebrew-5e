@@ -52,16 +52,20 @@ export async function handleRegeneration(combat, update, context) {
             await actor.unsetFlag(_flagGroup, _damageTypesFlag);
             let doRegen = shouldRegenerateThisTurn(regenFlag, damageTypesReceived);
 
+            const noRegenEffect = actor.effects.find(ef => ef.name === _regenOffEffectName);
             if (currentHP <= 0) {
                 // check for death handling
-                const noRegenEffect = actor.effects.find(ef => ef.name === _regenOffEffectName);
-
                 if (!doRegen && !noRegenEffect) {
                     await MidiQOL.socket().executeAsGM('createEffects', {
                         'actorUuid': actor.uuid,
                         'effects': [noRegenEffectData]
                     });
                 }
+            }
+
+            if (noRegenEffect) {
+                // actor has been killed by an appropriate type
+                doRegen = false;
             }
 
             if (doRegen) {
