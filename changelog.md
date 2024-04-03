@@ -1,3 +1,7 @@
+# 11.22
+* Feature Updates: Blessing of the Forge
+* Item Updates: Flute of the Genie, Torch
+
 # 11.21
 * Feats Updated: Dual Wielder, Sentinel
 * General Actions Updated: Grapple

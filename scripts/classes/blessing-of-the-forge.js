@@ -1,6 +1,7 @@
-const version = "11.1";
+const version = "11.2";
 const optionName = "Blessing of the Forge";
 const flagName = "blessing-of-the-forge";
+const _flagGroup = "fvtt-trazzm-homebrew-5e";
 
 try {
     if (args[0].macroPass === "preItemRoll") {
@@ -90,10 +91,7 @@ try {
                                 await warpgate.mutate(target.document, updates, {}, {name: itemName});
 
                                 // track target info on the source actor
-                                DAE.setFlag(actor, `blessing-of-the-forge`, {
-                                    ttoken: target.id,
-                                    itemName: itemName
-                                });
+                                await actor.setFlag(_flagGroup, flagName, {ttoken: target.id, itemName: itemName});
 
                                 ChatMessage.create({content: target.name + "'s " + itemName + " received the Blessing of the Forge from <b>" + actor.name + "</b>"});
                                 return true;
@@ -109,12 +107,12 @@ try {
                 }
         }).render(true);
     } else if (args[0] === "off") {
-        let flag = DAE.getFlag(actor, `blessing-of-the-forge`);
+        let flag = actor.getFlag(_flagGroup, flagName);
         if (flag) {
+            await actor.unsetFlag(_flagGroup, flagName);
             const ttoken = canvas.tokens.get(flag.ttoken);
             const itemName = flag.itemName;
             await warpgate.revert(ttoken.document, itemName);
-            DAE.unsetFlag(actor, `blessing-of-the-forge`);
             ChatMessage.create({
                 content: `${ttoken.name}'s ${itemName} returns to normal.`,
                 speaker: ChatMessage.getSpeaker({actor: actor})
