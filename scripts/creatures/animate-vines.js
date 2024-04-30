@@ -9,23 +9,18 @@ const version = "10.0.3";
 const optionName = "Animate Vines";
 const summonFlag = "animated-vines";
 const summonId = "I176AV0yK9dNOXrY";
+const _flagGroup = "fvtt-trazzm-homebrew-5e";
 
 try {
-	const lastArg = args[args.length - 1];
-	const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-	const actorToken = canvas.tokens.get(lastArg.tokenId);
-
 	if (args[0] === "on") {
         if (!game.modules.get("warpgate")?.active) ui.notifications.error("Please enable the Warp Gate module");
-		
-		const sourceItem = await fromUuid(lastArg.origin);
 
 		// build the update data to match summoned traits
 		const summonName = `Animated Vines (${actor.name})`;
 		let updates = {
 			token: {
 				"name": summonName,
-				"disposition": actorToken.disposition,
+				"disposition": token.document.disposition,
 				"displayName": CONST.TOKEN_DISPLAY_MODES.HOVER,
 				"displayBars": CONST.TOKEN_DISPLAY_MODES.ALWAYS,
 				"bar1": { attribute: "attributes.hp" },
@@ -57,7 +52,7 @@ try {
 		const maxRange = 60;
 		
 		for (let x = 0; x < 4; x++) {
-			let position = await HomebrewMacros.warpgateCrosshairs(actorToken, maxRange, sourceItem, summonActor.prototypeToken);
+			let position = await HomebrewMacros.warpgateCrosshairs(token, maxRange, item, summonActor.prototypeToken);
 			
 			if (position) {
 				let options = {collision: true};
@@ -75,14 +70,14 @@ try {
 		}
 
 		// keep track of the spawned critters, so that they can be deleted after the spell expires
-		await actor.setFlag("midi-qol", summonFlag, summonName);
+		await actor.setFlag(_flagGroup, summonFlag, summonName);
 		
 	}
 	else if (args[0] === "off") {
 		// delete the summons
-		const summonName = actor.getFlag("midi-qol", summonFlag);
+		const summonName = actor.getFlag(_flagGroup, summonFlag);
 		if (summonName) {
-			await actor.unsetFlag("midi-qol", summonFlag);
+			await actor.unsetFlag(_flagGroup, summonFlag);
 			
 			let tokens = canvas.tokens.ownedTokens.filter(i => i.name === summonName);
 			for (let i = 0; i < tokens.length; i++) {

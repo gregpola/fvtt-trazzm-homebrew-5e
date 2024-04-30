@@ -23,7 +23,7 @@
     can crawl. With only one arm, it can still crawl, but its speed is halved. With no arms or legs, its speed is 0, and
     it can’t benefit from bonuses to speed.
 */
-const version = "11.0";
+const version = "11.1";
 const optionName = "Loathsome Limbs";
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
 const flagName = "severed-parts";
@@ -132,7 +132,7 @@ async function summonTrollPart(compendiumId) {
     const updates = {
         token: {
             "name": summonName,
-            "disposition": token.disposition,
+            "disposition": token.document.disposition,
             "displayName": CONST.TOKEN_DISPLAY_MODES.HOVER,
             "displayBars": CONST.TOKEN_DISPLAY_MODES.ALWAYS,
             "actorLink": false

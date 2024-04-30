@@ -61,7 +61,7 @@ item.system.prof.hasProficiency
 	return false;
 }
 
-	await game.MonksTokenBar.requestRoll(targets, {
+	await game.MonksTokenBar.requestRoll([{token: targetToken}], {
 		request:[{"type": "save", "key": "con"}],
 		dc:saveDC, showdc:true, silent:true, fastForward:false,
 		flavor:`${optionName} - Enervating Breath`,

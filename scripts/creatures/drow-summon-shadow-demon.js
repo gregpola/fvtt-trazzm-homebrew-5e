@@ -1,16 +1,13 @@
 /*
 	The drow attempts to magically summon a shadow demon (see the Monster Manual) with a 50 percent chance of success. If the attempt fails, the drow takes 5 (1d10) psychic damage. Otherwise, the summoned demon appears in an unoccupied space within 60 feet of its summoner, acts as an ally of its summoner, and can’t summon other demons. It remains for 10 minutes, until it or its summoner dies, or until its summoner dismisses it as an action.
 */
-const version = "10.1";
+const version = "11.0";
 const optionName = "Summon Shadow Demon";
 const summonFlag = "summon-shadow-demon";
 const summonId = "zwz5Igr2JJYD3nwo";
+const _flagGroup = "fvtt-trazzm-homebrew-5e";
 
 try {
-	const lastArg = args[args.length - 1];
-	const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-	const actorToken = canvas.tokens.get(lastArg.tokenId);
-
 	if (args[0].macroPass === "preItemRoll") {
 		// roll failure chance
 		let chanceRoll = await new Roll(`1d100`).evaluate({ async: true });
@@ -19,8 +16,8 @@ try {
 		if (chanceRoll.total > 50) {
 			const damageRoll = await new Roll(`1d10`).evaluate({ async: true });
 			await game.dice3d?.showForRoll(damageRoll);
-			const damageWorkflow = await new MidiQOL.DamageOnlyWorkflow(actor, actorToken, damageRoll.total, "psychic", [actorToken], damageRoll, 
-			{ flavor: `${optionName} failure damage`, itemData: lastArg.itemData, itemCardId: "new" });
+			const damageWorkflow = await new MidiQOL.DamageOnlyWorkflow(actor, token, damageRoll.total, "psychic", [token], damageRoll, 
+			{ flavor: `${optionName} failure damage`, itemData: itemData, itemCardId: "new" });
 			return false;
 		}
 		
@@ -28,20 +25,18 @@ try {
 	}
 	else if (args[0] === "on") {
         if (!game.modules.get("warpgate")?.active) ui.notifications.error("Please enable the Warp Gate module");
-		
-		const sourceItem = await fromUuid(lastArg.origin);
 
 		// build the update data to match summoned traits
 		const summonName = `Shadow Demon (${actor.name})`;
 		let updates = {
 			token: {
 				"name": summonName,
-				"disposition": actorToken.disposition,
+				"disposition": token.document.disposition,
 				"displayName": CONST.TOKEN_DISPLAY_MODES.HOVER,
 				"displayBars": CONST.TOKEN_DISPLAY_MODES.ALWAYS,
 				"bar1": { attribute: "attributes.hp" },
 				"actorLink": false,
-				"flags": { "midi-srd": { "Summoned Demon" : { "ActorId": actor.id } } }
+				"flags": { "fvtt-trazzm-homebrew-5e": { "Summoned Demon" : { "ActorId": actor.id } } }
 			},
 			"name": summonName
 		};
@@ -67,7 +62,7 @@ try {
 		
 		// Spawn the result
 		const maxRange = 60;
-		let position = await HomebrewMacros.warpgateCrosshairs(actorToken, maxRange, sourceItem, summonActor.prototypeToken);
+		let position = await HomebrewMacros.warpgateCrosshairs(token, maxRange, item, summonActor.prototypeToken);
 		if (position) {
 			// check for token collision
 			const newCenter = canvas.grid.getSnappedPosition(position.x - summonActor.prototypeToken.width / 2, position.y - summonActor.prototypeToken.height / 2, 1);
@@ -84,8 +79,8 @@ try {
 
 			let summonedToken = canvas.tokens.get(result[0]);
 			if (summonedToken) {
-				await anime(actorToken, summonedToken);
-				await actor.setFlag("midi-qol", summonFlag, summonedToken.id);
+				await anime(token, summonedToken);
+				await actor.setFlag(_flagGroup, summonFlag, summonedToken.id);
 				await summonedToken.toggleCombat();
 				await summonedToken.actor.rollInitiative();
 			}
@@ -98,9 +93,9 @@ try {
 	}
 	else if (args[0] === "off") {
 		// delete the summon
-		const lastSummon = actor.getFlag("midi-qol", summonFlag);
+		const lastSummon = actor.getFlag(_flagGroup, summonFlag);
 		if (lastSummon) {
-			await actor.unsetFlag("midi-qol", summonFlag);
+			await actor.unsetFlag(_flagGroup, summonFlag);
 			await warpgate.dismiss(lastSummon, game.canvas.scene.id);
 		}
 	}

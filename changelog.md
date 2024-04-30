@@ -1,3 +1,11 @@
+# 11.23
+* Class Features Updated: Panache
+* Items Updated: RotD character items, Drow Poison, Holy Water
+* Monster Features Updated: Animate Vines, Animate Trees, Ghoul Claws
+* Monsters Updated: Zombie
+* Spells Added: Sunbeam
+* Spells Updated: Animate Objects, Cloudkill, Color Spray, Dancing Lights, Detect Magic, Dimension Door, Find Steed, Lesser Restoration
+
 # 11.22
 * Feature Updates: Blessing of the Forge
 * Item Updates: Flute of the Genie, Torch

@@ -11,7 +11,7 @@
 	If you succeed on the check and the creature isn’t hostile to you, it is charmed by you for 1 minute. While Charmed,
 	it regards you as a friendly acquaintance. This effect ends immediately if you or your companions do anything harmful to it.
  */
-const version = "11.0";
+const version = "11.1";
 const optionName = "Panache";
 const effectNameHostile = "Disadvantage against others";
 
@@ -45,7 +45,7 @@ try {
 
 			let result = results.flags["monks-tokenbar"][`token${token.id}`].passed;
 			if (result === "won" || result === "tied") {
-				if (target.disposition !== token.document.disposition) {
+				if (target.document.disposition !== token.document.disposition) {
 					const hasHostileEffect = findEffect(target.actor, effectNameHostile, workflow.item.uuid);
 					if (hasHostileEffect) {
 						await MidiQOL.socket().executeAsGM("removeEffects", {

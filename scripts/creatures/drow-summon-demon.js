@@ -1,29 +1,24 @@
-const version = "10.1";
+const version = "11.0";
 const optionName = "Summon Demon";
 const summonFlag = "summon-demon";
 const summonId = "qWBgPJinjzUn0DWK";
+const _flagGroup = "fvtt-trazzm-homebrew-5e";
 
 try {
-	const lastArg = args[args.length - 1];
-	const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-	const actorToken = canvas.tokens.get(lastArg.tokenId);
-
 	if (args[0] === "on") {
         if (!game.modules.get("warpgate")?.active) ui.notifications.error("Please enable the Warp Gate module")
-		
-		const sourceItem = await fromUuid(lastArg.origin);
 
 		// build the update data to match summoned traits
 		const summonName = `Yochlol (${actor.name})`;
 		let updates = {
 			token: {
 				"name": summonName,
-				"disposition": actorToken.disposition,
+				"disposition": token.document.disposition,
 				"displayName": CONST.TOKEN_DISPLAY_MODES.HOVER,
 				"displayBars": CONST.TOKEN_DISPLAY_MODES.ALWAYS,
 				"bar1": { attribute: "attributes.hp" },
 				"actorLink": false,
-				"flags": { "midi-srd": { "Conjured Elemental" : { "ActorId": actor.id } } }
+				"flags": { "fvtt-trazzm-homebrew-5e": { "Conjured Elemental" : { "ActorId": actor.id } } }
 			},
 			"name": summonName
 		};
@@ -49,7 +44,7 @@ try {
 		
 		// Spawn the result
 		const maxRange = 60;
-		let position = await HomebrewMacros.warpgateCrosshairs(actorToken, maxRange, sourceItem, summonActor.prototypeToken);
+		let position = await HomebrewMacros.warpgateCrosshairs(token, maxRange, item, summonActor.prototypeToken);
 		if (position) {
 			// check for token collision
 			const newCenter = canvas.grid.getSnappedPosition(position.x - summonActor.prototypeToken.width / 2, position.y - summonActor.prototypeToken.height / 2, 1);
@@ -66,8 +61,8 @@ try {
 
 			let summonedToken = canvas.tokens.get(result[0]);
 			if (summonedToken) {
-				await anime(actorToken, summonedToken);
-				await actor.setFlag("midi-qol", summonFlag, summonedToken.id);
+				await anime(token, summonedToken);
+				await actor.setFlag(_flagGroup, summonFlag, summonedToken.id);
 				await summonedToken.toggleCombat();
 				await summonedToken.actor.rollInitiative();
 			}
@@ -80,9 +75,9 @@ try {
 	}
 	else if (args[0] === "off") {
 		// delete the summon
-		const lastSummon = actor.getFlag("midi-qol", summonFlag);
+		const lastSummon = actor.getFlag(_flagGroup, summonFlag);
 		if (lastSummon) {
-			await actor.unsetFlag("midi-qol", summonFlag);
+			await actor.unsetFlag(_flagGroup, summonFlag);
 			await warpgate.dismiss(lastSummon, game.canvas.scene.id);
 		}
 	}

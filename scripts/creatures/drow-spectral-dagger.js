@@ -3,34 +3,29 @@
 
 	The dagger lasts for 1 minute. As a bonus action on later turns, the drow can move the dagger up to 20 feet and repeat the attack against one creature within 5 feet of the dagger.
 */
-const version = "10.2";
+const version = "11.0";
 const optionName = "Spectral Dagger";
 const actorName = "Spectral Dagger";
 const summonFlag = "spectral-dagger";
+const _flagGroup = "fvtt-trazzm-homebrew-5e";
 
 try {
-	const lastArg = args[args.length - 1];
-	const caster = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-	const actorToken = canvas.tokens.get(lastArg.tokenId);	
-
 	if (args[0] === "on") {
         if (!game.modules.get("warpgate")?.active) ui.notifications.error("Please enable the Warp Gate module")
 
-		const sourceItem = await fromUuid(lastArg.origin);
-		let spellStat = caster.system.attributes.spellcasting;
+		let spellStat = actor.system.attributes.spellcasting;
 		if (spellStat === "") spellStat = "cha";
-		const spellcasting = caster.system.abilities[spellStat].mod;
 
-		const summonName = `${actorName} (${caster.name})`;
+		const summonName = `${actorName} (${actor.name})`;
 		const updates = {
             token: {
 				"name": summonName,
-				"disposition": actorToken.disposition,
+				"disposition": token.document.disposition,
 				"displayName": CONST.TOKEN_DISPLAY_MODES.HOVER,
 				"displayBars": CONST.TOKEN_DISPLAY_MODES.ALWAYS,
 				"bar1": { attribute: "attributes.hp" },
 				"actorLink": false,
-				"flags": { "midi-srd": { "Spectral Dagger": { "ActorId": caster.id } } }
+				"flags": { "fvtt-trazzm-homebrew-5e": { "Spectral Dagger": { "ActorId": actor.id } } }
 			},
 			"name": summonName
 		};
@@ -57,7 +52,7 @@ try {
 		
 		// Spawn the result
 		const maxRange = 60;
-		let position = await HomebrewMacros.warpgateCrosshairs(actorToken, maxRange, sourceItem, summonActor.prototypeToken);
+		let position = await HomebrewMacros.warpgateCrosshairs(token, maxRange, item, summonActor.prototypeToken);
 		if (position) {
 			// check for token collision
 			const newCenter = canvas.grid.getSnappedPosition(position.x - summonActor.prototypeToken.width / 2, position.y - summonActor.prototypeToken.height / 2, 1);
@@ -66,7 +61,7 @@ try {
 				return false;
 			}
 
-			const result = await warpgate.spawnAt(position, summonName, updates, { controllingActor: caster }, {});
+			const result = await warpgate.spawnAt(position, summonName, updates, { controllingActor: actor }, {});
 			if (!result || !result[0]) {
 				ui.notifications.error(`${optionName} - Unable to spawn`);
 				return false;
@@ -74,8 +69,8 @@ try {
 
 			let summonedToken = canvas.tokens.get(result[0]);
 			if (summonedToken) {
-				await anime(actorToken, summonedToken);
-				await caster.setFlag("midi-qol", summonFlag, summonedToken.id);
+				await anime(token, summonedToken);
+				await actor.setFlag(_flagGroup, summonFlag, summonedToken.id);
 				await summonedToken.toggleCombat();
 				await summonedToken.actor.rollInitiative();
 			}
@@ -88,9 +83,9 @@ try {
 	}
 	else if (args[0] === "off") {
 		// delete the summon
-		const lastSummon = caster.getFlag("midi-qol", summonFlag);
+		const lastSummon = actor.getFlag(_flagGroup, summonFlag);
 		if (lastSummon) {
-			await caster.unsetFlag("midi-qol", summonFlag);
+			await actor.unsetFlag(_flagGroup, summonFlag);
 			await warpgate.dismiss(lastSummon, game.canvas.scene.id);
 		}
 	}

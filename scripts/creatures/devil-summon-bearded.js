@@ -5,16 +5,13 @@
 
 	A summoned devil appears in an unoccupied space within 60 feet of its summoner, acts as an ally of its summoner, and can’t summon other devils. It remains for 1 minute, until it or its summoner dies, or until its summoner dismisses it as an action.
 */
-const version = "10.1";
+const version = "11.0";
 const optionName = "Summon Bearded Devil";
 const summonFlag = "summon-bearded-devil";
 const summonId = "pgrp2yAfxDROUfHF";
+const _flagGroup = "fvtt-trazzm-homebrew-5e";
 
 try {
-	const lastArg = args[args.length - 1];
-	const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-	const actorToken = canvas.tokens.get(lastArg.tokenId);
-
 	if (args[0].macroPass === "preItemRoll") {
 		// roll failure chance
 		let chanceRoll = await new Roll(`1d100`).evaluate({ async: true });
@@ -23,15 +20,13 @@ try {
 	}
 	else if (args[0] === "on") {
         if (!game.modules.get("warpgate")?.active) ui.notifications.error("Please enable the Warp Gate module");
-		
-		const sourceItem = await fromUuid(lastArg.origin);
 
 		// build the update data to match summoned traits
 		const summonName = `Bearded Devil (Summoned)`;
 		let updates = {
 			token: {
 				"name": summonName,
-				"disposition": actorToken.disposition,
+				"disposition": token.document.disposition,
 				"displayName": CONST.TOKEN_DISPLAY_MODES.HOVER,
 				"displayBars": CONST.TOKEN_DISPLAY_MODES.ALWAYS,
 				"bar1": { attribute: "attributes.hp" },
@@ -62,7 +57,7 @@ try {
 		
 		// Spawn the result
 		const maxRange = 60;
-		let position = await HomebrewMacros.warpgateCrosshairs(actorToken, maxRange, sourceItem, summonActor.prototypeToken);
+		let position = await HomebrewMacros.warpgateCrosshairs(token, maxRange, item, summonActor.prototypeToken, 5);
 		if (position) {
 			// check for token collision
 			const newCenter = canvas.grid.getSnappedPosition(position.x - summonActor.prototypeToken.width / 2, position.y - summonActor.prototypeToken.height / 2, 1);
@@ -79,7 +74,7 @@ try {
 
 			let summonedToken = canvas.tokens.get(result[0]);
 			if (summonedToken) {
-				await anime(actorToken, summonedToken);
+				await anime(token, summonedToken);
 				await actor.setFlag("midi-qol", summonFlag, summonedToken.id);
 				await summonedToken.toggleCombat();
 				await summonedToken.actor.rollInitiative();

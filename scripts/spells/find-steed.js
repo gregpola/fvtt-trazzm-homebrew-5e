@@ -19,7 +19,7 @@
 	You can't have more than one steed bonded by this spell at a time. As an action, you can release the steed from its
 	bond at any time, causing it to disappear.
  */
-const version = "11.0";
+const version = "11.1";
 const optionName = "Find Steed";
 const summonFlag = "find-steed";
 
@@ -95,7 +95,7 @@ try {
 						let updates = {
 							token: {
 								"name": summonName,
-								"disposition": token.disposition,
+								"disposition": token.document.disposition,
 								"displayName": CONST.TOKEN_DISPLAY_MODES.HOVER,
 								"displayBars": CONST.TOKEN_DISPLAY_MODES.ALWAYS,
 								"bar1": {attribute: "attributes.hp"},

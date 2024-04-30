@@ -1,7 +1,10 @@
-drow-poison.js/*
-	This poison is typically made only by the drow, and only in a place far removed from sunlight. A creature subjected to this poison must succeed on a DC 13 Constitution saving throw or be Poisoned for 1 hour. If the saving throw fails by 5 or more, the creature is also Unconscious while poisoned in this way. The creature wakes up if it takes damage or if another creature takes an action to shake it awake.
+/*
+	This poison is typically made only by the drow, and only in a place far removed from sunlight. A creature subjected
+	to this poison must succeed on a DC 13 Constitution saving throw or be Poisoned for 1 hour. If the saving throw fails
+	by 5 or more, the creature is also Unconscious while poisoned in this way. The creature wakes up if it takes damage
+	or if another creature takes an action to shake it awake.
 */
-const version = "11.2";
+const version = "11.3";
 const optionName = "Drow Poison";
 const flagName = "drow-poison-weapon";
 const saveDC = 13;
@@ -126,11 +129,10 @@ try {
 					callback: async (result) => {
 						for (let tr of result.tokenresults) {
 							if (!tr.passed) {
+								await game.dfreds.effectInterface.addEffect({ effectName: 'Poisoned', uuid: targetToken.actor.uuid });
+
 								if (tr.roll.total <= (saveDC - 5)) {
-									await applyUnconsciousEffect(actor, targetToken.actor);
-								}
-								else {
-									await applyPoisonedEffect(actor, targetToken.actor);
+									await game.dfreds.effectInterface.addEffect({ effectName: 'Unconscious', uuid: targetToken.actor.uuid });
 								}
 							}
 						}
@@ -150,37 +152,4 @@ async function findEffect(actor, effectName) {
     let effect = null;
     effect = actor?.effects.find(ef => ef.name === effectName);
     return effect;
-}
-
-async function applyPoisonedEffect(actor, target) {
-
-    let effectData = [{
-        name: optionName,
-        icon: 'icons/consumables/potions/potion-labeled-poison-white.webp',
-        origin: actor.uuid,
-        transfer: false,
-        disabled: false,
-		duration: {startTime: game.time.worldTime, seconds: 3600},
-        changes: [
-            { key: `macro.CE`, mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM, value: "Poisoned", priority: 20 }
-        ]
-    }];
-    await MidiQOL.socket().executeAsGM("createEffects", { actorUuid: target.uuid, effects: effectData });
-}
-
-async function applyUnconsciousEffect(actor, target) {
-
-    let effectData = [{
-        name: optionName,
-        icon: 'icons/consumables/potions/potion-labeled-poison-white.webp',
-        origin: actor.uuid,
-        transfer: false,
-        disabled: false,
-		duration: {startTime: game.time.worldTime, seconds: 3600},
-        changes: [
-			{ key: `macro.CE`, mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM, value: "Poisoned", priority: 20 },
-            { key: `macro.CE`, mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM, value: "Unconscious", priority: 21 }
-        ]
-    }];
-    await MidiQOL.socket().executeAsGM("createEffects", { actorUuid: target.uuid, effects: effectData });
 }

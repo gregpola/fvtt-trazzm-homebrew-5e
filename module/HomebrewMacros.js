@@ -1,3 +1,5 @@
+const _flagGroup = "fvtt-trazzm-homebrew-5e";
+
 class HomebrewMacros {
 
     /**
@@ -9,7 +11,7 @@ class HomebrewMacros {
      * @param {Number} minRange the minimum selectable range
      * @returns
      */
-    static async warpgateCrosshairs(token, maxRange, item, targetToken, minRange) {
+    static async warpgateCrosshairs(token, maxRange, item, targetToken, minRange = 5) {
         let texture = item.img;
         if (targetToken) {
             texture = targetToken.texture.src;
@@ -30,18 +32,16 @@ class HomebrewMacros {
                 await warpgate.wait(100);
 
                 const ray = new Ray(token.center, crosshairs);
-                const distance = canvas.grid.measureDistances([{ ray }], { gridSpaces: true })[0];
+                const distance = canvas.grid.measureDistances([{ray}], {gridSpaces: true})[0];
 
                 //only update if the distance has changed
                 if (crosshairsDistance !== distance) {
                     crosshairsDistance = distance;
                     if (distance > maxRange) {
                         crosshairs.icon = 'icons/svg/hazard.svg';
-                    }
-                    else if (minRange && distance < minRange) {
+                    } else if (minRange && distance < minRange) {
                         crosshairs.icon = 'icons/svg/hazard.svg';
-                    }
-                    else {
+                    } else {
                         crosshairs.icon = texture;
                     }
 
@@ -83,8 +83,8 @@ class HomebrewMacros {
 
     static checkPosition(ignoreToken, newX, newY) {
         const hasToken = canvas.tokens.placeables.some(t => {
-            const detectX = newX.between(t.document.x, t.document.x + canvas.grid.size * (t.document.width-1));
-            const detectY = newY.between(t.document.y, t.document.y + canvas.grid.size * (t.document.height-1));
+            const detectX = newX.between(t.document.x, t.document.x + canvas.grid.size * (t.document.width - 1));
+            const detectY = newY.between(t.document.y, t.document.y + canvas.grid.size * (t.document.height - 1));
             return detectX && detectY && (ignoreToken !== t);
         });
         return hasToken;
@@ -136,7 +136,8 @@ class HomebrewMacros {
             if (deleteEffect && effect) {
                 try {
                     await effect.delete();
-                } catch {}
+                } catch {
+                }
             }
             if (createEffect && inCloudkill && (oldSpellLevel !== spellLevel || oldSpelldc !== spelldc)) {
                 let damageRoll = spellLevel + 'd8';
@@ -175,7 +176,7 @@ class HomebrewMacros {
                 };
 
                 await MidiQOL.socket().executeAsGM("createEffects",
-                    { actorUuid: tokenDoc.actor.uuid, effects: [effectData] });
+                    {actorUuid: tokenDoc.actor.uuid, effects: [effectData]});
             }
         }
     }
@@ -239,12 +240,14 @@ class HomebrewMacros {
             if (deleteWebsEffect && inWebEffect) {
                 try {
                     await inWebEffect.delete();
-                } catch {}
+                } catch {
+                }
             }
             if (deleteStuckEffect && stuckEffect) {
                 try {
                     await stuckEffect.delete();
-                } catch {}
+                } catch {
+                }
 
                 await warpgate.revert(tokenDoc, 'Webbed - Break Free');
             }
@@ -276,7 +279,7 @@ class HomebrewMacros {
                         };
 
                         await MidiQOL.socket().executeAsGM("createEffects",
-                            { actorUuid: tokenDoc.actor.uuid, effects: [stuckEffect] });
+                            {actorUuid: tokenDoc.actor.uuid, effects: [stuckEffect]});
 
                         // add the break free feature
                         const updates = {
@@ -298,8 +301,8 @@ class HomebrewMacros {
                                                 "type": "self"
                                             },
                                             "range": {
-                                                "value":null,
-                                                "long":null,
+                                                "value": null,
+                                                "long": null,
                                                 "units": "self"
                                             },
                                             "duration": {
@@ -317,7 +320,7 @@ class HomebrewMacros {
                                                     "name": "Break Free",
                                                     "type": "script",
                                                     "scope": "global",
-                                                    "command": "const dc = " + spelldc + ";\nconst roll = await token.actor.rollAbilityTest('str', {targetValue: " + spelldc +"});\nawait game.dice3d?.showForRoll(roll);\nif (roll.total >= " + spelldc + ") {\nlet effect = token.actor.effects.find(ef => ef.name === 'Stuck in Webs');\nif (effect) await effect.delete();\nawait warpgate.revert(token.document, 'Webbed - Break Free');\nChatMessage.create({'content': '" + tokenDoc.actor.name + " breaks free of the webs!'});\n}"
+                                                    "command": "const dc = " + spelldc + ";\nconst roll = await token.actor.rollAbilityTest('str', {targetValue: " + spelldc + "});\nawait game.dice3d?.showForRoll(roll);\nif (roll.total >= " + spelldc + ") {\nlet effect = token.actor.effects.find(ef => ef.name === 'Stuck in Webs');\nif (effect) await effect.delete();\nawait warpgate.revert(token.document, 'Webbed - Break Free');\nChatMessage.create({'content': '" + tokenDoc.actor.name + " breaks free of the webs!'});\n}"
                                                 }
                                             }
                                         },
@@ -325,7 +328,7 @@ class HomebrewMacros {
                                 }
                             }
                         };
-                        await warpgate.mutate(tokenDoc, updates, {}, { name: "Webbed - Break Free" });
+                        await warpgate.mutate(tokenDoc, updates, {}, {name: "Webbed - Break Free"});
                     }
                 }
 
@@ -371,7 +374,7 @@ class HomebrewMacros {
                     };
 
                     await MidiQOL.socket().executeAsGM("createEffects",
-                        { actorUuid: tokenDoc.actor.uuid, effects: [effectData] });
+                        {actorUuid: tokenDoc.actor.uuid, effects: [effectData]});
                 }
             }
         }
@@ -437,12 +440,14 @@ class HomebrewMacros {
             if (deleteTentaclesEffect && inTentaclesEffect) {
                 try {
                     await inTentaclesEffect.delete();
-                } catch {}
+                } catch {
+                }
             }
             if (deleteStuckEffect && stuckEffect) {
                 try {
                     await stuckEffect.delete();
-                } catch {}
+                } catch {
+                }
 
                 await warpgate.revert(tokenDoc, 'Tentacles - Break Free');
             }
@@ -477,7 +482,7 @@ class HomebrewMacros {
                         };
 
                         await MidiQOL.socket().executeAsGM("createEffects",
-                            { actorUuid: tokenDoc.actor.uuid, effects: [stuckEffect] });
+                            {actorUuid: tokenDoc.actor.uuid, effects: [stuckEffect]});
 
                         // add the break free feature
                         let bestAbility = tokenDoc.actor.system.abilities.dex.mod > tokenDoc.actor.system.abilities.str.mod ? "dex" : "str";
@@ -500,8 +505,8 @@ class HomebrewMacros {
                                                 "type": "self"
                                             },
                                             "range": {
-                                                "value":null,
-                                                "long":null,
+                                                "value": null,
+                                                "long": null,
                                                 "units": "self"
                                             },
                                             "duration": {
@@ -519,7 +524,7 @@ class HomebrewMacros {
                                                     "name": "Break Free",
                                                     "type": "script",
                                                     "scope": "global",
-                                                    "command": "const dc = " + spelldc + ";\nconst roll = await token.actor.rollAbilityTest('" + bestAbility + "', {targetValue: " + spelldc +"});\nawait game.dice3d?.showForRoll(roll);\nif (roll.total >= " + spelldc + ") {\nlet effect = token.actor.effects.find(ef => ef.name === 'Stuck in Tentacles');\nif (effect) await effect.delete();\nawait warpgate.revert(token.document, 'Tentacled - Break Free');\nChatMessage.create({'content': '" + tokenDoc.actor.name + " breaks free of the tentacles!'});\n}"
+                                                    "command": "const dc = " + spelldc + ";\nconst roll = await token.actor.rollAbilityTest('" + bestAbility + "', {targetValue: " + spelldc + "});\nawait game.dice3d?.showForRoll(roll);\nif (roll.total >= " + spelldc + ") {\nlet effect = token.actor.effects.find(ef => ef.name === 'Stuck in Tentacles');\nif (effect) await effect.delete();\nawait warpgate.revert(token.document, 'Tentacled - Break Free');\nChatMessage.create({'content': '" + tokenDoc.actor.name + " breaks free of the tentacles!'});\n}"
                                                 }
                                             }
                                         },
@@ -527,7 +532,7 @@ class HomebrewMacros {
                                 }
                             }
                         };
-                        await warpgate.mutate(tokenDoc, updates, {}, { name: "Tentacles - Break Free" });
+                        await warpgate.mutate(tokenDoc, updates, {}, {name: "Tentacles - Break Free"});
                     }
                 }
 
@@ -566,13 +571,16 @@ class HomebrewMacros {
                     };
 
                     await MidiQOL.socket().executeAsGM("createEffects",
-                        { actorUuid: tokenDoc.actor.uuid, effects: [effectData] });
+                        {actorUuid: tokenDoc.actor.uuid, effects: [effectData]});
                 }
 
                 if (applyDamage) {
                     let damageRoll = await new Roll("3d6").roll();
                     await game.dice3d?.showForRoll(damageRoll);
-                    await MidiQOL.applyTokenDamage([{damage: damageRoll.total, type: 'bludgeoning' }], damageRoll.total, new Set([tokenDoc.object]), null, null);
+                    await MidiQOL.applyTokenDamage([{
+                        damage: damageRoll.total,
+                        type: 'bludgeoning'
+                    }], damageRoll.total, new Set([tokenDoc.object]), null, null);
                 }
             }
         }
@@ -626,38 +634,41 @@ class HomebrewMacros {
         };
 
         if (overtimeValue) {
-            grappledEffect.changes.push( {
+            grappledEffect.changes.push({
                 'key': 'flags.midi-qol.OverTime',
                 'mode': CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
                 'value': overtimeValue,
-                'priority': 20 });
+                'priority': 20
+            });
         }
 
         if (restrained) {
-            grappledEffect.changes.push( {
+            grappledEffect.changes.push({
                 'key': 'macro.CE',
                 'mode': CONST.ACTIVE_EFFECT_MODES.CUSTOM,
                 'value': 'Restrained',
-                'priority': 22 });
+                'priority': 22
+            });
         }
 
         await MidiQOL.socket().executeAsGM("createEffects",
-            { actorUuid: targetActor.uuid, effects: [grappledEffect] });
+            {actorUuid: targetActor.uuid, effects: [grappledEffect]});
 
         // add the break free feature to the target
         // remove the old one, in case it is still there
         await warpgate.revert(targetToken.document, 'Escape Grapple');
 
         let bestAbility = targetActor.system.abilities.dex.mod > targetActor.system.abilities.str.mod ? "dex" : "str";
-        let escapeMacro = "const dc = " + saveDC + ";\nconst roll = await token.actor.rollAbilityTest('" + bestAbility
-            + "', {targetValue: " + saveDC +"});\nif (roll.total >= " + saveDC
-            + ") {\nlet effect = token.actor.effects.find(ef => ef.name === '" + grappledEffectName + "' && ef.origin === '" + grapplerToken.actor.uuid
-            + "');\nif (effect) {\nawait effect.delete();\nawait warpgate.revert(token.document, 'Escape Grapple');\nChatMessage.create({'content': '"
-            + targetActor.name + " escapes the grapple!'});}\n}";
+        let escapeMacro = "\nconst dc = " + saveDC + ";\n\tconst roll = await token.actor.rollAbilityTest('" + bestAbility
+            + "', {targetValue: " + saveDC + "});\n\tif (roll.total >= " + saveDC
+            + ") {\n\t\tlet effect = token.actor.effects.find(ef => ef.name === '" + grappledEffectName + "' && ef.origin === '" + grapplerToken.actor.uuid
+            + "');\n\t\tif (effect) {\n\t\t\tawait effect.delete();\n\t\t\tawait warpgate.revert(token.document, 'Escape Grapple');\n\t\t\tChatMessage.create({'content': '"
+            + targetActor.name + " escapes the grapple!'});\n\t\t}\n\t}"
+            + "\n\telse {\n\t\tChatMessage.create({'content': '" + targetActor.name + " failed to escape'});\n\t}";
 
         if (saveDC === 'opposed') {
             const bestSkill = targetActor.system.skills.ath.total < targetActor.system.skills.acr.total ? "acr" : "ath";
-            escapeMacro = "let grappler = canvas.tokens.get('" + grapplerToken.id  + "');\n"
+            escapeMacro = "let grappler = canvas.tokens.get('" + grapplerToken.id + "');\n"
                 + "let results = await game.MonksTokenBar.requestContestedRoll({token: token, request:'skill:" + bestSkill + "'},\n"
                 + "\t{token: grappler, request: 'skill:ath'},\n"
                 + "\t{silent:true, fastForward:false, flavor: `${token.name} tries to break free`});\n"
@@ -677,7 +688,7 @@ class HomebrewMacros {
                 + "}";
 
             if (sourceActorFlag) {
-                escapeMacro = "let grappler = canvas.tokens.get('" + grapplerToken.id  + "');\n"
+                escapeMacro = "let grappler = canvas.tokens.get('" + grapplerToken.id + "');\n"
                     + "let results = await game.MonksTokenBar.requestContestedRoll({token: token, request:'skill:" + bestSkill + "'},\n"
                     + "\t{token: grappler, request: 'skill:ath'},\n"
                     + "\t{silent:true, fastForward:false, flavor: `${token.name} tries to break free`});\n"
@@ -697,20 +708,19 @@ class HomebrewMacros {
                     + "\tawait grappler.actor.unsetFlag('midi-qol', '" + sourceActorFlag + "');\n"
                     + "}";
             }
-        }
-        else if (sourceActorFlag) {
+        } else if (sourceActorFlag) {
             escapeMacro = "const dc = " + saveDC + ";\nconst roll = await token.actor.rollAbilityTest('" + bestAbility
-                + "', {targetValue: " + saveDC +"});\nif (roll.total >= " + saveDC
+                + "', {targetValue: " + saveDC + "});\nif (roll.total >= " + saveDC
                 + ") {\nlet effect = token.actor.effects.find(ef => ef.name === '" + grappledEffectName + "' && ef.origin === '" + grapplerToken.actor.uuid
                 + "');\nif (effect) {\nawait effect.delete();\nawait warpgate.revert(token.document, 'Escape Grapple');\nChatMessage.create({'content': '"
                 + targetActor.name + " escapes the grapple!'});\nlet sactor = await fromUuid('"
-                + grapplerToken.actor.uuid  + "');\nif (sactor) {\nawait sactor.unsetFlag('midi-qol', '" + sourceActorFlag + "');\n}\n}\n}";
+                + grapplerToken.actor.uuid + "');\nif (sactor) {\nawait sactor.unsetFlag('midi-qol', '" + sourceActorFlag + "');\n}\n}\n}";
         }
 
         const updates = {
             embedded: {
                 Item: {
-                    "Escape Grapple" : {
+                    "Escape Grapple": {
                         "type": "feat",
                         "img": "icons/magic/nature/root-vine-entangled-hands.webp",
                         "system": {
@@ -726,8 +736,8 @@ class HomebrewMacros {
                                 "type": "self"
                             },
                             "range": {
-                                "value":null,
-                                "long":null,
+                                "value": null,
+                                "long": null,
                                 "units": "self"
                             },
                             "duration": {
@@ -753,7 +763,7 @@ class HomebrewMacros {
                 }
             }
         };
-        await warpgate.mutate(targetToken.document, updates, {}, { name: "Escape Grapple" });
+        await warpgate.mutate(targetToken.document, updates, {}, {name: "Escape Grapple"});
         return true;
     }
 
@@ -805,39 +815,40 @@ class HomebrewMacros {
         };
 
         if (overtimeValue) {
-            restrainedEffect.changes.push( {
+            restrainedEffect.changes.push({
                 'key': 'flags.midi-qol.OverTime',
                 'mode': CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
                 'value': overtimeValue,
-                'priority': 20 });
+                'priority': 20
+            });
         }
 
         await MidiQOL.socket().executeAsGM("createEffects",
-            { actorUuid: targetActor.uuid, effects: [restrainedEffect] });
+            {actorUuid: targetActor.uuid, effects: [restrainedEffect]});
 
         // add the break free feature to the target
         // remove the old one, in case it is still there
         await warpgate.revert(targetToken.document, 'Break Free');
 
         let escapeMacro = "const dc = " + checkDC + ";\nconst roll = await token.actor.rollAbilityTest('" + abilityCheck
-            + "', {targetValue: " + checkDC +"});\nif (roll.total >= " + checkDC
+            + "', {targetValue: " + checkDC + "});\nif (roll.total >= " + checkDC
             + ") {\nlet effect = token.actor.effects.find(ef => ef.name === '" + restrainedEffectName + "' && ef.origin === '" + sourceToken.actor.uuid
             + "');\nif (effect) {\nawait effect.delete();\nawait warpgate.revert(token.document, 'Break Free');\nChatMessage.create({'content': '"
             + targetActor.name + " breaks free!'});}\n}";
         if (sourceActorFlag) {
             escapeMacro = "const dc = " + checkDC + ";\nconst roll = await token.actor.rollAbilityTest('" + abilityCheck
-                + "', {targetValue: " + checkDC +"});\nif (roll.total >= " + checkDC
+                + "', {targetValue: " + checkDC + "});\nif (roll.total >= " + checkDC
                 + ") {\nlet effect = token.actor.effects.find(ef => ef.name === '" + restrainedEffectName + "' && ef.origin === '" + sourceToken.actor.uuid
                 + "');\nif (effect) {\nawait effect.delete();\nawait warpgate.revert(token.document, 'Break Free');\nChatMessage.create({'content': '"
                 + targetActor.name + " breaks free!'});\nlet sactor = MidiQOL.MQfromActorUuid('"
-                + sourceToken.actor.uuid  + "');\nif (sactor) {\nawait sactor.unsetFlag('midi-qol', '" + sourceActorFlag + "');\n}\n}\n}";
+                + sourceToken.actor.uuid + "');\nif (sactor) {\nawait sactor.unsetFlag('midi-qol', '" + sourceActorFlag + "');\n}\n}\n}";
         }
 
         const abilityName = CONFIG.DND5E.abilities[abilityCheck].label;
         const updates = {
             embedded: {
                 Item: {
-                    "Break Free" : {
+                    "Break Free": {
                         "type": "feat",
                         "img": "icons/magic/control/encase-creature-spider-hold.webp",
                         "system": {
@@ -853,8 +864,8 @@ class HomebrewMacros {
                                 "type": "self"
                             },
                             "range": {
-                                "value":null,
-                                "long":null,
+                                "value": null,
+                                "long": null,
                                 "units": "self"
                             },
                             "duration": {
@@ -880,7 +891,7 @@ class HomebrewMacros {
                 }
             }
         };
-        await warpgate.mutate(targetToken.document, updates, {}, { name: "Break Free" });
+        await warpgate.mutate(targetToken.document, updates, {}, {name: "Break Free"});
         return true;
     }
 
@@ -928,7 +939,7 @@ class HomebrewMacros {
         if (isAllowedLocation) {
             // finish the pull
             newCenter = canvas.grid.getSnappedPosition(newCenter.x - targetToken.width / 2, newCenter.y - targetToken.height / 2, 1);
-            const mutationData = { token: {x: newCenter.x, y: newCenter.y}};
+            const mutationData = {token: {x: newCenter.x, y: newCenter.y}};
             await warpgate.mutate(targetToken.document, mutationData, {}, {permanent: true});
             return true;
         }
@@ -981,7 +992,7 @@ class HomebrewMacros {
         if (isAllowedLocation) {
             // finish the pull
             newCenter = canvas.grid.getSnappedPosition(newCenter.x - targetToken.width / 2, newCenter.y - targetToken.height / 2, 1);
-            const mutationData = { token: {x: newCenter.x, y: newCenter.y}};
+            const mutationData = {token: {x: newCenter.x, y: newCenter.y}};
             await warpgate.mutate(targetToken.document, mutationData, {}, {permanent: true});
             return true;
         }
@@ -1008,7 +1019,7 @@ class HomebrewMacros {
         let knockBackFt = 5 * squares;
         let knockBackFactor = knockBackFt / canvas.dimensions.distance;
         let distance = canvas.dimensions.size * knockBackFactor;
-        const angle = (Math.random() * 360) * (Math.PI/180);
+        const angle = (Math.random() * 360) * (Math.PI / 180);
         const ray = Ray.fromAngle(targetToken.center.x, targetToken.center.y, angle, distance);
         let newCenter = ray.project(1);
 
@@ -1036,7 +1047,7 @@ class HomebrewMacros {
         if (isAllowedLocation) {
             // finish the pull
             newCenter = canvas.grid.getSnappedPosition(newCenter.x - targetToken.width / 2, newCenter.y - targetToken.height / 2, 1);
-            const mutationData = { token: {x: newCenter.x, y: newCenter.y}};
+            const mutationData = {token: {x: newCenter.x, y: newCenter.y}};
             await warpgate.mutate(targetToken.document, mutationData, {}, {permanent: true});
             return true;
         }
@@ -1092,7 +1103,8 @@ class HomebrewMacros {
             if (deleteEffect && effect) {
                 try {
                     await effect.delete();
-                } catch {}
+                } catch {
+                }
             }
 
             if (createEffect && inFire && (oldSpellLevel !== spellLevel || oldSpelldc !== spelldc)) {
@@ -1133,7 +1145,7 @@ class HomebrewMacros {
                 };
 
                 await MidiQOL.socket().executeAsGM("createEffects",
-                    { actorUuid: tokenDoc.actor.uuid, effects: [effectData] });
+                    {actorUuid: tokenDoc.actor.uuid, effects: [effectData]});
             }
         }
     }
@@ -1184,7 +1196,8 @@ class HomebrewMacros {
             if (deleteEffect && effect) {
                 try {
                     await effect.delete();
-                } catch {}
+                } catch {
+                }
             }
             if (createEffect && inThorns && (oldSpellLevel !== spellLevel || oldSpelldc !== spelldc)) {
                 let dieCount = spellLevel + 1;
@@ -1224,7 +1237,7 @@ class HomebrewMacros {
                 };
 
                 await MidiQOL.socket().executeAsGM("createEffects",
-                    { actorUuid: tokenDoc.actor.uuid, effects: [effectData] });
+                    {actorUuid: tokenDoc.actor.uuid, effects: [effectData]});
             }
         }
     }
@@ -1278,7 +1291,8 @@ class HomebrewMacros {
             if (deleteEffect && effect) {
                 try {
                     await effect.delete();
-                } catch {}
+                } catch {
+                }
             }
             if (createEffect && inBeam && (oldSpellLevel !== spellLevel || oldSpelldc !== spelldc)) {
                 let dieCount = spellLevel;
@@ -1319,7 +1333,7 @@ class HomebrewMacros {
                 };
 
                 await MidiQOL.socket().executeAsGM("createEffects",
-                    { actorUuid: tokenDoc.actor.uuid, effects: [effectData] });
+                    {actorUuid: tokenDoc.actor.uuid, effects: [effectData]});
             }
         }
     }
@@ -1372,7 +1386,8 @@ class HomebrewMacros {
             if (deleteEffect && effect) {
                 try {
                     await effect.delete();
-                } catch {}
+                } catch {
+                }
             }
             if (createEffect && inBeam && (oldDamageDice !== damageDice || oldSpelldc !== spelldc)) {
                 let dieCount = damageDice;
@@ -1412,7 +1427,7 @@ class HomebrewMacros {
                 };
 
                 await MidiQOL.socket().executeAsGM("createEffects",
-                    { actorUuid: tokenDoc.actor.uuid, effects: [effectData] });
+                    {actorUuid: tokenDoc.actor.uuid, effects: [effectData]});
             }
         }
     }
@@ -1437,7 +1452,7 @@ class HomebrewMacros {
         const startPosition = chargerToken.center;
 
         // Calculate the two token positions and store the values as offsetX and offsetY.
-        const [ offsetX, offsetY ] = [chargerToken.center.x - targetToken.center.x, chargerToken.center.y - targetToken.center.y];
+        const [offsetX, offsetY] = [chargerToken.center.x - targetToken.center.x, chargerToken.center.y - targetToken.center.y];
 
         // Determines the offset by comparing the token and target positions to see which direction the token is attacking from.
         // If it is 0, it comes from the side. If its positive or negative, it is from some corner.
@@ -1449,7 +1464,7 @@ class HomebrewMacros {
         new Sequence()
             .animation()
             .on(chargerToken)
-            .moveTowards(targetToken, { ease: "easeInOutBack" })
+            .moveTowards(targetToken, {ease: "easeInOutBack"})
             .duration(1500)
             .closestSquare()
             .effect()
@@ -1467,9 +1482,103 @@ class HomebrewMacros {
             if (actor) {
                 let maneuverEffect = actor.effects.find(e => e.name === 'Distracting Strike - Distracted');
                 if (maneuverEffect.origin !== item.actor.uuid) {
-                    await MidiQOL.socket().executeAsGM('removeEffects', {'actorUuid':actor.uuid, 'effects': [maneuverEffect.id]});
+                    await MidiQOL.socket().executeAsGM('removeEffects', {
+                        'actorUuid': actor.uuid,
+                        'effects': [maneuverEffect.id]
+                    });
                 }
             }
+        }
+    }
+
+    static async applyPrismaticSprayIndigo(sourceToken, targetToken, checkDC) {
+        // sanity checks
+        if (!sourceToken || !targetToken || !checkDC) {
+            console.error("applyPrismaticSprayIndigo() is missing arguments");
+            return false;
+        }
+
+        // add the Restrained effect to the target
+        const restrainedEffectName = `Prismatic Spray - Indigo (${sourceToken.name})`;
+        let restrainedEffect = {
+            'name': restrainedEffectName,
+            'icon': 'icons/magic/light/beam-rays-blue-small.webp',
+            'changes': [
+                {
+                    'key': 'macro.CE',
+                    'mode': CONST.ACTIVE_EFFECT_MODES.CUSTOM,
+                    'value': 'Restrained',
+                    'priority': 21
+                },
+                {
+                    'key': 'flags.midi-qol.OverTime',
+                    'mode': CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
+                    'value': `label=Prismatic Spray (Indigo), turn=end, saveRemove=false, macro=function.HomebrewMacros.handlePrismaticSprayIndigo, saveAbility=con, saveDC=${checkDC}`,
+                    'priority': 20
+                }
+            ],
+            'origin': sourceToken.actor.uuid,
+            'flags': {
+                'dae': {
+                    'specialDuration': ['shortRest', 'longRest', 'combatEnd']
+                },
+            }
+        };
+
+        await MidiQOL.socket().executeAsGM("createEffects",
+            {actorUuid: targetToken.actor.uuid, effects: [restrainedEffect]});
+        return true;
+    }
+
+    static async handlePrismaticSprayIndigo({speaker, actor, token, character, item, args, scope, workflow}) {
+        console.log("handlePrismaticSprayIndigo");
+        let targetToken = workflow.targets.first();
+        let failedSaves = 0;
+        let madeSaves = 0;
+
+        // pull flag
+        let flag = targetToken.actor.getFlag(_flagGroup, "prismatic-spray-indigo");
+        if (flag) {
+            failedSaves = flag.failedSaves;
+            madeSaves = flag.madeSaves;
+        }
+
+        if (workflow.saves.has(targetToken)) {
+            madeSaves++;
+        }
+
+        if (workflow.failedSaves.has(targetToken)) {
+            failedSaves++;
+        }
+
+        // check for exit condition
+        let spellEffect = targetToken.actor.effects.find(e => e.name.startsWith('Prismatic Spray - Indigo ('));
+        if (madeSaves >= 3) {
+            ChatMessage.create({content: `${targetToken.name} breaks free from the Prismatic Spray effect`});
+            await targetToken.actor.unsetFlag(_flagGroup, "prismatic-spray-indigo");
+
+            if (spellEffect) {
+                await MidiQOL.socket().executeAsGM('removeEffects', {
+                    'actorUuid': targetToken.actor.uuid,
+                    'effects': [spellEffect.id]
+                });
+            }
+        }
+        else if (failedSaves >= 3) {
+            ChatMessage.create({content: `${targetToken.name} becomes petrified`});
+            await targetToken.actor.unsetFlag(_flagGroup, "prismatic-spray-indigo");
+
+            if (spellEffect) {
+                await MidiQOL.socket().executeAsGM('removeEffects', {
+                    'actorUuid': targetToken.actor.uuid,
+                    'effects': [spellEffect.id]
+                });
+            }
+
+            await game.dfreds.effectInterface.addEffect({ effectName: 'Petrified', uuid: targetToken.actor.uuid });
+        }
+        else {
+            await targetToken.actor.setFlag(_flagGroup, "prismatic-spray-indigo", {failedSaves: failedSaves, madeSaves: madeSaves});
         }
     }
 }
