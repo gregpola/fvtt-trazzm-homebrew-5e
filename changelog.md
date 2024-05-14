@@ -1,3 +1,8 @@
+# 11.24
+* Class Features Added: Aspect of the Moon
+* Class Features Updated: Maneuver - Parry, 
+* Items Updated: Antitoxin, Pipes of Haunting
+
 # 11.23
 * Class Features Updated: Panache
 * Items Updated: RotD character items, Drow Poison, Holy Water

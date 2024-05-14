@@ -4,7 +4,7 @@ const _charmResistLabels = new Set(["alien mind", "countercharm", "dark devotion
 const _deafenedResistLabels = new Set(["second head"]);
 const _frightenedResistLabels = new Set(["brave", "countercharm", "dark devotion", "fearless", "leviathan will", "mental discipline", "heart of hruggek", "second head", "two heads", "kobold legacy - defiance"]);
 const _paralyzedResistLabels = new Set(["duergar resilience", "leviathan will", "heart of hruggek"]);
-const _poisonResistLabels = new Set(["duergar resilience", "deathless nature (reborn)", "dwarven resilience", "hill rune", "infernal constitution", "leviathan will", "poison resilience", "stout resilience", "heart of hruggek"]);
+const _poisonResistLabels = new Set(["duergar resilience", "deathless nature (reborn)", "dwarven resilience", "hill rune", "infernal constitution", "leviathan will", "poison resilience", "stout resilience", "heart of hruggek", "antitoxin"]);
 const _proneResistLabels = new Set(["sure-footed"]);
 const _sleepResistLabels = new Set(["leviathan will", "heart of hruggek", "wakeful"]);
 const _stunResistLabels = new Set(["leviathan will", "heart of hruggek", "psionic fortitude", "second head", "two heads"]);
@@ -498,13 +498,15 @@ class HomebrewHelpers {
         ];
     }
 
-    static hasSaveAdvantage(actor, conditionType) {
-        return HomebrewHelpers.hasResilience(actor, conditionType);
+    static hasConditionImmunity(actor, conditionType) {
+        if (!actor || !conditionType)
+            return false;
+
+        return actor.system.traits.ci?.value?.has(conditionType);
     }
 
-    static hasSaveDisadvantage(actor, conditionType) {
-        // TODO hasSaveDisadvantage
-        return false;
+    static hasSaveAdvantage(actor, conditionType) {
+        return HomebrewHelpers.hasResilience(actor, conditionType);
     }
 
     static hasResilience(actor, conditionType) {
