@@ -205,14 +205,3 @@ async function wait(ms) { return new Promise(resolve => { setTimeout(resolve, ms
 			});
 			return !missingDep;
 		}
-
-
-// let rows = "";
-// _steedOptions.forEach(item => {
-// 	// let row = `<div><input type="checkbox" style="margin-right:10px;"/><img style='display:block; width:100%; height:auto;' src='${item.image}'/><label>${item.name}</label></div>` +
-// 	// 	`<br/><div><label>${item.stats}</label></div>`;
-// 	let row = `<label class="radio-label">
-// 		<input type="radio" name="steed" value="${weapon.id}">
-// 		<img src="${weapon.img}" style="border:0px; width: 50px; height:50px;">${weapon.name}</label>`;
-// 	rows += row;
-// });

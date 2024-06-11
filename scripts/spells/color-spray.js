@@ -11,9 +11,8 @@
 	At Higher Levels. When you cast this spell using a spell slot of 2nd level or higher, roll an additional 2d10 for
 	each slot level above 1st.
 */
-const version = "11.0";
+const version = "11.1";
 const optionName = "Color Spray";
-const gameRound = game.combat ? game.combat.round : 0;
 
 try {
 	if (args[0].macroPass === "postActiveEffects") {
@@ -21,19 +20,6 @@ try {
 		
 		// sort the targets by current hp
 		const sortedTargets = Array.from(workflow.targets).sort((a, b) =>  a.actor.system.attributes.hp.value - b.actor.system.attributes.hp.value);
-
-		// calculate the duration
-		let duration = 60;
-		let d = item.system.duration;
-		if (d.units === "second") {
-			duration = d.value;
-		}
-		else if (d.units === "minute") {
-			duration = d.value * 60;
-		}
-		else if (d.units === "hour") {
-			duration = d.value * 3600;
-		}		
 
 		// apply effect in order of lowest to highest hp until all points are spent
 		for (let t of sortedTargets) {
@@ -43,8 +29,7 @@ try {
 				
 				if (hp <= totalHitPoints) {
 					totalHitPoints -= hp;
-					markAsBlinded(actor.uuid, t.actor.uuid);
-					warpgate.wait(250);
+					markAsBlinded(item, t.actor.uuid);
 				}
 				else {
 					console.log(`${optionName} - ran out of affected hit points`);
@@ -58,11 +43,11 @@ try {
     console.error(`${optionName}: ${version}`, err);
 }
 
-async function markAsBlinded(sourceOrigin, targetId) {
+async function markAsBlinded(sourceItem, targetId) {
 	const effectData = {
 		name: "Color Spray - Blinded",
-		icon: "icons/magic/light/projectile-needles-salvo-yellow.webp",
-		origin: sourceOrigin,
+		icon: sourceItem.img,
+		origin: actor.uuid,
 		changes: [
 			{
 				key: 'macro.CE',
@@ -71,12 +56,7 @@ async function markAsBlinded(sourceOrigin, targetId) {
 				priority: 20
 			}
 		],
-		flags: {
-			"dae": { 
-				"token": targetId, 
-				specialDuration: ["turnEndSource"] } 
-		},
-		disabled: false
+		flags: { dae: { specialDuration: ['turnEndSource'] } }
 	};
     await MidiQOL.socket().executeAsGM("createEffects", { actorUuid: targetId, effects: [effectData] });
 }

@@ -7,14 +7,13 @@
 	a space within 30 feet of you. It also can’t take reactions. For its action, it can use only the Dash action or try
 	to escape from an effect that prevents it from moving. If there’s nowhere to move, the creature can use the Dodge action.
 */
-const version = "11.2";
+const version = "11.3";
 const optionName = "Turn the Unholy";
 const channelDivinityName = "Channel Divinity (Paladin)";
 const cost = 1;
 
 const targetTypes = ["undead", "fiend"];
 const immunity = ["Turn Immunity"];
-const conditionName = "Channel Divinity: Turn the Unholy";
 
 try {
 	if (args[0].macroPass === "preItemRoll") {
@@ -60,23 +59,7 @@ try {
 
 		game.user.updateTokenTargets(Array.from(workflow.targets).map(t => t.id));
 	}
-	else if (args[0].macroPass === "postSave") {
-		let targets = workflow.failedSaves;
-		if (targets && targets.size > 0) {
-			for (let t of targets) {
-				const hasEffectApplied = await game.dfreds.effectInterface.hasEffectApplied(conditionName, t.actor.uuid);
-				if (!hasEffectApplied) {
-					await game.dfreds.effectInterface.addEffect({
-						'effectName': conditionName,
-						'uuid': t.actor.uuid,
-						'origin': workflow.origin,
-						'overlay': false
-					});
-				}
-			}
-		}
-	}
-	
+
 } catch (err) {
 	console.error(`${optionName}: ${version}`, err);
 }

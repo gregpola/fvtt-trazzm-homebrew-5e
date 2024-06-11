@@ -7,12 +7,11 @@
 	a space within 30 feet of you. It also can’t take reactions. For its action, it can use only the Dash action or try
 	to escape from an effect that prevents it from moving. If there’s nowhere to move, the creature can use the Dodge action.
  */
-const version = "11.1";
+const version = "11.2";
 const resourceName = "Channel Divinity";
 const optionName = "Turn Undead";
 const channelDivinityName = "Channel Divinity (Cleric)";
 const cost = 1;
-const conditionName = "Channel Divinity: Turn Undead";
 
 const targetTypes = ["undead"];
 const immunity = ["Turn Immunity"];
@@ -100,17 +99,6 @@ try {
 			for (let t of targets) {
 				if (maxCR && (t.actor.system.details.cr <= maxCR)) {
 					await t.actor.update({"system.attributes.hp.value": 0});
-				}
-				else {
-					const hasEffectApplied = await game.dfreds.effectInterface.hasEffectApplied(conditionName, t.actor.uuid);
-					if (!hasEffectApplied) {
-						await game.dfreds.effectInterface.addEffect({
-							'effectName': conditionName,
-							'uuid': t.actor.uuid,
-							'origin': workflow.origin,
-							'overlay': false
-						});
-					}
 				}
 			}
 		}

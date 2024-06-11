@@ -1,4 +1,4 @@
-const version = "11.0";
+const version = "11.1";
 const optionName = "Flute of the Genie";
 const genieCompendiumId = "8bCnmq6mhoNkyNpe";
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
@@ -67,7 +67,10 @@ try {
                 await anime(token, summonedToken);
                 await actor.setFlag(_flagGroup, summonFlag, summonedToken.id);
                 await summonedToken.toggleCombat();
-                await summonedToken.actor.rollInitiative();
+                const summonedInitiative = token.combatant.initiative ? token.combatant.initiative - .01
+                    : 1 + (summonedToken.actor.system.abilities.dex.value / 100);
+                await summonedToken.combatant.update({initiative: summonedInitiative});
+
             }
 
         }

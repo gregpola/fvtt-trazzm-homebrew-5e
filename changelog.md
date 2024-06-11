@@ -1,3 +1,9 @@
+# 11.25
+* Features Updated: Dread Ambusher, Rakish Audacity, Turn the Unholy, Turn Undead, Uncanny Dodge
+* Items Updated: Flute of the Genie
+* Monsters Updated: Cultist, Half-Ogre, Ogre  
+* Spells Updated: Color Spray, Fire Shield, Hold Monster, Hold Person, Produce Flame, Shield, Zephyr Strike
+
 # 11.24
 * Class Features Added: Aspect of the Moon
 * Class Features Updated: Maneuver - Parry, 
