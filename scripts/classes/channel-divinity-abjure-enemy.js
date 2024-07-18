@@ -8,25 +8,20 @@
 
 	On a successful save, the creature’s speed is halved for 1 minute or until the creature takes any damage.
  */
-const version = "11.2";
+const version = "11.3";
 const optionName = "Abjure Enemy";
 const channelDivinityName = "Channel Divinity (Paladin)";
 const cost = 1;
+let channelDivinity = actor.items.find(i => i.name === channelDivinityName);
 
 try {
 	if (args[0].macroPass === "preItemRoll") {
 		// check Channel Divinity uses available
-		let channelDivinity = actor.items.find(i => i.name === channelDivinityName);
 		if (channelDivinity) {
 			let usesLeft = channelDivinity.system.uses?.value ?? 0;
 			if (!usesLeft || usesLeft < cost) {
 				console.error(`${optionName} - not enough ${channelDivinityName} uses left`);
 				ui.notifications.error(`${optionName} - not enough ${channelDivinityName} uses left`);
-			}
-			else {
-				const newValue = channelDivinity.system.uses.value - cost;
-				await channelDivinity.update({"system.uses.value": newValue});
-				return true;
 			}
 		}
 		else {
@@ -58,6 +53,9 @@ try {
 	}
 	else if (args[0].macroPass === "postSave") {
 		const sourceOrigin = args[0]?.tokenUuid;
+
+		const newValue = channelDivinity.system.uses.value - cost;
+		await channelDivinity.update({"system.uses.value": newValue});
 
 		// Handle the saved actors that get half movement
 		let targets = workflow.saves;

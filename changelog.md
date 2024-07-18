@@ -1,3 +1,9 @@
+# 11.3.1
+* First update for dnd5e system 3.x
+* Features Updated: Lay on Hands
+* Spells Updated: Hellish Rebuke
+* Subclasses Updated: Draconic Bloodline (except Draconic Presence)
+
 # 11.25
 * Features Updated: Dread Ambusher, Rakish Audacity, Turn the Unholy, Turn Undead, Uncanny Dodge
 * Items Updated: Flute of the Genie
