@@ -17,167 +17,187 @@ ui.notifications.error(`${optionName}: ${resourceName}: - no resource found`);
 // Useful references
 if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType)) {
 
-const tsize = targetTokenDoc.actor.system.traits.size;
-if (!["tiny","sm","med","lg"].includes(tsize)) {
+	const tsize = targetTokenDoc.actor.system.traits.size;
+	if (!["tiny", "sm", "med", "lg"].includes(tsize)) {
 
-const characterLevel = actor.type === "character" ? actor.system.details.level : actor.system.details.cr;
-const rogueLevels = actor.getRollData().classes?.rogue?.levels;
-const pb = actor.system.attributes.prof;
-const actorDC = actor.system.attributes.spelldc ?? 12;
-const spellcastingAbility = actor.system.attributes.spellcasting;
-const abilityBonus = actor.system.abilities[spellcastingAbility].mod;
-const spellLevel = workflow.castData.castLevel;
-const abilityBonus = Math.max(rollingActor.system.abilities.str.mod, rollingActor.system.abilities.dex.mod);
+		actor.system.abilities.cha.mod
 
-flags.midi-qol.neverTarget
+		const characterLevel = actor.type === "character" ? actor.system.details.level : actor.system.details.cr;
+		const rogueLevels = actor.getRollData().classes?.rogue?.levels;
+		const pb = actor.system.attributes.prof;
+		const actorDC = actor.system.attributes.spelldc ?? 12;
+		const spellcastingAbility = actor.system.attributes.spellcasting;
+		const abilityBonus = actor.system.abilities[spellcastingAbility].mod;
+		const spellLevel = workflow.castData.castLevel;
+		const abilityBonus = Math.max(rollingActor.system.abilities.str.mod, rollingActor.system.abilities.dex.mod);
 
-item.system.prof.hasProficiency
+		flags.midi - qol.neverTarget
 
-
-	const _flagGroup = "fvtt-trazzm-homebrew-5e";
-	await actor.setFlag(_flagGroup, flagName, target.actor.uuid);
-	let flag = actor.getFlag(_flagGroup, flagName);
-	await actor.unsetFlag(_flagGroup, flagName);
-
-	ui.notifications.error(`${optionName}: ${version} - no shared language`);
+		item.system.prof.hasProficiency
 
 
-	ChatMessage.create({
-		content: `${actorToken.name}'s ${selectedItem.name} is blessed with positive energy`,
-		speaker: ChatMessage.getSpeaker({ actor: actor })});
+		const _flagGroup = "fvtt-trazzm-homebrew-5e";
+		await actor.setFlag(_flagGroup, flagName, target.actor.uuid);
+		let flag = actor.getFlag(_flagGroup, flagName);
+		await actor.unsetFlag(_flagGroup, flagName);
+
+		ui.notifications.error(`${optionName}: ${version} - no shared language`);
 
 
-	const damageTypes = [['🧪 Acid', 'acid'], ['❄️ Cold', 'cold'], ['🔥 Fire', 'fire'], ['⚡ Lightning', 'lightning'], ['☁️ Thunder', 'thunder']]; //All possible damage types
+		ChatMessage.create({
+			content: `${actorToken.name}'s ${selectedItem.name} is blessed with positive energy`,
+			speaker: ChatMessage.getSpeaker({actor: actor})
+		});
 
-	function isAvailableThisTurn() {
-	if (game.combat) {
-		const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn /100}`;
-		const lastTime = actor.getFlag("midi-qol", timeFlag);
-		if (combatTime === lastTime) {
+
+		const damageTypes = [['🧪 Acid', 'acid'], ['❄️ Cold', 'cold'], ['🔥 Fire', 'fire'], ['⚡ Lightning', 'lightning'], ['☁️ Thunder', 'thunder']]; //All possible damage types
+
+		function isAvailableThisTurn() {
+			if (game.combat) {
+				const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn / 100}`;
+				const lastTime = actor.getFlag("midi-qol", timeFlag);
+				if (combatTime === lastTime) {
+					return false;
+				}
+				return true;
+			}
 			return false;
 		}
-		return true;
-	}
-	return false;
-}
 
-	await game.MonksTokenBar.requestRoll([{token: targetToken}], {
-		request:[{"type": "save", "key": "con"}],
-		dc:saveDC, showdc:true, silent:true, fastForward:false,
-		flavor:`${optionName} - Enervating Breath`,
-		rollMode:'roll',
-		callback: async (result) => {
-			console.log(result);
-			for (let tr of result.tokenresults) {
-				if (!tr.passed) {
-					// mark incapacitated
-					await MidiQOL.socket().executeAsGM("createEffects",
-						{ actorUuid: tr.actor.uuid, effects: [enervationEffectData] });
-				}
-			}
-		}
-	});
-
-
-	await game.MonksTokenBar.requestContestedRoll(
-		{ token: token, request: 'skill:ath' },
-		{ token: targetToken, request:`skill:${skilltoberolled}` },
-		{ silent:true,
-			fastForward:false,
-			flavor: `${targetToken.name} tries to resist ${token.name}'s grapple attempt`,
+		await game.MonksTokenBar.requestRoll([{token: targetToken}], {
+			request: [{"type": "save", "key": "con"}],
+			dc: saveDC, showdc: true, silent: true, fastForward: false,
+			flavor: `${optionName} - Enervating Breath`,
+			rollMode: 'roll',
 			callback: async (result) => {
-				if (result.tokenresults[0].passed) {
-					await HomebrewMacros.applyGrappled(token, targetToken, 'opposed', null, null);
-					ChatMessage.create({'content': `${token.name} grapples ${targetToken.name}`})
-				}
-				else {
-					ChatMessage.create({'content': `${actor.name} fails to grapple ${targetToken.name}`});
+				console.log(result);
+				for (let tr of result.tokenresults) {
+					if (!tr.passed) {
+						// mark incapacitated
+						await MidiQOL.socket().executeAsGM("createEffects",
+							{actorUuid: tr.actor.uuid, effects: [enervationEffectData]});
+					}
 				}
 			}
 		});
 
 
-	macro.tokenMagic
-	system.attributes.exhaustion = 2;
-	system.attributes.ac.bonus
+		await game.MonksTokenBar.requestContestedRoll(
+			{token: token, request: 'skill:ath'},
+			{token: targetToken, request: `skill:${skilltoberolled}`},
+			{
+				silent: true,
+				fastForward: false,
+				flavor: `${targetToken.name} tries to resist ${token.name}'s grapple attempt`,
+				callback: async (result) => {
+					if (result.tokenresults[0].passed) {
+						await HomebrewMacros.applyGrappled(token, targetToken, 'opposed', null, null);
+						ChatMessage.create({'content': `${token.name} grapples ${targetToken.name}`})
+					} else {
+						ChatMessage.create({'content': `${actor.name} fails to grapple ${targetToken.name}`});
+					}
+				}
+			});
 
-	let saveRoll = await targetActor.rollAbilitySave("con", {flavor: saveFlavor});
 
-	await game.dice3d?.showForRoll(saveRoll);
-	
+		macro.tokenMagic
+		system.attributes.exhaustion = 2;
+		system.attributes.ac.bonus
 
-	// bluish color
-	// #5570B8
-	
-	await game.dfreds.effectInterface.removeEffect({effectName: 'Incapacitated', uuid:actor.uuid});
+		let saveRoll = await targetActor.rollAbilitySave("con", {flavor: saveFlavor});
+
+		await game.dice3d?.showForRoll(saveRoll);
 
 
-	// Hit point level values
-	targetTokenDoc.actor.classes.barbarian.advancement.byType.HitPoints (array, first has the hp rolls)
-	
+		// bluish color
+		// #5570B8
+
+		await game.dfreds.effectInterface.removeEffect({effectName: 'Incapacitated', uuid: actor.uuid});
+
+
+		// Hit point level values
+		targetTokenDoc.actor.classes.barbarian.advancement.byType.HitPoints(array, first
+		has
+		the
+		hp
+		rolls
+	)
+
 // vertime setup to remove a condition on save
-turn=end, saveAbility=wis, saveDC=19, label=Frightened
-turn=end, saveAbility=wis, saveDC=19, label=Stunned
-turn=end, saveAbility=con, saveDC=12, label=Poisoned
-turn=start, damageRoll=2d6, damageType=poison, label=Constricted
-turn=start, damageRoll=10, damageType=radiant, label=Holy Nimbus
+		turn = end, saveAbility = wis, saveDC = 19, label = Frightened
+		turn = end, saveAbility = wis, saveDC = 19, label = Stunned
+		turn = end, saveAbility = con, saveDC = 12, label = Poisoned
+		turn = start, damageRoll = 2
+		d6, damageType = poison, label = Constricted
+		turn = start, damageRoll = 10, damageType = radiant, label = Holy
+		Nimbus
 
-flags.midi-qol.optional.BardicInspiration.ac
+		flags.midi - qol.optional.BardicInspiration.ac
 
 // options = { maxSize: undefined, includeIncapacitated: false, canSee: false }
-let secondTarget = await MidiQOL.findNearby(CONST.TOKEN_DISPOSITIONS.FRIENDLY, ttoken, 5, {canSee: true});
+		let secondTarget = await MidiQOL.findNearby(CONST.TOKEN_DISPOSITIONS.FRIENDLY, ttoken, 5, {canSee: true});
 
 
 // Monks token bar
-let message = await game.MonksTokenBar.requestRoll([targetToken], {request:'save:con', flavor: 'Poisoned weapon', silent: true});
-await wait(10000);
-let tokenid = 'token' + targetToken.id;
-saveTotal = message.flags["monks-tokenbar"][tokenid].total;
+		let message = await game.MonksTokenBar.requestRoll([targetToken], {
+			request: 'save:con',
+			flavor: 'Poisoned weapon',
+			silent: true
+		});
+		await wait(10000);
+		let tokenid = 'token' + targetToken.id;
+		saveTotal = message.flags["monks-tokenbar"][tokenid].total;
 
 
-	const userID = MidiQOL.playerForActor(target.actor)?.active?.id ?? game.users.activeGM?.id;
-	if (!userID) {
+		const userID = MidiQOL.playerForActor(target.actor)?.active?.id ?? game.users.activeGM?.id;
+		if (!userID) {
 
-		return;
-	}
-	const data = {
-		request: 'save',
-		targetUuid: targetToken.document.uuid,
-		ability: 'str',
-		options: {
-			skipDialogue: true,
-			saveDC,
-		},
-	};
-	const save = await MidiQOL.socket().executeAsUser('rollAbility', userID, data);
-	if (save.total < save.options.targetValue) {
+			return;
+		}
+		const data = {
+			request: 'save',
+			targetUuid: targetToken.document.uuid,
+			ability: 'str',
+			options: {
+				skipDialogue: true,
+				saveDC,
+			},
+		};
+		const save = await MidiQOL.socket().executeAsUser('rollAbility', userID, data);
+		if (save.total < save.options.targetValue) {
 //do the deed
-	}
+		}
 
 
+		async function wait(ms) {
+			return new Promise(resolve => {
+				setTimeout(resolve, ms);
+			});
+		}
 
-async function wait(ms) { return new Promise(resolve => { setTimeout(resolve, ms); }); }
+		await MidiQOL.socket().executeAsGM("removeEffects", {actorUuid: originalActor.uuid, effects: [itemEffect.id]});
 
-await MidiQOL.socket().executeAsGM("removeEffects", { actorUuid: originalActor.uuid, effects: [itemEffect.id] });
+		async function findEffect(actor, effectName) {
+			let effect = null;
+			effect = actor?.effects.find(ef => ef.name === effectName);
+			return effect;
+		}
 
-async function findEffect(actor, effectName) {
-    let effect = null;
-    effect = actor?.effects.find(ef => ef.name === effectName);
-    return effect;
-}
+		function hasEffectApplied(effectName, actor) {
+			return actor.effects.find((ae) => ae.name === effectName) !== undefined;
+		}
 
-function hasEffectApplied(effectName, actor) {
-  return actor.effects.find((ae) => ae.name === effectName) !== undefined;
-}
+		async function findEffect(actor, effectName, origin) {
+			let effect = null;
+			effect = actor?.effects?.find(ef => ef.name === effectName && ef.origin === origin);
+			return effect;
+		}
 
-async function findEffect(actor, effectName, origin) {
-    let effect = null;
-    effect = actor?.effects?.find(ef => ef.name === effectName && ef.origin === origin);
-    return effect;
-}
-
-async function wait(ms) { return new Promise(resolve => { setTimeout(resolve, ms); });}
-
+		async function wait(ms) {
+			return new Promise(resolve => {
+				setTimeout(resolve, ms);
+			});
+		}
 
 
 		const dependencies = ["dae", "itemacro", "times-up", "midi-qol"];
@@ -205,3 +225,20 @@ async function wait(ms) { return new Promise(resolve => { setTimeout(resolve, ms
 			});
 			return !missingDep;
 		}
+
+
+		<description type="formattedtext">
+			<p>This runestone will add resistance to necrotic damage to a suit of armor.</p>
+			<p>
+				<b>Runestone Notes</b>
+			</p>
+			<p>A skilled armorsmith can infuse a suit of armor with runestones to add the power of the rune to the
+				armor. A suit of armor can be enhanced with up to two minor runestones and one major runestone.</p>
+		</description>
+		<isidentified type="number">1</isidentified>
+		<location type="string">Bag of Holding</location>
+		<locked type="number">1</locked>
+		<name type="string">Runestone of Necrotic Resistance</name>
+		<nonid_name type="string">a small, flat stone with a rune on it</nonid_name>
+		<subtype type="string">Minor Runestone</subtype>
+		<type type="string">Wondrous Item</type>

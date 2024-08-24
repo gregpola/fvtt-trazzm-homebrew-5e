@@ -4,7 +4,7 @@
 	by 5 or more, the creature is also Unconscious while poisoned in this way. The creature wakes up if it takes damage
 	or if another creature takes an action to shake it awake.
 */
-const version = "11.3";
+const version = "11.4";
 const optionName = "Drow Poison";
 const flagName = "drow-poison-weapon";
 const saveDC = 13;
@@ -108,7 +108,7 @@ try {
 					ChatMessage.create({content: itemName + " returns to normal"});
 
 					// remove the DamageBonus effect from the actor
-					let effect = await findEffect(actor, optionName);
+					let effect = actor.effects.find(ef => ef.name === optionName);
 					if (effect) await MidiQOL.socket().executeAsGM("removeEffects", {
 						actorUuid: actor.uuid,
 						effects: [effect.id]
@@ -120,24 +120,17 @@ try {
 				}
 
 				// request the saving throw
-				await game.MonksTokenBar.requestRoll([{token: targetToken}], {
-					request: [{"type": "save", "key": "con"}],
-					dc: saveDC, showdc: true,
-					silent: true, fastForward: false,
-					flavor: `${optionName} (poison)`,
-					rollMode: 'roll',
-					callback: async (result) => {
-						for (let tr of result.tokenresults) {
-							if (!tr.passed) {
-								await game.dfreds.effectInterface.addEffect({ effectName: 'Poisoned', uuid: targetToken.actor.uuid });
+				let saveRoll = await targetToken.actor.rollAbilitySave("con", {flavor: saveFlavor, damageType: "poison"});
+				await game.dice3d?.showForRoll(saveRoll);
+				const damageRoll = await new Roll(`${damageDice}`).evaluate({async: false});
+				await game.dice3d?.showForRoll(damageRoll);
+				if (saveRoll.total < saveDC) {
+					await game.dfreds.effectInterface.addEffect({ effectName: 'Poisoned', uuid: targetToken.actor.uuid });
 
-								if (tr.roll.total <= (saveDC - 5)) {
-									await game.dfreds.effectInterface.addEffect({ effectName: 'Unconscious', uuid: targetToken.actor.uuid });
-								}
-							}
-						}
+					if (saveRoll.total <= (saveDC - 5)) {
+						await game.dfreds.effectInterface.addEffect({ effectName: 'Unconscious', uuid: targetToken.actor.uuid });
 					}
-				});
+				}
 			}
 		}
 
@@ -146,10 +139,4 @@ try {
 
 } catch (err) {
 	console.error(`${optionName} - ${version}`, err);
-}
-
-async function findEffect(actor, effectName) {
-    let effect = null;
-    effect = actor?.effects.find(ef => ef.name === effectName);
-    return effect;
 }

@@ -3,80 +3,24 @@
     of that turn. If you take the Attack action on that turn, you can make one additional weapon attack as part of that
     action. If that attack hits, the target takes an extra 1d8 damage of the weapon’s damage type.
 */
-const version = "11.0";
+const version = "11.2";
 const optionName = "Dread Ambusher";
 
-try {
-    let newEffects = [];
-    const featureOrigin = actor.uuid; // ????
+// On Combat Starting -- add first round features
+let movementBonusItem = await HomebrewHelpers.getItemFromCompendium('fvtt-trazzm-homebrew-5e.homebrew-automation-items', "Dread Ambusher - Movement Bonus");
+await actor.createEmbeddedDocuments("Item", [movementBonusItem]); // document?
 
-    // Movement bonus effect
-    const movementBonusEffect = {
-        label: "Dread Ambusher - Movement Bonus",
-        icon: "icons/skills/movement/feet-winged-boots-brown.webp",
-        origin: featureOrigin,
-        changes: [
-            {
-                key: 'system.attributes.movement.walk',
-                mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-                value: 10,
-                priority: 20
-            }
-        ],
-        flags: {
-            dae: {
-                selfTarget: false,
-                stackable: "none",
-                durationExpression: "",
-                macroRepeat: "none",
-                specialDuration: [
-                    "turnEndSource"
-                ],
-                transfer: false
-            }
-        },
-        disabled: false
-    };
-    newEffects.push(movementBonusEffect);
+let extraAttackItem = await HomebrewHelpers.getItemFromCompendium('fvtt-trazzm-homebrew-5e.homebrew-automation-items', "Dread Ambusher - Extra Attack");
+await actor.createEmbeddedDocuments("Item", [extraAttackItem]);
 
-    // Damage bonus effect
-    const damageBonusEffect = {
-        label: "Dread Ambusher - Bonus Damage",
-        icon: "icons/magic/nature/stealth-hide-beast-eyes-green.webp",
-        origin: featureOrigin,
-        changes: [
-            {
-                key: 'system.bonuses.mwak.damage',
-                mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-                value: '1d8',
-                priority: 20
-            },
-            {
-                key: 'system.bonuses.rwak.damage',
-                mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-                value: '1d8',
-                priority: 20
-            }
-        ],
-        flags: {
-            dae: {
-                selfTarget: false,
-                stackable: "none",
-                durationExpression: "",
-                macroRepeat: "none",
-                specialDuration: [
-                    "1Attack", "turnEndSource"
-                ],
-                transfer: false
-            }
-        },
-        disabled: false
-    };
-    newEffects.push(damageBonusEffect);
 
-    await MidiQOL.socket().executeAsGM("createEffects",
-        {actorUuid: actor.uuid, effects: [newEffects]});
+// On Combat Turn Ending -- remove first round features
+const movementFeature = actor.items.find(i => i.name === "Dread Ambusher - Movement Bonus");
+if (movementFeature) {
+    movementFeature.delete();
+}
 
-} catch (err) {
-    console.error(`${optionName}: ${version}`, err);
+const extraAttackFeature = actor.items.find(i => i.name === "Dread Ambusher - Extra Attack");
+if (movementFeature) {
+    extraAttackFeature.delete();
 }

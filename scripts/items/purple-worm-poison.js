@@ -1,4 +1,4 @@
-const version = "11.2";
+const version = "11.3";
 const optionName = "Purple Worm Poison";
 const flagName = "purple-worm-poison-weapon";
 const damageDice = "12d6";
@@ -103,7 +103,7 @@ try {
 					ChatMessage.create({content: itemName + " returns to normal"});
 
 					// remove the DamageBonus effect from the actor
-					let effect = await findEffect(actor, optionName);
+					let effect = actor.effects.find(ef => ef.name === optionName);
 					if (effect) await MidiQOL.socket().executeAsGM("removeEffects", {
 						actorUuid: actor.uuid,
 						effects: [effect.id]
@@ -115,29 +115,18 @@ try {
 				}
 
 				// request the saving throw
-				await game.MonksTokenBar.requestRoll([{token: targetToken}], {
-					request: [{"type": "save", "key": "con"}],
-					dc: saveDC, showdc: true,
-					silent: true, fastForward: false,
-					flavor: `${optionName} (poison)`,
-					rollMode: 'roll',
-					callback: async (result) => {
-						for (let tr of result.tokenresults) {
-							const damageRoll = await new Roll(`${damageDice}`).evaluate({async: false});
-
-							if (!tr.passed) {
-								await new MidiQOL.DamageOnlyWorkflow(targetToken.actor, token, damageRoll.total, "poison", [targetToken], damageRoll, { flavor: `(${optionName})`, itemData: item, itemCardId: args[0].itemCardId });
-							}
-							else {
-								const damageTaken = Math.ceil(damageRoll.total / 2);
-								const halfDamageRoll = await new Roll(`${damageTaken}`).evaluate({ async: false });
-								await new MidiQOL.DamageOnlyWorkflow(targetToken.actor, token, damageTaken, "poison", [targetToken], halfDamageRoll, { flavor: `(${optionName})`, itemData: item, itemCardId: args[0].itemCardId });
-							}
-
-							await game.dice3d?.showForRoll(damageRoll);
-						}
-					}
-				});
+				let saveRoll = await targetToken.actor.rollAbilitySave("con", {flavor: saveFlavor, damageType: "poison"});
+				await game.dice3d?.showForRoll(saveRoll);
+				const damageRoll = await new Roll(`${damageDice}`).evaluate({async: false});
+				await game.dice3d?.showForRoll(damageRoll);
+				if (saveRoll.total < saveDC) {
+					await new MidiQOL.DamageOnlyWorkflow(targetToken.actor, token, damageRoll.total, "poison", [targetToken], damageRoll, { flavor: `(${optionName})`, itemData: item, itemCardId: args[0].itemCardId });
+				}
+				else {
+					const damageTaken = Math.ceil(damageRoll.total / 2);
+					const halfDamageRoll = await new Roll(`${damageTaken}`).evaluate({ async: false });
+					await new MidiQOL.DamageOnlyWorkflow(targetToken.actor, token, damageTaken, "poison", [targetToken], halfDamageRoll, { flavor: `(${optionName})`, itemData: item, itemCardId: args[0].itemCardId });
+				}
 			}
 		}
 
@@ -146,10 +135,4 @@ try {
 	
 } catch (err) {
 	console.error(`${optionName} - ${version}`, err);
-}
-
-async function findEffect(actor, effectName) {
-    let effect = null;
-    effect = actor?.effects.find(ef => ef.name === effectName);
-    return effect;
 }

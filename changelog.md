@@ -1,3 +1,11 @@
+# 11.26
+* Class Features Updated: Dread Ambusher
+* Items Updated: all poisons and venoms, Dagger of Venom
+* Feats Updated: Empowered Cantrips
+* Features Updated: Channel Divinity: Abjure Enemy, Dread Ambusher, Elemental Affinity
+* Monsters Updated: Azer
+* Spells Updated: Fire Shield, Lightning Lure
+
 # 11.25
 * Features Updated: Dread Ambusher, Rakish Audacity, Turn the Unholy, Turn Undead, Uncanny Dodge
 * Items Updated: Flute of the Genie

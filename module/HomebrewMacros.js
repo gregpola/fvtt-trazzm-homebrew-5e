@@ -910,8 +910,12 @@ class HomebrewMacros {
             return false;
         }
 
+        // can't pull more than to adjacent to the pulling token
+        const tokenDistance = MidiQOL.computeDistance(pullerToken, targetToken);
+
         let squares = maxSquares ? maxSquares : 1;
         let pullBackFt = 5 * squares;
+        pullBackFt = Math.min(pullBackFt, tokenDistance - 5);
         let pullBackFactor = pullBackFt / canvas.dimensions.distance;
         const ray = new Ray(pullerToken.center, targetToken.center);
         let newCenter = ray.project(1 - ((canvas.dimensions.size * pullBackFactor) / ray.distance));

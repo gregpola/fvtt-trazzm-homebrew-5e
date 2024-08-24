@@ -5,11 +5,12 @@
 
 	* The dagger can't be used this way again until the next dawn. *
  */
-const version = "11.1";
+const version = "11.2";
 const optionName = "Dagger of Venom";
 const flagName = "dagger-of-venom";
 const damageDice = "2d10";
 const saveDC = 15;
+const saveFlavor = `${CONFIG.DND5E.abilities["con"].label} DC${saveDC} ${optionName}`;
 
 // for tracking once per day
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
@@ -96,30 +97,20 @@ try {
 				ChatMessage.create({content: itemName + " returns to normal"});
 
 				// request the saving throw
-				let result = await game.MonksTokenBar.requestRoll([{token: targetToken}], {
-					request: [{"type": "save", "key": "con"}],
-					dc: saveDC, showdc: true,
-					silent: true, fastForward: false,
-					flavor: `${optionName} (poison)`,
-					rollMode: 'roll',
-					callback: async (result) => {
-						for (let tr of result.tokenresults) {
-							const damageRoll = await new Roll(`${damageDice}`).evaluate({async: false});
+				let saveRoll = await targetToken.actor.rollAbilitySave("con", {flavor: saveFlavor, damageType: "poison"});
+				await game.dice3d?.showForRoll(saveRoll);
+				const damageRoll = await new Roll(`${damageDice}`).evaluate({async: false});
+				await game.dice3d?.showForRoll(damageRoll);
 
-							if (!tr.passed) {
-								await applyPoisonedEffect(actor, targetToken.actor);
-								await new MidiQOL.DamageOnlyWorkflow(targetToken.actor, token, damageRoll.total, "poison", [targetToken], damageRoll, { flavor: `(${optionName})`, itemData: item, itemCardId: args[0].itemCardId });
-							}
-							else {
-								const damageTaken = Math.ceil(damageRoll.total / 2);
-								const halfDamageRoll = await new Roll(`${damageTaken}`).evaluate({ async: false });
-								await new MidiQOL.DamageOnlyWorkflow(targetToken.actor, token, damageTaken, "poison", [targetToken], halfDamageRoll, { flavor: `(${optionName})`, itemData: item, itemCardId: args[0].itemCardId });
-							}
-
-							await game.dice3d?.showForRoll(damageRoll);
-						}
-					}
-				});
+				if (saveRoll.total < saveDC) {
+					await applyPoisonedEffect(actor, targetToken.actor);
+					await new MidiQOL.DamageOnlyWorkflow(targetToken.actor, token, damageRoll.total, "poison", [targetToken], damageRoll, { flavor: `(${optionName})`, itemData: item, itemCardId: args[0].itemCardId });
+				}
+				else {
+					const damageTaken = Math.ceil(damageRoll.total / 2);
+					const halfDamageRoll = await new Roll(`${damageTaken}`).evaluate({ async: false });
+					await new MidiQOL.DamageOnlyWorkflow(targetToken.actor, token, damageTaken, "poison", [targetToken], halfDamageRoll, { flavor: `(${optionName})`, itemData: item, itemCardId: args[0].itemCardId });
+				}
 			}
 		}
 	}
