@@ -1,3 +1,33 @@
-2024/08/24-09:09:13.578 11808 Recovering log #1905
-2024/08/24-09:09:13.589 11808 Delete type=0 #1905
-2024/08/24-09:09:13.589 11808 Delete type=3 #1904
+2024/08/22-15:42:56.987 cb1c Recovering log #1912
+2024/08/22-15:42:56.996 cb1c Delete type=0 #1912
+2024/08/22-15:42:56.997 cb1c Delete type=3 #1910
+2024/08/22-15:42:58.097 10e08 Compacting 1@1 + 11@2 files
+2024/08/22-15:42:58.124 10e08 Generated table #1915@1: 1485 keys, 2124464 bytes
+2024/08/22-15:42:58.274 10e08 Generated table #1916@1: 2260 keys, 2129301 bytes
+2024/08/22-15:42:58.399 10e08 Generated table #1917@1: 2372 keys, 2130925 bytes
+2024/08/22-15:42:58.509 10e08 Generated table #1918@1: 2215 keys, 2133003 bytes
+2024/08/22-15:42:58.540 10e08 Generated table #1919@1: 2247 keys, 2129257 bytes
+2024/08/22-15:42:58.711 10e08 Generated table #1920@1: 2264 keys, 2128494 bytes
+2024/08/22-15:42:58.853 10e08 Generated table #1921@1: 2317 keys, 2131809 bytes
+2024/08/22-15:42:59.041 10e08 Generated table #1922@1: 2220 keys, 2131219 bytes
+2024/08/22-15:42:59.076 10e08 Generated table #1923@1: 2383 keys, 2132090 bytes
+2024/08/22-15:42:59.086 10e08 Generated table #1924@1: 32 keys, 33835 bytes
+2024/08/22-15:42:59.086 10e08 Compacted 1@1 + 11@2 files => 19204397 bytes
+2024/08/22-15:42:59.089 10e08 compacted to: files[ 0 0 14 0 0 0 0 ]
+2024/08/22-15:42:59.089 10e08 Delete type=2 #1823
+2024/08/22-15:42:59.089 10e08 Delete type=2 #1824
+2024/08/22-15:42:59.089 10e08 Delete type=2 #1825
+2024/08/22-15:42:59.090 10e08 Delete type=2 #1826
+2024/08/22-15:42:59.090 10e08 Delete type=2 #1843
+2024/08/22-15:42:59.090 10e08 Delete type=2 #1844
+2024/08/22-15:42:59.090 10e08 Delete type=2 #1845
+2024/08/22-15:42:59.091 10e08 Delete type=2 #1859
+2024/08/22-15:42:59.091 10e08 Delete type=2 #1860
+2024/08/22-15:42:59.091 10e08 Delete type=2 #1861
+2024/08/22-15:42:59.092 10e08 Delete type=2 #1862
+2024/08/22-15:42:59.092 10e08 Delete type=2 #1911
+2024/08/22-15:43:06.411 10e08 Level-0 table #1926: started
+2024/08/22-15:43:06.411 10e08 Level-0 table #1926: 0 bytes OK
+2024/08/22-15:43:06.414 10e08 Delete type=0 #1914
+2024/08/22-15:43:06.414 10e08 Manual compaction at level-0 from '!actors!050efhbkvycxeUxN' @ 72057594037927935 : 1 .. '!actors.items.effects!zzArKa0vKLYU1Gvz.c26z4nnrm4bp9au4.ul3iyf0tggp7uafp' @ 0 : 0; will stop at (end)
+2024/08/22-15:43:06.414 10e08 Manual compaction at level-1 from '!actors!050efhbkvycxeUxN' @ 72057594037927935 : 1 .. '!actors.items.effects!zzArKa0vKLYU1Gvz.c26z4nnrm4bp9au4.ul3iyf0tggp7uafp' @ 0 : 0; will stop at (end)

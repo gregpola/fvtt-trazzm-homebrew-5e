@@ -223,9 +223,9 @@
     }
   ],
   "compatibility": {
-    "minimum": "11",
-    "verified": "11",
-    "maximum": "11"
+    "minimum": "12",
+    "verified": "12",
+    "maximum": "12"
   },
   "relationships": {
     "requires": [
@@ -250,11 +250,6 @@
         "compatibility": {}
       },
       {
-        "id": "warpgate",
-        "type": "module",
-        "compatibility": {}
-      },
-      {
         "id": "autoanimations",
         "type": "module",
         "compatibility": {}
@@ -265,17 +260,7 @@
         "compatibility": {}
       },
       {
-        "id": "templatemacro",
-        "type": "module",
-        "compatibility": {}
-      },
-      {
         "id": "sequencer",
-        "type": "module",
-        "compatibility": {}
-      },
-      {
-        "id": "tokenmagic",
         "type": "module",
         "compatibility": {}
       }
@@ -285,7 +270,8 @@
         "id": "dnd5e",
         "type": "system",
         "compatibility": {
-          "minimum": "2.4.1"
+          "minimum": "3.3.0",
+          "maximum": "3.3.99"
         }
       }
     ]
