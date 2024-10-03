@@ -1,4 +1,4 @@
-const version = "11.0";
+const version = "12.3.0";
 const optionName = "Stabilize Action";
 
 try {
@@ -11,7 +11,7 @@ try {
 
 	if ((currentHP > 0) || (deathSaves > 2) || (deathFails > 2)) {
 		ChatMessage.create({'content': `${targetToken.name} is not eligible for stabilization`})
-		return ui.notifications.error(`${optionName}: ${version} - target is not eligible for stabilization`);
+		return;
 	}
 
 	// ask for a medicine skill check
@@ -25,6 +25,8 @@ try {
 			if (result.passed) {
 				ChatMessage.create({'content': `${token.name} stabilizes ${targetToken.name}`})
 				await targetToken.actor.update({"system.attributes.death.success": 3});
+				//await targetToken.actor.toggleStatusEffect('stable', { overlay: true, active: true });
+				await MidiQOL.socket().executeAsGM('createEffects', {actorUuid: targetToken.actor.uuid, effects: [await ActiveEffect.implementation.fromStatusEffect('stable')]});
 			}
 		}
 	});

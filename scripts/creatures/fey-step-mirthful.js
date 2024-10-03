@@ -1,42 +1,13 @@
-const version = "11.1";
+const version = "12.3.0";
 const optionName = "Fey Step";
 
 try {
 	if (args[0].macroPass === "postActiveEffects") {
 		const maxRange = item.system.range.value ?? 30;
+		let position = await HomebrewMacros.teleportToken(token, maxRange);
 
-		// transport the caster		
-		let position = await HomebrewMacros.warpgateCrosshairs(token, maxRange, item, token);
 		if (position) {
-			// check for token collision
-			const newCenter = canvas.grid.getSnappedPosition(position.x - token.width / 2, position.y - token.height / 2, 1);
-			if (HomebrewMacros.checkPosition(token, newCenter.x, newCenter.y)) {
-				return ui.notifications.error(`${optionName} - can't teleport on top of another token`);
-			}
-			
-			const portalScale = token.w / canvas.grid.size * 0.7;		
-			new Sequence()
-				.effect()
-				.file("jb2a.misty_step.01.green")       
-				.atLocation(token)
-				.scale(portalScale)
-				.fadeOut(200)
-				.wait(500)
-				.thenDo(() => {
-					canvas.pan(position)
-				})
-				.animation()
-				.on(token)
-				.teleportTo(position, { relativeToCenter: true })
-				.waitUntilFinished()
-				.fadeIn(200)
-				.effect()
-				.file("jb2a.misty_step.02.blue")
-				.atLocation({x: position.x, y: position.y})
-				.scale(portalScale)
-				.wait(500)
-				.thenDo(async() => {await attemptCharm(actor, token);})
-				.play();
+			await attemptCharm(actor, token);
 		}
 		else {
 			ui.notifications.error(`${optionName} - invalid fey step location`);
@@ -72,7 +43,7 @@ async function attemptCharm(actor, token) {
 	];
 	menuOptions["inputs"] = options;
 
-	let choice = await warpgate.menu(menuOptions,
+	let choice = await HomebrewHelpers.menu(menuOptions,
 		{ title: `Pick your charm target:`, options: { height: "100%", width: "150px" } });
 	if(!choice.buttons) return;
 

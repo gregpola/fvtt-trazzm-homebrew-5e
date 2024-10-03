@@ -4,10 +4,12 @@ const _charmResistLabels = new Set(["alien mind", "countercharm", "dark devotion
 const _deafenedResistLabels = new Set(["second head"]);
 const _frightenedResistLabels = new Set(["brave", "countercharm", "dark devotion", "fearless", "leviathan will", "mental discipline", "heart of hruggek", "second head", "two heads", "kobold legacy - defiance"]);
 const _paralyzedResistLabels = new Set(["duergar resilience", "leviathan will", "heart of hruggek"]);
-const _poisonResistLabels = new Set(["duergar resilience", "deathless nature (reborn)", "dwarven resilience", "hill rune", "infernal constitution", "leviathan will", "poison resilience", "stout resilience", "heart of hruggek", "antitoxin"]);
+const _poisonResistLabels = new Set(["duergar resilience", "deathless nature (reborn)", "dwarven resilience", "hill rune", "infernal constitution", "leviathan will", "poison resilience", "stout resilience", "heart of hruggek", "antitoxin", "protection from poison"]);
 const _proneResistLabels = new Set(["sure-footed"]);
 const _sleepResistLabels = new Set(["leviathan will", "heart of hruggek", "wakeful"]);
 const _stunResistLabels = new Set(["leviathan will", "heart of hruggek", "psionic fortitude", "second head", "two heads"]);
+const _turnResistLabels = new Set(["turning defiance"]);
+const _turnImmunityLabels = new Set(["turn immunity"]);
 
 class HomebrewHelpers {
 
@@ -211,6 +213,33 @@ class HomebrewHelpers {
         return false;
     }
 
+    static isSameSizeOrSmaller(token, target) {
+        const tokenSize = token.actor.system.traits.size;
+        const targetSize = target.actor.system.traits.size;
+        const tokenSizeNum = Object.keys(CONFIG.DND5E.actorSizes).indexOf(tokenSize);
+        const targetSizeNum = Object.keys(CONFIG.DND5E.actorSizes).indexOf(targetSize);
+
+        if (targetSizeNum - tokenSizeNum > 0) {
+            return false;
+        }
+
+        return true;
+    }
+
+    static isSizeEligibleForGrapple(token, target) {
+        const tokenSize = token.actor.system.traits.size;
+        const targetSize = target.actor.system.traits.size;
+        const tokenSizeNum = Object.keys(CONFIG.DND5E.actorSizes).indexOf(tokenSize);
+        const targetSizeNum = Object.keys(CONFIG.DND5E.actorSizes).indexOf(targetSize);
+
+        if (targetSizeNum - tokenSizeNum > 1) {
+            ui.notifications.warn(`${item.name} creature size difference too great ${token.name}:${CONFIG.DND5E.actorSizes[tokenSize]} vs ${target.name}:${CONFIG.DND5E.actorSizes[targetSize]}`)
+            return false;
+        }
+
+        return true;
+    }
+
     static isAvailableThisTurn(actor, flagName) {
         if (game.combat) {
             const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn / 100}`;
@@ -234,7 +263,7 @@ class HomebrewHelpers {
 
     static async dialog(title, options) {
         let buttons = options.map(([label, value]) => ({label, value}));
-        let selected = await warpgate.buttonDialog(
+        let selected = await HomebrewHelpers.buttonDialog(
             {
                 buttons,
                 title,
@@ -255,7 +284,7 @@ class HomebrewHelpers {
         let config = {
             'title': title
         };
-        return await warpgate.menu(
+        return await HomebrewHelpers.menu(
             {
                 'inputs': inputs,
                 'buttons': buttons
@@ -265,7 +294,7 @@ class HomebrewHelpers {
     };
 
     static findEffect(actor, name) {
-        return actor.effects.find(eff => eff.name === name);
+        return actor.getRollData().effects.find(eff => eff.name === name);
     };
 
     static async updateEffect(effect, updates) {
@@ -417,7 +446,7 @@ class HomebrewHelpers {
             'title': title,
             'render': dialogRender
         };
-        return await warpgate.menu(
+        return await HomebrewHelpers.menu(
             {
                 'inputs': generatedInputs,
                 'buttons': buttons
@@ -529,7 +558,7 @@ class HomebrewHelpers {
                 if (blindFeature) {
                     return true;
                 } else {
-                    let blindFeature = actor.effects.find(f => _blindedResistLabels.has(f.name.toLowerCase()));
+                    let blindFeature = actor.getRollData().effects.find(f => _blindedResistLabels.has(f.name.toLowerCase()));
                     if (blindFeature) {
                         return true;
                     }
@@ -541,7 +570,7 @@ class HomebrewHelpers {
                 if (charmFeature) {
                     return true;
                 } else {
-                    let charmEffect = actor.effects.find(f => _charmResistLabels.has(f.name.toLowerCase()));
+                    let charmEffect = actor.getRollData().effects.find(f => _charmResistLabels.has(f.name.toLowerCase()));
                     if (charmEffect) {
                         return true;
                     }
@@ -553,7 +582,7 @@ class HomebrewHelpers {
                 if (deafFeature) {
                     return true;
                 } else {
-                    let deafFeature = actor.effects.find(f => _deafenedResistLabels.has(f.name.toLowerCase()));
+                    let deafFeature = actor.getRollData().effects.find(f => _deafenedResistLabels.has(f.name.toLowerCase()));
                     if (deafFeature) {
                         return true;
                     }
@@ -566,7 +595,7 @@ class HomebrewHelpers {
                 if (frightFeature) {
                     return true;
                 } else {
-                    let frightEffect = actor.effects.find(f => _frightenedResistLabels.has(f.name.toLowerCase()));
+                    let frightEffect = actor.getRollData().effects.find(f => _frightenedResistLabels.has(f.name.toLowerCase()));
                     if (frightEffect) {
                         return true;
                     }
@@ -579,7 +608,7 @@ class HomebrewHelpers {
                 if (paralyzeFeature) {
                     return true;
                 } else {
-                    let paralyzeEffect = actor.effects.find(f => _paralyzedResistLabels.has(f.name.toLowerCase()));
+                    let paralyzeEffect = actor.getRollData().effects.find(f => _paralyzedResistLabels.has(f.name.toLowerCase()));
                     if (paralyzeEffect) {
                         return true;
                     }
@@ -591,7 +620,7 @@ class HomebrewHelpers {
                 if (poisonFeature) {
                     return true;
                 } else {
-                    let poisonEffect = actor.effects.find(f => _poisonResistLabels.has(f.name.toLowerCase()));
+                    let poisonEffect = actor.getRollData().effects.find(f => _poisonResistLabels.has(f.name.toLowerCase()));
                     if (poisonEffect) {
                         return true;
                     }
@@ -602,7 +631,7 @@ class HomebrewHelpers {
                 if (proneFeature) {
                     return true;
                 } else {
-                    let proneEffect = actor.effects.find(f => _proneResistLabels.has(f.name.toLowerCase()));
+                    let proneEffect = actor.getRollData().effects.find(f => _proneResistLabels.has(f.name.toLowerCase()));
                     if (proneEffect) {
                         return true;
                     }
@@ -614,7 +643,7 @@ class HomebrewHelpers {
                 if (sleepFeature) {
                     return true;
                 } else {
-                    let sleepEffect = actor.effects.find(f => _sleepResistLabels.has(f.name.toLowerCase()));
+                    let sleepEffect = actor.getRollData().effects.find(f => _sleepResistLabels.has(f.name.toLowerCase()));
                     if (sleepEffect) {
                         return true;
                     }
@@ -626,12 +655,46 @@ class HomebrewHelpers {
                 if (stunFeature) {
                     return true;
                 } else {
-                    let stunEffect = actor.effects.find(f => _stunResistLabels.has(f.name.toLowerCase()));
+                    let stunEffect = actor.getRollData().effects.find(f => _stunResistLabels.has(f.name.toLowerCase()));
                     if (stunEffect) {
                         return true;
                     }
                 }
                 break;
+        }
+
+        return false;
+    }
+
+    static hasTurnImmunity(actor) {
+        if (!actor)
+            return false;
+
+        let feature = actor.items.find(f => _turnImmunityLabels.has(f.name.toLowerCase()));
+        if (feature) {
+            return true;
+        } else {
+            feature = actor.getRollData().effects.find(f => _turnImmunityLabels.has(f.name.toLowerCase()));
+            if (feature) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    static hasTurnResistance(actor) {
+        if (!actor)
+            return false;
+
+        let feature = actor.items.find(f => _turnResistLabels.has(f.name.toLowerCase()));
+        if (feature) {
+            return true;
+        } else {
+            feature = actor.getRollData().effects.find(f => _turnResistLabels.has(f.name.toLowerCase()));
+            if (feature) {
+                return true;
+            }
         }
 
         return false;
@@ -685,5 +748,252 @@ class HomebrewHelpers {
         }
 
         return false;
+    }
+
+    static async menu(prompts = {}, config = {}) {
+        /* apply defaults to optional params */
+        const configDefaults = {
+            title: "Prompt",
+            defaultButton: "Ok",
+            render: null,
+            close: (resolve) => resolve({ buttons: false }),
+            options: {},
+        };
+
+        const { title, defaultButton, render, close, checkedText, options } =
+            foundry.utils.mergeObject(configDefaults, config);
+        const { inputs, buttons } = foundry.utils.mergeObject(
+            { inputs: [], buttons: [] },
+            prompts
+        );
+
+        return await new Promise((resolve) => {
+            let content = HomebrewHelpers.dialogInputs(inputs);
+
+            /** @type Object<string, object> */
+            let buttonData = {};
+            let def = buttons.at(-1)?.label;
+            buttons.forEach((button) => {
+                if ("default" in button) def = button.label;
+                buttonData[button.label] = {
+                    label: button.label,
+                    callback: (html) => {
+                        const results = {
+                            inputs: HomebrewHelpers._innerValueParse(inputs, html, {checkedText}),
+                            buttons: button.value,
+                        };                        if (button.callback instanceof Function)
+                            button.callback(results, html);
+                        return resolve(results);
+                    },
+                };
+            });
+
+            /* insert standard submit button if none provided */
+            if (buttons.length < 1) {
+                def = defaultButton;
+                buttonData = {
+                    [defaultButton]: {
+                        label: defaultButton,
+                        callback: (html) =>
+                            resolve({
+                                inputs: HomebrewHelpers._innerValueParse(inputs, html, {checkedText}),
+                                buttons: true,
+                            }),
+                    },
+                };
+            }
+
+            new Dialog(
+                {
+                    title,
+                    content,
+                    default: def,
+                    close: (...args) => close(resolve, ...args),
+                    buttons: buttonData,
+                    render,
+                },
+                { focus: true, ...options }
+            ).render(true);
+        });
+    }
+
+    static dialogInputs = (data) => {
+        /* correct legacy input data */
+        data.forEach((inputData) => {
+            if (inputData.type === "select") {
+                inputData.options.forEach((e, i) => {
+                    switch (typeof e) {
+                        case "string":
+                            /* if we are handed legacy string values, convert them to objects */
+                            inputData.options[i] = { value: e, html: e };
+                        /* fallthrough to tweak missing values from object */
+
+                        case "object":
+                            /* if no HMTL provided, use value */
+                            inputData.options[i].html ??= inputData.options[i].value;
+
+                            /* sanity check */
+                            if (
+                                !!inputData.options[i].html &&
+                                inputData.options[i].value != undefined
+                            ) {
+                                break;
+                            }
+
+                        /* fallthrough to throw error if all else fails */
+                        default: {
+                            const emsg = "dialogInputs: bad select options";
+                            console.error(emsg);
+                            throw new Error(emsg);
+                        }
+                    }
+                });
+            }
+        });
+
+        const mapped = data
+            .map(({ type, label, options }, i) => {
+                type = type.toLowerCase();
+                switch (type) {
+                    case "header":
+                        return `<tr><td colspan = "2"><h2>${label}</h2></td></tr>`;
+                    case "button":
+                        return "";
+                    case "info":
+                        return `<tr><td colspan="2">${label}</td></tr>`;
+                    case "select": {
+                        const optionString = options
+                            .map((e, i) => {
+                                return `<option value="${i}" ${e.selected ? 'selected' : ''}>${e.html}</option>`;
+                            })
+                            .join("");
+
+                        return `<tr><th style="width:50%"><label for="${i}qd">${label}</label></th><td style="width:50%"><select id="${i}qd">${optionString}</select></td></tr>`;
+                    }
+                    case "radio":
+                        return `<tr><th style="width:50%"><label for="${i}qd">${label}</label></th><td style="width:50%"><input type="${type}" id="${i}qd" ${
+                            (options instanceof Array ? options[1] : false )
+                                ? "checked"
+                                : ""
+                        } value="${i}" name="${
+                            options instanceof Array ? options[0] : options ?? "radio"
+                        }"/></td></tr>`;
+                    case "checkbox":
+                        return `<tr><th style="width:50%"><label for="${i}qd">${label}</label></th><td style="width:50%"><input type="${type}" id="${i}qd" ${
+                            (options instanceof Array ? options[0] : options ?? false)
+                                ? "checked"
+                                : ""
+                        } value="${i}"/></td></tr>`;
+                    default:
+                        return `<tr><th style="width:50%"><label for="${i}qd">${label}</label></th><td style="width:50%"><input type="${type}" id="${i}qd" value="${
+                            options instanceof Array ? options[0] : options
+                        }"/></td></tr>`;
+                }
+            })
+            .join(``);
+
+        const content = `
+            <table style="width:100%">
+              ${mapped}
+            </table>`;
+
+        return content;
+    };
+
+    static _innerValueParse(data, html, {checkedText = false}) {
+        return Array(data.length)
+            .fill()
+            .map((e, i) => {
+                let { type } = data[i];
+                if (type.toLowerCase() === `select`) {
+                    return data[i].options[html.find(`select#${i}qd`).val()].value;
+                } else {
+                    switch (type.toLowerCase()) {
+                        case `text`:
+                        case `password`:
+                            return html.find(`input#${i}qd`)[0].value;
+                        case `radio`:
+                        case `checkbox`: {
+                            const ele = html.find(`input#${i}qd`)[0];
+
+                            if (checkedText) {
+                                const label = html.find(`[for="${i}qd"]`)[0];
+                                return ele.checked ? label.innerText : '';
+                            }
+
+                            return ele.checked;
+                        }
+                        case `number`:
+                            return html.find(`input#${i}qd`)[0].valueAsNumber;
+                    }
+                }
+            });
+    }
+
+    /**
+     * Helper function for quickly creating a simple dialog with labeled buttons and associated data.
+     *
+     * @param {Object} data
+     * @param {Array<{label: string, value:*}>} data.buttons
+     * @param {string} [data.title]
+     * @param {string} [data.content]
+     * @param {Object} [data.options]
+     *
+     * @param {string} [direction = 'row'] 'column' or 'row' accepted. Controls layout direction of dialog.
+     */
+    static async buttonDialog(data, direction = "row") {
+        return await new Promise(async (resolve) => {
+            // @type Object<string, object>
+            let buttons = {},
+                dialog;
+
+            data.buttons.forEach((button) => {
+                buttons[button.label] = {
+                    label: button.label,
+                    callback: () => resolve(button.value),
+                };
+            });
+
+            dialog = new Dialog(
+                {
+                    title: data.title ?? "",
+                    content: data.content ?? "",
+                    buttons,
+                    close: () => resolve(false),
+                },
+                {
+                    /*width: '100%',*/
+                    height: "100%",
+                    ...data.options,
+                }
+            );
+
+            await dialog._render(true);
+            dialog.element.find(".dialog-buttons").css({
+                "flex-direction": direction,
+            });
+        });
+    }
+
+    static getLevelOrCR(actor) {
+        if (actor.type === "character") {
+            return actor.system.details.level;
+        }
+
+        return actor.system.details.cr;
+    }
+
+    static updateTargets(newTargets) {
+        game.user.updateTokenTargets(Array.from(newTargets).map(target => target.id ?? target));
+        game.user.broadcastActivity({targets: game.user.targets.ids});
+    }
+
+    static async addFavorite(actor, item) {
+        // sanity checks
+        if (actor && item) {
+            let favorites = foundry.utils.deepClone(actor.system.favorites);
+            favorites.push({type: "item", id: item.getRelativeUUID(actor)});
+            await actor.update({ "system.favorites": favorites });
+        }
     }
 }

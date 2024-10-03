@@ -7,19 +7,18 @@
 		* The attack’s target must succeed on a Strength saving throw against your spell save DC or be moved by the swarm up to 15 feet horizontally in a direction of your choice. 
 		130* You are moved by the swarm 5 feet horizontally in a direction of your choice.
 */
-const version = "10.2";
+const version = "12.3.0";
 const optionName = "Gathered Swarm";
 const timeFlag = "gathered-swarm-time";
 const combatTime = game.combat ? `${game.combat.id}-${game.combat.round + game.combat.turn / 100}` : 1;
 
 try {
 	if (args[0].macroPass === "DamageBonus") {
-		const wf = scope.workflow;
-		const actorToken = wf.token;
-		const targetToken = wf.hitTargets.first();
+		const actorToken = token;
+		const targetToken = workflow.hitTargets.first();
 
 		// Skip if the action isn't an weapon attack roll
-		if (!["mwak", "rwak", "msak", "rsak"].includes(wf.item.system.actionType)) {
+		if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType)) {
 			console.log(`${optionName} - action type isn't applicable`);
 			return {};
 		}
@@ -66,7 +65,7 @@ try {
 				switch (featureOption) {
 					// extra damage
 					case 1:
-						const diceCount = wf.isCritical ? 2: 1;
+						const diceCount = workflow.isCritical ? 2: 1;
 						const die = mightySwarm ? 'd8' : 'd6';
 						return {damageRoll: `${diceCount}${die}[piercing]`, flavor: optionName};
 					
@@ -77,9 +76,9 @@ try {
 						const dc = 8 + actor.system.attributes.prof + abilityBonus;
 						const flavor = `${CONFIG.DND5E.abilities["str"].label} DC${dc} ${optionName}`;
 						let saveRoll = await targetToken.actor.rollAbilitySave("str", {flavor: flavor, damageType: "push"});
-						await game.dice3d?.showForRoll(saveRoll);
+						await game.dice3d?.showorkfloworRoll(saveRoll);
 						if (saveRoll.total < dc) {
-							await moveTarget(actorToken, targetToken, wf.item);
+							await moveTarget(actorToken, targetToken, workflow.item);
 							
 							if (mightySwarm) {
 								const uuid = targetToken.actor.uuid;
@@ -93,7 +92,7 @@ try {
 					
 					// move yourself
 					case 3:
-						await moveSelf(actorToken, wf.item);
+						await moveSelf(actorToken, workflow.item);
 							
 						if (mightySwarm) {
 							let hasCover = await game.dfreds.effectInterface.hasEffectApplied('Cover (Half)', actor.uuid);
@@ -101,7 +100,7 @@ try {
 								hasCover = await game.dfreds.effectInterface.hasEffectApplied('Cover (Three-Quarters)', actor.uuid);
 							}							
 							if (!hasCover) {
-								await applyCover(actor, wf.uuid);
+								await applyCover(actor, workflow.uuid);
 							}
 						}
 						break;
@@ -128,74 +127,11 @@ function isAvailableThisTurn(actor) {
 }
 
 async function moveTarget(actorToken, targetToken, item) {
-	let position = await HomebrewMacros.warpgateCrosshairs(targetToken, 15, item, targetToken);
-	if (position) {
-		// check for token collision
-		const newCenter = canvas.grid.getSnappedPosition(position.x - targetToken.width / 2, position.y - targetToken.height / 2, 1);
-		if (HomebrewMacros.checkPosition(targetToken, newCenter.x, newCenter.y)) {
-			ui.notifications.error(`${optionName} - can't move on top of another token`);
-			return false;
-		}
-		
-		const portalScale = targetToken.w / canvas.grid.size * 0.7;		
-		new Sequence()
-			.effect()
-			.file("jb2a.misty_step.01.grey")       
-			.atLocation(targetToken)
-			.scale(portalScale)
-			.fadeOut(200)
-			.wait(500)
-			.thenDo(() => {
-				canvas.pan(position)
-			})
-			.animation()
-			.on(targetToken)
-			.teleportTo(position, { relativeToCenter: true })
-			.fadeIn(200)
-			.play();
-	}
-	else {
-		ui.notifications.error(`${optionName} - invalid move location`);
-		return false;
-	}
+	await HomebrewMacros.teleportToken(targetToken, 15);
 }
 
 async function moveSelf(actorToken, item) {
-	let position = await HomebrewMacros.warpgateCrosshairs(actorToken, 5, item, actorToken);
-	if (position) {
-		// check for token collision
-		const newCenter = canvas.grid.getSnappedPosition(position.x - actorToken.width / 2, position.y - actorToken.height / 2, 1);
-		if (HomebrewMacros.checkPosition(actorToken, newCenter.x, newCenter.y)) {
-			ui.notifications.error(`${optionName} - can't move on top of another token`);
-			return false;
-		}
-		
-		const portalScale = actorToken.w / canvas.grid.size * 0.7;		
-		new Sequence()
-			.effect()
-			.file("jb2a.misty_step.01.grey")       
-			.atLocation(actorToken)
-			.scale(portalScale)
-			.fadeOut(200)
-			.wait(500)
-			.thenDo(() => {
-				canvas.pan(position)
-			})
-			.animation()
-			.on(actorToken)
-			.teleportTo(position, { relativeToCenter: true })
-			.fadeIn(200)
-			.effect()
-			.file("jb2a.misty_step.02.grey")
-			.atLocation({x: position.x, y: position.y})
-			.scale(portalScale)
-			.anchor(0.5, 0.5)
-			.play();
-	}
-	else {
-		ui.notifications.error(`${optionName} - invalid move location`);
-		return false;
-	}
+	await HomebrewMacros.teleportToken(actorToken, 5);
 }
 
 async function applyCover(actor, origin) {

@@ -220,6 +220,17 @@
         "PLAYER": "OBSERVER",
         "ASSISTANT": "OWNER"
       }
+    },
+    {
+      "name": "homebrew-rise-of-the-drow",
+      "label": "Homebrew Rise of the Drow",
+      "path": "packs/homebrew-rise-of-the-drow",
+      "type": "Item",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "system": "dnd5e"
     }
   ],
   "compatibility": {
@@ -261,6 +272,11 @@
       },
       {
         "id": "sequencer",
+        "type": "module",
+        "compatibility": {}
+      },
+      {
+        "id": "portal-lib",
         "type": "module",
         "compatibility": {}
       }

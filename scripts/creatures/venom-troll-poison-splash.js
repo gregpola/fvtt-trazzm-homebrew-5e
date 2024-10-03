@@ -1,7 +1,7 @@
 /*
     When the troll takes damage of any type but psychic, each creature within 5 feet of the troll takes 9 (2d8) poison damage.
 */
-const version = "11.0";
+const version = "12.3.0";
 const optionName = "Poison Splash";
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
 
@@ -22,7 +22,7 @@ try {
                 if (poisonSprayItem) {
                     let [config, options] = HomebrewHelpers.syntheticItemWorkflowOptions();
                     await MidiQOL.completeItemUse(poisonSprayItem, config, options);
-                    await warpgate.wait(250);
+                    await HomebrewMacros.wait(250);
                 }
             }
         }

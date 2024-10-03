@@ -8,7 +8,7 @@
 	damage to the target on a hit, and the fire damage to the second creature increases to 1d8 + your spellcasting ability
 	modifier. Both damage rolls increase by 1d8 at 11th level (2d8 and 2d8) and 17th level (3d8 and 3d8).
  */
-const version = "11.1";
+const version = "12.3.0";
 const optionName = "Green-Flame Blade";
 const damageType = "fire";
 
@@ -33,6 +33,7 @@ try {
 	} else if (args[0].tag === "DamageBonus") {
 		return handleAutoCastDamageBonus(workflow, item);
 	}
+
 } catch (err)  {
     console.error(`${optionName}: ${version}`, err);
 }
@@ -40,7 +41,7 @@ try {
 async function anime(token, target) {
     new Sequence()
         .effect()
-        .file("jb2a.flames.green.01")        
+        .file("modules/fvtt-trazzm-homebrew-5e/assets/effects/Flames_01_Regular_Green_200x200.webm")
         .atLocation(target)
 		.scaleToObject(2)
 		.play();
@@ -96,6 +97,7 @@ async function weaponAttack(originWorkflow) {
 
 		const targetToken = primaryWorkflow.targets.first();
 		if (primaryWorkflow.hitTargets.size > 0) {
+			await anime(token, targetToken);
 			await attackNearby(originWorkflow, targetToken, [caster.id], cantripDice);
 		}
 	}

@@ -3,13 +3,11 @@
     hiding. If you succeed, you gain certain benefits, as described in the "Unseen Attackers and Targets" section later
     in this chapter.
  */
-const version = "11.0";
+const version = "12.3.0";
 const optionName = "Hide Action";
 
-
 try {
-    let actorRoll = await actor.rollSkill("ste");
-    await game.dice3d?.showForRoll(actorRoll);
+    await actor.rollSkill("ste");
 } catch (err) {
     console.error(`${optionName}: ${version}`, err);
 }

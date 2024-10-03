@@ -6,7 +6,7 @@
     of the bulette's space into an unoccupied space of the creature's choice. If no unoccupied space is within range,
     the creature instead falls prone in the bulette's space.
 */
-const version = "11.0";
+const version = "12.3.0";
 const optionName = "Deadly Leap";
 
 try {
@@ -14,36 +14,10 @@ try {
         const maxRange = workflow.item.system.range.value ?? 40;
         const minRange = 15;
 
-        let position = await HomebrewMacros.warpgateCrosshairs(token, maxRange, workflow.item, token, minRange);
+        let position = await HomebrewMacros.teleportToken(token, maxRange);
         if (position) {
             const portalScale = token.w / canvas.grid.size * 0.7;
-
-            // play source animation
-            new Sequence()
-                .effect()
-                .file("jb2a.misty_step.01.dark_black")
-                .atLocation(token)
-                .scale(portalScale)
-                .fadeOut(200)
-                .wait(500)
-                .thenDo(() => {
-                    canvas.pan(position)
-                })
-                .animation()
-                .on(token)
-                .teleportTo(position, { relativeToCenter: true })
-                .fadeIn(200)
-                .play();
-
-            await warpgate.wait(1000);
-
-            // play destination animation
-            new Sequence()
-                .effect()
-                .file("jb2a.impact.boulder.01")
-                .atLocation(token)
-                .scale(portalScale)
-                .play();
+            await HomebrewMacros.wait(500);
 
             // find targets and apply save and damage
             let dexSaves = [];

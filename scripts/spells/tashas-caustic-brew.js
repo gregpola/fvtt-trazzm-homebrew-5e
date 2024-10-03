@@ -7,7 +7,7 @@
 	At Higher Levels. When you cast this spell using a spell slot of 2nd level or higher, the damage increases by 2d4
 	for each slot level above 1st.
 */
-const version = "11.0";
+const version = "12.3.0";
 const optionName = "Tasha's Caustic Brew";
 const damageType = "acid";
 
@@ -25,14 +25,10 @@ try {
 
 	} else if (args[0] === "each") {
 		let damageDice = `${Number(args[2]) * 2}d4[${damageType}]`;
-		let itemD = lastArgValue.efData.flags.dae.itemData;
-		itemD.system.components.concentration = false;
-
-		let target = canvas.tokens.get(lastArgValue.tokenId);
-		const damageRoll = await new Roll(damageDice).evaluate({ async: true });
-		const damageWorkflow = await new MidiQOL.DamageOnlyWorkflow(actor, target, damageRoll.total, damageType, [target], damageRoll, { flavor: `(${CONFIG.DND5E.damageTypes[damageType]})`, itemData: itemD, itemCardId: "new" });
+		const damageRoll = await new Roll(damageDice).evaluateSync();
+		const damageWorkflow = await new MidiQOL.DamageOnlyWorkflow(actor, token, damageRoll.total, damageType, [token], damageRoll, { flavor: `(${CONFIG.DND5E.damageTypes[damageType]})`, itemData: item, itemCardId: "new" });
 		await new Dialog({
-			title: itemD.name,
+			title: item.name,
 			content: "<p>Spend an <b>Action</b> to remove the Acid?</p>",
 			buttons: {
 				yes: {

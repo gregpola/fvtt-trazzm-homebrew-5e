@@ -10,20 +10,23 @@
 
 	At Higher Levels. When you cast this spell using a spell slot of 3rd level or higher, the damage increases by 1d8 for each slot level above 2nd.
 */
-const version = "11.1";
+const version = "12.3.0";
 const optionName = "Heat Metal";
 const metalWeapons = ["scimitar", "sword", "blade", "rapier", "dagger", "mace", "knife"];
 const metalArmor = ["medium", "heavy"];
 const gameRound = game.combat ? game.combat.round : 0;
+const _flagGroup = "fvtt-trazzm-homebrew-5e";
 const flagName = "heat-metal";
 const effectName = "heat-metal-effect";
-const mutationName = "heat-metal-mutation";
 
 try {
 	if (args[0].macroPass === "postActiveEffects") {
 		const damageDice = workflow.castData.castLevel;
 		const target = workflow.targets.first();
+		if (!target) return;
+
 		let targetItemName;
+		let selectedItem;
 
 		// find the target actor's weapons & armor that are metal
 		let firstWeapons = target.actor.items.filter(i => (i.type === `weapon` && i.system.equipped));
@@ -41,7 +44,8 @@ try {
 
 		armor.forEach(item => targetItems.add(item));
 		if (targetItems.size < 1) {
-			return ui.notifications.error(`${optionName} - ${target.actor.name} has no eligible items`);
+			ui.notifications.error(`${optionName} - ${target.actor.name} has no eligible items`);
+			return;
 		}
 		
 		let target_content = ``;
@@ -70,32 +74,23 @@ try {
 						label: `Ok`,
 						callback: async (html) => {
 							let itemId = html.find('[name=titem]')[0].value;
-							let selectedItem = target.actor.items.get(itemId);
+							selectedItem = target.actor.items.get(itemId);
 							targetItemName = selectedItem.name;
 
 							// apply the heat
 							const newName = targetItemName + ` (${optionName})`;
-							
-							let mutations = {};
-							mutations[selectedItem.name] = {
+							let mutations = {
 								"name": newName
 							};
-							
-							const updates = {
-								embedded: {
-									Item: mutations
-								}
-							};
 
-							// mutate the selected item
-							await warpgate.mutate(target.document, updates, {}, { name: targetItemName });
-							// TODO add in option to drop the item, for now handled manually
+							// Update the weapon name to show it as poisoned
+							await selectedItem.update(mutations);
 
 							// Apply the heated effect to the target
 							let actorEffectData = {
 								'name': effectName,
 								'icon': workflow.item.img,
-								'origin': workflow.item.uuid,
+								'origin': workflow.actor.uuid,
 								"duration": {
 									rounds: 10, seconds: 60, startRound: gameRound, startTime: game.time.worldTime
 								},
@@ -134,7 +129,7 @@ try {
 		let useFeature = await dialog;
 		if (useFeature) {
 			// track target info to the caster
-			await actor.setFlag("fvtt-trazzm-homebrew-5e", flagName, {tokenId: target.id, origin: actor.uuid, itemName: targetItemName});
+			await actor.setFlag(_flagGroup, flagName, {tokenId: target.id, origin: actor.uuid, itemName: targetItemName, itemId: selectedItem.id});
 
 			// add the ongoing damage item to the caster
 			let ongoingDamageItem = await HomebrewHelpers.getItemFromCompendium('fvtt-trazzm-homebrew-5e.homebrew-automation-items', 'Heat Metal Damage');
@@ -142,45 +137,59 @@ try {
 				let damageParts = ongoingDamageItem.system.damage.parts;
 				damageParts[0][0] = `${damageDice}${damageParts[0][0].substring(1)}`;
 				ongoingDamageItem.system.damage.parts = damageParts;
-
-				const updates = {
-					embedded: { Item: { ['Heat Metal Damage']: ongoingDamageItem } }
+				await actor.createEmbeddedDocuments("Item", [ongoingDamageItem]);
+				const favoriteItem = actor.items.find(i => i.name === "Heat Metal Damage");
+				if (favoriteItem) {
+					let favorites = foundry.utils.deepClone(actor.system.favorites);
+					favorites.push({type: "item", id: favoriteItem.getRelativeUUID(actor)});
+					await actor.update({ "system.favorites": favorites });
 				}
-				await warpgate.mutate(token.document, updates, {}, {name: mutationName});
 			}
+
+			// TODO add an option to drop the item to the target, for now handled manually
 
 			// Apply the initial damage to the target
 			const actorData = actor.getRollData();
-			let damageRoll = await new game.dnd5e.dice.DamageRoll(`${damageDice}d8[fire]`, actorData).evaluate({async:false});
+			let damageRoll = await new game.dnd5e.dice.DamageRoll(`${damageDice}d8[fire]`, actorData).evaluate();
 			await game.dice3d?.showForRoll(damageRoll);
 			await new MidiQOL.DamageOnlyWorkflow(actor, token, damageRoll.total, "fire", [target], damageRoll, { flavor: `(${optionName})`, itemCardId: args[0].itemCardId });
 		}
 	}
 	else if (args[0] === "off") {
-		let flag = actor.getFlag("fvtt-trazzm-homebrew-5e", flagName);
+		let flag = actor.getFlag(_flagGroup, flagName);
 		if (flag) {
-			await actor.unsetFlag("fvtt-trazzm-homebrew-5e", flagName);
+			await actor.unsetFlag(_flagGroup, flagName);
 
 			// get the target actor
 			let targetToken = canvas.scene.tokens.get(flag.tokenId);
 			if (targetToken) {
 				// revert the heated item
-				const itemName = flag.itemName;
-				await warpgate.revert(targetToken, itemName);
+				let heatedEffect = targetToken.actor.effects.find(eff => eff.name === effectName);
+				if (heatedEffect) {
+					await MidiQOL.socket().executeAsGM('removeEffects', {'actorUuid': targetToken.actor.uuid, 'effects': [heatedEffect.id]});
+				}
 
-				// remove the effect
-				let effect = targetToken.actor.effects.find(f => f.name === effectName && f.origin === flag.origin);
-				if (effect) {
-					await MidiQOL.socket().executeAsGM("removeEffects", { actorUuid: targetToken.actor.uuid, effects: [effect.id] });
+				const heatedItem = targetToken.actor.items.get(flag.itemId);
+				if (heatedItem) {
+					let mutations = {
+						"name": flag.itemName
+					};
+
+					// Update the weapon name to show it as poisoned
+					await heatedItem.update(mutations);
 				}
 
 				ChatMessage.create({
-					content: `${targetToken.name}'s ${itemName} returns to normal.`,
-					speaker: ChatMessage.getSpeaker({ actor: actor })});
+					content: `${targetToken.name}'s ${flag.itemName} returns to normal.`,
+					speaker: ChatMessage.getSpeaker({ actor: targetToken.actor })});
 			}
 		}
 
-		await warpgate.revert(token.document, mutationName);
+		// remove the apply damage item from the source actor
+		const ongoingDamageItem = actor.items.find(i => i.name === "Heat Metal Damage");
+		if (ongoingDamageItem) {
+			ongoingDamageItem.delete();
+		}
 	}
 	
 } catch (err) {

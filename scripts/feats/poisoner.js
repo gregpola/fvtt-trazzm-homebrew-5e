@@ -10,7 +10,7 @@
         that creature must succeed on a DC 14 Constitution saving throw or take 2d8 poison damage and become Poisoned
         until the end of your next turn.
 */
-const version = "11.0";
+const version = "12.3.0";
 const optionName = "Poisoner";
 const damageType = "poison";
 const goldCost = 50;

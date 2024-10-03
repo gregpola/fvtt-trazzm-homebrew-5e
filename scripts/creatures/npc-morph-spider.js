@@ -1,35 +1,24 @@
-const version = "10.0.0";
+const version = "12.3.0";
 const optionName = "NPC Morph (Spider)";
+const transformActorName = "Giant Spider";
+const transformActorId = "Compendium.fvtt-trazzm-homebrew-5e.homebrew-creatures.Actor.FdCL6zWkQCoglDjT";
 
 try {
-	const lastArg = args[args.length - 1];
-	const actorToken = canvas.tokens.get(lastArg.tokenId);
-	const newName = "Spider Form (Drow)";
-	
-	if (args[0] === "on") {
-		const updates = {
-			token : {
-				name: newName,
-				scale: 2,
-				"texture.src": "modules/fvtt-trazzm-homebrew-5e/assets/monsters/giant-spider.webp",
-			},
-			actor: {
-				name: newName,
-				system: {
-					attributes: {
-						movement: {climb: 30}
-					}
-				}
+	if (args[0].macroPass === "postActiveEffects") {
+		const {isPolymorphed} = actor.flags?.dnd5e;
+		if (!isPolymorphed) {
+			let transformActor = await HomebrewMacros.getActorFromCompendium(transformActorId);
+
+			if (transformActor) {
+				const keepParameters = { keepPhysical:false, keepMental:true, keepSaves:true, keepSkills:true,
+					mergeSaves:true, mergeSkills:true, keepClass:true, keepFeats:true, keepSpells:true, keepItems:false,
+					keepBio:false, keepVision:false, keepSelf:true, keepAE:true, keepOriginAE:true, keepOtherOriginAE:true,
+					keepSpellAE:true, keepEquipmentAE:true, keepFeatAE:true, keepClassAE:true, keepBackgroundAE:true,
+					transformTokens:true };
+				return actor.transformInto(transformActor, keepParameters, {renderSheet:true});
 			}
 		}
-		
-		/* Mutate the actor */
-		await warpgate.mutate(actorToken.document, updates);
 	}
-	else if (args[0] === "off") {
-		await warpgate.revert(actorToken.document);
-	}
-	
 } catch (err) {
     console.error(`${optionName}: ${version}`, err);
 }

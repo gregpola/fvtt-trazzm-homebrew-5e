@@ -1,17 +1,16 @@
+const version = "12.3.0";
+
 if (args[0].macroPass === "DamageBonus") {
-	const lastArg = args[args.length - 1];
-	const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-	const actorToken = canvas.tokens.get(lastArg.tokenId);
 	const druidLevel = actor.classes.druid?.system.levels ?? 0;
 	
 	// make sure it's an heal
-	if (!["heal"].includes(lastArg.itemData.system.actionType)) {
+	if (!["heal"].includes(item.system.actionType)) {
 		console.log(`Spirit Totem (Unicorn Spirit): not a heal`);
 		return {};
 	}
 
 	// get the totem spirit
-	const summonData = actor.getFlag("midi-qol", "spirit-totem");
+	const summonData = actor.getFlag("fvtt-trazzm-homebrew-5e", "spirit-totem");
 	if (summonData) {
 		let spiritToken = game.canvas.tokens.get(summonData.tokenId);
 		if (spiritToken) {
@@ -56,7 +55,7 @@ if (args[0].macroPass === "DamageBonus") {
 								
 								if (recipients.length > 0) {
 									const damageRoll = await new Roll(`${druidLevel}`).evaluate({ async: false });
-									await new MidiQOL.DamageOnlyWorkflow(actor, actorToken, damageRoll.total, "healing", recipients, damageRoll, 
+									await new MidiQOL.DamageOnlyWorkflow(actor, token, damageRoll.total, "healing", recipients, damageRoll,
 										{flavor: `Unicorn Spirit Healing`, itemCardId: args[0].itemCardId});
 								}
 							}

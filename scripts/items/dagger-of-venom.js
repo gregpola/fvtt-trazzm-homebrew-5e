@@ -5,7 +5,7 @@
 
 	* The dagger can't be used this way again until the next dawn. *
  */
-const version = "11.2";
+const version = "12.3.0";
 const optionName = "Dagger of Venom";
 const flagName = "dagger-of-venom";
 const damageDice = "2d10";
@@ -63,19 +63,12 @@ try {
 
 					// mutate the dagger
 					const itemName = item.name;
-					let mutations = {};
-					mutations[item.name] = {
-						"name": `${item.name} (coated)`,
+					let mutations = {
+						"name": `${item.name} (coated)`
 					};
 
-					const updates = {
-						embedded: {
-							Item: mutations
-						}
-					};
-
-					// mutate the selected item
-					await warpgate.mutate(token.document, updates, {}, { name: itemName });
+					// Update the weapon name to show it as poisoned
+					await item.update(mutations);
 					await actor.setFlag(_flagGroup, flagName, {itemName: itemName, itemId: item.id });
 					ChatMessage.create({content: itemName + " is coated with poison"});
 				}
@@ -92,24 +85,21 @@ try {
 			if (flag && workflow.item._id === flag.itemId) {
 				const itemName = flag.itemName;
 
-				await warpgate.revert(token.document, itemName);
+				let weapon = actor.items.get(flag.itemId);
+				if (weapon) {
+					await weapon.update({"name" : flag.itemName});
+					ChatMessage.create({content: itemName + " returns to normal", speaker: ChatMessage.getSpeaker({actor: actor})});
+				}
 				await actor.unsetFlag(_flagGroup, flagName);
-				ChatMessage.create({content: itemName + " returns to normal"});
 
 				// request the saving throw
-				let saveRoll = await targetToken.actor.rollAbilitySave("con", {flavor: saveFlavor, damageType: "poison"});
-				await game.dice3d?.showForRoll(saveRoll);
-				const damageRoll = await new Roll(`${damageDice}`).evaluate({async: false});
-				await game.dice3d?.showForRoll(damageRoll);
-
+				const saveRoll = await targetToken.actor.rollAbilitySave("con", {flavor: saveFlavor, damageType: "poison"});
 				if (saveRoll.total < saveDC) {
 					await applyPoisonedEffect(actor, targetToken.actor);
-					await new MidiQOL.DamageOnlyWorkflow(targetToken.actor, token, damageRoll.total, "poison", [targetToken], damageRoll, { flavor: `(${optionName})`, itemData: item, itemCardId: args[0].itemCardId });
+					return { damageRoll: `${damageDice}[poison]`, flavor: optionName };
 				}
 				else {
-					const damageTaken = Math.ceil(damageRoll.total / 2);
-					const halfDamageRoll = await new Roll(`${damageTaken}`).evaluate({ async: false });
-					await new MidiQOL.DamageOnlyWorkflow(targetToken.actor, token, damageTaken, "poison", [targetToken], halfDamageRoll, { flavor: `(${optionName})`, itemData: item, itemCardId: args[0].itemCardId });
+					return { damageRoll: `${damageDice}/2[poison]`, flavor: optionName };
 				}
 			}
 		}

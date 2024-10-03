@@ -1,84 +1,89 @@
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
+const _poisonedWeaponFlag = "poisoned-weapon";
 
 class HomebrewMacros {
 
+    static async wait(ms) {
+        return new Promise(resolve => {
+            setTimeout(resolve, ms);
+        });
+    }
+
     /**
+     * Prompts the token for a teleport to location.
      *
-     * @param {Token} token Source of the crosshairs
-     * @param {Number} maxRange the maximum allowed range
-     * @param {Item} item the item for which the function is called
-     * @param {Token} targetToken the token that is being moved
-     * @param {Number} minRange the minimum selectable range
-     * @returns
+     * @param token the token to teleport
+     * @param maxRange  the maximum teleport range in feet
+     * @param destination the token destination, if included it doesn't prompt for a location
+     * @returns {Promise<void>}
      */
-    static async warpgateCrosshairs(token, maxRange, item, targetToken, minRange = 5) {
-        let texture = item.img;
-        if (targetToken) {
-            texture = targetToken.texture.src;
-            if (!texture) {
-                texture = targetToken.document.texture.src;
-            }
-            if (!texture) {
-                texture = item.img;
-            }
-        }
+    static async teleportToken(token, maxRange = 30, destination = undefined) {
+        // sanity checks
+        if (token && maxRange) {
+            const portalScale = token.w / canvas.grid.size * 0.7;
 
-        // check distance versus param while drawing crosshairs
-        let crosshairsDistance = 0;
+            if (destination) {
+                new Sequence()
+                    .effect()
+                    .file("jb2a.misty_step.01.blue")
+                    .atLocation(token)
+                    .scale(portalScale)
+                    .fadeOut(200)
+                    .wait(500)
+                    .thenDo(() => {
+                        canvas.pan(destination)
+                    })
+                    .animation()
+                    .on(token)
+                    .teleportTo(destination, {relativeToCenter: true})
+                    .fadeIn(200)
+                    .effect()
+                    .file("jb2a.misty_step.02.blue")
+                    .atLocation({x: destination.x, y: destination.y})
+                    .scale(portalScale)
+                    .anchor(0.5, 0.5)
+                    .play();
 
-        const checkDistance = async (crosshairs) => {
-            while (crosshairs.inFlight) {
-                //wait for initial render
-                await warpgate.wait(100);
+                return destination;
 
-                const ray = new Ray(token.center, crosshairs);
-                const distance = canvas.grid.measureDistances([{ray}], {gridSpaces: true})[0];
+            } else {
+                let position = await new Portal()
+                    .color("#ff0000")
+                    .texture(token.document.texture.src)
+                    .origin(token)
+                    .range(maxRange)
+                    .pick();
 
-                //only update if the distance has changed
-                if (crosshairsDistance !== distance) {
-                    crosshairsDistance = distance;
-                    if (distance > maxRange) {
-                        crosshairs.icon = 'icons/svg/hazard.svg';
-                    } else if (minRange && distance < minRange) {
-                        crosshairs.icon = 'icons/svg/hazard.svg';
-                    } else {
-                        crosshairs.icon = texture;
-                    }
+                if (position) {
+                    await new Sequence()
+                        .effect()
+                        .file("jb2a.misty_step.01.blue")
+                        .atLocation(token)
+                        .scale(portalScale)
+                        .fadeOut(200)
+                        .wait(500)
+                        .thenDo(() => {
+                            canvas.pan(position)
+                        })
+                        .animation()
+                        .on(token)
+                        .teleportTo(position, {relativeToCenter: true})
+                        .waitUntilFinished(-200)
+                        .fadeIn(200)
+                        .effect()
+                        .file("jb2a.misty_step.02.blue")
+                        .atLocation({x: position.x, y: position.y})
+                        .scale(portalScale)
+                        .anchor(0.5, 0.5)
+                        .play();
 
-                    crosshairs.draw();
-                    crosshairs.label = `${distance} ft`;
+                    return position;
+                } else {
+                    ui.notifications.error('Invalid teleport location');
+                    return false;
                 }
             }
-        };
-
-        const location = await warpgate.crosshairs.show(
-            {
-                // swap between targeting the grid square vs intersection based on token's size
-                interval: token.data.width % 2 === 0 ? 1 : -1,
-                size: token.data.width,
-                icon: texture,
-                label: '0 ft.',
-            },
-            {
-                show: checkDistance
-            },
-        );
-
-        if (location.cancelled) {
-            return undefined;
         }
-
-        if (crosshairsDistance > maxRange) {
-            ui.notifications.error(`${name} has a maximum range of ${maxRange} ft.`)
-            return undefined;
-        }
-
-        if (minRange && crosshairsDistance < minRange) {
-            ui.notifications.error(`${name} has a minimum range of ${maxRange} ft.`)
-            return undefined;
-        }
-
-        return location;
     }
 
     static checkPosition(ignoreToken, newX, newY) {
@@ -88,502 +93,6 @@ class HomebrewMacros {
             return detectX && detectY && (ignoreToken !== t);
         });
         return hasToken;
-    }
-
-    static async cloudkillEffects(tokenids) {
-        if (!tokenids)
-            return;
-
-        for (let i = 0; tokenids.length > i; i++) {
-            let tokenDoc = canvas.scene.tokens.get(tokenids[i]);
-            if (!tokenDoc) continue;
-
-            let tokenInTemplates = game.modules.get('templatemacro').api.findContainers(tokenDoc);
-            let effect = tokenDoc.actor.effects.find(eff => eff.name === 'Cloudkill');
-            let createEffect = false;
-            let deleteEffect = false;
-            let inCloudkill = false;
-            let spellLevel = -100;
-            let spelldc = -100;
-            let oldSpellLevel = effect?.flags?.world?.spell?.cloudkill?.spellLevel;
-            let oldSpelldc = effect?.flags?.world?.spell?.cloudkill?.spelldc;
-            let templateid = effect?.flags?.world?.spell?.cloudkill?.templateid;
-            for (let j = 0; tokenInTemplates.length > j; j++) {
-                let testTemplate = canvas.scene.collections.templates.get(tokenInTemplates[j]);
-                if (!testTemplate) continue;
-                let cloudkill = testTemplate.flags.world?.spell?.cloudkill;
-                if (!cloudkill) continue;
-                inCloudkill = true;
-                let testSpellLevel = cloudkill.spellLevel;
-                let testSpelldc = cloudkill.spelldc;
-                if (testSpellLevel > spellLevel) {
-                    spellLevel = testSpellLevel;
-                    templateid = tokenInTemplates[j];
-                }
-                if (testSpelldc > spelldc) {
-                    spelldc = testSpelldc;
-                    templateid = tokenInTemplates[j];
-                }
-            }
-            if (!inCloudkill) {
-                deleteEffect = true;
-            } else {
-                if (oldSpellLevel !== spellLevel || oldSpelldc !== spelldc) {
-                    createEffect = true;
-                    deleteEffect = true;
-                }
-            }
-            if (deleteEffect && effect) {
-                try {
-                    await effect.delete();
-                } catch {
-                }
-            }
-            if (createEffect && inCloudkill && (oldSpellLevel !== spellLevel || oldSpelldc !== spelldc)) {
-                let damageRoll = spellLevel + 'd8';
-                const damageType = "poison";
-                let templateDoc = canvas.scene.collections.templates.get(templateid);
-                let origin = templateDoc.flags?.dnd5e?.origin;
-                let effectData = {
-                    'name': 'Cloudkill',
-                    'icon': 'icons/magic/air/fog-gas-smoke-swirling-green.webp',
-                    'changes': [
-                        {
-                            'key': 'flags.midi-qol.OverTime',
-                            'mode': 5,
-                            'value': 'turn=start, rollType=save, saveAbility= con, saveDamage= halfdamage, saveRemove= false, saveMagic=true, damageType= ' + damageType + ', damageRoll= ' + damageRoll + ', saveDC = ' + spelldc,
-                            'priority': 20
-                        }
-                    ],
-                    'origin': origin,
-                    'duration': {'seconds': 600},
-                    'flags': {
-                        'effectmacro': {
-                            'onTurnStart': {
-                                'script': "let combatTurn = game.combat.round + '-' + game.combat.turn;\nlet templateid = effect.flags.world.spell.cloudkill.templateid;\ntoken.document.setFlag('world', `spell.cloudkill.${templateid}.turn`, combatTurn);"
-                            }
-                        },
-                        'world': {
-                            'spell': {
-                                'cloudkill': {
-                                    'spellLevel': spellLevel,
-                                    'spelldc': spelldc,
-                                    'templateid': templateDoc.id
-                                }
-                            }
-                        }
-                    }
-                };
-
-                await MidiQOL.socket().executeAsGM("createEffects",
-                    {actorUuid: tokenDoc.actor.uuid, effects: [effectData]});
-            }
-        }
-    }
-
-    static async webSpellEffects(tokenids, firstTime = false) {
-        if (!tokenids)
-            return;
-
-        for (let i = 0; tokenids.length > i; i++) {
-            let tokenDoc = canvas.scene.tokens.get(tokenids[i]);
-            if (!tokenDoc) continue;
-
-            let tokenInTemplates = game.modules.get('templatemacro').api.findContainers(tokenDoc);
-
-            let stuckEffect = tokenDoc.actor.effects.find(eff => eff.name === 'Stuck in Webs');
-            let inWebEffect = tokenDoc.actor.effects.find(eff => eff.name === 'Webs');
-            let inWeb = false;
-            let deleteStuckEffect = false;
-            let deleteWebsEffect = false;
-            let applyEffects = false;
-
-            let spellLevel = -100;
-            let spelldc = -100;
-            let oldSpellLevel = inWebEffect?.flags?.world?.spell?.web?.spellLevel;
-            let oldSpelldc = inWebEffect?.flags?.world?.spell?.web?.spelldc;
-            let templateid = inWebEffect?.flags?.world?.spell?.web?.templateid;
-
-            // Look for the most powerful web template
-            for (let j = 0; tokenInTemplates.length > j; j++) {
-                // Only want tokens in the web spell template
-                let testTemplate = canvas.scene.collections.templates.get(tokenInTemplates[j]);
-                if (!testTemplate) continue;
-                let webSpell = testTemplate.flags.world?.spell?.web;
-                if (!webSpell) continue;
-                inWeb = true;
-                let testSpellLevel = webSpell.spellLevel;
-                let testSpelldc = webSpell.spelldc;
-                if (testSpellLevel > spellLevel) {
-                    spellLevel = testSpellLevel;
-                    templateid = tokenInTemplates[j];
-                }
-                if (testSpelldc > spelldc) {
-                    spelldc = testSpelldc;
-                    templateid = tokenInTemplates[j];
-                }
-            }
-
-            // determine what needs to change on the token
-            if (!inWeb) {
-                deleteStuckEffect = true;
-                deleteWebsEffect = true;
-            } else {
-                if (oldSpellLevel !== spellLevel || oldSpelldc !== spelldc) {
-                    deleteStuckEffect = true;
-                    deleteWebsEffect = true;
-                    applyEffects = true;
-                }
-            }
-
-            // Delete old effects if needed
-            if (deleteWebsEffect && inWebEffect) {
-                try {
-                    await inWebEffect.delete();
-                } catch {
-                }
-            }
-            if (deleteStuckEffect && stuckEffect) {
-                try {
-                    await stuckEffect.delete();
-                } catch {
-                }
-
-                await warpgate.revert(tokenDoc, 'Webbed - Break Free');
-            }
-
-            // Apply new effects as appropriate
-            if (inWeb) {
-                let templateDoc = canvas.scene.collections.templates.get(templateid);
-                let origin = templateDoc.flags?.dnd5e?.origin;
-
-                // if not restrained, roll a new save
-                if (!stuckEffect && !firstTime) {
-                    let saveRoll = await tokenDoc.actor.rollAbilitySave("dex", {flavor: "Resist webs - DC " + spelldc});
-                    await game.dice3d?.showForRoll(saveRoll);
-
-                    if (saveRoll.total < spelldc) {
-                        let stuckEffect = {
-                            'name': 'Stuck in Webs',
-                            'icon': 'icons/creatures/webs/webthin-blue.webp',
-                            'changes': [
-                                {
-                                    'key': 'macro.CE',
-                                    'mode': CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-                                    'value': 'Restrained',
-                                    'priority': 20
-                                }
-                            ],
-                            'origin': origin,
-                            'duration': {'seconds': 3600}
-                        };
-
-                        await MidiQOL.socket().executeAsGM("createEffects",
-                            {actorUuid: tokenDoc.actor.uuid, effects: [stuckEffect]});
-
-                        // add the break free feature
-                        const updates = {
-                            embedded: {
-                                Item: {
-                                    "Webbed - Break Free": {
-                                        "type": "feat",
-                                        "img": "icons/creatures/webs/web-spider-glowing-purple.webp",
-                                        "system": {
-                                            "description": {
-                                                "value": "As an action, the restrained target can make a strength check to break free"
-                                            },
-                                            "activation": {
-                                                "type": "action",
-                                                "cost": 1
-                                            },
-                                            "target": {
-                                                "value": null,
-                                                "type": "self"
-                                            },
-                                            "range": {
-                                                "value": null,
-                                                "long": null,
-                                                "units": "self"
-                                            },
-                                            "duration": {
-                                                "value": null,
-                                                "units": "inst"
-                                            },
-                                            "cover": null,
-                                        },
-                                        "flags": {
-                                            "midi-qol": {
-                                                "onUseMacroName": "ItemMacro"
-                                            },
-                                            "itemacro": {
-                                                "macro": {
-                                                    "name": "Break Free",
-                                                    "type": "script",
-                                                    "scope": "global",
-                                                    "command": "const dc = " + spelldc + ";\nconst roll = await token.actor.rollAbilityTest('str', {targetValue: " + spelldc + "});\nawait game.dice3d?.showForRoll(roll);\nif (roll.total >= " + spelldc + ") {\nlet effect = token.actor.effects.find(ef => ef.name === 'Stuck in Webs');\nif (effect) await effect.delete();\nawait warpgate.revert(token.document, 'Webbed - Break Free');\nChatMessage.create({'content': '" + tokenDoc.actor.name + " breaks free of the webs!'});\n}"
-                                                }
-                                            }
-                                        },
-                                    }
-                                }
-                            }
-                        };
-                        await warpgate.mutate(tokenDoc, updates, {}, {name: "Webbed - Break Free"});
-                    }
-                }
-
-                // add the general in web effect
-                // difficult terrain - half movement
-                // obscured vision - disadvantage on Wisdom (Perception) checks that rely on sight
-                if (!inWebEffect) {
-                    let effectData = {
-                        'name': 'Webs',
-                        'icon': 'icons/creatures/webs/web-spider-glowing-purple.webp',
-                        'changes': [
-                            {
-                                'key': 'system.attributes.movement.all',
-                                'mode': CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-                                'value': '*0.5',
-                                'priority': 20
-                            },
-                            {
-                                'key': 'flags.midi-qol.disadvantage.skill.prc',
-                                'mode': CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-                                'value': '1',
-                                'priority': 20
-                            }
-                        ],
-                        'origin': origin,
-                        'duration': {'seconds': 3600},
-                        'flags': {
-                            'effectmacro': {
-                                'onTurnStart': {
-                                    'script': "await HomebrewMacros.webSpellEffects([token.id]);"
-                                }
-                            },
-                            'world': {
-                                'spell': {
-                                    'web': {
-                                        'spellLevel': spellLevel,
-                                        'spelldc': spelldc,
-                                        'templateid': templateDoc.id
-                                    }
-                                }
-                            }
-                        }
-                    };
-
-                    await MidiQOL.socket().executeAsGM("createEffects",
-                        {actorUuid: tokenDoc.actor.uuid, effects: [effectData]});
-                }
-            }
-        }
-    }
-
-    static async evardsBlackTentaclesEffects(tokenids, firstTime = false) {
-        if (!tokenids)
-            return;
-
-        for (let i = 0; tokenids.length > i; i++) {
-            let tokenDoc = canvas.scene.tokens.get(tokenids[i]);
-            if (!tokenDoc) continue;
-
-            let tokenInTemplates = game.modules.get('templatemacro').api.findContainers(tokenDoc);
-
-            let stuckEffect = tokenDoc.actor.effects.find(eff => eff.name === 'Stuck in Tentacles');
-            let inTentaclesEffect = tokenDoc.actor.effects.find(eff => eff.name === 'Tentacles');
-            let inTentacles = false;
-            let deleteStuckEffect = false;
-            let deleteTentaclesEffect = false;
-            let applyEffects = false;
-
-            let spellLevel = -100;
-            let spelldc = -100;
-            let oldSpellLevel = inTentaclesEffect?.flags?.world?.spell?.evardsblacktentacles?.spellLevel;
-            let oldSpelldc = inTentaclesEffect?.flags?.world?.spell?.evardsblacktentacles?.spelldc;
-            let templateid = inTentaclesEffect?.flags?.world?.spell?.evardsblacktentacles?.templateid;
-
-            // Look for the most powerful tentacles template
-            for (let j = 0; tokenInTemplates.length > j; j++) {
-                // Only want tokens in the evard's black tentacles template
-                let testTemplate = canvas.scene.collections.templates.get(tokenInTemplates[j]);
-                if (!testTemplate) continue;
-                let tentaclesSpell = testTemplate.flags.world?.spell?.evardsblacktentacles;
-                if (!tentaclesSpell) continue;
-
-                inTentacles = true;
-                let testSpellLevel = tentaclesSpell.spellLevel;
-                let testSpelldc = tentaclesSpell.spelldc;
-                if (testSpellLevel > spellLevel) {
-                    spellLevel = testSpellLevel;
-                    templateid = tokenInTemplates[j];
-                }
-                if (testSpelldc > spelldc) {
-                    spelldc = testSpelldc;
-                    templateid = tokenInTemplates[j];
-                }
-            }
-
-            // determine what needs to change on the token
-            if (!inTentacles) {
-                deleteStuckEffect = true;
-                deleteTentaclesEffect = true;
-            } else {
-                if (oldSpellLevel !== spellLevel || oldSpelldc !== spelldc) {
-                    deleteStuckEffect = true;
-                    deleteTentaclesEffect = true;
-                    applyEffects = true;
-                }
-            }
-
-            // Delete old effects if needed
-            if (deleteTentaclesEffect && inTentaclesEffect) {
-                try {
-                    await inTentaclesEffect.delete();
-                } catch {
-                }
-            }
-            if (deleteStuckEffect && stuckEffect) {
-                try {
-                    await stuckEffect.delete();
-                } catch {
-                }
-
-                await warpgate.revert(tokenDoc, 'Tentacles - Break Free');
-            }
-
-            // Apply new effects as appropriate
-            if (inTentacles) {
-                let applyDamage = stuckEffect;
-                let templateDoc = canvas.scene.collections.templates.get(templateid);
-                let origin = templateDoc.flags?.dnd5e?.origin;
-
-                // if not restrained, roll a new save
-                if (!stuckEffect && !firstTime) {
-                    let saveRoll = await tokenDoc.actor.rollAbilitySave("dex", {flavor: "Resist tentacles - DC " + spelldc});
-                    await game.dice3d?.showForRoll(saveRoll);
-
-                    if (saveRoll.total < spelldc) {
-                        applyDamage = true;
-
-                        let stuckEffect = {
-                            'name': 'Stuck in Tentacles',
-                            'icon': 'icons/magic/nature/root-vine-fire-entangled-hand.webp',
-                            'changes': [
-                                {
-                                    'key': 'macro.CE',
-                                    'mode': CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-                                    'value': 'Restrained',
-                                    'priority': 20
-                                }
-                            ],
-                            'origin': origin,
-                            'duration': {'seconds': 3600}
-                        };
-
-                        await MidiQOL.socket().executeAsGM("createEffects",
-                            {actorUuid: tokenDoc.actor.uuid, effects: [stuckEffect]});
-
-                        // add the break free feature
-                        let bestAbility = tokenDoc.actor.system.abilities.dex.mod > tokenDoc.actor.system.abilities.str.mod ? "dex" : "str";
-                        const updates = {
-                            embedded: {
-                                Item: {
-                                    "Tentacled - Break Free": {
-                                        "type": "feat",
-                                        "img": "icons/magic/nature/root-vine-entangled-hands.webp",
-                                        "system": {
-                                            "description": {
-                                                "value": "As an action, the restrained target can make a strength or dexterity check to break free"
-                                            },
-                                            "activation": {
-                                                "type": "action",
-                                                "cost": 1
-                                            },
-                                            "target": {
-                                                "value": null,
-                                                "type": "self"
-                                            },
-                                            "range": {
-                                                "value": null,
-                                                "long": null,
-                                                "units": "self"
-                                            },
-                                            "duration": {
-                                                "value": null,
-                                                "units": "inst"
-                                            },
-                                            "cover": null,
-                                        },
-                                        "flags": {
-                                            "midi-qol": {
-                                                "onUseMacroName": "ItemMacro"
-                                            },
-                                            "itemacro": {
-                                                "macro": {
-                                                    "name": "Break Free",
-                                                    "type": "script",
-                                                    "scope": "global",
-                                                    "command": "const dc = " + spelldc + ";\nconst roll = await token.actor.rollAbilityTest('" + bestAbility + "', {targetValue: " + spelldc + "});\nawait game.dice3d?.showForRoll(roll);\nif (roll.total >= " + spelldc + ") {\nlet effect = token.actor.effects.find(ef => ef.name === 'Stuck in Tentacles');\nif (effect) await effect.delete();\nawait warpgate.revert(token.document, 'Tentacled - Break Free');\nChatMessage.create({'content': '" + tokenDoc.actor.name + " breaks free of the tentacles!'});\n}"
-                                                }
-                                            }
-                                        },
-                                    }
-                                }
-                            }
-                        };
-                        await warpgate.mutate(tokenDoc, updates, {}, {name: "Tentacles - Break Free"});
-                    }
-                }
-
-                // add the general in tentacles effect
-                // difficult terrain - half movement
-                if (!inTentaclesEffect) {
-                    let effectData = {
-                        'name': 'Tentacles',
-                        'icon': 'icons/creatures/tentacles/tentacles-suctioncups-pink.webp',
-                        'changes': [
-                            {
-                                'key': 'system.attributes.movement.all',
-                                'mode': CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-                                'value': '*0.5',
-                                'priority': 20
-                            }
-                        ],
-                        'origin': origin,
-                        'duration': {'seconds': 3600},
-                        'flags': {
-                            'effectmacro': {
-                                'onTurnStart': {
-                                    'script': "await HomebrewMacros.evardsBlackTentaclesEffects([token.id]);"
-                                }
-                            },
-                            'world': {
-                                'spell': {
-                                    'evardsblacktentacles': {
-                                        'spellLevel': spellLevel,
-                                        'spelldc': spelldc,
-                                        'templateid': templateDoc.id
-                                    }
-                                }
-                            }
-                        }
-                    };
-
-                    await MidiQOL.socket().executeAsGM("createEffects",
-                        {actorUuid: tokenDoc.actor.uuid, effects: [effectData]});
-                }
-
-                if (applyDamage) {
-                    let damageRoll = await new Roll("3d6").roll();
-                    await game.dice3d?.showForRoll(damageRoll);
-                    await MidiQOL.applyTokenDamage([{
-                        damage: damageRoll.total,
-                        type: 'bludgeoning'
-                    }], damageRoll.total, new Set([tokenDoc.object]), null, null);
-                }
-            }
-        }
     }
 
     /**
@@ -605,7 +114,7 @@ class HomebrewMacros {
         }
 
         let targetActor = targetToken.actor;
-        let existingGrappled = targetActor.effects.find(eff => eff.name === 'Grappled' && eff.origin === grapplerToken.actor.uuid);
+        let existingGrappled = targetActor.effects.find(eff => eff.name.startsWith('Grappled (') && eff.origin === grapplerToken.actor.uuid);
         if (existingGrappled) {
             console.error("applyGrappled() " + targetActor.name + " is already grappled by " + grapplerToken.name);
             return false;
@@ -630,6 +139,13 @@ class HomebrewMacros {
                 'dae': {
                     'specialDuration': ['shortRest', 'longRest', 'combatEnd']
                 },
+                'fvtt-trazzm-homebrew-5e': {
+                    'grappler': {
+                        'grapplerId': `${grapplerToken.id}`,
+                        'saveDC': `${saveDC !== 'opposed' ? saveDC : undefined}`,
+                        'sourceActorFlag': sourceActorFlag
+                    }
+                }
             }
         };
 
@@ -654,116 +170,13 @@ class HomebrewMacros {
         await MidiQOL.socket().executeAsGM("createEffects",
             {actorUuid: targetActor.uuid, effects: [grappledEffect]});
 
-        // add the break free feature to the target
-        // remove the old one, in case it is still there
-        await warpgate.revert(targetToken.document, 'Escape Grapple');
-
-        let bestAbility = targetActor.system.abilities.dex.mod > targetActor.system.abilities.str.mod ? "dex" : "str";
-        let escapeMacro = "\nconst dc = " + saveDC + ";\n\tconst roll = await token.actor.rollAbilityTest('" + bestAbility
-            + "', {targetValue: " + saveDC + "});\n\tif (roll.total >= " + saveDC
-            + ") {\n\t\tlet effect = token.actor.effects.find(ef => ef.name === '" + grappledEffectName + "' && ef.origin === '" + grapplerToken.actor.uuid
-            + "');\n\t\tif (effect) {\n\t\t\tawait effect.delete();\n\t\t\tawait warpgate.revert(token.document, 'Escape Grapple');\n\t\t\tChatMessage.create({'content': '"
-            + targetActor.name + " escapes the grapple!'});\n\t\t}\n\t}"
-            + "\n\telse {\n\t\tChatMessage.create({'content': '" + targetActor.name + " failed to escape'});\n\t}";
-
-        if (saveDC === 'opposed') {
-            const bestSkill = targetActor.system.skills.ath.total < targetActor.system.skills.acr.total ? "acr" : "ath";
-            escapeMacro = "let grappler = canvas.tokens.get('" + grapplerToken.id + "');\n"
-                + "let results = await game.MonksTokenBar.requestContestedRoll({token: token, request:'skill:" + bestSkill + "'},\n"
-                + "\t{token: grappler, request: 'skill:ath'},\n"
-                + "\t{silent:true, fastForward:false, flavor: `${token.name} tries to break free`});\n"
-                + "let i=0;\n"
-                + "while (results.flags['monks-tokenbar'][`token${token.id}`].passed === 'waiting' && i < 30) {\n"
-                + "\tawait new Promise(resolve => setTimeout(resolve, 1000));\n"
-                + "\ti++;\n"
-                + "}\n"
-                + "let result = results.flags['monks-tokenbar'][`token${token.id}`].passed;\n"
-                + "if (result === 'won' || result === 'tied') {\n"
-                + "\tlet effect = token.actor.effects.find(ef => ef.name === 'Grappled' && ef.origin === '" + grapplerToken.actor.uuid + "');\n"
-                + "\tif (effect) {\n"
-                + "\t\tawait effect.delete();\n"
-                + "\t\tawait warpgate.revert(token.document, 'Escape Grapple');\n"
-                + "\t\tChatMessage.create({'content': `${token.name} escapes the grapple!`});\n"
-                + "\t}\n"
-                + "}";
-
-            if (sourceActorFlag) {
-                escapeMacro = "let grappler = canvas.tokens.get('" + grapplerToken.id + "');\n"
-                    + "let results = await game.MonksTokenBar.requestContestedRoll({token: token, request:'skill:" + bestSkill + "'},\n"
-                    + "\t{token: grappler, request: 'skill:ath'},\n"
-                    + "\t{silent:true, fastForward:false, flavor: `${token.name} tries to break free`});\n"
-                    + "let i=0;\n"
-                    + "while (results.flags['monks-tokenbar'][`token${token.id}`].passed === 'waiting' && i < 30) {\n"
-                    + "\tawait new Promise(resolve => setTimeout(resolve, 1000));\n"
-                    + "\ti++;\n"
-                    + "}\n"
-                    + "let result = results.flags['monks-tokenbar'][`token${token.id}`].passed;\n"
-                    + "if (result === 'won' || result === 'tied') {\n"
-                    + "\tlet effect = token.actor.effects.find(ef => ef.name === 'Grappled' && ef.origin === '" + grapplerToken.actor.uuid + "');\n"
-                    + "\tif (effect) {\n"
-                    + "\t\tawait effect.delete();\n"
-                    + "\t\tawait warpgate.revert(token.document, 'Escape Grapple');\n"
-                    + "\t\tChatMessage.create({'content': `${token.name} escapes the grapple!`});\n"
-                    + "\t}\n"
-                    + "\tawait grappler.actor.unsetFlag('midi-qol', '" + sourceActorFlag + "');\n"
-                    + "}";
-            }
-        } else if (sourceActorFlag) {
-            escapeMacro = "const dc = " + saveDC + ";\nconst roll = await token.actor.rollAbilityTest('" + bestAbility
-                + "', {targetValue: " + saveDC + "});\nif (roll.total >= " + saveDC
-                + ") {\nlet effect = token.actor.effects.find(ef => ef.name === '" + grappledEffectName + "' && ef.origin === '" + grapplerToken.actor.uuid
-                + "');\nif (effect) {\nawait effect.delete();\nawait warpgate.revert(token.document, 'Escape Grapple');\nChatMessage.create({'content': '"
-                + targetActor.name + " escapes the grapple!'});\nlet sactor = await fromUuid('"
-                + grapplerToken.actor.uuid + "');\nif (sactor) {\nawait sactor.unsetFlag('midi-qol', '" + sourceActorFlag + "');\n}\n}\n}";
+        // add the escape grapple feature to the target
+        const escapeFeature = targetToken.actor.items.find(i => i.name === "Escape Grapple");
+        if (!escapeFeature) {
+            let escapeFeatureItem = await HomebrewHelpers.getItemFromCompendium('fvtt-trazzm-homebrew-5e.homebrew-automation-items', "Escape Grapple");
+            await targetToken.actor.createEmbeddedDocuments("Item", [escapeFeatureItem]);
         }
 
-        const updates = {
-            embedded: {
-                Item: {
-                    "Escape Grapple": {
-                        "type": "feat",
-                        "img": "icons/magic/nature/root-vine-entangled-hands.webp",
-                        "system": {
-                            "description": {
-                                "value": "As an action, you can make a strength or dexterity check to escape the grapple"
-                            },
-                            "activation": {
-                                "type": "action",
-                                "cost": 1
-                            },
-                            "target": {
-                                "value": null,
-                                "type": "self"
-                            },
-                            "range": {
-                                "value": null,
-                                "long": null,
-                                "units": "self"
-                            },
-                            "duration": {
-                                "value": null,
-                                "units": "inst"
-                            },
-                            "cover": null,
-                        },
-                        "flags": {
-                            "midi-qol": {
-                                "onUseMacroName": "ItemMacro"
-                            },
-                            "itemacro": {
-                                "macro": {
-                                    "name": "Escape Grapple",
-                                    "type": "script",
-                                    "scope": "global",
-                                    "command": escapeMacro
-                                }
-                            }
-                        },
-                    }
-                }
-            }
-        };
-        await warpgate.mutate(targetToken.document, updates, {}, {name: "Escape Grapple"});
         return true;
     }
 
@@ -786,9 +199,9 @@ class HomebrewMacros {
         }
 
         let targetActor = targetToken.actor;
-        let existingRestrained = targetActor.effects.find(eff => eff.name === 'Restrained' && eff.origin === sourceToken.actor.uuid);
-        if (existingRestrained) {
-            console.error("applyRestrained() " + targetActor.name + " is already restrained by " + sourceToken.name);
+        let existingGrappled = targetActor.effects.find(eff => eff.name.startsWith('Restrained (') && eff.origin === sourceToken.actor.uuid);
+        if (existingGrappled) {
+            console.error("applyGrappled() " + targetActor.name + " is already restrained by " + sourceToken.name);
             return false;
         }
 
@@ -811,6 +224,13 @@ class HomebrewMacros {
                 'dae': {
                     'specialDuration': ['shortRest', 'longRest', 'combatEnd']
                 },
+                'fvtt-trazzm-homebrew-5e': {
+                    'restrainer': {
+                        'restrainerId': `${sourceToken.id}`,
+                        'saveDC': `${saveDC !== 'opposed' ? saveDC : undefined}`,
+                        'sourceActorFlag': sourceActorFlag
+                    }
+                }
             }
         };
 
@@ -827,71 +247,12 @@ class HomebrewMacros {
             {actorUuid: targetActor.uuid, effects: [restrainedEffect]});
 
         // add the break free feature to the target
-        // remove the old one, in case it is still there
-        await warpgate.revert(targetToken.document, 'Break Free');
-
-        let escapeMacro = "const dc = " + checkDC + ";\nconst roll = await token.actor.rollAbilityTest('" + abilityCheck
-            + "', {targetValue: " + checkDC + "});\nif (roll.total >= " + checkDC
-            + ") {\nlet effect = token.actor.effects.find(ef => ef.name === '" + restrainedEffectName + "' && ef.origin === '" + sourceToken.actor.uuid
-            + "');\nif (effect) {\nawait effect.delete();\nawait warpgate.revert(token.document, 'Break Free');\nChatMessage.create({'content': '"
-            + targetActor.name + " breaks free!'});}\n}";
-        if (sourceActorFlag) {
-            escapeMacro = "const dc = " + checkDC + ";\nconst roll = await token.actor.rollAbilityTest('" + abilityCheck
-                + "', {targetValue: " + checkDC + "});\nif (roll.total >= " + checkDC
-                + ") {\nlet effect = token.actor.effects.find(ef => ef.name === '" + restrainedEffectName + "' && ef.origin === '" + sourceToken.actor.uuid
-                + "');\nif (effect) {\nawait effect.delete();\nawait warpgate.revert(token.document, 'Break Free');\nChatMessage.create({'content': '"
-                + targetActor.name + " breaks free!'});\nlet sactor = MidiQOL.MQfromActorUuid('"
-                + sourceToken.actor.uuid + "');\nif (sactor) {\nawait sactor.unsetFlag('midi-qol', '" + sourceActorFlag + "');\n}\n}\n}";
+        const escapeFeature = targetActor.items.find(i => i.name === "Break Free");
+        if (!escapeFeature) {
+            let escapeFeatureItem = await HomebrewHelpers.getItemFromCompendium('fvtt-trazzm-homebrew-5e.homebrew-automation-items', "Break Free");
+            await targetActor.createEmbeddedDocuments("Item", [escapeFeatureItem]);
         }
 
-        const abilityName = CONFIG.DND5E.abilities[abilityCheck].label;
-        const updates = {
-            embedded: {
-                Item: {
-                    "Break Free": {
-                        "type": "feat",
-                        "img": "icons/magic/control/encase-creature-spider-hold.webp",
-                        "system": {
-                            "description": {
-                                "value": "As an action, you can make a " + abilityName + " check to break free"
-                            },
-                            "activation": {
-                                "type": "action",
-                                "cost": 1
-                            },
-                            "target": {
-                                "value": null,
-                                "type": "self"
-                            },
-                            "range": {
-                                "value": null,
-                                "long": null,
-                                "units": "self"
-                            },
-                            "duration": {
-                                "value": null,
-                                "units": "inst"
-                            },
-                            "cover": null,
-                        },
-                        "flags": {
-                            "midi-qol": {
-                                "onUseMacroName": "ItemMacro"
-                            },
-                            "itemacro": {
-                                "macro": {
-                                    "name": "Break Free",
-                                    "type": "script",
-                                    "scope": "global",
-                                    "command": escapeMacro
-                                }
-                            }
-                        },
-                    }
-                }
-            }
-        };
-        await warpgate.mutate(targetToken.document, updates, {}, {name: "Break Free"});
         return true;
     }
 
@@ -907,48 +268,16 @@ class HomebrewMacros {
         // sanity checks
         if (!pullerToken || !targetToken) {
             console.error("pullTarget() is missing arguments");
-            return false;
+            return;
         }
 
         // can't pull more than to adjacent to the pulling token
         const tokenDistance = MidiQOL.computeDistance(pullerToken, targetToken);
 
-        let squares = maxSquares ? maxSquares : 1;
+        const squares = maxSquares ? maxSquares : 1;
         let pullBackFt = 5 * squares;
         pullBackFt = Math.min(pullBackFt, tokenDistance - 5);
-        let pullBackFactor = pullBackFt / canvas.dimensions.distance;
-        const ray = new Ray(pullerToken.center, targetToken.center);
-        let newCenter = ray.project(1 - ((canvas.dimensions.size * pullBackFactor) / ray.distance));
-
-        // check for collision
-        let c = canvas.grid.getSnappedPosition(newCenter.x - targetToken.width / 2, newCenter.y - targetToken.height / 2, 1);
-        let isAllowedLocation = !HomebrewMacros.checkPosition(targetToken, c.x, c.y);
-
-        while ((squares > 1) && !isAllowedLocation) {
-            squares = squares - 1;
-            pullBackFt = 5 * squares;
-            pullBackFactor = pullBackFt / canvas.dimensions.distance;
-
-            let shorterCenter = ray.project(1 - ((canvas.dimensions.size * pullBackFactor) / ray.distance));
-            c = canvas.grid.getSnappedPosition(shorterCenter.x - targetToken.width / 2, shorterCenter.y - targetToken.height / 2, 1);
-            let isShorterAllowed = !HomebrewMacros.checkPosition(targetToken, c.x, c.y);
-
-            if (isShorterAllowed) {
-                isAllowedLocation = true;
-                newCenter = shorterCenter;
-                break;
-            }
-        }
-
-        if (isAllowedLocation) {
-            // finish the pull
-            newCenter = canvas.grid.getSnappedPosition(newCenter.x - targetToken.width / 2, newCenter.y - targetToken.height / 2, 1);
-            const mutationData = {token: {x: newCenter.x, y: newCenter.y}};
-            await warpgate.mutate(targetToken.document, mutationData, {}, {permanent: true});
-            return true;
-        }
-
-        return false;
+        await MidiQOL.moveTokenAwayFromPoint(targetToken, -pullBackFt, pusherToken.center);
     }
 
     /**
@@ -962,52 +291,18 @@ class HomebrewMacros {
     static async pushTarget(pusherToken, targetToken, maxSquares) {
         // sanity checks
         if (!pusherToken || !targetToken) {
-            console.error("pullTarget() is missing arguments");
-            return false;
+            console.error("pushTarget() is missing arguments");
+            return;
         }
 
-        let squares = maxSquares ? maxSquares : 1;
-        let knockBackFt = 5 * squares;
-        let knockBackFactor = knockBackFt / canvas.dimensions.distance;
-        const ray = new Ray(pusherToken.center, targetToken.center);
-        let newCenter = ray.project(1 + ((canvas.dimensions.size * knockBackFactor) / ray.distance));
-
-        // check for collision
-        let c = canvas.grid.getSnappedPosition(newCenter.x - targetToken.width / 2, newCenter.y - targetToken.height / 2, 1);
-        let isAllowedLocation = !HomebrewMacros.checkPosition(targetToken, c.x, c.y);
-
-        while ((squares > 1) && !isAllowedLocation) {
-            squares = squares - 1;
-            knockBackFt = 5 * squares;
-            knockBackFactor = knockBackFt / canvas.dimensions.distance;
-
-            //movePixels = squares * pixelsPerSquare;
-            let shorterCenter = ray.project(1 + ((canvas.dimensions.size * knockBackFactor) / ray.distance));
-            c = canvas.grid.getSnappedPosition(shorterCenter.x - targetToken.width / 2, shorterCenter.y - targetToken.height / 2, 1);
-            let isShorterAllowed = !HomebrewMacros.checkPosition(targetToken, c.x, c.y);
-
-            if (isShorterAllowed) {
-                isAllowedLocation = true;
-                newCenter = shorterCenter;
-                break;
-            }
-        }
-
-        if (isAllowedLocation) {
-            // finish the pull
-            newCenter = canvas.grid.getSnappedPosition(newCenter.x - targetToken.width / 2, newCenter.y - targetToken.height / 2, 1);
-            const mutationData = {token: {x: newCenter.x, y: newCenter.y}};
-            await warpgate.mutate(targetToken.document, mutationData, {}, {permanent: true});
-            return true;
-        }
-
-        return false;
+        const squares = maxSquares ? maxSquares : 1;
+        const knockBackFt = 5 * squares;
+        await MidiQOL.moveTokenAwayFromPoint(targetToken, knockBackFt, pusherToken.center);
     }
 
     /**
-     * Flings the target maxSquares number of squares away from the pusher in a random direction
+     * Flings the target maxSquares number of squares away from where it is in a random direction
      *
-     * @param pusherToken
      * @param targetToken
      * @param maxSquares
      * @returns {Promise<boolean>}
@@ -1015,8 +310,8 @@ class HomebrewMacros {
     static async flingTarget(targetToken, maxSquares) {
         // sanity checks
         if (!targetToken) {
-            console.error("flingTarget() is missing a target");
-            return false;
+            console.error("flingTarget() is missing the target");
+            return;
         }
 
         let squares = maxSquares ? maxSquares : 1;
@@ -1025,415 +320,8 @@ class HomebrewMacros {
         let distance = canvas.dimensions.size * knockBackFactor;
         const angle = (Math.random() * 360) * (Math.PI / 180);
         const ray = Ray.fromAngle(targetToken.center.x, targetToken.center.y, angle, distance);
-        let newCenter = ray.project(1);
-
-        // check for collision
-        let c = canvas.grid.getSnappedPosition(newCenter.x - targetToken.width / 2, newCenter.y - targetToken.height / 2, 1);
-        let isAllowedLocation = !HomebrewMacros.checkPosition(targetToken, c.x, c.y);
-
-        while ((squares > 1) && !isAllowedLocation) {
-            squares = squares - 1;
-            knockBackFt = 5 * squares;
-            knockBackFactor = knockBackFt / canvas.dimensions.distance;
-
-            //movePixels = squares * pixelsPerSquare;
-            let shorterCenter = ray.project(1 + ((canvas.dimensions.size * knockBackFactor) / ray.distance));
-            c = canvas.grid.getSnappedPosition(shorterCenter.x - targetToken.width / 2, shorterCenter.y - targetToken.height / 2, 1);
-            let isShorterAllowed = !HomebrewMacros.checkPosition(targetToken, c.x, c.y);
-
-            if (isShorterAllowed) {
-                isAllowedLocation = true;
-                newCenter = shorterCenter;
-                break;
-            }
-        }
-
-        if (isAllowedLocation) {
-            // finish the pull
-            newCenter = canvas.grid.getSnappedPosition(newCenter.x - targetToken.width / 2, newCenter.y - targetToken.height / 2, 1);
-            const mutationData = {token: {x: newCenter.x, y: newCenter.y}};
-            await warpgate.mutate(targetToken.document, mutationData, {}, {permanent: true});
-            return true;
-        }
-
-        return false;
-    }
-
-    static async wallOfFireEffects(tokenids) {
-        if (!tokenids)
-            return;
-
-        for (let i = 0; tokenids.length > i; i++) {
-            let tokenDoc = canvas.scene.tokens.get(tokenids[i]);
-            if (!tokenDoc) continue;
-
-            let tokenInTemplates = game.modules.get('templatemacro').api.findContainers(tokenDoc);
-            let effect = tokenDoc.actor.effects.find(eff => eff.name === 'WallofFire');
-            let createEffect = false;
-            let deleteEffect = false;
-            let inFire = false;
-            let spellLevel = -100;
-            let spelldc = -100;
-            let oldSpellLevel = effect?.flags?.world?.spell?.WallofFire?.spellLevel;
-            let oldSpelldc = effect?.flags?.world?.spell?.WallofFire?.spelldc;
-            let templateid = effect?.flags?.world?.spell?.WallofFire?.templateid;
-            for (let j = 0; tokenInTemplates.length > j; j++) {
-                let testTemplate = canvas.scene.collections.templates.get(tokenInTemplates[j]);
-                if (!testTemplate) continue;
-                let wallofFire = testTemplate.flags.world?.spell?.WallofFire;
-                if (!wallofFire) continue;
-                inFire = true;
-                let testSpellLevel = wallofFire.spellLevel;
-                let testSpelldc = wallofFire.spelldc;
-                if (testSpellLevel > spellLevel) {
-                    spellLevel = testSpellLevel;
-                    templateid = tokenInTemplates[j];
-                }
-                if (testSpelldc > spelldc) {
-                    spelldc = testSpelldc;
-                    templateid = tokenInTemplates[j];
-                }
-            }
-
-            if (!inFire) {
-                deleteEffect = true;
-            } else {
-                if (oldSpellLevel !== spellLevel || oldSpelldc !== spelldc) {
-                    createEffect = true;
-                    deleteEffect = true;
-                }
-            }
-
-            if (deleteEffect && effect) {
-                try {
-                    await effect.delete();
-                } catch {
-                }
-            }
-
-            if (createEffect && inFire && (oldSpellLevel !== spellLevel || oldSpelldc !== spelldc)) {
-                let dieCount = spellLevel + 1;
-                let damageRoll = dieCount + 'd8';
-                const damageType = "fire";
-                let templateDoc = canvas.scene.collections.templates.get(templateid);
-                let origin = templateDoc.flags?.dnd5e?.origin;
-                let effectData = {
-                    'name': 'WallofFire',
-                    'icon': 'icons/magic/fire/flame-burning-fence.webp',
-                    'changes': [
-                        {
-                            'key': 'flags.midi-qol.OverTime',
-                            'mode': 5,
-                            'value': 'turn=end, damageType=' + damageType + ', damageRoll=' + damageRoll,
-                            'priority': 20
-                        }
-                    ],
-                    'origin': origin,
-                    'duration': {'seconds': 60},
-                    'flags': {
-                        'effectmacro': {
-                            'onTurnEnd': {
-                                'script': "let combatTurn = game.combat.round + '-' + game.combat.turn;\nlet templateid = effect.flags.world.spell.WallofFire.templateid;\ntoken.document.setFlag('world', `spell.WallofFire.${templateid}.turn`, combatTurn);"
-                            }
-                        },
-                        'world': {
-                            'spell': {
-                                'WallofFire': {
-                                    'spellLevel': spellLevel,
-                                    'spelldc': spelldc,
-                                    'templateid': templateDoc.id
-                                }
-                            }
-                        }
-                    }
-                };
-
-                await MidiQOL.socket().executeAsGM("createEffects",
-                    {actorUuid: tokenDoc.actor.uuid, effects: [effectData]});
-            }
-        }
-    }
-
-    static async wallOfThornsEffects(tokenids) {
-        if (!tokenids)
-            return;
-
-        for (let i = 0; tokenids.length > i; i++) {
-            let tokenDoc = canvas.scene.tokens.get(tokenids[i]);
-            if (!tokenDoc) continue;
-
-            let tokenInTemplates = game.modules.get('templatemacro').api.findContainers(tokenDoc);
-            let effect = tokenDoc.actor.effects.find(eff => eff.name === 'WallofThorns');
-            let createEffect = false;
-            let deleteEffect = false;
-            let inThorns = false;
-            let spellLevel = -100;
-            let spelldc = -100;
-            let oldSpellLevel = effect?.flags?.world?.spell?.WallofThorns?.spellLevel;
-            let oldSpelldc = effect?.flags?.world?.spell?.WallofThorns?.spelldc;
-            let templateid = effect?.flags?.world?.spell?.WallofThorns?.templateid;
-            for (let j = 0; tokenInTemplates.length > j; j++) {
-                let testTemplate = canvas.scene.collections.templates.get(tokenInTemplates[j]);
-                if (!testTemplate) continue;
-                let wallofThorns = testTemplate.flags.world?.spell?.WallofThorns;
-                if (!wallofThorns) continue;
-                inThorns = true;
-                let testSpellLevel = wallofThorns.spellLevel;
-                let testSpelldc = wallofThorns.spelldc;
-                if (testSpellLevel > spellLevel) {
-                    spellLevel = testSpellLevel;
-                    templateid = tokenInTemplates[j];
-                }
-                if (testSpelldc > spelldc) {
-                    spelldc = testSpelldc;
-                    templateid = tokenInTemplates[j];
-                }
-            }
-            if (!inThorns) {
-                deleteEffect = true;
-            } else {
-                if (oldSpellLevel !== spellLevel || oldSpelldc !== spelldc) {
-                    createEffect = true;
-                    deleteEffect = true;
-                }
-            }
-            if (deleteEffect && effect) {
-                try {
-                    await effect.delete();
-                } catch {
-                }
-            }
-            if (createEffect && inThorns && (oldSpellLevel !== spellLevel || oldSpelldc !== spelldc)) {
-                let dieCount = spellLevel + 1;
-                let damageRoll = dieCount + 'd8';
-                const damageType = "slashing";
-                let templateDoc = canvas.scene.collections.templates.get(templateid);
-                let origin = templateDoc.flags?.dnd5e?.origin;
-                let effectData = {
-                    'name': 'WallofThorns',
-                    'icon': 'icons/magic/nature/root-vine-barrier-wall-brown.webp',
-                    'changes': [
-                        {
-                            'key': 'flags.midi-qol.OverTime',
-                            'mode': 5,
-                            'value': 'turn=end, rollType=save, saveAbility=dex, saveDamage=halfdamage, saveRemove=false, saveMagic=true, damageType=' + damageType + ', damageRoll=' + damageRoll + ', saveDC =' + spelldc,
-                            'priority': 20
-                        }
-                    ],
-                    'origin': origin,
-                    'duration': {'seconds': 600},
-                    'flags': {
-                        'effectmacro': {
-                            'onTurnStart': {
-                                'script': "let combatTurn = game.combat.round + '-' + game.combat.turn;\nlet templateid = effect.flags.world.spell.WallofThorns.templateid;\ntoken.document.setFlag('world', `spell.WallofThorns.${templateid}.turn`, combatTurn);"
-                            }
-                        },
-                        'world': {
-                            'spell': {
-                                'WallofThorns': {
-                                    'spellLevel': spellLevel,
-                                    'spelldc': spelldc,
-                                    'templateid': templateDoc.id
-                                }
-                            }
-                        }
-                    }
-                };
-
-                await MidiQOL.socket().executeAsGM("createEffects",
-                    {actorUuid: tokenDoc.actor.uuid, effects: [effectData]});
-            }
-        }
-    }
-
-    static async moonbeamEffects(tokenids) {
-        if (!tokenids)
-            return;
-
-        for (let i = 0; tokenids.length > i; i++) {
-            let tokenDoc = canvas.scene.tokens.get(tokenids[i]);
-            if (!tokenDoc) continue;
-
-            let tokenInTemplates = game.modules.get('templatemacro').api.findContainers(tokenDoc);
-            let effect = tokenDoc.actor.effects.find(eff => eff.name === 'Moonbeam');
-            let createEffect = false;
-            let deleteEffect = false;
-            let inBeam = false;
-            let spellLevel = -100;
-            let spelldc = -100;
-            let oldSpellLevel = effect?.flags?.world?.spell?.Moonbeam?.spellLevel;
-            let oldSpelldc = effect?.flags?.world?.spell?.Moonbeam?.spelldc;
-            let ambientLightId = effect?.flags?.world?.spell?.Moonbeam?.ambientLightId;
-
-            let templateid = effect?.flags?.world?.spell?.Moonbeam?.templateid;
-            for (let j = 0; tokenInTemplates.length > j; j++) {
-                let testTemplate = canvas.scene.collections.templates.get(tokenInTemplates[j]);
-                if (!testTemplate) continue;
-                let moonbeam = testTemplate.flags.world?.spell?.Moonbeam;
-                if (!moonbeam) continue;
-                inBeam = true;
-                let testSpellLevel = moonbeam.spellLevel;
-                let testSpelldc = moonbeam.spelldc;
-                if (testSpellLevel > spellLevel) {
-                    spellLevel = testSpellLevel;
-                    templateid = tokenInTemplates[j];
-                }
-                if (testSpelldc > spelldc) {
-                    spelldc = testSpelldc;
-                    templateid = tokenInTemplates[j];
-                }
-            }
-
-            if (!inBeam) {
-                deleteEffect = true;
-            } else {
-                if (oldSpellLevel !== spellLevel || oldSpelldc !== spelldc) {
-                    createEffect = true;
-                    deleteEffect = true;
-                }
-            }
-            if (deleteEffect && effect) {
-                try {
-                    await effect.delete();
-                } catch {
-                }
-            }
-            if (createEffect && inBeam && (oldSpellLevel !== spellLevel || oldSpelldc !== spelldc)) {
-                let dieCount = spellLevel;
-                let damageRoll = dieCount + 'd10';
-                const damageType = "radiant";
-                let templateDoc = canvas.scene.collections.templates.get(templateid);
-                let origin = templateDoc.flags?.dnd5e?.origin;
-                let effectData = {
-                    'name': 'Moonbeam',
-                    'icon': 'icons/magic/light/beam-rays-yellow-blue.webp',
-                    'changes': [
-                        {
-                            'key': 'flags.midi-qol.OverTime',
-                            'mode': 5,
-                            'value': 'turn=start, rollType=save, saveAbility=con, saveDamage=halfdamage, saveRemove=false, saveMagic=true, damageType=' + damageType + ', damageRoll=' + damageRoll + ', saveDC =' + spelldc,
-                            'priority': 20
-                        }
-                    ],
-                    'origin': origin,
-                    'duration': {'seconds': 600},
-                    'flags': {
-                        'effectmacro': {
-                            'onTurnStart': {
-                                'script': "let combatTurn = game.combat.round + '-' + game.combat.turn;\nlet templateid = effect.flags.world.spell.Moonbeam.templateid;\ntoken.document.setFlag('world', `spell.Moonbeam.${templateid}.turn`, combatTurn);"
-                            }
-                        },
-                        'world': {
-                            'spell': {
-                                'Moonbeam': {
-                                    'spellLevel': spellLevel,
-                                    'spelldc': spelldc,
-                                    'templateid': templateDoc.id,
-                                    'ambientLightId': ambientLightId
-                                }
-                            }
-                        }
-                    }
-                };
-
-                await MidiQOL.socket().executeAsGM("createEffects",
-                    {actorUuid: tokenDoc.actor.uuid, effects: [effectData]});
-            }
-        }
-    }
-
-    static async createBonfireEffects(tokenids) {
-        if (!tokenids)
-            return;
-
-        for (let i = 0; tokenids.length > i; i++) {
-            let tokenDoc = canvas.scene.tokens.get(tokenids[i]);
-            if (!tokenDoc) continue;
-
-            let tokenInTemplates = game.modules.get('templatemacro').api.findContainers(tokenDoc);
-            let effect = tokenDoc.actor.effects.find(eff => eff.name === 'CreateBonfire');
-            let createEffect = false;
-            let deleteEffect = false;
-            let inBeam = false;
-            let damageDice = 1;
-            let spelldc = -100;
-            let oldDamageDice = effect?.flags?.world?.spell?.CreateBonfire?.cantripDice;
-            let oldSpelldc = effect?.flags?.world?.spell?.CreateBonfire?.spelldc;
-
-            let templateid = effect?.flags?.world?.spell?.CreateBonfire?.templateid;
-            for (let j = 0; tokenInTemplates.length > j; j++) {
-                let testTemplate = canvas.scene.collections.templates.get(tokenInTemplates[j]);
-                if (!testTemplate) continue;
-                let createBonfire = testTemplate.flags.world?.spell?.CreateBonfire;
-                if (!createBonfire) continue;
-                inBeam = true;
-                let testDamageDice = createBonfire.cantripDice;
-                let testSpelldc = createBonfire.spelldc;
-                if (testDamageDice > damageDice) {
-                    damageDice = testDamageDice;
-                    templateid = tokenInTemplates[j];
-                }
-                if (testSpelldc > spelldc) {
-                    spelldc = testSpelldc;
-                    templateid = tokenInTemplates[j];
-                }
-            }
-
-            if (!inBeam) {
-                deleteEffect = true;
-            } else {
-                if (oldDamageDice !== damageDice || oldSpelldc !== spelldc) {
-                    createEffect = true;
-                    deleteEffect = true;
-                }
-            }
-            if (deleteEffect && effect) {
-                try {
-                    await effect.delete();
-                } catch {
-                }
-            }
-            if (createEffect && inBeam && (oldDamageDice !== damageDice || oldSpelldc !== spelldc)) {
-                let dieCount = damageDice;
-                let damageRoll = dieCount + 'd8';
-                const damageType = "fire";
-                let templateDoc = canvas.scene.collections.templates.get(templateid);
-                let origin = templateDoc.flags?.dnd5e?.origin;
-                let effectData = {
-                    'name': 'CreateBonfire',
-                    'icon': 'icons/magic/fire/flame-burning-campfire-orange.webp',
-                    'changes': [
-                        {
-                            'key': 'flags.midi-qol.OverTime',
-                            'mode': 5,
-                            'value': 'turn=start, rollType=save, saveAbility=con, saveDamage=halfdamage, saveRemove=false, saveMagic=true, damageType=' + damageType + ', damageRoll=' + damageRoll + ', saveDC =' + spelldc,
-                            'priority': 20
-                        }
-                    ],
-                    'origin': origin,
-                    'duration': {'seconds': 600},
-                    'flags': {
-                        'effectmacro': {
-                            'onTurnStart': {
-                                'script': "let combatTurn = game.combat.round + '-' + game.combat.turn;\nlet templateid = effect.flags.world.spell.CreateBonfire.templateid;\ntoken.document.setFlag('world', `spell.CreateBonfire.${templateid}.turn`, combatTurn);"
-                            }
-                        },
-                        'world': {
-                            'spell': {
-                                'CreateBonfire': {
-                                    'cantripDice': damageDice,
-                                    'spelldc': spelldc,
-                                    'templateid': templateDoc.id
-                                }
-                            }
-                        }
-                    }
-                };
-
-                await MidiQOL.socket().executeAsGM("createEffects",
-                    {actorUuid: tokenDoc.actor.uuid, effects: [effectData]});
-            }
-        }
+        let newCenter = ray.project(squares);
+        await MidiQOL.moveTokenAwayFromPoint(targetToken, knockBackFt, newCenter);
     }
 
     /**
@@ -1474,7 +362,7 @@ class HomebrewMacros {
             .effect()
             .file("jb2a.gust_of_wind.veryfast")
             .atLocation(startPosition)
-            .stretchTo(chargerToken, {
+            .stretchTo(targetToken, {
                 attachTo: true
             })
             .belowTokens()
@@ -1567,8 +455,7 @@ class HomebrewMacros {
                     'effects': [spellEffect.id]
                 });
             }
-        }
-        else if (failedSaves >= 3) {
+        } else if (failedSaves >= 3) {
             ChatMessage.create({content: `${targetToken.name} becomes petrified`});
             await targetToken.actor.unsetFlag(_flagGroup, "prismatic-spray-indigo");
 
@@ -1579,10 +466,168 @@ class HomebrewMacros {
                 });
             }
 
-            await game.dfreds.effectInterface.addEffect({ effectName: 'Petrified', uuid: targetToken.actor.uuid });
+            await game.dfreds.effectInterface.addEffect({effectName: 'Petrified', uuid: targetToken.actor.uuid});
+        } else {
+            await targetToken.actor.setFlag(_flagGroup, "prismatic-spray-indigo", {
+                failedSaves: failedSaves,
+                madeSaves: madeSaves
+            });
         }
-        else {
-            await targetToken.actor.setFlag(_flagGroup, "prismatic-spray-indigo", {failedSaves: failedSaves, madeSaves: madeSaves});
+    }
+
+    /**
+     * Helper method for applying poison to a weapon
+     *
+     * @param actor         the actor applying the poison
+     * @param poisonItem    the poison item
+     *
+     * @returns {Promise<void>}
+     */
+    static async applyPoisonToWeapon(actor, poisonItem) {
+        let speaker = ChatMessage.getSpeaker({actor: actor});
+
+        let weapons = actor.items.filter(i => i.type === `weapon` && (i.system.damage.parts[0][1] === `piercing` || i.system.damage.parts[0][1] === `slashing`));
+        let weapon_content = ``;
+        for (let weapon of weapons) {
+            weapon_content += `<option value=${weapon.id}>${weapon.name}</option>`;
         }
+
+        let content = `
+		  <form>
+			<div class="flexcol">
+				<div class="flexrow" style="margin-bottom: 10px;"><label>Choose your weapon to poison:</label></div>
+				<div class="flexrow"style="margin-bottom: 10px;">
+					<select name="weapons">${weapon_content}</select>
+				</div>
+			</div>
+		  </form>
+		`;
+
+        let dialog = new Promise((resolve, reject) => {
+            new Dialog({
+                // localize this text
+                title: `Apply ${poisonItem.name}`,
+                content: content,
+                buttons: {
+                    one: {
+                        label: "<p>OK</p>",
+                        callback: async (html) => {
+                            let itemId = html.find('[name=weapons]')[0].value;
+                            let weapon = actor.items.get(itemId);
+                            const itemName = weapon.name;
+                            let mutations = {
+                                "name": `${weapon.name} (${poisonItem.name})`
+                            };
+
+                            // Update the weapon name to show it as poisoned
+                            await weapon.update(mutations);
+
+                            // check weapon type to see if it should be single or triple use
+                            let useCount = 1;
+                            if ((weapon.system.actionType === "rwak") && weapon.system.properties.has("amm")) {
+                                useCount = 3;
+                            }
+
+                            // track poison info in the actor
+                            await actor.setFlag(_flagGroup, _poisonedWeaponFlag, {
+                                itemName: itemName,
+                                itemId: weapon.id,
+                                applications: useCount
+                            });
+
+                            ChatMessage.create({content: `${itemName} is poisoned`, speaker: speaker});
+                            resolve(true);
+                        }
+                    },
+                    two: {
+                        label: "<p>Cancel</p>",
+                        callback: () => {
+                            resolve(false);
+                        }
+                    }
+                },
+                default: "two"
+            }).render(true);
+        });
+        await dialog;
+    }
+
+    static async removePoisonFromWeapon(actor) {
+        let flag = actor.getFlag(_flagGroup, _poisonedWeaponFlag);
+        if (flag) {
+            await actor.unsetFlag(_flagGroup, _poisonedWeaponFlag);
+            let weapon = actor.items.get(flag.itemId);
+            if (weapon) {
+                await weapon.update({"name": flag.itemName});
+                ChatMessage.create({
+                    content: flag.itemName + " returns to normal",
+                    speaker: ChatMessage.getSpeaker({actor: actor})
+                });
+            }
+        }
+    }
+
+    static async applyLifeDrainEffect(sourceActor, targetActor, damage) {
+        // check for existing
+        let drainedEffect = targetActor.effects.find(eff => eff.name === "Life Drained");
+        if (drainedEffect) {
+            const effectData = drainedEffect.toObject();
+            effectData.changes.push({
+                key: 'system.attributes.hp.tempmax',
+                mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                value: -damage,
+                priority: 20
+            });
+            await drainedEffect.update({changes: effectData.changes});
+        } else {
+            let effectData = {
+                name: 'Life Drained',
+                icon: 'icons/magic/unholy/strike-body-life-soul-purple.webp',
+                origin: sourceActor.uuid,
+                transfer: false,
+                disabled: false,
+                changes: [
+                    {
+                        key: 'system.attributes.hp.tempmax',
+                        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                        value: -damage,
+                        priority: 20
+                    }
+                ],
+                'flags': {
+                    'dae': {
+                        'specialDuration': ['longRest']
+                    }
+                }
+            };
+            await MidiQOL.socket().executeAsGM("createEffects", {actorUuid: targetActor.uuid, effects: [effectData]});
+        }
+
+        // check for death
+        if (targetActor.system.attributes.hp.effectiveMax <= 0) {
+            const isDead = await game.dfreds?.effectInterface?.hasEffectApplied('Dead', targetActor.uuid);
+            if (!isDead) {
+                await game.dfreds.effectInterface.addEffect({effectName: 'Dead', uuid: targetActor.uuid});
+            }
+        }
+    }
+
+    static async getActorFromCompendium(transformActorId) {
+        if (transformActorId) {
+            let entity = await fromUuid(transformActorId);
+            if (!entity) {
+                return ui.notifications.error(`${optionName} - unable to find the actor: ${transformActorId}`);
+            }
+
+            // import the actor
+            let document = await entity.collection.importFromCompendium(game.packs.get(entity.pack), entity.id, {});
+            if (!document) {
+                return ui.notifications.error(`${optionName} - unable to import ${transformActorId} from the compendium`);
+            }
+            await HomebrewMacros.wait(500);
+            return document;
+        }
+
+        return undefined;
     }
 }

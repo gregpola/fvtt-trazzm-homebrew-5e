@@ -1,33 +1,4 @@
-export function playerFor(target) {
-    //@ts-expect-error
-    return playerForActor(target.document?.actor ?? target.actor ?? undefined); // just here for syntax checker
-}
-export function playerForActor(actor) {
-    if (!actor)
-        return undefined;
-    let user;
-    //@ts-ignore DOCUMENT_PERMISSION_LEVELS.OWNER v10
-    const OWNERSHIP_LEVELS = CONST.DOCUMENT_PERMISSION_LEVELS;
-    //@ts-ignore ownership v10
-    const ownwership = actor.ownership;
-    // find an active user whose character is the actor
-    if (actor.hasPlayerOwner)
-        user = game.users?.find(u => u.character?.id === actor?.id && u.active);
-    if (!user) // no controller - find the first owner who is active
-        user = game.users?.players.find(p => p.active && ownwership[p.id ?? ""] === OWNERSHIP_LEVELS.OWNER);
-    if (!user) // find a non-active owner
-        user = game.users?.players.find(p => p.character?.id === actor?.id);
-    if (!user) // no controlled - find an owner that is not active
-        user = game.users?.players.find(p => ownwership[p.id ?? ""] === OWNERSHIP_LEVELS.OWNER);
-    if (!user && ownwership.default === OWNERSHIP_LEVELS.OWNER) {
-        // does anyone have default owner permission who is active
-        user = game.users?.players.find(p => p.active && ownwership[p.id] === OWNERSHIP_LEVELS.INHERIT);
-    }
-    // if all else fails it's an active gm.
-    if (!user)
-        user = game.users?.find(p => p.isGM && p.active);
-    return user;
-}
+// TODO add doTurnEndOptions, especially for handling legendary actions
 
 export async function doTurnStartOptions(actorUuid, options = {}) {
     const name = options.combatant.name;
@@ -40,6 +11,7 @@ export async function turnStartDialog(actorUuid, options = {}) {
     const dialog = new TurnStartDialog({
         title: options.combatant.name + ' ' + 'Turn Start',
         actorUuid: actorUuid,
+        actor: options.combatant.actor,
         hp: options.hp,
         prone: options.prone,
         dead: options.dead,
@@ -100,6 +72,7 @@ class TurnStartDialog extends Application {
         this.data.buttons = {
             standUp: { label: "Stand Up", callback: async (html) => {
                 await game.dfreds?.effectInterface?.removeEffect({effectName: 'Prone', uuid: this.data.actorUuid});
+                await this.data.actor.toggleStatusEffect("prone", { active: false });
             }},
             close: { label: "Close", callback: (html) => {
                 TurnStartDialog.storePosition(html);

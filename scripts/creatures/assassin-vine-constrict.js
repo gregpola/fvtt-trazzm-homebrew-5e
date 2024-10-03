@@ -3,15 +3,16 @@
 	and it is Grappled (escape DC 14). Until this grapple ends, the target is Restrained, and it takes 21 (6d6) poison 
 	damage at the start of each of its turns. The vine can constrict only one target at a time.
 */
-const version = "10.1";
+const version = "12.3.0";
 const optionName = "Constrict";
 const flagName = "assassin-vine-grappled";
+const _flagGroup = "fvtt-trazzm-homebrew-5e";
 
 try {
 	let targetToken = workflow?.hitTargets?.first();
 	if ((args[0].macroPass === "postActiveEffects") && targetToken) {
 		// make sure the vine isn't already grappling someone else
-		const grappleFlag = actor.getFlag("midi-qol", flagName);
+		const grappleFlag = actor.getFlag(_flagGroup, flagName);
 		if (!grappleFlag) {
 			// grapple the target
 			let overtimeValue = "turn=start, label=Assassin Vine Constrict, damageRoll=6d6, damageType=poison";

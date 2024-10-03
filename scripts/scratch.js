@@ -3,6 +3,7 @@
 */
 const version = "11.0";
 const optionName = "Precision";
+const _flagGroup = "fvtt-trazzm-homebrew-5e";
 
 try {
 
@@ -27,16 +28,21 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType))
 		const pb = actor.system.attributes.prof;
 		const actorDC = actor.system.attributes.spelldc ?? 12;
 		const spellcastingAbility = actor.system.attributes.spellcasting;
-		const abilityBonus = actor.system.abilities[spellcastingAbility].mod;
+		const abilityBonus = actor.system.attributes.spellmod;
 		const spellLevel = workflow.castData.castLevel;
 		const abilityBonus = Math.max(rollingActor.system.abilities.str.mod, rollingActor.system.abilities.dex.mod);
 
 		flags.midi - qol.neverTarget
 
+		"50% chance of success"
+
 		item.system.prof.hasProficiency
+		foundry.utils.setProperty(lastChange, "value", totalLifeDrained);
 
 
 		const _flagGroup = "fvtt-trazzm-homebrew-5e";
+		const _poisonedWeaponFlag = "poisoned-weapon";
+
 		await actor.setFlag(_flagGroup, flagName, target.actor.uuid);
 		let flag = actor.getFlag(_flagGroup, flagName);
 		await actor.unsetFlag(_flagGroup, flagName);
@@ -50,19 +56,8 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType))
 		});
 
 
-		const damageTypes = [['🧪 Acid', 'acid'], ['❄️ Cold', 'cold'], ['🔥 Fire', 'fire'], ['⚡ Lightning', 'lightning'], ['☁️ Thunder', 'thunder']]; //All possible damage types
 
-		function isAvailableThisTurn() {
-			if (game.combat) {
-				const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn / 100}`;
-				const lastTime = actor.getFlag("midi-qol", timeFlag);
-				if (combatTime === lastTime) {
-					return false;
-				}
-				return true;
-			}
-			return false;
-		}
+		const damageTypes = [['🧪 Acid', 'acid'], ['❄️ Cold', 'cold'], ['🔥 Fire', 'fire'], ['⚡ Lightning', 'lightning'], ['☁️ Thunder', 'thunder']]; //All possible damage types
 
 		await game.MonksTokenBar.requestRoll([{token: targetToken}], {
 			request: [{"type": "save", "key": "con"}],
@@ -124,6 +119,8 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType))
 	)
 
 // vertime setup to remove a condition on save
+		turn=start, rollType=save, saveAbility=con, saveDamage=halfdamage, saveRemove=false, saveMagic=true, damageType=radiant, damageRoll=(@spellLevel)d10,saveDC=@attributes.spelldc
+
 		turn = end, saveAbility = wis, saveDC = 19, label = Frightened
 		turn = end, saveAbility = wis, saveDC = 19, label = Stunned
 		turn = end, saveAbility = con, saveDC = 12, label = Poisoned
@@ -227,18 +224,3 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType))
 		}
 
 
-		<description type="formattedtext">
-			<p>This runestone will add resistance to necrotic damage to a suit of armor.</p>
-			<p>
-				<b>Runestone Notes</b>
-			</p>
-			<p>A skilled armorsmith can infuse a suit of armor with runestones to add the power of the rune to the
-				armor. A suit of armor can be enhanced with up to two minor runestones and one major runestone.</p>
-		</description>
-		<isidentified type="number">1</isidentified>
-		<location type="string">Bag of Holding</location>
-		<locked type="number">1</locked>
-		<name type="string">Runestone of Necrotic Resistance</name>
-		<nonid_name type="string">a small, flat stone with a rune on it</nonid_name>
-		<subtype type="string">Minor Runestone</subtype>
-		<type type="string">Wondrous Item</type>

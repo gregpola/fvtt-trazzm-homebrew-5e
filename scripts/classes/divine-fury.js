@@ -3,7 +3,7 @@
 	raging, the first creature you hit on each of your turns with a weapon attack takes extra damage equal to 1d6 + half
 	your barbarian level. The extra damage is necrotic or radiant; you choose the type of damage when you gain this feature.
 */
-const version = "11.1";
+const version = "12.3.0";
 const optionName = "Divine Fury";
 const rageEffectName = "Rage";
 const timeFlag = "divineFuryTime";
@@ -23,17 +23,13 @@ try {
         }
 
         // Check for availability i.e. first hit on the actors turn
-        if (!isAvailableThisTurn() || !game.combat) {
+        if (!HomebrewHelpers.isAvailableThisTurn(actor, timeFlag) || !game.combat) {
             console.log(`${optionName} - not available this attack`);
             return;
         }
 
         // set the time flag
-        const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn / 100}`;
-        const lastTime = actor.getFlag("midi-qol", timeFlag);
-        if (combatTime !== lastTime) {
-            await actor.setFlag("midi-qol", timeFlag, combatTime)
-        }
+        await HomebrewHelpers.setUsedThisTurn(actor, timeFlag);
 
         // get the damage type from the feature
         let damageType = "radiant";
@@ -47,7 +43,6 @@ try {
         }
 
         // Build the damage bonus
-        const diceMult = workflow.isCritical ? 2 : 1;
         const barbarianLevel = actor.getRollData().classes.barbarian?.levels ?? 0;
         const bonus = Math.ceil(barbarianLevel / 2);
         if (workflow.isCritical) {
@@ -65,20 +60,4 @@ try {
 
 function hasEffectApplied(effectName, actor) {
     return actor.effects.find((ae) => ae.name === effectName) !== undefined;
-}
-
-// Check to make sure the actor hasn't already applied the damage this turn
-function isAvailableThisTurn() {
-    if (game.combat) {
-        const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn / 100}`;
-        const lastTime = actor.getFlag("midi-qol", timeFlag);
-        if (combatTime === lastTime) {
-            console.log(`${optionName}: already used this turn`);
-            return false;
-        }
-
-        return true;
-    }
-
-    return false;
 }

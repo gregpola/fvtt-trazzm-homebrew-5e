@@ -1,4 +1,5 @@
-const version = "10.0";
+
++onst version = "10.0";
 const optionName = "Potion of Healing";
 
 try {

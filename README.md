@@ -29,4 +29,4 @@ To install a module, follow these instructions:
   * sequencer
   * templatemacro
   * tokenmagic
-  * warpgate
+  
