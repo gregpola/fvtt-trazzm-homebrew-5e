@@ -1,25 +1,160 @@
-// When Deleted
-let touchedTokens = template.flags.world?.spell?.web?.touchedTokens;
-for (let i = 0; touchedTokens.length > i; i++) {
-	let tokenDoc = canvas.scene.tokens.get(touchedTokens[i]);
-	if (!tokenDoc) continue;
-	await tokenDoc.unsetFlag('world', 'spell.web.' + template.id);
-}
-if (touchedTokens) await HomebrewMacros.webSpellEffects(touchedTokens);
 
-// When entered
-let touchedTokens = template.flags.world?.spell?.web?.touchedTokens || [];
-if (!touchedTokens.includes(token.id)) {
-	touchedTokens.push(token.id);
-	await template.setFlag('world', 'spell.web', {touchedTokens});
-}
-await HomebrewMacros.webSpellEffects([token.id]);
+// Token Enters
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// when left
-let touchedTokens = template.flags.world?.spell?.web?.touchedTokens || [];
-if (touchedTokens.includes(token.id)) {
-	const index = touchedTokens.indexOf(token.id);
-	const x = touchedTokens.splice(index, 1);
-	await template.setFlag('world', 'spell.web', {touchedTokens});
+let targetToken = event.data.token;
+let effect = HomebrewHelpers.findEffect(targetToken.actor, 'In Webs');
+if (!effect) {
+	let effectData = {
+		'name': 'In Webs',
+		'icon': 'icons/creatures/webs/web-spider-caught-hand-purple.webp',
+		'changes': [
+			{
+				'key': 'system.attributes.movement.walk',
+				'mode': CONST.ACTIVE_EFFECT_MODES.MULTIPLY,
+				'value': '0.5',
+				'priority': 20
+			},
+			{
+				'key': 'macro.tokenMagic',
+				'mode': CONST.ACTIVE_EFFECT_MODES.CUSTOM,
+				'value': 'simpleweb',
+				'priority': 21
+			}
+		],
+		'origin': origin,
+		disabled: false
+	};
+
+	await MidiQOL.socket().executeAsGM("createEffects", {actorUuid: targetToken.actor.uuid, effects: [effectData]});
 }
-await HomebrewMacros.webSpellEffects([token.id]);
+
+const targetsTurn = game.combat.turns.findIndex(t => t.tokenId === targetToken.id);
+if (targetsTurn && targetsTurn === game.combat.turn) {
+	let stuckEffect = HomebrewHelpers.findEffect(targetToken.actor, 'Stuck In Webs');
+
+	// roll dex save
+	let spelldc = 14;
+	let templateFlag = region.flags?.world?.spell?.Web;
+	if (templateFlag) {
+		spelldc = templateFlag.saveDC;
+	}
+
+	let saveRoll = await targetToken.actor.rollAbilitySave("dex", {flavor: "Resist webs - DC " + spelldc});
+	await game.dice3d?.showForRoll(saveRoll);
+
+	if (saveRoll.total < spelldc) {
+		if (!stuckEffect) {
+			let stuckEffectData = {
+				'name': 'Stuck In Webs',
+				'icon': 'icons/creatures/webs/web-spider-caught-hand-purple.webp',
+				'changes': [
+					{
+						'key': 'macro.CE',
+						'mode': CONST.ACTIVE_EFFECT_MODES.CUSTOM,
+						'value': 'Restrained',
+						'priority': 20
+					},
+					{
+						'key': 'macro.createItem',
+						'mode': CONST.ACTIVE_EFFECT_MODES.CUSTOM,
+						'value': 'Compendium.fvtt-trazzm-homebrew-5e.homebrew-automation-items.Item.3GBSZ2RemODj1eBL',
+						'priority': 21
+					}
+				],
+				'origin': origin,
+				disabled: false
+			};
+
+			await MidiQOL.socket().executeAsGM("createEffects", {actorUuid: targetToken.actor.uuid, effects: [stuckEffectData]});
+		}
+	}
+	else if (stuckEffect) {
+		await MidiQOL.socket().executeAsGM("removeEffects", {actorUuid: targetToken.actor.uuid, effects: [stuckEffect.id]});
+	}
+}
+
+
+// Move Out
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+let effect = HomebrewHelpers.findEffect(event.data.token?.actor, 'In Webs');
+if (effect) {
+	await MidiQOL.socket().executeAsGM("removeEffects", {actorUuid: event.data.token.actor.uuid, effects: [effect.id]});
+}
+
+let stuckEffect = HomebrewHelpers.findEffect(event.data.token?.actor, 'Stuck In Webs');
+if (stuckEffect) {
+	await MidiQOL.socket().executeAsGM("removeEffects", {actorUuid: event.data.token.actor.uuid, effects: [stuckEffect.id]});
+}
+
+// Turn Start
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+let targetActor = event.data.token?.actor;
+let effect = HomebrewHelpers.findEffect(targetActor, 'In Webs');
+if (!effect) {
+	let effectData = {
+		'name': 'In Webs',
+		'icon': 'icons/creatures/webs/web-spider-caught-hand-purple.webp',
+		'changes': [
+			{
+				'key': 'system.attributes.movement.walk',
+				'mode': CONST.ACTIVE_EFFECT_MODES.MULTIPLY,
+				'value': '0.5',
+				'priority': 20
+			},
+			{
+				'key': 'macro.tokenMagic',
+				'mode': CONST.ACTIVE_EFFECT_MODES.CUSTOM,
+				'value': 'simpleweb',
+				'priority': 21
+			}
+		],
+		'origin': origin,
+		disabled: false
+	};
+
+	await MidiQOL.socket().executeAsGM("createEffects", {actorUuid: targetActor.uuid, effects: [effectData]});
+}
+
+// roll dex save
+let spelldc = 14;
+let templateFlag = region.flags?.world?.spell?.Web;
+if (templateFlag) {
+	spelldc = templateFlag.saveDC;
+}
+
+let saveRoll = await targetActor.rollAbilitySave("dex", {flavor: "Resist webs - DC " + spelldc});
+await game.dice3d?.showForRoll(saveRoll);
+let stuckEffect = HomebrewHelpers.findEffect(targetActor, 'Stuck In Webs');
+if (saveRoll.total < spelldc) {
+	if (!stuckEffect) {
+		let stuckEffectData = {
+			'name': 'Stuck In Webs',
+			'icon': 'icons/creatures/webs/web-spider-caught-hand-purple.webp',
+			'changes': [
+				{
+					'key': 'macro.CE',
+					'mode': CONST.ACTIVE_EFFECT_MODES.CUSTOM,
+					'value': 'Restrained',
+					'priority': 20
+				},
+				{
+					'key': 'macro.createItem',
+					'mode': CONST.ACTIVE_EFFECT_MODES.CUSTOM,
+					'value': 'Compendium.fvtt-trazzm-homebrew-5e.homebrew-automation-items.Item.3GBSZ2RemODj1eBL',
+					'priority': 21
+				}
+			],
+			'origin': origin,
+			disabled: false
+		};
+
+		await MidiQOL.socket().executeAsGM("createEffects", {actorUuid: targetActor.uuid, effects: [stuckEffectData]});
+	}
+}
+else if (stuckEffect) {
+	await MidiQOL.socket().executeAsGM("removeEffects", {actorUuid: targetActor.uuid, effects: [stuckEffect.id]});
+}
+

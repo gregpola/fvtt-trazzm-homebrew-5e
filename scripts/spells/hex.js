@@ -12,7 +12,7 @@
 	on the spell for up to 8 hours. When you use a spell slot of 5th level or higher, you can maintain your concentration
 	on the spell for up to 24 hours.
  */
-const version = "12.3.0";
+const version = "12.3.1";
 const optionName = "Hex";
 const targetOptionName = "Hex Marked";
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
@@ -30,65 +30,44 @@ try {
 			let duration = 3600 * durationMod;
 
 			// Ask which ability they want to hex
-			new Dialog({
-				title: 'Choose which ability the target will have disadvantage on ability checks with:',
-				content: `
-			  <form class="flexcol">
-				<div class="form-group">
-				  <select id="stat">
-					<option value="str">Strength</option>
-					<option value="dex">Dexterity</option>
-					<option value="con">Constitution</option>
-					<option value="int">Intelligence</option>
-					<option value="wis">Wisdom</option>
-					<option value="cha">Charisma</option>
-				  </select>
-				</div>
-			  </form>
-			`,
-				buttons: {
-					yes: {
-						icon: '<i class="fas fa-bolt"></i>',
-						label: 'Select',
-						callback: async (html) => {
-							let stat = html.find('#stat').val();
+			let ability = await HomebrewHelpers.selectAbilityDialog("Select Ability to Hex Curse");
+			if (ability) {
+				const hexEffect = HomebrewHelpers.findEffect(actor, item.name);
+				const updatedDuration = deepClone(hexEffect.duration);
+				updatedDuration.seconds = duration;
+				await hexEffect.update({updatedDuration});
 
-							const hexEffect = HomebrewHelpers.findEffect(actor, item.name);
-							const updatedDuration = deepClone(hexEffect.duration);
-							updatedDuration.seconds = duration;
-							await hexEffect.update({updatedDuration});
+				actor.setFlag(_flagGroup, targetFlagName, { targetActorUuid: targetActor.uuid, origin: workflow.item.uuid, duration: duration});
 
-							actor.setFlag(_flagGroup, targetFlagName, { targetActorUuid: targetActor.uuid, origin: workflow.item.uuid, duration: duration});
-
-							// Update concentration duration ??? update ???
-							let concEffect = HomebrewHelpers.findEffect(actor, "Concentrating");
-							if (concEffect) {
-								const updatedConcDuration = deepClone(concEffect.duration);
-								updatedConcDuration.seconds = duration;
-								await concEffect.update({updatedConcDuration});
-							}
-
-							// apply effect to the target
-							let targetEffectData = {
-								'name': targetOptionName,
-								'icon': workflow.item.img,
-								'origin': workflow.item.uuid,
-								'duration': {
-									'seconds': duration
-								},
-								'changes': [
-									{ 'key': `flags.midi-qol.disadvantage.ability.check.${stat}`,
-										'mode': 5,
-										'value': true,
-										'priority': 10}
-								],
-								'flags': { 'dae': { 'specialDuration': ["zeroHP"] } }
-							};
-							await MidiQOL.socket().executeAsGM('createEffects', {'actorUuid': targetActor.uuid, 'effects': [targetEffectData]});
-						},
-					},
+				// Update concentration duration ??? update ???
+				let concEffect = HomebrewHelpers.findEffect(actor, "Concentrating");
+				if (concEffect) {
+					const updatedConcDuration = deepClone(concEffect.duration);
+					updatedConcDuration.seconds = duration;
+					await concEffect.update({updatedConcDuration});
 				}
-			}).render(true);
+
+				// apply effect to the target
+				let effectData = {
+					'name': targetOptionName,
+					'icon': workflow.item.img,
+					'origin': workflow.item.uuid,
+					'duration': {
+						'seconds': duration
+					},
+					'changes': [
+						{
+							key: `flags.midi-qol.disadvantage.ability.check.${ability}`,
+							mode: 5,
+							value: true,
+							priority: 10
+						}
+					],
+					'flags': { 'dae': { 'specialDuration': ["zeroHP"] } }
+				};
+
+				await MidiQOL.socket().executeAsGM('createEffects', {'actorUuid': targetActor.uuid, 'effects': [effectData]});
+			}
 		}
 	}
 	else if (args[0].macroPass === "DamageBonus") {
@@ -132,7 +111,7 @@ try {
 			if (targetActor) {
 				let effect = targetActor.effects.find(i => i.name === targetOptionName && i.origin === targetFlag.origin);
 				if (effect) {
--					await MidiQOL.socket().executeAsGM('removeEffects', {'actorUuid':targetActor.uuid, 'effects': [effect.id]});
+					await MidiQOL.socket().executeAsGM('removeEffects', {'actorUuid':targetActor.uuid, 'effects': [effect.id]});
 				}
 			}
 		}

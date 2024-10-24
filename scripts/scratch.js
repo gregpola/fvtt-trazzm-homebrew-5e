@@ -1,13 +1,14 @@
 /*
 	
 */
-const version = "11.0";
+const version = "12.3.0";
 const optionName = "Precision";
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
 
 try {
 
-} catch (err) {
+}
+catch (err) {
 	console.error(`${optionName}: ${version}`, err);
 }
 
@@ -38,6 +39,7 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType))
 
 		item.system.prof.hasProficiency
 		foundry.utils.setProperty(lastChange, "value", totalLifeDrained);
+		const isSurprised = actor.statuses.has("surprised");
 
 
 		const _flagGroup = "fvtt-trazzm-homebrew-5e";
@@ -47,17 +49,26 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType))
 		let flag = actor.getFlag(_flagGroup, flagName);
 		await actor.unsetFlag(_flagGroup, flagName);
 
-		ui.notifications.error(`${optionName}: ${version} - no shared language`);
+		actor.getRollData().effects.find(eff => eff.name === name);
+		let effectIdsToRemove = actor.getRollData().effects.filter(e => e.origin === stuckEffect.origin).map(effect => effect.id);
 
+		ui.notifications.error(`${optionName}: ${version} - no shared language`);
 
 		ChatMessage.create({
 			content: `${actorToken.name}'s ${selectedItem.name} is blessed with positive energy`,
 			speaker: ChatMessage.getSpeaker({actor: actor})
 		});
 
-
-
 		const damageTypes = [['🧪 Acid', 'acid'], ['❄️ Cold', 'cold'], ['🔥 Fire', 'fire'], ['⚡ Lightning', 'lightning'], ['☁️ Thunder', 'thunder']]; //All possible damage types
+
+		const usePiercerReroll = await foundry.applications.api.DialogV2.confirm({
+			window: {
+				title: `${optionName}`,
+			},
+			content: `<p>Use Piercer Reroll on ${roll.result} on a d${roll.die}?</p>`,
+			rejectClose: false,
+			modal: true
+		});
 
 		await game.MonksTokenBar.requestRoll([{token: targetToken}], {
 			request: [{"type": "save", "key": "con"}],
@@ -86,7 +97,7 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType))
 				flavor: `${targetToken.name} tries to resist ${token.name}'s grapple attempt`,
 				callback: async (result) => {
 					if (result.tokenresults[0].passed) {
-						await HomebrewMacros.applyGrappled(token, targetToken, 'opposed', null, null);
+						await HomebrewMacros.applyGrappled(token, targetToken, item, 'opposed', null, null);
 						ChatMessage.create({'content': `${token.name} grapples ${targetToken.name}`})
 					} else {
 						ChatMessage.create({'content': `${actor.name} fails to grapple ${targetToken.name}`});
@@ -100,25 +111,23 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType))
 		system.attributes.ac.bonus
 
 		let saveRoll = await targetActor.rollAbilitySave("con", {flavor: saveFlavor});
-
 		await game.dice3d?.showForRoll(saveRoll);
-
-
-		// bluish color
-		// #5570B8
 
 		await game.dfreds.effectInterface.removeEffect({effectName: 'Incapacitated', uuid: actor.uuid});
 
 
-		// Hit point level values
-		targetTokenDoc.actor.classes.barbarian.advancement.byType.HitPoints(array, first
-		has
-		the
-		hp
-		rolls
-	)
+		if (args[0] === "on") {
+			console.log(`${optionName}: ON`);
+		}
+		else if (args[0] === "off") {
+			console.log(`${optionName}: OFF`);
+		}
+		else if (args[0] === "each") {
+			console.log(`${optionName}: EACH`);
+		}
 
-// vertime setup to remove a condition on save
+
+// Overtime setup to remove a condition on save
 		turn=start, rollType=save, saveAbility=con, saveDamage=halfdamage, saveRemove=false, saveMagic=true, damageType=radiant, damageRoll=(@spellLevel)d10,saveDC=@attributes.spelldc
 
 		turn = end, saveAbility = wis, saveDC = 19, label = Frightened

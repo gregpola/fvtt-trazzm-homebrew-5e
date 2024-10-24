@@ -20,17 +20,25 @@ const optionName = "Web";
 
 try {
 	if (args[0].macroPass === "postActiveEffects") {
-		// build the region macro
-		let templateDoc = canvas.scene.collections.templates.get(lastArg.templateId);
-		if (!templateDoc) return;
-		
-		let spellLevel = lastArg.spellLevel;
-		let spelldc = lastArg.actor.system.attributes.spelldc;
-		let touchedTokens = await game.modules.get('templatemacro').api.findContained(templateDoc);
-		await templateDoc.setFlag('world', 'spell.web', {spellLevel, spelldc, touchedTokens});
-		await HomebrewMacros.webSpellEffects(touchedTokens, true);
+		// get the template
+		let templateDoc = canvas.scene.collections.templates.get(workflow.templateId);
+		if (templateDoc) {
+			const spellRegionId = templateDoc.flags['region-attacher']?.attachedRegion;
+			if (spellRegionId) {
+				const spellRegion = canvas.scene?.regions?.get(spellRegionId.substring(spellRegionId.lastIndexOf(".") + 1));
+				if (spellRegion) {
+					// store the spell data in the region
+					const actorDC = actor.system.attributes.spelldc ?? 12;
+					await spellRegion.setFlag('world', 'spell.Web', {
+						saveDC: actorDC,
+						spellId: item.id,
+						sourceTokenId: token.id,
+						itemCardId: args[0].itemCardId
+					});
+				}
+			}
+		}
 	}
-
 } catch (err) {
-    console.error(`${optionName} - ${version}`, err);
+	console.error(`${optionName}: ${version}`, err);
 }

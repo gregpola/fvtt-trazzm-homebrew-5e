@@ -42,6 +42,73 @@ export class CombatHandler {
                 return;
             }
 
+            // no use cases for backwards change
+            if (context.direction < 1) {
+                console.log("updateCombat - skipped - backwards")
+                return;
+            }
+
+            // store the prior combatant id
+            const lastCombatantId = combat.previous?.combatantId;
+
+            // first handle legendary actions, since they happen at the end of the prior combatant's turn
+            let legendaryCombatants = CombatHandler.filterForLegendaryActions(combat);
+            if (legendaryCombatants && legendaryCombatants.length > 0) {
+                let legendaryActionData = new Map();
+
+                for (let legendaryData of legendaryCombatants) {
+                    if (legendaryData.combatant.id !== lastCombatantId) {
+                        let usesLeft = legendaryData.legendaryResource.value ?? 0;
+
+                        if (usesLeft > 0) {
+                            // get the available legendary actions with a cost the actor can pay
+                            let legendaryOptions = legendaryData.combatant.actor.items.filter(i => i.system.activation.type === 'legendary' && i.system.activation.cost <= usesLeft);
+                            if (legendaryOptions && legendaryOptions.length > 0) {
+                                let legendaryParams = {
+                                    "combatant": legendaryData.combatant,
+                                    "actionPoints": usesLeft,
+                                    "actions": legendaryOptions
+                                }
+
+                                // get the player to prompt
+                                let playerId;
+                                let player = MidiQOL.playerForActor(legendaryData.combatant.actor);
+                                if (player && player.active) {
+                                    playerId = player.id;
+                                }
+                                else {
+                                    playerId = game.users.activeGM.id;
+                                }
+
+                                if (playerId) {
+                                    if (legendaryActionData.has(playerId)) {
+                                        let data = legendaryActionData.get(playerId);
+                                        data.push(legendaryParams);
+                                        legendaryActionData.set(playerId, data);
+                                    }
+                                    else {
+                                        legendaryActionData.set(playerId, [legendaryParams]);
+                                    }
+                                }
+                            }
+                            else {
+                                console.log("Legendary actions skipped for: " + legendaryData.combatant.name + " -- no options available this turn");
+                            }
+                        }
+                        else {
+                            console.log("Legendary actions skipped for: " + legendaryData.combatant.name + " -- no uses left");
+                        }
+                    }
+                }
+
+                legendaryActionData.forEach(async function(value, key) {
+                    await socket.executeAsUser("doLegendaryAction", key, value);
+                });
+
+                // After notifying of all legendary actions available, check for recharge of the current combatant
+                await HomebrewHelpers.rechargeLegendaryActions(combat?.combatant?.actor);
+            }
+
             // check for any turn start options
             let turnStartOptions = await CombatHandler.hasTurnStartOption(combat?.combatant);
             if (turnStartOptions) {
@@ -222,7 +289,7 @@ export class CombatHandler {
                         }
 
                         // check for two-handed weapons
-                        if ((currentWeapons[0] && currentWeapons[0].system.properties.two) || (currentWeapons[1] && currentWeapons[1].system.properties.two)) {
+                        if ((currentWeapons[0] && currentWeapons[0].system.properties.has('two')) || (currentWeapons[1] && currentWeapons[1].system.properties.has('two'))) {
                             console.log('Dual Wielder - no AC bonus, weapon is two handed');
                             getsACBonus = false;
                         }
@@ -289,6 +356,25 @@ export class CombatHandler {
         }
 
         return undefined;
+    }
+
+    static filterForLegendaryActions(combat) {
+        let result = [];
+
+        if (combat) {
+            for (let combatant of combat.combatants) {
+                // skip dead combatants
+                const hpValue = getProperty(combatant.actor, 'system.attributes.hp.value');
+                if (!hpValue || hpValue < 1) continue;
+
+                let legendaryResource = getProperty(combatant.actor, 'system.resources.legact');
+                if (legendaryResource && legendaryResource.max > 0) {
+                    result.push({combatant: combatant, legendaryResource: legendaryResource});
+                }
+            }
+        }
+
+        return result;
     }
 
     static async transformToZombie(combatant) {

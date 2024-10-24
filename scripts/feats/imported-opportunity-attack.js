@@ -182,7 +182,7 @@ async function handleTemplate() {
         }
     }
 
-    let onlyThrownWeapons = validWeapons.length > 0 && validWeapons.every(item => 'thr' in item.system.properties && item.system.properties.thr);
+    let onlyThrownWeapons = validWeapons.length > 0 && validWeapons.every(item => 'thr' in item.system.properties && item.system.properties.has('thr'));
     let maxRange;
 
     if (onlyThrownWeapons) {

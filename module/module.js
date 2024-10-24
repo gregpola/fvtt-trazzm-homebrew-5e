@@ -9,6 +9,7 @@ import {SummonHelper} from "./SummonHelper.js";
 import {macros} from './macros.js';
 import {registerSettings} from './settings.js';
 import {doTurnStartOptions} from "./utils.js";
+import {doLegendaryAction} from "./utils.js";
 
 const SUB_MODULES = {
     CombatHandler,
@@ -32,6 +33,7 @@ Hooks.once('init', async function () {
 Hooks.once('socketlib.ready', async function() {
     socket = socketlib.registerModule('fvtt-trazzm-homebrew-5e');
     socket.register('doTurnStartOptions', doTurnStartOptions);
+    socket.register('doLegendaryAction', doLegendaryAction);
 });
 
 /**

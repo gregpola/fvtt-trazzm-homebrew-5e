@@ -13,8 +13,10 @@
 
 	The amount of the extra damage increases as you gain levels in this class, as shown in the Sneak Attack column of the Rogue table.
 */
-const version = "11.3";
+const version = "12.3.0";
 const optionName = "Sneak Attack";
+const timeFlag = "sneakAttackTime";
+
 const combatTime = game.combat ? `${game.combat.id}-${game.combat.round + game.combat.turn / 100}` : 1;
 
 try {
@@ -32,9 +34,9 @@ try {
 	// check attack type for applicability
 	let allowedWeapon = true;
 	if (workflow.item.system.actionType === "mwak") {
-		if (!workflow.item.system.properties.fin) {
+		if (!workflow.item.system.properties.has('fin')) {
 			allowedWeapon = false;
-			if (workflow.item.system.properties.ver && checkVersatileSneakAttack(token)) {
+			if (workflow.item.system.properties.has('ver') && checkVersatileSneakAttack(token)) {
 				allowedWeapon = true;
 			}
 		}
@@ -45,24 +47,28 @@ try {
 		return {};
 	}
 
-	// check for rogue levels
-	let rogueLevels = actor.getRollData().classes?.rogue?.levels;
-	if (actor.type === "npc")
-		rogueLevels = actor.system.details.cr;
+	// check for sneak attack dice
+	let sneakDice = actor.system.scale?.rogue['sneak-attack']?.formula;
+	if (!sneakDice) {
+		if (actor.type === "npc") {
+			const diceCount = Math.ceil(actor.system.details.cr / 2);
+			sneakDice = `${diceCount}d6`;
+		}
+	}
 
-	if (!rogueLevels) {
+	if (!sneakDice) {
 		console.debug(`${optionName} - no rogue levels`);
 		return {};
 	}
 
-	let targetToken = canvas.tokens.get(args[0].hitTargets[0].id ?? args[0].hitTargers[0]._id);
+	let targetToken = workflow.hitTargets.first();
 	if (!targetToken) {
 		console.error(`${optionName} - no target token`);
 		return {};
 	}
 
 	// check once per turn
-	if (isAvailableThisTurn(actor) && game.combat) {
+	if (HomebrewHelpers.isAvailableThisTurn(actor, timeFlag) && game.combat) {
 		// Determine if the attack is eligible for Sneak Attack
 		let isSneak = workflow.advantage;
 
@@ -85,38 +91,24 @@ try {
 		}
 
 		// ask if they want to apply sneak attack
-		let dialog = new Promise((resolve, reject) => {
-			new Dialog({
-				// localize this text
+		let useSneak = await foundry.applications.api.DialogV2.confirm({
+			window: {
 				title: `${optionName}`,
-				content: `<p>Use Sneak attack?</p>`,
-				buttons: {
-					one: {
-						icon: '<i class="fas fa-check"></i>',
-						label: "Confirm",
-						callback: () => resolve(true)
-					},
-					two: {
-						icon: '<i class="fas fa-times"></i>',
-						label: "Cancel",
-						callback: () => {resolve(false)}
-					}
-				},
-				default: "two"
-			}).render(true)
+			},
+			content: `<p>Use Sneak attack on this attack? [${sneakDice}]</p>`,
+			rejectClose: false,
+			modal: true
 		});
-		useSneak = await dialog;
 
 		// Apply the damage
 		if (useSneak) {
-			await actor.setFlag('midi-qol', 'sneakAttackTime', `${combatTime}`);
-			const diceCount = Math.ceil(rogueLevels/2);
+			await HomebrewHelpers.setUsedThisTurn(actor, timeFlag);
 			if (workflow.isCritical) {
-				const critBonus = diceCount * 6;
-				return {damageRoll: `${diceCount}d6 + ${critBonus}`, flavor: optionName};
+				const critRoll = await new Roll(sneakDice).evaluate({maximize: true});
+				return {damageRoll: `${sneakDice} + ${critRoll.total}`, flavor: optionName};
 			}
 			else
-				return {damageRoll: `${diceCount}d6`, flavor: optionName};
+				return {damageRoll: `${sneakDice}`, flavor: optionName};
 		}
 	}
 
@@ -167,21 +159,8 @@ function checkVersatileSneakAttack(rogueToken) {
 	return false;
 }
 
-function isAvailableThisTurn(actor) {
-	if (game.combat) {
-		const lastTime = actor.getFlag("midi-qol", "sneakAttackTime");
-		if (combatTime === lastTime) {
-			return false;
-		}
-
-		return true;
-	}
-
-	return false;
-}
-
 function findEffect(actor, effectName, origin) {
     let effectUuid = null;
-    effectUuid = actor?.effects?.find(ef => ef.name === effectName && ef.origin === origin);
+    effectUuid = actor?.getRollData().effects?.find(ef => ef.name === effectName && ef.origin === origin);
     return effectUuid;
 }

@@ -96,88 +96,89 @@ class HomebrewMacros {
     }
 
     /**
-     * Applies a grappled effect to the target if they are not already grappled by the source.
+     * New version of apply grappled function.
      *
      * @param grapplerToken     the grappling actor token
      * @param targetToken       the target actor token
-     * @param saveDC            the break grapple DC. If the value is 'opposed' it will run an opposed check.
+     * @param sourceItem        the item that initiated the grapple
+     * @param breakDC           the break grapple DC. If the value is 'opposed' it will run an opposed check
      * @param sourceActorFlag   a flag, if any, that should be removed on the grapplerToken if the grapple is broken
      * @param overtimeValue     an overtime effect value to apply to the target, if any
      * @param restrained        if present and true, also apply a restrained effect
-     * @returns {Promise<boolean>}
+     * @returns {Promise<void>}
      */
-    static async applyGrappled(grapplerToken, targetToken, saveDC, sourceActorFlag, overtimeValue, restrained) {
+    static async applyGrappled(grapplerToken, targetToken, sourceItem, breakDC, sourceActorFlag = undefined, overtimeValue = undefined, restrained = false) {
         // sanity checks
-        if (!grapplerToken || !targetToken || !saveDC) {
-            console.error("applyGrappled() is missing arguments");
+        if (!grapplerToken || !targetToken || !sourceItem || !breakDC) {
+            console.error("applyGrappled() is missing parameters");
             return false;
         }
 
-        let targetActor = targetToken.actor;
-        let existingGrappled = targetActor.effects.find(eff => eff.name.startsWith('Grappled (') && eff.origin === grapplerToken.actor.uuid);
+        let existingGrappled = targetToken.actor.getRollData().effects.find(eff => eff.name.startsWith('Grappled (') && eff.origin === sourceItem.uuid);
         if (existingGrappled) {
-            console.error("applyGrappled() " + targetActor.name + " is already grappled by " + grapplerToken.name);
+            console.error("applyGrappled() - " + targetToken.name + " is already grappled using " + sourceItem.name);
             return false;
         }
 
-        // add the grappled effect to the target
+        // build the grappled effect
         const grappledEffectName = `Grappled (${grapplerToken.name})`;
+        const breakValue = breakDC !== 'opposed' ? breakDC : undefined;
+
         let grappledEffect = {
-            'name': grappledEffectName,
-            'icon': 'icons/magic/nature/root-vine-fire-entangled-hand.webp',
-            'changes': [
+            name: grappledEffectName,
+            icon: 'icons/magic/nature/root-vine-fire-entangled-hand.webp',
+            changes: [
                 {
-                    'key': 'macro.CE',
-                    'mode': CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-                    'value': 'Grappled',
-                    'priority': 21
+                    key: 'macro.CE',
+                    mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
+                    value: 'Grappled',
+                    priority: 21
+                },
+                {
+                    key: 'macro.createItem',
+                    mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
+                    value: 'Compendium.fvtt-trazzm-homebrew-5e.homebrew-automation-items.Item.Rg4639o5lnxWKgWD',
+                    priority: 22
                 }
             ],
-            'origin': grapplerToken.actor.uuid,
-            'duration': {'seconds': 3600},
-            'flags': {
+            flags: {
                 'dae': {
                     'specialDuration': ['shortRest', 'longRest', 'combatEnd']
                 },
                 'fvtt-trazzm-homebrew-5e': {
                     'grappler': {
                         'grapplerId': `${grapplerToken.id}`,
-                        'saveDC': `${saveDC !== 'opposed' ? saveDC : undefined}`,
+                        'breakDC': breakValue,
                         'sourceActorFlag': sourceActorFlag
                     }
                 }
-            }
+            },
+            origin: sourceItem.uuid,
+            disabled: false,
+            transfer: true
         };
-
-        if (overtimeValue) {
-            grappledEffect.changes.push({
-                'key': 'flags.midi-qol.OverTime',
-                'mode': CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
-                'value': overtimeValue,
-                'priority': 20
-            });
-        }
 
         if (restrained) {
             grappledEffect.changes.push({
-                'key': 'macro.CE',
-                'mode': CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-                'value': 'Restrained',
-                'priority': 22
+                key: 'macro.CE',
+                mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
+                value: 'Restrained',
+                priority: 21
+            });
+        }
+
+        if (overtimeValue) {
+            grappledEffect.changes.push({
+                key: 'flags.midi-qol.OverTime',
+                mode: CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
+                value: overtimeValue,
+                priority: 19
             });
         }
 
         await MidiQOL.socket().executeAsGM("createEffects",
-            {actorUuid: targetActor.uuid, effects: [grappledEffect]});
+            {actorUuid: targetToken.actor.uuid, effects: [grappledEffect]});
 
-        // add the escape grapple feature to the target
-        const escapeFeature = targetToken.actor.items.find(i => i.name === "Escape Grapple");
-        if (!escapeFeature) {
-            let escapeFeatureItem = await HomebrewHelpers.getItemFromCompendium('fvtt-trazzm-homebrew-5e.homebrew-automation-items', "Escape Grapple");
-            await targetToken.actor.createEmbeddedDocuments("Item", [escapeFeatureItem]);
-        }
-
-        return true;
     }
 
     /**
@@ -185,74 +186,75 @@ class HomebrewMacros {
      *
      * @param sourceToken       the restraining actor token
      * @param targetToken       the target actor token
-     * @param checkDC           the break DC
+     * @param sourceItem        the item that initiated the grapple
+     * @param breakDC           the break DC
      * @param abilityCheck      the ability check type
      * @param sourceActorFlag   a flag, if any, that should be removed on the sourceToken if the condition is broken
      * @param overtimeValue     an overtime effect value to apply to the target, if any
      * @returns {Promise<boolean>}
      */
-    static async applyRestrained(sourceToken, targetToken, checkDC, abilityCheck, sourceActorFlag, overtimeValue) {
+    static async applyRestrained(sourceToken, targetToken, sourceItem, breakDC, abilityCheck, sourceActorFlag = undefined, overtimeValue = undefined) {
         // sanity checks
-        if (!sourceToken || !targetToken || !checkDC || !abilityCheck) {
+        if (!sourceToken || !targetToken || !sourceItem || !breakDC || !abilityCheck) {
             console.error("applyRestrained() is missing arguments");
             return false;
         }
 
-        let targetActor = targetToken.actor;
-        let existingGrappled = targetActor.effects.find(eff => eff.name.startsWith('Restrained (') && eff.origin === sourceToken.actor.uuid);
-        if (existingGrappled) {
-            console.error("applyGrappled() " + targetActor.name + " is already restrained by " + sourceToken.name);
+        let existingRestrained = targetToken.actor.getRollData().effects.find(eff => eff.name.startsWith('Restrained (') && eff.origin === sourceItem.uuid);
+        if (existingRestrained) {
+            console.error("applyRestrained() - " + targetToken.name + " is already restrained using " + sourceItem.name);
             return false;
         }
 
-        // add the Restrained effect to the target
+        // build the restrained effect
         const restrainedEffectName = `Restrained (${sourceToken.name})`;
+        const breakValue = breakDC !== 'opposed' ? breakDC : undefined;
+
         let restrainedEffect = {
-            'name': restrainedEffectName,
-            'icon': 'icons/magic/control/encase-creature-spider-hold.webp',
-            'changes': [
+            name: restrainedEffectName,
+            icon: 'icons/magic/control/encase-creature-spider-hold.webp',
+            changes: [
                 {
-                    'key': 'macro.CE',
-                    'mode': CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-                    'value': 'Restrained',
-                    'priority': 21
+                    key: 'macro.CE',
+                    mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
+                    value: 'Restrained',
+                    priority: 21
+                },
+                {
+                    key: 'macro.createItem',
+                    mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
+                    value: 'Compendium.fvtt-trazzm-homebrew-5e.homebrew-automation-items.Item.NrqmZlBf9GwcERs6',
+                    priority: 22
                 }
             ],
-            'origin': sourceToken.actor.uuid,
-            'duration': {'seconds': 3600},
-            'flags': {
+            flags: {
                 'dae': {
                     'specialDuration': ['shortRest', 'longRest', 'combatEnd']
                 },
                 'fvtt-trazzm-homebrew-5e': {
                     'restrainer': {
-                        'restrainerId': `${sourceToken.id}`,
-                        'saveDC': `${saveDC !== 'opposed' ? saveDC : undefined}`,
+                        'restrainerId': `${grapplerToken.id}`,
+                        'breakDC': breakValue,
                         'sourceActorFlag': sourceActorFlag
                     }
                 }
-            }
+            },
+            origin: sourceItem.uuid,
+            disabled: false,
+            transfer: true
         };
 
         if (overtimeValue) {
             restrainedEffect.changes.push({
-                'key': 'flags.midi-qol.OverTime',
-                'mode': CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
-                'value': overtimeValue,
-                'priority': 20
+                key: 'flags.midi-qol.OverTime',
+                mode: CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
+                value: overtimeValue,
+                priority: 19
             });
         }
 
         await MidiQOL.socket().executeAsGM("createEffects",
-            {actorUuid: targetActor.uuid, effects: [restrainedEffect]});
-
-        // add the break free feature to the target
-        const escapeFeature = targetActor.items.find(i => i.name === "Break Free");
-        if (!escapeFeature) {
-            let escapeFeatureItem = await HomebrewHelpers.getItemFromCompendium('fvtt-trazzm-homebrew-5e.homebrew-automation-items', "Break Free");
-            await targetActor.createEmbeddedDocuments("Item", [escapeFeatureItem]);
-        }
-
+            {actorUuid: targetToken.actor.uuid, effects: [restrainedEffect]});
         return true;
     }
 
@@ -277,7 +279,7 @@ class HomebrewMacros {
         const squares = maxSquares ? maxSquares : 1;
         let pullBackFt = 5 * squares;
         pullBackFt = Math.min(pullBackFt, tokenDistance - 5);
-        await MidiQOL.moveTokenAwayFromPoint(targetToken, -pullBackFt, pusherToken.center);
+        await MidiQOL.moveTokenAwayFromPoint(targetToken, -pullBackFt, pullerToken.center);
     }
 
     /**

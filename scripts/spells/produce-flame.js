@@ -9,25 +9,32 @@
 
 	This spell's damage increases by 1d8 when you reach 5th level (2d8), 11th level (3d8), and 17th level (4d8).
 */
-const version = "11.0";
+const version = "12.3.0";
 const optionName = "Produce Flame";
+const hurlItemName = "Flickering Flame";
 
 try {
-	if (args[0] === "on") {
-		// add hurl flame item
-		let hurlFlameItem = await HomebrewHelpers.getItemFromCompendium('fvtt-trazzm-homebrew-5e.homebrew-automation-items', 'Produce Flame - Hurl');
+	if (args[0].macroPass === "postActiveEffects") {
+		let compendiumItem = await HomebrewHelpers.getItemFromCompendium('fvtt-trazzm-homebrew-5e.homebrew-automation-items', hurlItemName);
+		let hurlItems = await actor.createEmbeddedDocuments("Item", [compendiumItem]);
 
-		const updates = {
-			embedded: { Item: { ['Produce Flame - Hurl']: hurlFlameItem } }
+		// update hurl flame item
+		const casterLevel = HomebrewHelpers.getLevelOrCR(actor);
+		if (hurlItems[0]) {
+			let hurlItem = hurlItems[0];
+			const damageDice = Math.floor((casterLevel + 1) / 6) + 1;
+
+			// update the damage
+			let damageParts = hurlItem.system.damage.parts;
+			damageParts[0][0] = `${damageDice}d8`;
+			await hurlItem.update({"system.damage.parts": damageParts, "system.equipped" : true});
+
+			await HomebrewHelpers.addFavorite(actor, hurlItem);
 		}
-		await warpgate.mutate(token.document, updates, {}, { name: "Hurl Flame" });
+		else {
+			ui.notifications.error(`${optionName}: ${version} - unable to find the ${hurlItemName} on ${actor.name}`);
+		}
 	}
-	else if (args[0] === "off") {
-		// revert mutations
-        await warpgate.revert(token.document, "Hurl Flame");
-	}
-		
-
 } catch (err) {
     console.error(`${optionName}: ${version}`, err);
 }

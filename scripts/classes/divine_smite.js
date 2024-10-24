@@ -4,7 +4,7 @@
 	plus 1d8 for each spell level higher than 1st, to a maximum of 5d8. The damage increases by 1d8 if the target is an
 	undead or a fiend, to a maximum of 6d8.
  */
-const version = "11.2";
+const version = "12.3.0";
 const optionName = "Divine Smite";
 
 try {
@@ -14,15 +14,14 @@ try {
 		// Must be a melee weapon attack
 		if (!["mwak"].includes(workflow.item.system.actionType))
 			return {};
-		
-		// Make sure it's not thrown
-		const reach = workflow.item.system.properties.rch;
-		
+
 		if (!targetToken) {
 			MidiQOL.error(`${optionName}: no target`);
 			return {};
 		}
 
+		// Make sure it's not thrown
+		const reach = workflow.item.system.properties.has('rch');
 		const tokenDistance = MidiQOL.computeDistance(token, targetToken, true);
 		if (tokenDistance > 5 && !reach) {
 			console.log(`${optionName} - thrown is not an eligible attack`);
@@ -58,65 +57,53 @@ try {
 		// ask which slot to use
 		const options = inputs.reduce((acc, [key, crd, value, max]) => {
 			return acc + `<option value="${key}">${crd} (${value}/${max})</option>`; }, ``);
-		
+
 		const myContent = `
 		<form>
 			<p>Use Divine Smite?</p>
 			<div class="form-group">
 				<label style="flex: 1;">Spell Slot:</label>
 				<div class="form-fields">
-					<select id="smite-slot">${options}</select>
+					<select id="smiteslot">${options}</select>
 				</div>
 			</div>
 		</form>`;
-		
-		let slot = ""
-		let useSmite = false;
-		if (!useSmite) {
-			let dialog = new Promise((resolve, reject) => {
-			  new Dialog({
-			  // localize this text
-			  title: "Conditional Damage",
-			  content: myContent,
-			  buttons: {
-				  one: {
-					  icon: '<i class="fas fa-check"></i>',
-					  label: "Smite!",
-					  callback: (html) => {
-						  slot = html[0].querySelector("#smite-slot").value;
-						  resolve(true);
-					  }
-				  },
-				  two: {
-					  icon: '<i class="fas fa-times"></i>',
-					  label: "Cancel",
-					  callback: () => {resolve(false)}
-				  }
-			  },
-			  default: "two"
-			  }).render(true);
-			});
-		   useSmite = await dialog;
-		}	
-		
-		if (!useSmite) return {}
-		
-		// build the damage bonus
-		const level = slot === "pact" ? rollData.spells["pact"].level : Number(slot.at(-1));
-		const value = rollData.spells[slot].value - 1;
-		actor.update({[`system.spells.${slot}.value`]: value});
-		
-		let numDice = 1 + level;
-		if (numDice > 5) numDice = 5;
-		let undead = ["undead", "fiend"].some(type => (targetToken.actor.system.details.type?.value || "").toLowerCase().includes(type));
-		if (undead) numDice += 1;
 
-		if (workflow.isCritical) {
-			const critDamage = numDice * 8;
-			return {damageRoll: `${numDice}d8 + ${critDamage}[radiant]`, flavor: `${optionName}`};
-		}
-		else {
-			return {damageRoll: `${numDice}d8[radiant]`, flavor: `${optionName}`};
+		const slot = await foundry.applications.api.DialogV2.confirm({
+			window: {
+				title: `${optionName}`,
+			},
+			content: myContent,
+			yes: {
+				callback: (event, button, dialog) => {
+					return button.form.elements.smiteslot.value;
+				}
+			},
+			rejectClose: false,
+			modal: true,
+			position: {
+				width: 400
+			}
+		});
+
+		if (slot) {
+			// build the damage bonus
+			const level = slot === "pact" ? rollData.spells["pact"].level : Number(slot.at(-1));
+			const value = rollData.spells[slot].value - 1;
+			await actor.update({[`system.spells.${slot}.value`]: value});
+
+			let numDice = 1 + level;
+			if (numDice > 5) numDice = 5;
+			let undead = ["undead", "fiend"].some(type => (targetToken.actor.system.details.type?.value || "").toLowerCase().includes(type));
+			if (undead) numDice += 1;
+
+			if (workflow.isCritical) {
+				const critDamage = numDice * 8;
+				return {damageRoll: `${numDice}d8 + ${critDamage}[radiant]`, flavor: `${optionName}`};
+			}
+			else {
+				return {damageRoll: `${numDice}d8[radiant]`, flavor: `${optionName}`};
+			}
 		}
 	}
 

@@ -1,4 +1,4 @@
-const version = "11.0";
+const version = "11.1";
 const optionName = "Dual Wielder";
 console.log(`${optionName} - checking AC bonus applicability`);
 
@@ -19,7 +19,7 @@ if (currentWeapons.length > 2) {
 const firstWeapon = currentWeapons[0];
 const secondWeapon = currentWeapons[0];
 
-if (firstWeapon.system.properties.two || secondWeapon.system.properties.two) {
+if (firstWeapon.system.properties.has('two') || secondWeapon.system.properties.has('two')) {
     console.log(`${optionName} - no AC bonus, weapon is two handed`);
     getsACBonus = false;
 }

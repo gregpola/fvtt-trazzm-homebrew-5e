@@ -3,7 +3,7 @@
 	damage, and the target is grappled (escape DC 14). Until this grapple ends, the target is restrained, the salamander
 	can automatically hit the target with its tail, and the salamander can't make tail attacks against other targets.
 */
-const version = "11.0";
+const version = "12.3.0";
 const optionName = "Salamander Tail";
 const flagName = "salamander-tail-grappled";
 
@@ -15,7 +15,7 @@ try {
 		// make sure it was a hit
 		let targetToken = workflow?.hitTargets?.first();
 		if (targetToken) {
-			let grappled = await HomebrewMacros.applyGrappled(token, targetToken, 14, flagName, null);
+			let grappled = await HomebrewMacros.applyGrappled(token, targetToken, item, 14, flagName);
 			if (grappled) {
 				ChatMessage.create({
 					content: `The salamander wraps it's tail around ${targetToken.name}, immobilizing them`,

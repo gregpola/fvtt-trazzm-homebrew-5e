@@ -8,7 +8,7 @@
 	attack and damage rolls. This benefit lasts until you finish a long rest. If you later gain the Pact of the Blade
 	feature, this benefit extends to every pact weapon you conjure with that feature, no matter the weapon’s type.
 */
-const version = "12.3.0";
+const version = "12.3.1";
 const optionName = "Hex Warrior";
 const hexFlag = "hex-weapon";
 
@@ -20,7 +20,7 @@ try {
 		if (pactOfTheBlade)
 			weapons = actor.items.filter(i => i.type === `weapon` && i.system.prof.hasProficiency);
 		else
-			weapons = actor.items.filter(i => i.type === `weapon` && i.system.prof.hasProficiency && !i.system.properties.two);
+			weapons = actor.items.filter(i => i.type === `weapon` && i.system.prof.hasProficiency && !i.system.properties.has('two'));
 
 		if (weapons.length === 0 ) {
 			ui.notifications.error(`${optionName} - no applicable weapons found`);

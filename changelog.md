@@ -12,4 +12,15 @@
 * Monster Features Updated: Death Lance, Draining Attack, Life Drain, Undead Fortitude
 * Monsters Updated: Assassin Vine, Bearded Devil, Bulette, Fire Elemental, Misc Drow, Misc Demons, Treant, Treant Sapling, all Zombies
 * Spells Updated: Aid, Banishment, Blindness/Deafness, Booming Blade, Cause Fear, Chromatic Orb, Conjure Animals, Darkness, Daylight, Dimension Door, Divine Fury, Find Greater Steed, Find Steed, Green-Flame Blade, Heat Metal, Hex, Lesser Restoration, Longstrider, Mage Hand, Magic Weapon, Mass Cure Wounds, Mass Healing Word, Misty Step, Moonbeam, Prayer of Healing, Protection from Energy, Protection from Poison, Searing Smite, Spike Growth, Spirit Guardians, Spiritual Weapon, Tasha's Caustic Brew, Tasha's Hideous Laughter, Tasha's Mind Whip, Thunderous Smite, Thunderwave, Wrathful Smite
-* Subclasses Updated: Forge Domain
+* Subclasses Updated: Forge Domain, all Paladin subclasses
+
+* # 12.3.2
+* General: Added legendary action reminder, added automatic legendary action recharge, updated the grapple and restrained logic
+* Class Features Updated: Abjure Enemy, Divine Smite, Favored Foe, Great Weapon Fighting, Sneak Attack
+* Feats Updated: Piercer
+* General Features Updated: Grapple
+* Items Added: Wand of Conjure Animals, Wand of Enhance Abilities, Wand of Web
+* Items Updated: Bag of Tricks, Alchemist's Fire, Flame Tongue weapons, Pipes of Haunting, Ring of Jumping
+* Monster Features Updated: Legendary Resistance, Slayer
+* Monsters Updated: Ankheg, Assassin Vine, Basilisks, Black Pudding, Darkmantle, Fire Elemental, Giant Spider, Glabrezu, Grick, Poison Weird, Salamander, Water Elemental
+* Spells Updated: Absorb Elements, Animate Dead, Bestow Curse, Chaos Bolt, Command, Contagion, Dancing Lights, Dispel Magic, Eldritch Blast, Enhance Ability, Faerie Fire, Finger of Death, Fog Cloud, Hold Person, Hunter's Mark, Jump, Lathander's Holy Dart, Mage Armor, Produce Flame, Ray of Enfeeblement, Scorching Ray, Shillelagh, Silence, Sleep, Stinking Cloud, Thunderclap, Web, Wysard's Snowball

@@ -18,14 +18,14 @@ const templateFLag = "darkness-template-uuid";
 const TEMPLATE_DARK_LIGHT = {
 	"negative": true,
 	"priority": 0,
-	"alpha": 0.25,
+	"alpha": 0.1,
 	"angle": 360,
 	"bright": 15,
 	"color": null,
 	"coloration": 1,
 	"dim": 0,
-	"attenuation": 0.5,
-	"luminosity": 0.5,
+	"attenuation": 0.75,
+	"luminosity": 0.75,
 	"saturation": 0,
 	"contrast": 0,
 	"shadows": 0,
@@ -86,7 +86,8 @@ try {
 						},
 					},
 				};
-				canvas.scene.createEmbeddedDocuments("AmbientLight", [lightTemplate]);
+				await canvas.scene.createEmbeddedDocuments("AmbientLight", [lightTemplate]);
+				await canvas.scene.deleteEmbeddedDocuments("MeasuredTemplate", [template.id]);
 			}
 		}
 	}
@@ -96,6 +97,11 @@ try {
 
 		if (lightArray.length > 0) {
 			await canvas.scene.deleteEmbeddedDocuments("AmbientLight", lightArray);
+		}
+
+		let flag = actor.getFlag(_flagGroup, templateFLag);
+		if (flag) {
+			await actor.unsetFlag(_flagGroup, templateFLag);
 		}
 	}
 

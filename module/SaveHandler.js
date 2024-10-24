@@ -94,8 +94,6 @@ export class SaveHandler {
     static hooks() {
 
         Hooks.on("midi-qol.preCheckSaves", async workflow => {
-            logger.info("midi-qol.preCheckSaves");
-
             // sanity checks
             if (!workflow.item.hasSave || !workflow.item.hasTarget) return;
 
@@ -226,6 +224,10 @@ export class SaveHandler {
                     }
                 }
             }
+        });
+
+
+        Hooks.on("midi-qol.postCheckSaves", async workflow => {
         });
     }
 

@@ -1,4 +1,4 @@
-const version = "10.1";
+const version = "12.3.0";
 const optionName = "Glabrezu Pincer";
 const flagName = "glabrezu-grappled";
 
@@ -11,7 +11,7 @@ try {
 			const tsize = targetToken.actor.system.traits.size;
 			if (["tiny","sm","med","lg"].includes(tsize)) {
 				if(!game.dfreds.effectInterface.hasEffectApplied('Grappled', targetToken.actor.uuid)) {
-					await HomebrewMacros.applyGrappled(token, targetToken, 15, flagName, null, null);
+					await HomebrewMacros.applyGrappled(token, targetToken, item, 15, flagName);
 					ChatMessage.create({'content': `${actor.name} grabs hold of ${targetToken.name}`})
 				}
 			}

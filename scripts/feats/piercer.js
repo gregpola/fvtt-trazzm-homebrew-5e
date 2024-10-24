@@ -8,7 +8,7 @@ You have achieved a penetrating precision in combat, granting you the following 
 	* When you score a critical hit that deals piercing damage to a creature, you can roll one additional damage die when determining the extra piercing damage the target takes.
 
 */
-const version = "12.3.0";
+const version = "12.3.1";
 const optionName = "Piercer";
 const timeFlag = "piercerTime";
 
@@ -57,47 +57,35 @@ try {
 		// Check for availability i.e. once per actors turn
 		let rerollDamageTerm = "";
 		if (HomebrewHelpers.isAvailableThisTurn(actor, timeFlag) && game.combat) {
-			let dialog = new Promise((resolve, reject) => {
-				new Dialog({
-					title: "Piercer Reroll",
-					content: `<p>Use Piercer Reroll on ` + roll.result + ` on a d` + roll.die + '?',
-					buttons: {
-						one: {
-							icon: '<i class="fas fa-check"></i>',
-							label: "Confirm",
-							callback: () => resolve(true)
-						},
-						two: {
-							icon: '<i class="fas fa-times"></i>',
-							label: "Cancel",
-							callback: () => { resolve(false) }
-						}
-					},
-					default: "two"
-				}).render(true);
+			const usePiercerReroll = await foundry.applications.api.DialogV2.confirm({
+				window: {
+					title: `${optionName}`,
+				},
+				content: `<p>Use Piercer Reroll on ${roll.result} on a d${roll.die}?</p>`,
+				rejectClose: false,
+				modal: true
 			});
-			
-			let usePiercerReroll = await dialog;
+
 			if (usePiercerReroll) {
 				let newRoll = await new Roll(`1d${roll.die}`).evaluate();
 				await game.dice3d?.showForRoll(newRoll);
 				let damageDiff = (newRoll.total - roll.result);
 				rerollDamageTerm = `${damageDiff}`;
 				await HomebrewHelpers.setUsedThisTurn(actor, timeFlag);
+
+				// if a critical add extra damage die
+				if (workflow.isCritical) {
+					if (rerollDamageTerm.length > 0) {
+						return {damageRoll: `1d${roll.die}+${rerollDamageTerm}[piercing]`, flavor: `${optionName} Damage`};
+					}
+					else {
+						return {damageRoll: `1d${roll.die}[piercing]`, flavor: `${optionName} Damage`};
+					}
+				}
+				else if (rerollDamageTerm.length > 0) {
+					return {damageRoll: `${rerollDamageTerm}[piercing]`, flavor: `${optionName} Damage`};
+				}
 			}
-		}
-		
-		// if a critical add extra damage die
-		if (workflow.isCritical) {
-			if (rerollDamageTerm.length > 0) {
-				return {damageRoll: `1d${roll.die}+${rerollDamageTerm}[piercing]`, flavor: `${optionName} Damage`};
-			}
-			else {
-				return {damageRoll: `1d${roll.die}[piercing]`, flavor: `${optionName} Damage`};
-			}
-		}
-		else if (rerollDamageTerm.length > 0) {
-			return {damageRoll: `${rerollDamageTerm}[piercing]`, flavor: `${optionName} Damage`};
 		}
 	}
 	

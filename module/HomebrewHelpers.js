@@ -459,6 +459,13 @@ class HomebrewHelpers {
         return actor.type === "npc" ? actor.system.details?.type?.value : actor.system.details?.race;
     };
 
+    static maxMovementRate(actor) {
+        return Math.max(actor.system.attributes.movement.walk,
+            actor.system.attributes.movement.fly,
+            actor.system.attributes.movement.climb,
+            actor.system.attributes.movement.burrow);
+    }
+
     static async getItemFromCompendium(key, name) {
         const gamePack = game.packs.get(key);
         if (!gamePack) {
@@ -995,5 +1002,43 @@ class HomebrewHelpers {
             favorites.push({type: "item", id: item.getRelativeUUID(actor)});
             await actor.update({ "system.favorites": favorites });
         }
+    }
+
+    static async rechargeLegendaryActions(actor) {
+        // skip if dead
+        const hpValue = getProperty(actor, 'system.attributes.hp.value');
+        if (!hpValue || hpValue < 1)
+            return;
+
+        let legendaryResource = getProperty(actor, 'system.resources.legact');
+        if (legendaryResource && (legendaryResource.max > 0) && (legendaryResource.value < legendaryResource.max)) {
+            await actor.update({'system.resources.legact.value' : legendaryResource.max});
+        }
+    }
+
+    static async selectAbilityDialog(title) {
+        const field = new foundry.data.fields.StringField({
+            required: true,
+            label: "Ability",
+            choices: CONFIG.DND5E.abilities
+        });
+
+        const content = `<fieldset>${field.toFormGroup({}, {name: "ability"}).outerHTML}</fieldset>`;
+
+        await foundry.applications.api.DialogV2.prompt({
+            content: content,
+            rejectClose: false,
+            ok: {
+                callback: (event, button) => {
+                    return button.form.elements.ability.value;
+                }
+            },
+            window: {
+                title: title
+            },
+            position: {
+                width: 400
+            }
+        });
     }
 }

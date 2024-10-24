@@ -261,11 +261,6 @@
         "compatibility": {}
       },
       {
-        "id": "autoanimations",
-        "type": "module",
-        "compatibility": {}
-      },
-      {
         "id": "effectmacro",
         "type": "module",
         "compatibility": {}

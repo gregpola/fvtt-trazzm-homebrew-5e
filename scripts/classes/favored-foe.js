@@ -10,9 +10,11 @@
 
 	This feature’s extra damage increases when you reach certain levels in this class: to 1d6 at 6th level and to 1d8 at 14th level.
  */
-const version = "11.0"
+const version = "12.3.0"
 const optionName = "Favored Foe";
 const marking = "Favored Foe Marked";
+const timeFlag = "favored-foe-time";
+const skipFlag = "favored-foe-skip";
 
 try {
 	if ((args[0].macroPass === "DamageBonus") && (workflow.hitTargets.size > 0)) {
@@ -25,105 +27,75 @@ try {
 		}
 
 		// Check for availability i.e. once per actors turn
-		if (!isAvailableThisTurn() || !game.combat || isSkipThisTurn()) {
+		if (!HomebrewHelpers.isAvailableThisTurn(actor, timeFlag) || !game.combat || isSkipThisTurn()) {
 			console.log(`${optionName} - not available this attack`);
 			return;
 		}
 
-		// make sure it is a foe
-		let effect = targetToken.actor.effects?.find(i=> i.label === marking && i.origin.startsWith(workflow.actorUuid));
-		if (!effect) {
+		// Check if the target is marked as a foe
+		let targetMarkedEffect = targetToken.actor.getRollData().effects?.find(e => e.name === marking && e.origin === actor.uuid);
+		if (!targetMarkedEffect) {
 			// Isn't current marked as a foe, check if there are uses remaining
-			let ff = actor.items?.find(a => a.name.toLowerCase() === "favored foe");
-			if (ff) {
-				const usesLeft = ff.system.uses?.value;
+			let favoredFoeItem = actor.items?.find(a => a.name.toLowerCase() === "favored foe");
+			if (favoredFoeItem) {
+				const usesLeft = favoredFoeItem.system.uses?.value;
 				if (usesLeft) {
-					let useFF = false;
-
 					let content = `<div class="flexcol">
-						<div class="flexrow"><p>Apply ${optionName} to ${targetToken.name}?</p></div>
+						<div class="flexrow"><p>Do you want to mark ${targetToken.name} as your ${optionName}?</p></div>
 						<div class="flexrow" style="margin-bottom: 10px;"><p>(${usesLeft} uses remaining and requires concentration)</p></div>
 					</div>`;
 
-					let dialog = new Promise((resolve, reject) => {
-						new Dialog({
-							// localize this text
+					const proceed = await foundry.applications.api.DialogV2.confirm({
+						window: {
 							title: `${optionName}`,
-							content,
-							buttons: {
-								one: {
-									icon: '<p> </p><img src = "icons/weapons/bows/longbow-recurve-leather-red.webp" width="30" height="30"></>',
-									label: "<p>Yes</p>",
-									callback: () => resolve(true)
-								},
-								two: {
-									icon: '<p> </p><img src = "icons/skills/melee/weapons-crossed-swords-yellow.webp" width="30" height="30"></>',
-									label: "<p>No</p>",
-									callback: () => { resolve(false) }
-								}
-							}
-						}).render(true);
+						},
+						content: content,
+						rejectClose: false,
+						modal: true
 					});
 
-					useFF = await dialog;
-					if (useFF) {
-						await decrimentFavoredFoe(actor);
-						await markAsFoe(targetToken.uuid, actor.uuid);
-						await MidiQOL.addConcentration(actor, {item: ff, targets: [targetToken]});
+					if ( proceed ) {
+						await decrementFavoredFoe(actor);
+						targetMarkedEffect = await markAsFoe(actor, targetToken.actor);
+						await MidiQOL.addConcentration(actor, {item: favoredFoeItem, targets: [targetToken]});
+						let existingConcentration = MidiQOL.getConcentrationEffect(actor, favoredFoeItem);
+						if (existingConcentration) {
+							await MidiQOL.socket().executeAsGM('addDependent', {concentrationEffectUuid: existingConcentration.uuid, dependentUuid: targetMarkedEffect[0].uuid});
+						}
 					}
 					else {
 						await setSkipThisTurn();
-						return;
 					}
 				}
 			}
 		}
 
-		const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn /100}`;
-		const lastTime = actor.getFlag("midi-qol", "favoredFoeTime");
-		if (combatTime !== lastTime) {
-			await actor.setFlag("midi-qol", "favoredFoeTime", combatTime)
-		}
+		if (targetMarkedEffect) {
+			await HomebrewHelpers.setUsedThisTurn(actor, timeFlag);
 
-		const diceMult = workflow.isCritical ? 2: 1;
-		let damageType = workflow.item.system.damage.parts[0][1];
-		const levels = actor.getRollData().classes?.ranger?.levels ?? 0;
+			const diceMult = workflow.isCritical ? 2: 1;
+			const damageType = workflow.item.system.damage.parts[0][1];
+			const levels = actor.getRollData().classes?.ranger?.levels ?? 0;
 
-		if (levels > 13) {
-			return {damageRoll: `${diceMult}d8[${damageType}]`, flavor: `${optionName} Damage`};
-		}
-		else if (levels > 5) {
-			return {damageRoll: `${diceMult}d6[${damageType}]`, flavor: `${optionName} Damage`};
-		}
+			if (levels > 13) {
+				return {damageRoll: `${diceMult}d8[${damageType}]`, flavor: `${optionName} Damage`};
+			}
+			else if (levels > 5) {
+				return {damageRoll: `${diceMult}d6[${damageType}]`, flavor: `${optionName} Damage`};
+			}
 
-		return {damageRoll: `${diceMult}d4[${damageType}]`, flavor: `${optionName} Damage`};
+			return {damageRoll: `${diceMult}d4[${damageType}]`, flavor: `${optionName} Damage`};
+		}
 	}
 
 } catch (err) {
 	console.error(`${optionName} - ${version}`, err);
 }
 
-
-// Check to make sure the actor hasn't already applied the damage this turn
-function isAvailableThisTurn() {
-	if (game.combat) {
-		const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn /100}`;
-		const lastTime = actor.getFlag("midi-qol", "favoredFoeTime");
-		if (combatTime === lastTime) {
-			console.log(`${optionName} - already done favored foe damage this turn`);
-			return false;
-		}
-
-		return true;
-	}
-
-	return false;
-}
-
 function isSkipThisTurn() {
 	if (game.combat) {
 		const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn /100}`;
-		const lastTime = actor.getFlag("midi-qol", "favoredFoeSkip");
+		const lastTime = actor.getFlag(_flagGroup, skipFlag);
 		if (combatTime === lastTime) {
 			console.log(`${optionName} - already chose to skip this turn`);
 			return true;
@@ -135,26 +107,28 @@ function isSkipThisTurn() {
 
 async function setSkipThisTurn() {
 	const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn /100}`;
-	const lastTime = actor.getFlag("midi-qol", "favoredFoeSkip");
+	const lastTime = actor.getFlag(_flagGroup, skipFlag);
 	if (combatTime !== lastTime) {
-		await actor.setFlag("midi-qol", "favoredFoeSkip", combatTime)
+		await actor.setFlag(_flagGroup, skipFlag, combatTime)
 	}
 }
 
-// Decriment available resource
-async function decrimentFavoredFoe(testActor) {
-	let actorDup = duplicate(testActor);
-	let ff = actorDup.items?.find(a => a.name.toLowerCase() === "favored foe");
-	ff.system.uses.value = ff.system.uses.value - 1;
-	await testActor.update(actorDup);
+// Decrement available resource
+async function decrementFavoredFoe(testActor) {
+	const featureItem = testActor.items?.find(a => a.name.toLowerCase() === "favored foe");
+	if (featureItem) {
+		const featureValue = featureItem.system.uses?.value ?? 1;
+		await featureItem.update({ "system.uses.value": featureValue - 1 });
+	}
 }
 
-async function markAsFoe(targetId, actorId) {
+async function markAsFoe(actor, targetActor) {
 	const effectData = {
-		label: `${marking}`,
-		icon: "icons/weapons/bows/longbow-recurve-leather-red.webp",
+		name: `${marking}`,
+		icon: "icons/skills/ranged/target-bullseye-arrow-glowing.webp",
 		duration: {rounds: 10},
-		origin: actorId,
+		origin: actor.uuid,
 	}
-	await MidiQOL.socket().executeAsGM("createEffects", { actorUuid: targetId, effects: [effectData] });
+
+	return await MidiQOL.socket().executeAsGM("createEffects", { actorUuid: targetActor.uuid, effects: [effectData] });
 }

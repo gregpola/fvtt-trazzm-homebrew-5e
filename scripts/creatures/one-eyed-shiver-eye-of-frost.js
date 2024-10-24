@@ -7,7 +7,7 @@ const optionName = "Eye of Frost";
 try {
 	let targetToken = workflow?.hitTargets?.first();
 	if ((args[0].macroPass === "postActiveEffects") && targetToken) {
-		let restrained = await HomebrewMacros.applyRestrained(token, targetToken, 13, "str");
+		let restrained = await HomebrewMacros.applyRestrained(token, targetToken, item, 13, "str");
 		if (restrained) {
 			ChatMessage.create({
 				content: `${targetToken.name} is encased in ice`,

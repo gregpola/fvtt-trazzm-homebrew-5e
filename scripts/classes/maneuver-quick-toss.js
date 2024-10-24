@@ -1,4 +1,4 @@
-const version = "11.0";
+const version = "11.1";
 const optionName = "Quick Toss";
 const featureName = "Superiority Dice";
 const cost = 1;
@@ -39,7 +39,7 @@ try {
 
 			if (usesLeft) {
 				// find the actor's weapons
-				let weapons = actor.items.filter(i => i.type === `weapon` && i.system.actionType === "mwak" && i.system.properties.thr);
+				let weapons = actor.items.filter(i => i.type === `weapon` && i.system.actionType === "mwak" && i.system.properties.has('thr'));
 				let weapon_content = ``;
 				for (let weapon of weapons) {
 					weapon_content += `<option value=${weapon.id}>${weapon.name}</option>`;

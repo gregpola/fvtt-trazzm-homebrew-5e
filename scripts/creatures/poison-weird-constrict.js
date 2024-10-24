@@ -3,7 +3,7 @@
 	Medium or smaller, it is grappled (escape DC 13) and pulled 5 feet toward the poison weird. Until this grapple ends,
 	the target is restrained, the poison weird tries to drown it, and the poison weird can’t constrict another target.
 */
-const version = "10.1";
+const version = "12.3.0";
 const optionName = "Constrict";
 const flagName = "poison-weird-grappled";
 
@@ -16,7 +16,7 @@ try {
 			console.log(`${optionName} - target is too large to grapple`);
 		}
 		else {
-			await HomebrewMacros.applyGrappled(token, targetToken, 13, flagName, "turn=start, damageRoll=3d6, damageType=poison, label=Constricted", true);
+			await HomebrewMacros.applyGrappled(token, targetToken, item, 13, flagName, "turn=start, damageRoll=3d6, damageType=poison, label=Constricted", true);
 			await HomebrewMacros.pullTarget(token, targetToken, 1);
 		}
 	}

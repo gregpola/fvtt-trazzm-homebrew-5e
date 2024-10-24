@@ -8,7 +8,7 @@
 
 	On a successful save, the creature’s speed is halved for 1 minute or until the creature takes any damage.
  */
-const version = "12.3.0";
+const version = "12.3.1";
 const optionName = "Abjure Enemy";
 
 const disadvantageEffect = {
@@ -69,6 +69,8 @@ try {
 
 			validTargets.push(t);
 		}
+
+		HomebrewHelpers.updateTargets(validTargets);
 
 	}
 	else if (args[0].macroPass === "postSave") {

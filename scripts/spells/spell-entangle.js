@@ -15,7 +15,7 @@ try {
 			// add restrained to the targets that failed their save
 			const saveDC = actor.system.attributes.spelldc;
 			for(let target of workflow.failedSaves) {
-				await HomebrewMacros.applyRestrained(token, target, saveDC, "str");
+				await HomebrewMacros.applyRestrained(token, target, item, saveDC, "str");
 			}
 		}
 	}

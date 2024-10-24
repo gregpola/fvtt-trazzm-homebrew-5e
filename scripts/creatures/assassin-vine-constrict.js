@@ -3,7 +3,7 @@
 	and it is Grappled (escape DC 14). Until this grapple ends, the target is Restrained, and it takes 21 (6d6) poison 
 	damage at the start of each of its turns. The vine can constrict only one target at a time.
 */
-const version = "12.3.0";
+const version = "12.3.1";
 const optionName = "Constrict";
 const flagName = "assassin-vine-grappled";
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
@@ -16,7 +16,7 @@ try {
 		if (!grappleFlag) {
 			// grapple the target
 			let overtimeValue = "turn=start, label=Assassin Vine Constrict, damageRoll=6d6, damageType=poison";
-			let grappled = await HomebrewMacros.applyGrappled(token, targetToken, 14, flagName, overtimeValue);
+			let grappled = await HomebrewMacros.applyGrappled(token, targetToken, item, 14, flagName, overtimeValue);
 			if (grappled) {
 				ChatMessage.create({
 					content: `The vines entwine ${targetToken.name}`,
