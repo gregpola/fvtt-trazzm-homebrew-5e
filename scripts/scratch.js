@@ -6,7 +6,8 @@ const optionName = "Precision";
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
 
 try {
-
+	if (args[0].macroPass === "postActiveEffects") {
+	}
 }
 catch (err) {
 	console.error(`${optionName}: ${version}`, err);
@@ -19,8 +20,8 @@ ui.notifications.error(`${optionName}: ${resourceName}: - no resource found`);
 // Useful references
 if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType)) {
 
-	const tsize = targetTokenDoc.actor.system.traits.size;
-	if (!["tiny", "sm", "med", "lg"].includes(tsize)) {
+	const tsize = targetToken.actor.system.traits.size;
+	if (["tiny", "sm", "med", "lg"].includes(tsize)) {
 
 		actor.system.abilities.cha.mod
 
@@ -61,6 +62,12 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType))
 
 		const damageTypes = [['🧪 Acid', 'acid'], ['❄️ Cold', 'cold'], ['🔥 Fire', 'fire'], ['⚡ Lightning', 'lightning'], ['☁️ Thunder', 'thunder']]; //All possible damage types
 
+		let browserUser = MidiQOL.playerForActor(origin.parent);
+		if (!browserUser?.active) {
+			console.info(`${optionName} - unable to locate the actor player, sending to GM`);
+			browserUser = game.users?.activeGM;
+		}
+
 		const usePiercerReroll = await foundry.applications.api.DialogV2.confirm({
 			window: {
 				title: `${optionName}`,
@@ -68,6 +75,22 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType))
 			content: `<p>Use Piercer Reroll on ${roll.result} on a d${roll.die}?</p>`,
 			rejectClose: false,
 			modal: true
+		});
+
+		await foundry.applications.api.DialogV2.prompt({
+			content: content,
+			rejectClose: false,
+			ok: {
+				callback: (event, button) => {
+					return button.form.elements.ability.value;
+				}
+			},
+			window: {
+				title: title
+			},
+			position: {
+				width: 400
+			}
 		});
 
 		await game.MonksTokenBar.requestRoll([{token: targetToken}], {
@@ -112,8 +135,6 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType))
 
 		let saveRoll = await targetActor.rollAbilitySave("con", {flavor: saveFlavor});
 		await game.dice3d?.showForRoll(saveRoll);
-
-		await game.dfreds.effectInterface.removeEffect({effectName: 'Incapacitated', uuid: actor.uuid});
 
 
 		if (args[0] === "on") {
@@ -173,63 +194,3 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType))
 		if (save.total < save.options.targetValue) {
 //do the deed
 		}
-
-
-		async function wait(ms) {
-			return new Promise(resolve => {
-				setTimeout(resolve, ms);
-			});
-		}
-
-		await MidiQOL.socket().executeAsGM("removeEffects", {actorUuid: originalActor.uuid, effects: [itemEffect.id]});
-
-		async function findEffect(actor, effectName) {
-			let effect = null;
-			effect = actor?.effects.find(ef => ef.name === effectName);
-			return effect;
-		}
-
-		function hasEffectApplied(effectName, actor) {
-			return actor.effects.find((ae) => ae.name === effectName) !== undefined;
-		}
-
-		async function findEffect(actor, effectName, origin) {
-			let effect = null;
-			effect = actor?.effects?.find(ef => ef.name === effectName && ef.origin === origin);
-			return effect;
-		}
-
-		async function wait(ms) {
-			return new Promise(resolve => {
-				setTimeout(resolve, ms);
-			});
-		}
-
-
-		const dependencies = ["dae", "itemacro", "times-up", "midi-qol"];
-		if (!requirementsSatisfied(defaultItemName, dependencies)) {
-			return;
-		}
-
-		/**
-		 * If the requirements are met, returns true, false otherwise.
-		 *
-		 * @param {string} name - The name of the item for which to check the dependencies.
-		 * @param {Array} dependencies - The array of module ids which are required.
-		 *
-		 * @returns {boolean} true if the requirements are met, false otherwise.
-		 */
-		function requirementsSatisfied(name, dependencies) {
-			let missingDep = false;
-			dependencies.forEach((dep) => {
-				if (!game.modules.get(dep)?.active) {
-					const errorMsg = `${name}: ${dep} must be installed and active.`;
-					ui.notifications.error(errorMsg);
-					console.warn(errorMsg);
-					missingDep = true;
-				}
-			});
-			return !missingDep;
-		}
-
-

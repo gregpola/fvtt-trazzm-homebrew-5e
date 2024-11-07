@@ -62,36 +62,7 @@ async function attemptCharm(actor, token) {
 			await game.dice3d?.showForRoll(saveRoll);
 
 			if (saveRoll.total < saveDC) {
-				const charmedEffectData = {
-					name: "Fey Step - Mirthful",
-					icon: "modules/dfreds-convenient-effects/images/charmed.svg",
-					origin: actor.uuid,
-					duration: {startTime: game.time.worldTime, seconds: 60},
-					changes: [
-						{
-							key: 'macro.CE',
-							mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-							value: "Charmed",
-							priority: 20
-						}
-					],
-					flags: {
-						dae: {
-							selfTarget: false,
-							stackable: "none",
-							durationExpression: "",
-							macroRepeat: "none",
-							specialDuration: ["isDamaged"],
-							transfer: false
-						}
-					},
-					disabled: false
-				};
-
-				await MidiQOL.socket().executeAsGM("createEffects", {
-					actorUuid: targetActor.uuid,
-					effects: [charmedEffectData]
-				});
+				await HomebrewEffects.applyCharmedEffect(targetActor, item, ["isDamaged"]);
 			}
 		}
 	}

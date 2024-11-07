@@ -2,7 +2,7 @@
 * Add support for v12 with DND3.3
 * Class Features Updated: Elemental Affinity, Lay on Hands
 
-* # 12.3.1
+# 12.3.1
 * General: Added a teleportToken function to HomebrewMacros
 * Classes Updated: Barbarian
 * Feats Updated: Crusher, Great Weapon Master, Piercer, Poisoner
@@ -14,7 +14,7 @@
 * Spells Updated: Aid, Banishment, Blindness/Deafness, Booming Blade, Cause Fear, Chromatic Orb, Conjure Animals, Darkness, Daylight, Dimension Door, Divine Fury, Find Greater Steed, Find Steed, Green-Flame Blade, Heat Metal, Hex, Lesser Restoration, Longstrider, Mage Hand, Magic Weapon, Mass Cure Wounds, Mass Healing Word, Misty Step, Moonbeam, Prayer of Healing, Protection from Energy, Protection from Poison, Searing Smite, Spike Growth, Spirit Guardians, Spiritual Weapon, Tasha's Caustic Brew, Tasha's Hideous Laughter, Tasha's Mind Whip, Thunderous Smite, Thunderwave, Wrathful Smite
 * Subclasses Updated: Forge Domain, all Paladin subclasses
 
-* # 12.3.2
+# 12.3.2
 * General: Added legendary action reminder, added automatic legendary action recharge, updated the grapple and restrained logic
 * Class Features Updated: Abjure Enemy, Divine Smite, Favored Foe, Great Weapon Fighting, Sneak Attack
 * Feats Updated: Piercer
@@ -24,3 +24,14 @@
 * Monster Features Updated: Legendary Resistance, Slayer
 * Monsters Updated: Ankheg, Assassin Vine, Basilisks, Black Pudding, Darkmantle, Fire Elemental, Giant Spider, Glabrezu, Grick, Poison Weird, Salamander, Water Elemental
 * Spells Updated: Absorb Elements, Animate Dead, Bestow Curse, Chaos Bolt, Command, Contagion, Dancing Lights, Dispel Magic, Eldritch Blast, Enhance Ability, Faerie Fire, Finger of Death, Fog Cloud, Hold Person, Hunter's Mark, Jump, Lathander's Holy Dart, Mage Armor, Produce Flame, Ray of Enfeeblement, Scorching Ray, Shillelagh, Silence, Sleep, Stinking Cloud, Thunderclap, Web, Wysard's Snowball
+
+# 12.3.3
+* General: Work to update lots of weapon types that were lost in the foundry updates
+* Class Features Updated: Deflect Missiles, Diamond Soul, Empty Body, Flurry of Blows, Hexblades Curse, Ki, Panache, Patient Defense, Purity of Spirit, Quickened Healing, Sacred Weapon, Stunning Strike, Turn the Unholy, Vow of Enmity
+* Feats Updated: Crusher, Sentinel
+* General Features Updated: Add homebrew condition handling to eliminate dfred's convenient effects dependency, Dodge, Hide, Ready, Shove
+* Items Updated: Coin of Singing, Drow Poison, Pipes of Haunting
+* Monsters Updated: Air Elemental, Drider, Dust Devil, Ghast, Ghoul, Medusa, Otyugh, Purple Worm, Roper, Various RotD Monsters
+* Racial Features Updated: Fey Step, Goring Charge, Metallic Breath Weapon
+* Spells Updated: Bounding Boulder, Branding Smite, Color Spray, Command, Entangle, Protection from Evil and Good, Sleep, Summon Fey, Thunderous Smite, Wrathful Smite
+* Subclasses Updated: Oath of Devotion

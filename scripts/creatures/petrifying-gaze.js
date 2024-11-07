@@ -11,13 +11,10 @@
     If it looks at the basilisk in the meantime, it must immediately make the save. If the basilisk sees its reflection
     within 30 feet of it in bright light, it mistakes itself for a rival and targets itself with its gaze.
 */
-const version = "12.3.0";
+const version = "12.3.1";
 const optionName = "Petrifying Gaze";
-const _flagGroup = "fvtt-trazzm-homebrew-5e";
 const avertingGazeName = "Averting Gaze";
 const avertGazeItem = await HomebrewHelpers.getItemFromCompendium('fvtt-trazzm-homebrew-5e.homebrew-automation-items', "Avert Gaze");
-const turningName = "Turning to Stone";
-const turnedToStoneName = "Turned to Stone";
 
 try {
     let existingAvertGazeItem = actor.items.find(i => i.name === "Avert Gaze");
@@ -50,10 +47,10 @@ try {
 
         if (!HomebrewHelpers.hasConditionImmunity(actor, 'Petrified')) {
             const avertingGazeEffect = HomebrewHelpers.findEffect(actor, avertingGazeName);
-            const turningToStone = HomebrewHelpers.findEffect(actor, turningName);
+            const turningToStone = HomebrewHelpers.findEffect(actor, 'Restrained', effectItem.origin);
             const canSeeBasilisk = await MidiQOL.canSee(token, sourceToken);
             const canSeeTarget = await MidiQOL.canSee(sourceToken, token);
-            const petrifiedEffect = HomebrewHelpers.findEffect(actor, turnedToStoneName);
+            const petrifiedEffect = HomebrewHelpers.findEffect(actor, 'Petrified', effectItem.origin);
 
             if (lastArgValue.turn === "startTurn") {
                 if (!avertingGazeEffect && !turningToStone && !petrifiedEffect && canSeeBasilisk && canSeeTarget) {
@@ -65,24 +62,7 @@ try {
                         callback: async (result) => {
                             for (let tr of result.tokenresults) {
                                 if (!tr.passed) {
-                                    let restrainedEffect = {
-                                        name: turningName,
-                                        icon: 'icons/creatures/magical/construct-gargoyle-stone-gray.webp',
-                                        changes: [
-                                            {
-                                                key: 'macro.CE',
-                                                mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-                                                value: 'Restrained',
-                                                priority: 20
-                                            }
-                                        ],
-                                        origin: effectItem.origin,
-                                        disabled: false,
-                                        transfer: true
-                                    };
-
-                                    await MidiQOL.socket().executeAsGM("createEffects",
-                                        {actorUuid: tr.actor.uuid, effects: [restrainedEffect]});
+                                    await HomebrewEffects.applyRestrainedEffect(tr.actor, effectItem.origin, undefined, undefined, ['turnEnd']);
                                 }
                             }
                         }
@@ -100,30 +80,8 @@ try {
                         callback: async (result) => {
                             for (let tr of result.tokenresults) {
                                 if (!tr.passed) {
-                                    let petrifiedEffect = {
-                                        name: `${turnedToStoneName}`,
-                                        icon: 'icons/creatures/magical/construct-gargoyle-stone-gray.webp',
-                                        changes: [
-                                            {
-                                                key: 'macro.CE',
-                                                mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-                                                value: 'Petrified',
-                                                priority: 20
-                                            }
-                                        ],
-                                        origin: effectItem.origin,
-                                        disabled: false,
-                                        transfer: true
-                                    };
-
-                                    await MidiQOL.socket().executeAsGM("createEffects",
-                                        {actorUuid: tr.actor.uuid, effects: [petrifiedEffect]});
+                                    await HomebrewEffects.applyPetrifiedEffect(tr.actor, effectItem.origin);
                                 }
-
-                                await MidiQOL.socket().executeAsGM('removeEffects', {
-                                    actorUuid: tr.actor.uuid,
-                                    effects: [turningToStone.id]
-                                });
                             }
                         }
                     });

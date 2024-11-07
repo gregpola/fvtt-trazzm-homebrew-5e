@@ -102,73 +102,39 @@ class HomebrewMacros {
      * @param targetToken       the target actor token
      * @param sourceItem        the item that initiated the grapple
      * @param breakDC           the break grapple DC. If the value is 'opposed' it will run an opposed check
-     * @param sourceActorFlag   a flag, if any, that should be removed on the grapplerToken if the grapple is broken
      * @param overtimeValue     an overtime effect value to apply to the target, if any
      * @param restrained        if present and true, also apply a restrained effect
+     * @param additionalChanges an array of additional changes to be added to the grappled effect
      * @returns {Promise<void>}
      */
-    static async applyGrappled(grapplerToken, targetToken, sourceItem, breakDC, sourceActorFlag = undefined, overtimeValue = undefined, restrained = false) {
+    static async applyGrappled(grapplerToken, targetToken, sourceItem, breakDC, overtimeValue = undefined, restrained = false, additionalChanges = undefined) {
         // sanity checks
         if (!grapplerToken || !targetToken || !sourceItem || !breakDC) {
             console.error("applyGrappled() is missing parameters");
             return false;
         }
 
-        let existingGrappled = targetToken.actor.getRollData().effects.find(eff => eff.name.startsWith('Grappled (') && eff.origin === sourceItem.uuid);
+        let existingGrappled = targetToken.actor.getRollData().effects.find(eff => eff.name === 'Grappled' && eff.origin === sourceItem.uuid);
         if (existingGrappled) {
             console.error("applyGrappled() - " + targetToken.name + " is already grappled using " + sourceItem.name);
             return false;
         }
 
-        // build the grappled effect
-        const grappledEffectName = `Grappled (${grapplerToken.name})`;
+        // build restrained data
+
+        // apply the grappled effect
         const breakValue = breakDC !== 'opposed' ? breakDC : undefined;
-
-        let grappledEffect = {
-            name: grappledEffectName,
-            icon: 'icons/magic/nature/root-vine-fire-entangled-hand.webp',
-            changes: [
-                {
-                    key: 'macro.CE',
-                    mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-                    value: 'Grappled',
-                    priority: 21
-                },
-                {
-                    key: 'macro.createItem',
-                    mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-                    value: 'Compendium.fvtt-trazzm-homebrew-5e.homebrew-automation-items.Item.Rg4639o5lnxWKgWD',
-                    priority: 22
-                }
-            ],
-            flags: {
-                'dae': {
-                    'specialDuration': ['shortRest', 'longRest', 'combatEnd']
-                },
-                'fvtt-trazzm-homebrew-5e': {
-                    'grappler': {
-                        'grapplerId': `${grapplerToken.id}`,
-                        'breakDC': breakValue,
-                        'sourceActorFlag': sourceActorFlag
-                    }
-                }
-            },
-            origin: sourceItem.uuid,
-            disabled: false,
-            transfer: true
-        };
-
-        if (restrained) {
-            grappledEffect.changes.push({
-                key: 'macro.CE',
-                mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-                value: 'Restrained',
-                priority: 21
-            });
+        let results = await HomebrewEffects.applyGrappledEffect(targetToken.actor, sourceItem.uuid, breakValue, undefined, undefined, restrained);
+        let grappledEffect;
+        if (results && results.length > 0) {
+            grappledEffect = results[0];
         }
 
+        let updatedChanges = deepClone(grappledEffect.changes);
+        let changed = false;
+
         if (overtimeValue) {
-            grappledEffect.changes.push({
+            updatedChanges.push({
                 key: 'flags.midi-qol.OverTime',
                 mode: CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
                 value: overtimeValue,
@@ -176,9 +142,15 @@ class HomebrewMacros {
             });
         }
 
-        await MidiQOL.socket().executeAsGM("createEffects",
-            {actorUuid: targetToken.actor.uuid, effects: [grappledEffect]});
+        if (additionalChanges) {
+            updatedChanges.push(...additionalChanges);
+        }
 
+        if (changed) {
+            await grappledEffect.update({changes: updatedChanges});
+        }
+
+        return true;
     }
 
     /**
@@ -189,72 +161,52 @@ class HomebrewMacros {
      * @param sourceItem        the item that initiated the grapple
      * @param breakDC           the break DC
      * @param abilityCheck      the ability check type
-     * @param sourceActorFlag   a flag, if any, that should be removed on the sourceToken if the condition is broken
      * @param overtimeValue     an overtime effect value to apply to the target, if any
+     * @param additionalChanges an array of additional changes to be added to the grappled effect
+     *
      * @returns {Promise<boolean>}
      */
-    static async applyRestrained(sourceToken, targetToken, sourceItem, breakDC, abilityCheck, sourceActorFlag = undefined, overtimeValue = undefined) {
+    static async applyRestrained(sourceToken, targetToken, sourceItem, breakDC, abilityCheck, overtimeValue = undefined, additionalChanges = undefined) {
         // sanity checks
         if (!sourceToken || !targetToken || !sourceItem || !breakDC || !abilityCheck) {
             console.error("applyRestrained() is missing arguments");
             return false;
         }
 
-        let existingRestrained = targetToken.actor.getRollData().effects.find(eff => eff.name.startsWith('Restrained (') && eff.origin === sourceItem.uuid);
+        let existingRestrained = targetToken.actor.getRollData().effects.find(eff => eff.name === 'Restrained' && eff.origin === sourceItem.uuid);
         if (existingRestrained) {
             console.error("applyRestrained() - " + targetToken.name + " is already restrained using " + sourceItem.name);
             return false;
         }
 
-        // build the restrained effect
-        const restrainedEffectName = `Restrained (${sourceToken.name})`;
+        // apply the restrained effect
         const breakValue = breakDC !== 'opposed' ? breakDC : undefined;
+        let results = await HomebrewEffects.applyRestrainedEffect(targetToken.actor, sourceItem.uuid, breakValue, abilityCheck);
+        let restrainedEffect;
+        if (results && results.length > 0) {
+            restrainedEffect = results[0];
+        }
 
-        let restrainedEffect = {
-            name: restrainedEffectName,
-            icon: 'icons/magic/control/encase-creature-spider-hold.webp',
-            changes: [
-                {
-                    key: 'macro.CE',
-                    mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-                    value: 'Restrained',
-                    priority: 21
-                },
-                {
-                    key: 'macro.createItem',
-                    mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-                    value: 'Compendium.fvtt-trazzm-homebrew-5e.homebrew-automation-items.Item.NrqmZlBf9GwcERs6',
-                    priority: 22
-                }
-            ],
-            flags: {
-                'dae': {
-                    'specialDuration': ['shortRest', 'longRest', 'combatEnd']
-                },
-                'fvtt-trazzm-homebrew-5e': {
-                    'restrainer': {
-                        'restrainerId': `${grapplerToken.id}`,
-                        'breakDC': breakValue,
-                        'sourceActorFlag': sourceActorFlag
-                    }
-                }
-            },
-            origin: sourceItem.uuid,
-            disabled: false,
-            transfer: true
-        };
+        let updatedChanges = deepClone(restrainedEffect.changes);
+        let changed = false;
 
         if (overtimeValue) {
-            restrainedEffect.changes.push({
+            updatedChanges.push({
                 key: 'flags.midi-qol.OverTime',
                 mode: CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
                 value: overtimeValue,
-                priority: 19
+                priority: 18
             });
         }
 
-        await MidiQOL.socket().executeAsGM("createEffects",
-            {actorUuid: targetToken.actor.uuid, effects: [restrainedEffect]});
+        if (additionalChanges) {
+            updatedChanges.push(...additionalChanges);
+        }
+
+        if (changed) {
+            await restrainedEffect.update({changes: updatedChanges});
+        }
+
         return true;
     }
 
@@ -385,43 +337,17 @@ class HomebrewMacros {
         }
     }
 
-    static async applyPrismaticSprayIndigo(sourceToken, targetToken, checkDC) {
+    static async applyPrismaticSprayIndigo(sourceToken, targetToken, item, checkDC) {
         // sanity checks
-        if (!sourceToken || !targetToken || !checkDC) {
+        if (!sourceToken || !targetToken || !item || !checkDC) {
             console.error("applyPrismaticSprayIndigo() is missing arguments");
             return false;
         }
 
         // add the Restrained effect to the target
-        const restrainedEffectName = `Prismatic Spray - Indigo (${sourceToken.name})`;
-        let restrainedEffect = {
-            'name': restrainedEffectName,
-            'icon': 'icons/magic/light/beam-rays-blue-small.webp',
-            'changes': [
-                {
-                    'key': 'macro.CE',
-                    'mode': CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-                    'value': 'Restrained',
-                    'priority': 21
-                },
-                {
-                    'key': 'flags.midi-qol.OverTime',
-                    'mode': CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
-                    'value': `label=Prismatic Spray (Indigo), turn=end, saveRemove=false, macro=function.HomebrewMacros.handlePrismaticSprayIndigo, saveAbility=con, saveDC=${checkDC}`,
-                    'priority': 20
-                }
-            ],
-            'origin': sourceToken.actor.uuid,
-            'flags': {
-                'dae': {
-                    'specialDuration': ['shortRest', 'longRest', 'combatEnd']
-                },
-            }
-        };
-
-        await MidiQOL.socket().executeAsGM("createEffects",
-            {actorUuid: targetToken.actor.uuid, effects: [restrainedEffect]});
-        return true;
+        const overtimeValue = `label=Prismatic Spray (Indigo), turn=end, saveRemove=false, macro=function.HomebrewMacros.handlePrismaticSprayIndigo, saveAbility=con, saveDC=${checkDC}`;
+        let restrainedEffect = await this.applyRestrained(sourceToken, targetToken, item, checkDC, 'con', overtimeValue);
+        return restrainedEffect;
     }
 
     static async handlePrismaticSprayIndigo({speaker, actor, token, character, item, args, scope, workflow}) {
@@ -468,7 +394,7 @@ class HomebrewMacros {
                 });
             }
 
-            await game.dfreds.effectInterface.addEffect({effectName: 'Petrified', uuid: targetToken.actor.uuid});
+            await HomebrewEffects.applyPetrifiedEffect(targetToken, item);
         } else {
             await targetToken.actor.setFlag(_flagGroup, "prismatic-spray-indigo", {
                 failedSaves: failedSaves,
@@ -607,9 +533,9 @@ class HomebrewMacros {
 
         // check for death
         if (targetActor.system.attributes.hp.effectiveMax <= 0) {
-            const isDead = await game.dfreds?.effectInterface?.hasEffectApplied('Dead', targetActor.uuid);
+            const isDead = MidiQOL.hasCondition(actor, "Dead");
             if (!isDead) {
-                await game.dfreds.effectInterface.addEffect({effectName: 'Dead', uuid: targetActor.uuid});
+                await targetActor.toggleStatusEffect("dead", {active: true});
             }
         }
     }

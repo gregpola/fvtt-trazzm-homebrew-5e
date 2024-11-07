@@ -11,7 +11,7 @@
 	At Higher Levels. When you cast this spell using a spell slot of 2nd level or higher, roll an additional 2d10 for
 	each slot level above 1st.
 */
-const version = "11.1";
+const version = "12.3.0";
 const optionName = "Color Spray";
 
 try {
@@ -23,40 +23,18 @@ try {
 
 		// apply effect in order of lowest to highest hp until all points are spent
 		for (let t of sortedTargets) {
-			const hasEffectApplied = await game.dfreds.effectInterface.hasEffectApplied('Blinded', t.actor.uuid);
-			if (!hasEffectApplied) {
-				let hp = t.actor.system.attributes.hp.value;
-				
-				if (hp <= totalHitPoints) {
-					totalHitPoints -= hp;
-					markAsBlinded(item, t.actor.uuid);
-				}
-				else {
-					console.log(`${optionName} - ran out of affected hit points`);
-					break;
-				}
+			let hp = t.actor.system.attributes.hp.value;
+
+			if (hp <= totalHitPoints) {
+				totalHitPoints -= hp;
+				await HomebrewEffects.applyBlindedEffect(t.actor, item.uuid, ['turnEndSource']);
+			} else {
+				console.log(`${optionName} - ran out of affected hit points`);
+				break;
 			}
 		}
 	}
 	
 } catch (err) {
     console.error(`${optionName}: ${version}`, err);
-}
-
-async function markAsBlinded(sourceItem, targetId) {
-	const effectData = {
-		name: "Color Spray - Blinded",
-		icon: sourceItem.img,
-		origin: actor.uuid,
-		changes: [
-			{
-				key: 'macro.CE',
-				mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-				value: "Blinded",
-				priority: 20
-			}
-		],
-		flags: { dae: { specialDuration: ['turnEndSource'] } }
-	};
-    await MidiQOL.socket().executeAsGM("createEffects", { actorUuid: targetId, effects: [effectData] });
 }

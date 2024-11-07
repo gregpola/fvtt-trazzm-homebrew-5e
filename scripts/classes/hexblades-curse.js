@@ -9,7 +9,7 @@
 
     You can’t use this feature again until you finish a short or long rest.
  */
-const version = "11.0";
+const version = "12.3.0";
 const optionName = "Hexblades Curse";
 const markedName = "Hexblades Curse Marked";
 
@@ -17,7 +17,7 @@ try {
     if (args[0] === "off") { //cleaning when deleting from caster
         let cursedTarget = findCursedTarget(item.uuid);
         if (cursedTarget) {
-            const cursedEffect = cursedTarget.effects.find(entry => entry.name === markedName && entry.origin === item.uuid);
+            const cursedEffect = cursedTarget.getRollData().effects.find(entry => entry.name === markedName && entry.origin === item.uuid);
             if (cursedEffect) {
                 await MidiQOL.socket().executeAsGM("removeEffects", {
                     actorUuid: cursedTarget.uuid,
@@ -32,7 +32,9 @@ try {
             const isMarked = targetActor.flags.dae.onUpdateTarget.find(flag => flag.flagName === optionName && flag.sourceActorUuid === actor.uuid);
             if (isMarked) {
                 let damageType = workflow.item.system.damage.parts[0][1];
-                return {damageRoll: `@prof[${damageType}]`, flavor: "Hexblades Curse damage"};
+                if (!damageType.toLowerCase().includes("heal")) {
+                    return {damageRoll: `@prof[${damageType}]`, flavor: "Hexblades Curse damage"};
+                }
             }
         }
 
@@ -113,7 +115,7 @@ function findCursedTarget(itemUuid) {
     let cursedToken = tokens.find(token => {
         // check if the token has an actor
         if (token.actor) {
-            return token.actor.effects.find(entry => entry.name === markedName && entry.origin === itemUuid);
+            return token.actor.getRollData().effects.find(entry => entry.name === markedName && entry.origin === itemUuid);
         }
         return false;
     });

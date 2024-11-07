@@ -12,7 +12,7 @@
 
 	At Higher Levels. When you cast this spell using a spell slot of 2nd level or higher, roll an additional 2d8 for each slot level above 1st.
 */
-const version = "12.3.0";
+const version = "12.3.1";
 const optionName = "Sleep";
 
 try {
@@ -42,39 +42,6 @@ try {
 			duration = d.value * 3600;
 		}
 
-		// create the effect data
-		const effectData = {
-			name: 'Asleep',
-			icon: "icons/magic/control/sleep-bubble-purple.webp",
-			origin: item.uuid,
-			duration: {'seconds': duration},
-			changes: [
-				{
-					key: 'macro.CE',
-					mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-					value: "Unconscious",
-					priority: 20
-				},
-				{
-					key: 'macro.StatusEffect',
-					mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-					value: "Sleeping",
-					priority: 20
-				}
-			],
-			flags: {
-				dae: {
-					selfTarget: false,
-					stackable: "none",
-					durationExpression: "",
-					macroRepeat: "none",
-					specialDuration: ["isDamaged"],
-					transfer: false
-				}
-			},
-			disabled: false
-		};
-
 		for (let target of sortedTargets) {
 			// skip undead
 			if (target.actor.system.details.type.value === "undead")
@@ -85,14 +52,13 @@ try {
 				continue;
 
 			// skip if already asleep or unconscious
-			let unconscious = await game.dfreds.effectInterface.hasEffectApplied('Unconscious', target.actor.uuid);
-			if (!unconscious && !target.actor.statuses.has("dead") && !target.actor.statuses.has("sleeping")) {
+			if (!target.actor.statuses.has("unconscious") && !target.actor.statuses.has("dead") && !target.actor.statuses.has("sleeping")) {
 				let hp = target.actor.system.attributes.hp.value;
 				if (hp < 1) continue;
 
 				if (hp <= totalHitPoints) {
 					totalHitPoints -= hp;
-					await MidiQOL.socket().executeAsGM("createEffects", { actorUuid: target.actor.uuid, effects: [effectData] });
+					await HomebrewEffects.applySleepingEffect(target.actor, workflow.item.uuid);
 				}
 				else {
 					console.log(`${optionName} - ran out of affected hit points`);

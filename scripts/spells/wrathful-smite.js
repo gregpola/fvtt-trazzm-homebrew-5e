@@ -4,7 +4,7 @@
 	the spell ends. As an action, the creature can make a Wisdom check against your spell save DC to steel its resolve
 	and end this spell.
  */
-const version = "12.3.0";
+const version = "12.3.1";
 const optionName = "Wrathful Smite";
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
 const flagName = "wrathful-smite-used";
@@ -52,12 +52,7 @@ try {
 			options: { chatMessage: true, fastForward: false } });
 			
 	    if (save.total < dc) {
-			await game.dfreds.effectInterface.addEffect({
-				'effectName': 'Frightened',
-				'uuid': target.actor.uuid,
-				'origin': workflow.origin,
-				'overlay': false
-			});
+			await HomebrewEffects.applyFrightenedEffect(target.actor, macroItem.uuid, undefined, 60);
 		}
 
 		await anime(token, target);
@@ -72,7 +67,8 @@ try {
 		const lastFlag = actor.getFlag(_flagGroup, flagName);
 		if (lastFlag) {
 			await actor.unsetFlag(_flagGroup, flagName);
-			await game.dfreds.effectInterface.removeEffect({effectName: 'Frightened', uuid:lastFlag});
+			const targetActor = await fromUuid(lastFlag);
+			await HomebrewEffects.removeEffectByNameAndOrigin(targetActor, 'Frightened', macroItem.uuid);
 		}
 	}
 

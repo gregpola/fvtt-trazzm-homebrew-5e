@@ -3,7 +3,7 @@
 	is audible within 300 feet of you, and the attack deals an extra 2d6 thunder damage to the target. Additionally, if
 	the target is a creature, it must succeed on a Strength saving throw or be pushed 10 feet away from you and knocked Prone.
  */
-const version = "12.3.0";
+const version = "12.3.1";
 const optionName = "Thunderous Smite";
 const squaresPushed = 2;
 const damageType = game.i18n.localize("thunder");
@@ -33,8 +33,8 @@ try {
 			options: { chatMessage: true, fastForward: false } });
 			
 	    if (save.total < dc) {
-			await game.dfreds?.effectInterface.addEffect({ effectName: 'Prone', uuid: target.actor.uuid });
-			await wait(300);
+			await HomebrewEffects.applyProneEffect(target.actor, workflow.item.uuid);
+			await HomebrewMacros.wait(300);
 			await HomebrewMacros.pushTarget(token, target, squaresPushed);
 		}
 
@@ -59,5 +59,3 @@ async function anime(token, target) {
 		.scaleToObject(2)
 		.play();
 }
-
-async function wait(ms) { return new Promise(resolve => { setTimeout(resolve, ms); }); }

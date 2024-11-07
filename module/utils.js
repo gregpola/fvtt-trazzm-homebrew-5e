@@ -71,8 +71,9 @@ class TurnStartDialog extends Application {
 
         this.data.buttons = {
             standUp: { label: "Stand Up", callback: async (html) => {
-                await game.dfreds?.effectInterface?.removeEffect({effectName: 'Prone', uuid: this.data.actorUuid});
-                await this.data.actor.toggleStatusEffect("prone", { active: false });
+                const actor = await fromUuid(this.data.actorUuid);
+                const effectIDs = actor.getRollData().effects.filter(e => e.name.toLowerCase() === 'prone' ).map(e=>e.id);
+                await MidiQOL.socket().executeAsGM('removeEffects', {'actorUuid': actor.uuid, 'effects': effectIDs});
             }},
             close: { label: "Close", callback: (html) => {
                 TurnStartDialog.storePosition(html);

@@ -7,7 +7,7 @@
     creature for each slot level above 1st. The creatures must be within 30 feet of each other when you target them.
  */
 const optionName = "Command";
-const version = "12.3.0";
+const version = "12.3.1";
 
 try {
     if ((args[0].macroPass === "postActiveEffects") && (workflow.failedSaves.size > 0)) {
@@ -113,9 +113,7 @@ try {
 
         }
         else if (HomebrewHelpers.findEffect(actor, "Command - Grovel")) {
-            if (!actor.statuses.has("prone")) {
-                await game.dfreds.effectInterface.addEffect({effectName: 'Prone', uuid: actor.uuid});
-            }
+            await HomebrewEffects.applyProneEffect(actor, item.uuid);
             ChatMessage.create({
                 content: `${actor.name} is compelled to fall prone and grovel`,
                 speaker: ChatMessage.getSpeaker({actor: actor})

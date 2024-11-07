@@ -1,4 +1,4 @@
-const version = "11.0";
+const version = "11.1";
 const optionName = "Trip Attack";
 const featureName = "Superiority Dice";
 const cost = 1;
@@ -69,10 +69,7 @@ try {
 								for (let tr of result.tokenresults) {
 									if (!tr.passed) {
 										ChatMessage.create({'content': `${actorName} trips ${targetName}!`});
-										const hasEffectApplied = await game.dfreds.effectInterface.hasEffectApplied('Prone', targetActorUuid);
-										if (!hasEffectApplied) {
-											await game.dfreds.effectInterface.addEffect({ effectName: 'Prone', uuid: targetActorUuid });
-										}
+										await HomebrewEffects.applyProneEffect(targetToken.actor, item );
 									}
 								}
 							}

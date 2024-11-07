@@ -56,6 +56,24 @@ let conditionSensitivity = {
     }
 };
 
+const protectionFromEvilImmunity = {
+    name: 'Protection from Evil Immunity',
+    icon: 'icons/magic/defensive/shield-barrier-blue.webp',
+    changes: [
+        {
+            key: 'flags.midi-qol.min.ability.save.all',
+            value: 99,
+            mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
+            priority: 120
+        }
+    ],
+    flags: {
+        dae: {
+            specialDuration: ['isSave']
+        }
+    }
+};
+
 let starryFormDragonConcentration = {
     'name': 'Starry Form - Dragon concentration',
     'icon': 'icons/creatures/reptiles/dragon-horned-blue.webp',
@@ -105,11 +123,13 @@ export class SaveHandler {
             if (workflow.item.effects?.size) {
                 workflow.item.effects.forEach(effect => {
                     effect.changes.forEach(element => {
-                        if (element.key === 'macro.CE') {
-                            itemConditions.add(element.value.toLowerCase());
-                        } else if (element.key === 'StatusEffect') {
+                        if (element.key === 'StatusEffect') {
                             itemConditions.add(element.value.toLowerCase());
                         }
+                    });
+
+                    effect.statuses.forEach(status => {
+                        itemConditions.add(status.toLowerCase());
                     });
                 });
             }
@@ -159,7 +179,7 @@ export class SaveHandler {
                 }
 
                 // Check for other features that allow save mods
-                let holyNimbus = tokenDoc.document.actor.effects.find(f => f.name === 'Holy Nimbus');
+                let holyNimbus = HomebrewHelpers.findEffect(tokenDoc.document.actor, 'Holy Nimbus');
                 if (holyNimbus) {
                     let undeadOrFiend = ["undead", "fiend"].some(type => (workflow.actor.system.details.type?.value || "").toLowerCase().includes(type));
                     if (undeadOrFiend) {
@@ -181,6 +201,21 @@ export class SaveHandler {
                 let elementalResistance = tokenDoc.document.actor.items.find(f => f.name === "Elemental Resistance");
                 if (elementalResistance && appliesToElementalResistance) {
                     hasResilience = true;
+                }
+
+                // check Protection from Evil and Good
+                let protectionFromEvil = HomebrewHelpers.findEffect(tokenDoc.document.actor, 'Protection from Evil and Good');
+                let purityOfSpirit = HomebrewHelpers.findEffect(tokenDoc.document.actor, 'Purity of Spirit');
+                if (protectionFromEvil || purityOfSpirit) {
+                    if (["aberration", "celestial", "elemental", "fey", "fiend", "undead"].some(type => (workflow.actor.system.details.type?.value || "").toLowerCase().includes(type))) {
+                        if (itemConditions.has('charmed') || itemConditions.has('frightened')) {
+                            await MidiQOL.socket().executeAsGM('createEffects', {
+                                'actorUuid': tokenDoc.document.actor.uuid,
+                                'effects': [protectionFromEvilImmunity]
+                            });
+                            await SaveHandler.wait(100);
+                        }
+                    }
                 }
 
                 if (hasResilience) {
@@ -228,6 +263,7 @@ export class SaveHandler {
 
 
         Hooks.on("midi-qol.postCheckSaves", async workflow => {
+            console.log("postCheckSaves");
         });
     }
 

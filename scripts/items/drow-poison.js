@@ -4,7 +4,7 @@
 	by 5 or more, the creature is also Unconscious while poisoned in this way. The creature wakes up if it takes damage
 	or if another creature takes an action to shake it awake.
 */
-const version = "12.3.0";
+const version = "12.3.1";
 const optionName = "Drow Poison";
 const flagName = "drow-poison-weapon";
 const saveDC = 13;
@@ -44,13 +44,7 @@ try {
 
 					if (apps === 0) {
 						await HomebrewMacros.removePoisonFromWeapon(actor);
-						let effect = actor.effects.find(ef => ef.name === optionName);
-						if (effect) {
-							await MidiQOL.socket().executeAsGM("removeEffects", {
-								actorUuid: actor.uuid,
-								effects: [effect.id]
-							});
-						}
+						await HomebrewEffects.removeEffectByName(actor, optionName);
 					}
 
 					// request the saving throw
@@ -58,24 +52,12 @@ try {
 						flavor: saveFlavor,
 						damageType: "poison"
 					});
+
 					if (saveRoll.total < saveDC) {
-						// hasStatusEffect
-						const hasEffectApplied = await game.dfreds.effectInterface.hasEffectApplied({
-							effectName: 'Poisoned',
-							uuid: targetToken.actor.uuid
-						});
-						if (!hasEffectApplied) {
-							await game.dfreds.effectInterface.addEffect({
-								effectName: 'Poisoned',
-								uuid: targetToken.actor.uuid
-							});
-						}
+						await HomebrewEffects.applyPoisonedEffect(targetToken.actor, item);
 
 						if (saveRoll.total <= (saveDC - 5)) {
-							if (!targetToken.actor.hasConditionEffect("sleeping")) {
-							//if (!targetToken.hasStatusEffect("sleeping")) {
-								await targetToken.actor.toggleStatusEffect("sleeping", {active: true});
-							}
+							await HomebrewEffects.applySleepingEffect(targetToken.actor, item);
 						}
 					}
 				}
@@ -84,6 +66,7 @@ try {
 	}
 	else if (args[0] === "off") {
 		await HomebrewMacros.removePoisonFromWeapon(actor);
+		await HomebrewEffects.removeEffectByName(actor, optionName);
 	}
 
 } catch (err) {

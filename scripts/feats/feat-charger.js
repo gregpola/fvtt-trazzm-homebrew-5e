@@ -3,7 +3,7 @@
 
 	If you move at least 10 feet in a straight line immediately before taking this bonus action, you either gain a +5 bonus
 	to the attack’s damage roll (if you chose to make a melee attack and hit) or push the target up to 10 feet away from
-	you (if you chose to shove and you succeed).
+	you (if you chose to shove and succeed).
 */
 const version = "11.0";
 const optionName = "Charger";
@@ -16,7 +16,6 @@ try {
 	  content: "Which action do you want to take?",
 	  buttons: {
 		A: { label: "Melee Weapon Attack", callback: () => { return MeleeAttack(); } },
-		B: { label: "Shove (Prone)", callback: () => { return ShoveProne(); } },
 		C: { label: "Shove (Push)", callback: () => { return ShoveKnockback(); } },
 	  }
 	}).render(true);
@@ -61,28 +60,5 @@ async function ShoveKnockback() {
 	}
 	else {
 		ChatMessage.create({'content': `${actor.name} is to weak to push ${target.name} back!`});
-	}
-}
-
-async function ShoveProne() {
-	let actorRoll = await actor.rollSkill("ath");
-	await game.dice3d?.showForRoll(actorRoll);
-
-	let skill = target.actor.system.skills.ath.total < target.actor.system.skills.acr.total ? "acr" : "ath";
-	let tokenRoll = await target.actor.rollSkill(skill);
-	await game.dice3d?.showForRoll(tokenRoll);
-	
-	if (actorRoll.total >= tokenRoll.total) {
-		ChatMessage.create({'content': `${actor.name} knocks ${target.name} prone!`});
-		const uuid = target.actor.uuid;
-		const hasEffectApplied = await game.dfreds.effectInterface.hasEffectApplied('Prone', uuid);
-		if (!hasEffectApplied) {
-			await game.dfreds.effectInterface.addEffect({
-				'effectName': 'Prone',
-				'uuid': target.actor.uuid,
-				'origin': workflow.item.uuid,
-				'overlay': false
-			});
-		}
 	}
 }

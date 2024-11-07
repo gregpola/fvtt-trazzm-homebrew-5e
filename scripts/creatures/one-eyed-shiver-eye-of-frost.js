@@ -1,7 +1,7 @@
 /*
 	The one-eyed shiver casts ray of frost from its missing eye. If it hits, the target is also restrained. A target restrained in this way can end the condition by using an action, succeeding on a DC 13 Strength check.
 */
-const version = "10.1";
+const version = "12.3.0";
 const optionName = "Eye of Frost";
 
 try {

@@ -54,7 +54,7 @@ try {
                         break;
                     case 6:
                         if (!saved) {
-                            let restrained = await HomebrewMacros.applyPrismaticSprayIndigo(token, targetToken, actorDC);
+                            let restrained = await HomebrewMacros.applyPrismaticSprayIndigo(token, targetToken, item, actorDC);
                             if (restrained) {
                                 ChatMessage.create({
                                     content: `${targetToken.name} is restrained by the indigo beam`,
@@ -67,7 +67,7 @@ try {
                         break;
                     case 7:
                         if (!saved) {
-                            await game.dfreds.effectInterface.addEffect({ effectName: 'Blinded', uuid: targetToken.actor.uuid });
+                            await HomebrewEffects.applyBlindedEffect(targetToken.actor, item.uuid);
                             await ChatMessage.create({flavor: `Prismatic Spray - Violet`, content:
                                     `${targetToken.name} is blinded. Make a DC ${actorDC} Wisdom saving throw at the start of ${actor.name}'s next turn. A successful save ends the blindness. If ${targetToken.name} fails that save, the it is transported to another plane of existence of the GM’s choosing and is no longer blinded. (Typically, a creature that is on a plane that isn’t its home plane is banished home, while other creatures are usually cast into the Astral or Ethereal planes.`});
                         }

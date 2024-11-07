@@ -13,7 +13,7 @@ try {
         await HomebrewMacros.teleportToken(token, maxRange);
 
         // Ask which targets to try to charm
-        await wait(1000);
+        await HomebrewMacros.wait(1000);
         const potentialTargets = MidiQOL.findNearby(null, token, 10);
         if (potentialTargets.length === 0) {
             console.log(`${optionName} - no targets within 10 feet to charm`);
@@ -84,34 +84,6 @@ try {
             const saveDC = actor.system.attributes.spelldc;
             const saveFlavor = `${CONFIG.DND5E.abilities["wis"].label} DC${saveDC} ${optionName}`;
 
-            const charmedEffectData = {
-                name: "Charmed",
-                icon: "modules/dfreds-convenient-effects/images/charmed.svg",
-                origin: workflow.origin,
-                duration: {startTime: game.time.worldTime, seconds: 60},
-                changes: [
-                    {
-                        key: 'macro.CE',
-                        mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-                        value: "Charmed",
-                        priority: 20
-                    }
-                ],
-                flags: {
-                    dae: {
-                        selfTarget: false,
-                        stackable: "none",
-                        durationExpression: "",
-                        macroRepeat: "none",
-                        specialDuration: [
-                            "isDamaged", "isSave"
-                        ],
-                        transfer: false
-                    }
-                },
-                disabled: false
-            };
-
             for (let uuid of charmTargets.values()) {
                 let targetActor = MidiQOL.MQfromActorUuid(uuid);
                 if (targetActor) {
@@ -119,7 +91,7 @@ try {
                     await game.dice3d?.showForRoll(saveRoll);
 
                     if (saveRoll.total < saveDC) {
-                        await MidiQOL.socket().executeAsGM("createEffects", { actorUuid: uuid, effects: [charmedEffectData] });
+                        await HomebrewEffects.applyCharmedEffect(targetActor, item, ["isDamaged", "isSave"]);
                     }
                 }
             }
@@ -129,5 +101,3 @@ try {
 } catch (err) {
     console.error(`${optionName} ${version}`, err);
 }
-
-async function wait(ms) { return new Promise(resolve => { setTimeout(resolve, ms); });}

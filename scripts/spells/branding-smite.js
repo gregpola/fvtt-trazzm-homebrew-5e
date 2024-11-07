@@ -6,7 +6,7 @@
 
 	At Higher Levels. When you cast this spell using a spell slot of 3rd level or higher, the extra damage increases by 1d6 for each slot level above 2nd.
 */
-const version = "12.3.0";
+const version = "12.3.1";
 const optionName = "Branding Smite";
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
 const flagName = "branding-smite-used";
@@ -43,11 +43,7 @@ try {
         const spellLevel = actor.flags["midi-qol"]?.brandingSmite?.level ?? 2;
 
         // remove invisible condition
-        let invis = target.actor.effects?.find(i=>i.name === "Invisible");
-        if (invis) {
-            await MidiQOL.socket().executeAsGM("removeEffects", { actorUuid: target.actor.uuid, effects: [invis.id] });
-        }
-        await game.dfreds.effectInterface.removeEffect({effectName: 'Invisible', uuid:target.actor.uuid});
+        await HomebrewEffects.removeEffectByName(target.actor, 'Invisible');
 
         // add light effect
         let effectData = new ActiveEffect(

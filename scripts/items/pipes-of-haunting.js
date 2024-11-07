@@ -7,7 +7,7 @@
     succeeds on its saving throw is immune to the effect of these pipes for 24 hours. The pipes regain 1d3 expended
     charges daily at dawn.
 */
-const version = "12.3.0";
+const version = "12.3.1";
 const optionName = "Pipes of Haunting";
 
 try {
@@ -23,12 +23,7 @@ try {
 
             if (saveRoll.total < 15) {
                 if (!HomebrewHelpers.hasConditionImmunity(target.actor, "frightened")) {
-                    await game.dfreds.effectInterface.addEffect({
-                        'effectName': 'Frightened',
-                        'uuid': target.actor.uuid,
-                        'origin': actor.uuid,
-                        'overlay': true
-                    });
+                    await HomebrewEffects.applyFrightenedEffect(target.actor, item);
                 }
             }
         }

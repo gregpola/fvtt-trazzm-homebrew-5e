@@ -11,7 +11,7 @@
 	If you succeed on the check and the creature isn’t hostile to you, it is charmed by you for 1 minute. While Charmed,
 	it regards you as a friendly acquaintance. This effect ends immediately if you or your companions do anything harmful to it.
  */
-const version = "11.1";
+const version = "12.3.0";
 const optionName = "Panache";
 const effectNameHostile = "Disadvantage against others";
 
@@ -26,103 +26,19 @@ try {
 			}
 
 			// make sure the target is not deafened
-			const isDeafened = await game.dfreds.effectInterface.hasEffectApplied('Deafened', target.actor.uuid);
+			const isDeafened = HomebrewHelpers.findEffect(target.actor, 'Deafened');
 			if (isDeafened) {
 				ui.notifications.error(`${optionName}: ${version} - ${target.name} cannot hear you`);
 				return;
 			}
 
 			// run opposed check
-			let results = await game.MonksTokenBar.requestContestedRoll({token: token, request: 'skill:per'},
-				{token: target, request: 'skill:ins'},
-				{silent: true, fastForward:false, flavor: `${target.name} tries to resist ${token.name}'s ${optionName}`});
-
-			let i=0;
-			while (results.flags['monks-tokenbar'][`token${token.id}`].passed === "waiting" && i < 30) {
-				await new Promise(resolve => setTimeout(resolve, 500));
-				i++;
-			}
-
-			let result = results.flags["monks-tokenbar"][`token${token.id}`].passed;
-			if (result === "won" || result === "tied") {
-				if (target.document.disposition !== token.document.disposition) {
-					const hasHostileEffect = findEffect(target.actor, effectNameHostile, workflow.item.uuid);
-					if (hasHostileEffect) {
-						await MidiQOL.socket().executeAsGM("removeEffects", {
-							actorUuid: target.actor.uuid,
-							effects: [hasHostileEffect.id]
-						});
-					}
-
-					const hostileEffectData = {
-						name: effectNameHostile,
-						icon: workflow.item.img,
-						origin: actor.uuid,
-						duration: {startTime: game.time.worldTime, seconds: 60},
-						changes: [{
-							key: 'flags.midi-qol.onUseMacroName',
-							mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-							value: `ItemMacro.${workflow.item.uuid},preAttackRoll`,
-						}],
-						flags: {
-							dae: {
-								selfTarget: false,
-								stackable: "none",
-								durationExpression: "",
-								macroRepeat: "none",
-								specialDuration: [],
-								transfer: false
-							}
-						},
-						disabled: false
-					};
-					await MidiQOL.socket().executeAsGM("createEffects", {
-						actorUuid: target.actor.uuid,
-						effects: [hostileEffectData]
-					});
-
-				} else {
-					const hasCharmedEffect = findEffect(target.actor, "Charmed", workflow.item.uuid);
-					if (hasCharmedEffect) {
-						await MidiQOL.socket().executeAsGM("removeEffects", {
-							actorUuid: target.actor.uuid,
-							effects: [hasCharmedEffect.id]
-						});
-					}
-
-					const charmedEffectData = {
-						name: "Charmed - Panache",
-						icon: "modules/dfreds-convenient-effects/images/charmed.svg",
-						origin: workflow.item.uuid,
-						duration: {startTime: game.time.worldTime, seconds: 60},
-						changes: [
-							{
-								key: 'macro.CE',
-								mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-								value: "Charmed",
-								priority: 20
-							}
-						],
-						flags: {
-							dae: {
-								selfTarget: false,
-								stackable: "none",
-								durationExpression: "",
-								macroRepeat: "none",
-								specialDuration: [
-									"isDamaged", "isSave"
-								],
-								transfer: false
-							}
-						},
-						disabled: false
-					};
-					await MidiQOL.socket().executeAsGM("createEffects", {
-						actorUuid: target.actor.uuid,
-						effects: [charmedEffectData]
-					});
-				}
-			}
+			await MidiQOL.contestedRoll({
+				source: {token, rollType: "skill", ability: "per"},
+				target: {token: targetToken, rollType: "skill", ability: "ins"},
+				flavor: item.name, success: success.bind(this, token, targetToken, item), displayResults: true, itemCardId: workflow.itemCardId,
+				rollOptions: {fastForward: false, chatMessage: true, rollMode: "gmroll"}
+			});
 		}
 	}
 	// check for disadvantage on attacks
@@ -138,10 +54,60 @@ try {
 }
 
 function findEffect(actor, effectName, origin) {
-    return actor?.effects?.find(ef => ef.name === effectName && ef.origin === origin);
+    return actor?.getRollData().effects?.find(ef => ef.name === effectName && ef.origin === origin);
 }
 
 function checkHostileDisadvantage(actor, targetId) {
 	let effect = findEffect(actor, effectNameHostile, targetId);
 	return effect ? false : true;
+}
+
+async function success(token, targetToken, item) {
+	if (target.document.disposition !== token.document.disposition) {
+		const hasHostileEffect = findEffect(target.actor, effectNameHostile, workflow.item.uuid);
+		if (hasHostileEffect) {
+			await MidiQOL.socket().executeAsGM("removeEffects", {
+				actorUuid: target.actor.uuid,
+				effects: [hasHostileEffect.id]
+			});
+		}
+
+		const hostileEffectData = {
+			name: effectNameHostile,
+			icon: workflow.item.img,
+			origin: actor.uuid,
+			duration: {startTime: game.time.worldTime, seconds: 60},
+			changes: [{
+				key: 'flags.midi-qol.onUseMacroName',
+				mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
+				value: `ItemMacro.${workflow.item.uuid},preAttackRoll`,
+			}],
+			flags: {
+				dae: {
+					selfTarget: false,
+					stackable: "none",
+					durationExpression: "",
+					macroRepeat: "none",
+					specialDuration: [],
+					transfer: false
+				}
+			},
+			disabled: false
+		};
+		await MidiQOL.socket().executeAsGM("createEffects", {
+			actorUuid: target.actor.uuid,
+			effects: [hostileEffectData]
+		});
+
+	} else {
+		const hasCharmedEffect = findEffect(target.actor, "Charmed", workflow.item.uuid);
+		if (hasCharmedEffect) {
+			await MidiQOL.socket().executeAsGM("removeEffects", {
+				actorUuid: target.actor.uuid,
+				effects: [hasCharmedEffect.id]
+			});
+		}
+
+		await HomebrewEffects.applyCharmedEffect(target.actor, item, ["isDamaged", "isSave"] );
+	}
 }

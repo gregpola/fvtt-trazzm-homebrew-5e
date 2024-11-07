@@ -5,16 +5,15 @@
 
 	When the spell ends, the conjured Plants wilt away.
 */
-const version = "10.1";
+const version = "12.3.0";
 const optionName = "Entangle";
-const flagName = "entangle-targets";
-		
+
 try {
 	if (args[0].macroPass === "postActiveEffects") {
 		if (workflow.failedSaves.size > 0) {
 			// add restrained to the targets that failed their save
 			const saveDC = actor.system.attributes.spelldc;
-			for(let target of workflow.failedSaves) {
+			for (let target of workflow.failedSaves) {
 				await HomebrewMacros.applyRestrained(token, target, item, saveDC, "str");
 			}
 		}

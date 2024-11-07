@@ -1,4 +1,4 @@
-const version = "11.3";
+const version = "12.3.0";
 const optionName = "Maul of Squeamishness";
 
 try {
@@ -17,7 +17,7 @@ try {
 
             // ask wielder if they want to knock the target prone
             let targetToken = workflow.hitTargets.first();
-            const targetIsProne = await game.dfreds.effectInterface.hasEffectApplied('Prone', targetToken.actor.uuid);
+            const targetIsProne = HomebrewHelpers.findEffect(targetToken.actor, 'Prone');
             if (!targetIsProne) {
                 let dialog = new Promise((resolve, reject) => {
                     new Dialog({
@@ -47,15 +47,14 @@ try {
                     const saveDC = 8 + actor.system.attributes.prof + actor.system.abilities.str.mod;
                     const actorName = actor.name;
                     const targetName = targetToken.name;
-                    const targetActorUuid = targetToken.actor.uuid;
                     let saveFlavor = `${CONFIG.DND5E.abilities["con"].label} DC${saveDC} ${optionName}`;
 
                     let saveRoll = await targetToken.actor.rollAbilitySave("con", {flavor: saveFlavor, damageType: "poison"});
                     await game.dice3d?.showForRoll(saveRoll);
 
                     if (saveRoll.total < saveDC) {
+                        await HomebrewEffects.applyProneEffect(targetToken.actor, item);
                         ChatMessage.create({'content': `${actorName} knocks ${targetName} prone!`});
-                        await game.dfreds.effectInterface.addEffect({ effectName: 'Prone', uuid: targetActorUuid });
                     }
                 }
             }

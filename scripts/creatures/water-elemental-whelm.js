@@ -8,7 +8,7 @@
     each of the elemental's turns, each target grappled by it takes 13 (2d8 + 4) bludgeoning damage. A creature within 5
     feet of the elemental can pull a creature or object out of it by taking an action to make a DC 14 Strength check and succeeding.
 */
-const version = "12.3.0";
+const version = "12.3.1";
 const optionName = "Whelm";
 const overtimeEffect = "turn=end, damageRoll=2d8+4, damageType=bludgeoning, label=Whelm";
 
@@ -18,7 +18,7 @@ try {
         for (let failedTarget of workflow.failedSaves) {
             const tsize = failedTarget.actor.system.traits.size;
             if (["tiny","sm","med","lg"].includes(tsize)) {
-                let grappled = await HomebrewMacros.applyGrappled(token, failedTarget, item, 14, flagName, overtimeEffect, true);
+                let grappled = await HomebrewMacros.applyGrappled(token, failedTarget, item, 14, overtimeEffect, true);
                 ChatMessage.create({
                     content: `${token.name} grapples ${failedTarget.name} whom is unable to breath`,
                     speaker: ChatMessage.getSpeaker({ actor: actor })});

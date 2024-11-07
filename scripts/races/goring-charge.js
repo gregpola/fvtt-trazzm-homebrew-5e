@@ -3,7 +3,7 @@
 	the target is Large or smaller, it must make a Strength saving throw against your DC of 8 + your proficiency bonus
 	+ your Strength modifier. On a failed save, you knock the target Prone.
  */
-const version = "11.0";
+const version = "12.3.0";
 const optionName = "Goring Charge";
 
 try {
@@ -19,7 +19,8 @@ try {
 			const saveFlavor = `${CONFIG.DND5E.abilities["str"].label} Save DC: ${saveDC} - ${optionName}`;
 			let saveRoll = await targetToken.actor.rollAbilitySave("str", {flavor: saveFlavor});
 			if (saveRoll.total < saveDC) {
-				shoveProne(actor, targetToken)
+				await HomebrewEffects.applyProneEffect(targetToken.actor, item);
+				ChatMessage.create({'content': `${shover.name} knocks ${defender.name} prone!`});
 			}
 		}
 	}
@@ -30,18 +31,4 @@ try {
 	
 } catch (err) {
 	console.error(`${optionName} - ${version}`, err);
-}
-
-async function shoveProne(shover, defender){
-	const uuid = defender.actor.uuid;
-	const hasEffectApplied = await game.dfreds.effectInterface.hasEffectApplied('Prone', uuid);
-	if (!hasEffectApplied) {
-		await game.dfreds.effectInterface.addEffect({
-			'effectName': 'Prone',
-			'uuid': uuid,
-			'origin': shover.uuid,
-			'overlay': false
-		});
-		ChatMessage.create({'content': `${shover.name} knocks ${defender.name} prone!`});
-	}
 }

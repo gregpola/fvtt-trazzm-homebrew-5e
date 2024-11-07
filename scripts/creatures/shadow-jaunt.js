@@ -1,10 +1,10 @@
 /*
 	As a bonus action, the spider can magically shift from the Material Plane to the Ethereal Plane, or vice versa.
 */
-const version = "11.0";
+const version = "12.3.0";
 const optionName = "Shadow Jaunt";
+const _flagGroup = "fvtt-trazzm-homebrew-5e";
 const flagName = "shadow-jaunt-effects";
-const mutationFlag = "shadow-jaunt-mutation";
 
 try {
 	if (args[0] === "on") {
@@ -16,23 +16,16 @@ try {
 				disabledEffects.push(effect.id);
 			}
 		}
-		await actor.setFlag("fvtt-trazzm-homebrew-5e", flagName, disabledEffects);
+		await actor.setFlag(_flagGroup, flagName, disabledEffects);
 
-		const updates = {
-			actor: {
-				'system.traits.di.all': true,
-				'system.details.type.custom' : 'NoTarget'
-			}
-		};
-		await warpgate.mutate(token.document, updates, {}, { name: mutationFlag });
-
-		await token.document.update({ "hidden": true });
+		// hide the token
+		await HomebrewEffects.applyEtherealEffect(actor, macroItem.uuid);
 		await ChatMessage.create({ content: `${actor.name} has vanished`});
 	}
 	else if (args[0] === "off") {
-		const flag = actor.getFlag("fvtt-trazzm-homebrew-5e", flagName);
+		const flag = actor.getFlag(_flagGroup, flagName);
 		if (flag) {
-			await actor.unsetFlag("fvtt-trazzm-homebrew-5e", flagName);
+			await actor.unsetFlag(_flagGroup, flagName);
 
 			for (let effectId of flag) {
 				let effect = actor.effects.find(e => e.id === effectId);
@@ -42,8 +35,7 @@ try {
 			}
 		}
 
-		await warpgate.revert(token.document, mutationFlag);
-		await token.document.update({ "hidden": false });
+		await HomebrewEffects.removeEffectByNameAndOrigin(actor, 'Ethereal', macroItem.uuid);
 		await ChatMessage.create({ content: `${actor.name} returns`});
 	}
 

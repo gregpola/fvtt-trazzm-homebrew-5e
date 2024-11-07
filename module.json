@@ -231,6 +231,39 @@
         "ASSISTANT": "OWNER"
       },
       "system": "dnd5e"
+    },
+    {
+      "name": "homebrew-ravenloft",
+      "label": "Homebrew Ravenloft",
+      "path": "packs/homebrew-ravenloft",
+      "type": "Item",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "system": "dnd5e"
+    },
+    {
+      "name": "homebrew-princes-of-the-apocalypse",
+      "label": "Homebrew Princes of the Apocalypse",
+      "path": "packs/homebrew-princes-of-the-apocalypse",
+      "type": "Item",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "system": "dnd5e"
+    },
+    {
+      "name": "homebrew-rime-of-the-frostmaiden",
+      "label": "Homebrew Rime of the Frostmaiden",
+      "path": "packs/homebrew-rime-of-the-frostmaiden",
+      "type": "Item",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "system": "dnd5e"
     }
   ],
   "compatibility": {
@@ -246,7 +279,7 @@
         "compatibility": {}
       },
       {
-        "id": "dfreds-convenient-effects",
+        "id": "ATL",
         "type": "module",
         "compatibility": {}
       },
@@ -267,6 +300,31 @@
       },
       {
         "id": "sequencer",
+        "type": "module",
+        "compatibility": {}
+      },
+      {
+        "id": "item-piles",
+        "type": "module",
+        "compatibility": {}
+      },
+      {
+        "id": "region-active-effects",
+        "type": "module",
+        "compatibility": {}
+      },
+      {
+        "id": "region-attacher",
+        "type": "module",
+        "compatibility": {}
+      },
+      {
+        "id": "token-attacher",
+        "type": "module",
+        "compatibility": {}
+      },
+      {
+        "id": "vision-5e",
         "type": "module",
         "compatibility": {}
       },
@@ -293,7 +351,8 @@
   "scripts": [
     "module/HomebrewMacros.js",
     "module/HomebrewHelpers.js",
-    "module/MonsterMacros.js"
+    "module/MonsterMacros.js",
+    "module/HomebrewEffects.js"
   ],
   "flags": {
     "allowBugReporter": true
