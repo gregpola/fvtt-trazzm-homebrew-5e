@@ -28,6 +28,27 @@ class HomebrewEffects {
         });
     }
 
+    static filterEffectsByConditions(actor, conditions) {
+        if (Array.isArray(conditions)) {
+            let results = [];
+            for (let effect of actor.getRollData().effects) {
+                if (!effect.flags.dae.autoCreated) {
+                    for (let cond of conditions) {
+                        if ((effect.name === cond) || effect.statuses.has(cond)) {
+                            results.push(effect);
+                        }
+                    }
+                }
+            }
+
+            return results;
+        }
+        else {
+            // single string condition
+            return actor.getRollData().effects.filter(i => i.statuses.has(conditions));
+        }
+    };
+
     static async removeEffectByName(actor, effectName) {
         const effect = HomebrewHelpers.findEffect(actor, effectName);
         if (effect) {
@@ -104,7 +125,7 @@ class HomebrewEffects {
         return undefined;
     }
 
-    static async applyCharmedEffect(actor, origin, specialDurations = undefined, seconds = undefined) {
+    static async applyCharmedEffect(actor, origin, specialDurations = undefined, seconds = undefined, extraStatuses = undefined, extraChanges = undefined) {
         if (actor) {
             const originValue = typeof origin === "string" ? origin : origin.uuid;
             const existing = actor.getRollData().effects.find(eff => eff.name === charmedName && eff.origin === originValue);
@@ -139,6 +160,18 @@ class HomebrewEffects {
 
             if (seconds) {
                 effectData.duration.seconds = seconds;
+            }
+
+            if (extraStatuses) {
+                for (let extra of extraStatuses) {
+                    effectData.statuses.push(extra);
+                }
+            }
+
+            if (extraChanges) {
+                for (let extra of extraChanges) {
+                    effectData.changes.push(extra);
+                }
             }
 
             return await MidiQOL.socket().executeAsGM("createEffects",

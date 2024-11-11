@@ -331,13 +331,19 @@ export class CombatHandler {
             const actor = combatant.actor;
             if (actor) {
                 const hp = actor.system.attributes.hp.value;
-                const isProne = MidiQOL.hasCondition(actor, "Prone");
+                let isProne = MidiQOL.hasCondition(actor, "Prone");
                 const isDead = MidiQOL.hasCondition(actor, "Dead");
                 const isUnconscious = MidiQOL.hasCondition(actor, "Unconscious");
                 const isIncapacitated = MidiQOL.hasCondition(actor, "Incapacitated");
                 const isParalyzed = MidiQOL.hasCondition(actor, "Paralyzed");
                 const isPetrified = MidiQOL.hasCondition(actor, "Petrified");
                 const isStunned = MidiQOL.hasCondition(actor, "Stunned");
+
+                // prone conditionals
+                let laughterEffect =  actor.getRollData().effects.find(eff => eff.name.toLowerCase().includes('hideous laughter'));
+                if (isProne && laughterEffect) {
+                    isProne = false;
+                }
 
                 if ((hp > 0) && isProne && !isDead && !isUnconscious && !isIncapacitated && !isParalyzed && !isPetrified && !isStunned) {
                     return {

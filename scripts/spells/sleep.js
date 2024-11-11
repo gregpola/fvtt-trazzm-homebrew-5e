@@ -12,7 +12,7 @@
 
 	At Higher Levels. When you cast this spell using a spell slot of 2nd level or higher, roll an additional 2d8 for each slot level above 1st.
 */
-const version = "12.3.1";
+const version = "12.3.2";
 const optionName = "Sleep";
 
 try {
@@ -59,6 +59,7 @@ try {
 				if (hp <= totalHitPoints) {
 					totalHitPoints -= hp;
 					await HomebrewEffects.applySleepingEffect(target.actor, workflow.item.uuid);
+					ChatMessage.create({content: `${target.name} falls asleep`});
 				}
 				else {
 					console.log(`${optionName} - ran out of affected hit points`);

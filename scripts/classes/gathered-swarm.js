@@ -10,14 +10,12 @@
 		* The attack’s target must succeed on a Strength saving throw against your spell save DC or be moved by the swarm up to 15 feet horizontally in a direction of your choice. 
 		* You are moved by the swarm 5 feet horizontally in a direction of your choice.
 */
-const version = "12.3.1";
+const version = "12.3.2";
 const optionName = "Gathered Swarm";
 const timeFlag = "gathered-swarm-time";
-const combatTime = game.combat ? `${game.combat.id}-${game.combat.round + game.combat.turn / 100}` : 1;
 
 try {
 	if (args[0].macroPass === "DamageBonus") {
-		const actorToken = token;
 		const targetToken = workflow.hitTargets.first();
 
 		// Skip if the action isn't an weapon attack roll
@@ -29,70 +27,57 @@ try {
 		// check once per turn
 		if (HomebrewHelpers.isAvailableThisTurn(actor, timeFlag) && game.combat) {
 			// ask if they want to use the feature
-			let dialog = new Promise((resolve, reject) => {
-				new Dialog({
-					// localize this text
-					title: optionName,
-					content: `<p>Use an option on this attack?</p>`,
-					buttons: {
-						one: {
-							icon: '<p><img src = "icons/skills/melee/strike-blade-knife-blue-red.webp" width="50" height="50"></img></p>',
-							label: "<p>Add damage</p>",
-							callback: () => resolve(1)
-						},
-						two: {
-							icon: '<p> </p><img src = "icons/equipment/hand/gauntlet-tooled-leather-brown.webp" width="50" height="50"></>',
-							label: "<p>Move target</p>",
-							callback: () => { resolve(2) }
-						},
-						three: {
-							icon: '<p> </p><img src = "icons/skills/movement/feet-spurred-boots-brown.webp" width="50" height="50"></>',
-							label: "<p>Move self</p>",
-							callback: () => { resolve(3) }
-						},
-						cancel: {
-							icon: '<p> </p><img src = "icons/skills/melee/weapons-crossed-swords-yellow.webp" width="50" height="50"></>',
-							label: "<p>No</p>",
-							callback: () => { resolve(0) }
-						}
-					},
-					default: "cancel"
-				}).render(true);
+			const content = `
+			<p>Use an swarm option on this attack?</p>
+			<label style="margin-right: 10px; margin-bottom: 10px;"><input type="radio" name="choice" value="damage" checked>   Extra 1d6 piercing damage  </label>
+			<label style="margin-right: 10px; margin-bottom: 10px;"><input type="radio" name="choice" value="moveTarget">   Attempt to move your target </label>
+			<label style="margin-right: 10px; margin-bottom: 10px;"><input type="radio" name="choice" value="moveSelf">   Move 5 feet in the direction of your choice </label>`;
+
+			let featureOption = await foundry.applications.api.DialogV2.prompt({
+				content: content,
+				rejectClose: false,
+				ok: {
+					callback: (event, button, dialog) => {
+						return button.form.elements.choice.value;
+					}
+				},
+				window: {
+					title: `${optionName}`,
+				},
+				position: {
+					width: 400
+				}
 			});
-			
-			let featureOption = await dialog;
+
 			if (featureOption) {
-				await actor.setFlag('midi-qol', timeFlag, `${combatTime}`);
+				await HomebrewHelpers.setUsedThisTurn(actor, timeFlag);
 				let mightySwarm = actor.items.getName("Mighty Swarm");
-				
 				switch (featureOption) {
 					// extra damage
-					case 1:
+					case 'damage':
 						const diceCount = workflow.isCritical ? 2: 1;
 						const die = mightySwarm ? 'd8' : 'd6';
 						return {damageRoll: `${diceCount}${die}[piercing]`, flavor: optionName};
 					
 					// move target
-					case 2:
-						const spellcastingAbility = actor.system.attributes.spellcasting;
-						const abilityBonus = actor.system.abilities[spellcastingAbility].mod;
-						const dc = 8 + actor.system.attributes.prof + abilityBonus;
+					case 'moveTarget':
+						const dc = actor.system.attributes.spelldc;
 						const flavor = `${CONFIG.DND5E.abilities["str"].label} DC${dc} ${optionName}`;
 						let saveRoll = await targetToken.actor.rollAbilitySave("str", {flavor: flavor, damageType: "push"});
 						await game.dice3d?.showorkfloworRoll(saveRoll);
 						if (saveRoll.total < dc) {
-							await moveTarget(actorToken, targetToken, workflow.item);
-							
+							await HomebrewMacros.pushTarget(token, targetToken, 3)
+
 							if (mightySwarm) {
-								await HomebrewEffects.removeEffectByName(targetToken.actor, 'Prone');
+								await HomebrewEffects.applyProneEffect(targetToken.actor, item.uuid);
 							}
 						}					
 						break;
 					
 					// move yourself
-					case 3:
-						await moveSelf(actorToken, workflow.item);
-							
+					case 'moveSelf':
+						await HomebrewMacros.teleportToken(token, 5);
+
 						if (mightySwarm) {
 							let hasCover = actor.getRollData().effects.find(eff => eff.name.startsWith('Cover '));
 							if (!hasCover) {
@@ -107,12 +92,4 @@ try {
 	
 } catch (err) {
     console.error(`${optionName} : ${version}`, err);
-}
-
-async function moveTarget(actorToken, targetToken, item) {
-	await HomebrewMacros.teleportToken(targetToken, 15);
-}
-
-async function moveSelf(actorToken, item) {
-	await HomebrewMacros.teleportToken(actorToken, 5);
 }

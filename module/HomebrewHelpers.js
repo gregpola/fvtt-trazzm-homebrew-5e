@@ -942,4 +942,20 @@ class HomebrewHelpers {
             }
         });
     }
+
+    static itemDurationSeconds(item) {
+        let duration = 60;
+        let d = item.system.duration;
+        if (d.units === "second") {
+            duration = d.value;
+        }
+        else if (d.units === "minute") {
+            duration = d.value * 60;
+        }
+        else if (d.units === "hour") {
+            duration = d.value * 3600;
+        }
+
+        return duration;
+    }
 }

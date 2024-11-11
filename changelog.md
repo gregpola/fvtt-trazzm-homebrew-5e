@@ -35,3 +35,12 @@
 * Racial Features Updated: Fey Step, Goring Charge, Metallic Breath Weapon
 * Spells Updated: Bounding Boulder, Branding Smite, Color Spray, Command, Entangle, Protection from Evil and Good, Sleep, Summon Fey, Thunderous Smite, Wrathful Smite
 * Subclasses Updated: Oath of Devotion
+
+# 12.3.4 - Rime of the Frostmaiden
+* Class Features Updated: Blessed Healer, Cutting Words, Divine Strike (Life Domain), Gathered Swarm, Giant’s Might, Great Weapon Fighting, Potent Spellcasting, Preserve Life, Rune Carver, Wild Shape
+* Feats Updated: Empowered Cantrips, Chef, Healer, Polearm Master, Savage Attacker
+* Items Updated: Healer's Kit, Ring of Animal Influence
+* Races Updated: MooseTaur
+* Racial Features Updated: Hungry Jaws, Powerful Build
+* Spells Updated: Darkvision, Hold Monster, Hold Person, Ice Knife, Lesser Restoration, Produce Flame, Sleep, Tasha's Hideous Laughter, Thorn Whip, Zephyr Strike
+* Subclasses Updated: College of Lore, Life Domain, Path of the Totem Warrior, Rune Knight

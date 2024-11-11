@@ -3,7 +3,6 @@
 */
 const version = "12.3.0";
 const optionName = "Precision";
-const _flagGroup = "fvtt-trazzm-homebrew-5e";
 
 try {
 	if (args[0].macroPass === "postActiveEffects") {

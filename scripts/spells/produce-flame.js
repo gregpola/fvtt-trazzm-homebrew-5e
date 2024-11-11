@@ -12,6 +12,7 @@
 const version = "12.3.0";
 const optionName = "Produce Flame";
 const hurlItemName = "Flickering Flame";
+const _flagGroup = "fvtt-trazzm-homebrew-5e";
 
 try {
 	if (args[0].macroPass === "postActiveEffects") {
@@ -28,6 +29,9 @@ try {
 			let damageParts = hurlItem.system.damage.parts;
 			damageParts[0][0] = `${damageDice}d8`;
 			await hurlItem.update({"system.damage.parts": damageParts, "system.equipped" : true});
+
+			// set the flag so our automation knows this is a cantrip
+			await hurlItem.setFlag(_flagGroup, 'spell-level', 0);
 
 			await HomebrewHelpers.addFavorite(actor, hurlItem);
 		}

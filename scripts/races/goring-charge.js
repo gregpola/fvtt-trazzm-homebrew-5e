@@ -20,7 +20,7 @@ try {
 			let saveRoll = await targetToken.actor.rollAbilitySave("str", {flavor: saveFlavor});
 			if (saveRoll.total < saveDC) {
 				await HomebrewEffects.applyProneEffect(targetToken.actor, item);
-				ChatMessage.create({'content': `${shover.name} knocks ${defender.name} prone!`});
+				ChatMessage.create({'content': `${token.name} knocks ${defender.name} prone!`});
 			}
 		}
 	}
