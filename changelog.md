@@ -44,3 +44,10 @@
 * Racial Features Updated: Hungry Jaws, Powerful Build
 * Spells Updated: Darkvision, Hold Monster, Hold Person, Ice Knife, Lesser Restoration, Produce Flame, Sleep, Tasha's Hideous Laughter, Thorn Whip, Zephyr Strike
 * Subclasses Updated: College of Lore, Life Domain, Path of the Totem Warrior, Rune Knight
+
+# 12.3.5
+* Feats Updated: Chef
+* Monsters Updated: Banshee, all Boars, Ghost, all Goats, Sheep, Thug
+* Monster Features Updated: Added a generic charge action
+* Spells Updated: numerous fixes to component requirements
+* Rime of the Frostmaiden items 

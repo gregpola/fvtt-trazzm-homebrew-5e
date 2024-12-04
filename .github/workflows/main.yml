@@ -52,3 +52,18 @@ jobs:
           tag: ${{ github.event.release.tag_name }}
           commit: v12dnd3.3
           body: ${{ github.event.release.body }}
+
+      # Update the 'latest' release
+      - name: Create Release
+        id: create_latest_release
+        uses: ncipollo/release-action@v1
+        if: endsWith(github.ref, 'main')
+        with:
+          allowUpdates: true
+          name: Latest
+          draft: false
+          prerelease: false
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifacts: './module.json,./module.zip'
+          tag: latest
+          body: ${{ github.event.release.body }}

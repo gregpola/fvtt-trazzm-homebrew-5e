@@ -293,6 +293,14 @@ class HomebrewMacros {
             return false;
         }
 
+        // verify minimum distance
+        const tokenDistance = MidiQOL.computeDistance(chargerToken, targetToken, true);
+        if (tokenDistance < minimumDistance) {
+            ui.notifications.error(`${targetToken.name} is too close to charge`);
+            return false;
+        }
+
+
         // move the charger to their target
         // Get the center position of the PC token before they move
         const startPosition = chargerToken.center;

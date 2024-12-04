@@ -409,7 +409,7 @@ class HomebrewEffects {
         return undefined;
     }
 
-    static async applyFrightenedEffect(actor, origin, specialDurations = undefined, seconds = undefined) {
+    static async applyFrightenedEffect(actor, origin, specialDurations = undefined, seconds = undefined, overtimeValue = undefined) {
         if (actor) {
             const originValue = typeof origin === "string" ? origin : origin.uuid;
             const existing = actor.getRollData().effects.find(eff => eff.name === frightenedName && eff.origin === originValue);
@@ -456,6 +456,15 @@ class HomebrewEffects {
 
             if (seconds) {
                 effectData.duration.seconds = seconds;
+            }
+
+            if (overtimeValue) {
+                effectData.changes.push({
+                    key: 'flags.midi-qol.OverTime',
+                    mode: CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
+                    value: overtimeValue,
+                    priority: 1
+                });
             }
 
             return await MidiQOL.socket().executeAsGM("createEffects",

@@ -171,6 +171,14 @@ export class CombatHandler {
                             speaker: {alias: actor.name},
                             content: actor.name + " is relentless"
                         });
+                    } else if ((actor.name === "Gorthok the Thunder Boar") && (hpValue <= 0) && (appliedDamage <= 27)) {
+                        foundry.utils.setProperty(change, "system.attributes.hp.value", 1);
+                        await relentless.update({"system.uses.value": 0});
+
+                        ChatMessage.create({
+                            speaker: {alias: actor.name},
+                            content: actor.name + " is relentless"
+                        });
                     }
                 }
 
