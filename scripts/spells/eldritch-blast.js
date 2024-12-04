@@ -7,8 +7,7 @@
     roll for each beam.
  */
 const optionName = "Eldritch Blast";
-const version = "11.0";
-const beamItemId = "Compendium.fvtt-trazzm-homebrew-5e.homebrew-automation-items.6LElEQR61ukSJKhU";
+const version = "12.3.0";
 let beamItem = await HomebrewHelpers.getItemFromCompendium('fvtt-trazzm-homebrew-5e.homebrew-automation-items', 'Eldritch Blast Beam');
 
 try {
@@ -20,6 +19,7 @@ try {
 
         const characterLevel = actor.type === "character" ? actor.system.details.level : actor.system.details.cr;
         const beamCount = Math.floor((characterLevel + 1) / 6) + 1;
+        const feature = new CONFIG.Item.documentClass(beamItem, {'parent': workflow.actor});
 
         // update the beam stats based on actor features, such as agonizing blast
         const spellcastingAbility = actor.system.attributes.spellcasting;
@@ -27,76 +27,62 @@ try {
 
         const agonizingBlast = actor.items.getName("Invocation: Agonizing Blast");
         if (agonizingBlast) {
-            let damageParts = beamItem.system.damage.parts;
+            let damageParts = deepClone(beamItem.system.damage.parts);
             damageParts[0][0] = damageParts[0][0] + '+' + abilityBonus;
-            beamItem.system.damage.parts = damageParts;
+            await beamItem.update({"system.damage.parts": damageParts});
         }
 
         // check for need to select targets
         if (workflow.targets.size === 1) {
             let target = workflow.targets.first();
-            await launchMissiles(target, beamCount);
+            await launchMissiles(feature, target, beamCount);
         }
         else {
-            let targetList = workflow.targets.reduce((list, target) => {
-                return list + `<tr><td style="width: 75%">${target.name}</td><td style="width: 25%"><input type="num" id="target" min="0" max="${beamCount}" name="${target.id}"></td></tr>`
-            }, "");
+            // ask how many missiles per target
+            let content = `<p>You have <b>${beamCount}</b> total beam\'s. Select how many for each target:</p><div class="flexcol">`;
 
-            let the_content = `<p>You have <b>${beamCount}</b> total beam's. Select how many target each:</p><form class="flexcol"><table><tbody><tr><th>Target</th><th>Beams</th></tr>${targetList}</tbody></table></form>`;
+            for (let target of workflow.targets) {
+                content += `<div className="flexrow" style="margin-bottom: 10px;"><label style="width: 75%">${target.name}</label><input type="number" name="target" min="0" max="${beamCount}" step="1" value="1" autofocus style="width: 25%;margin-left: 15px;"/></div>`;
+            }
+            content += `</div>`;
 
-            let dialog = new Promise(async (resolve, reject) => {
-                let errorMessage;
-                new Dialog({
-                    title: `${item.name} Targets`,
-                    content: the_content,
-                    buttons: {
-                        damage: {
-                            label: "Cast", callback: async (html) => {
-                                let spentTotal = 0;
-                                let selected_targets = html.find('input#target');
-                                for (let get_total of selected_targets) {
-                                    spentTotal += Number(get_total.value);
+            let targetData = await foundry.applications.api.DialogV2.prompt({
+                window: {title: `${item.name} Targets`},
+                content: content,
+                ok: {
+                    label: "Cast",
+                    callback: (event, button, dialog) => {
+                        let sentMissiles = 0;
+                        let resultData = [];
+
+                        for (let beamTarget of button.form.elements.target) {
+                            let targetCount = beamTarget.valueAsNumber;
+                            if (targetCount > 0) {
+                                let actualCount = Math.min(targetCount, beamCount - sentMissiles);
+
+                                // get the target token
+                                let targetName = beamTarget.previousSibling.innerText.trim();
+                                let targetToken = workflow.targets.find(t => t.name === targetName);
+                                if (targetToken) {
+                                    resultData.push({target: targetToken, count: actualCount});
                                 }
 
-                                if (spentTotal > beamCount) {
-                                    ui.notifications.info("More beam targets selected than available, results will be clipped");
-                                }
-
-                                if (spentTotal === 0) {
-                                    errorMessage = `The spell fails, no beams targeted.`;
-                                    ui.notifications.error(errorMessage);
-                                }
-                                else {
-                                    let sentMissiles = 0;
-                                    for (let selected_target of selected_targets) {
-                                        let damageNum = selected_target.value;
-                                        if (damageNum != null) {
-                                            let targetCount = Number(damageNum);
-                                            if ((targetCount + sentMissiles) > beamCount) {
-                                                targetCount = beamCount - sentMissiles;
-                                            }
-
-                                            if (targetCount < 1)
-                                                break;
-
-                                            let target_id = selected_target.name;
-                                            let targetToken = canvas.tokens.get(target_id);
-                                            sentMissiles += targetCount;
-                                            await launchMissiles(targetToken, targetCount);
-                                        }
-                                    }
-                                }
-                                resolve();
+                                sentMissiles += actualCount;
+                                if (sentMissiles === beamCount)
+                                    break;
                             }
                         }
-                    },
-                    close: async (html) => {
-                        if(errorMessage) reject(new Error(errorMessage));
-                    },
-                    default: "damage"
-                }).render(true);
+
+                        return resultData;
+                    }
+                }
             });
-            await dialog;
+
+            if (targetData) {
+                for (let td of targetData) {
+                    await launchMissiles(feature, td.target, td.count);
+                }
+            }
         }
     }
 
@@ -104,12 +90,10 @@ try {
     console.error(`${optionName}: ${version}`, err);
 }
 
-async function launchMissiles(targetToken, beamCount){
-    let feature = new CONFIG.Item.documentClass(beamItem, {'parent': workflow.actor});
-
+async function launchMissiles(feature, targetToken, beamCount){
     for (let i = 0; i < beamCount; i++) {
         let [config, options] = HomebrewHelpers.syntheticItemWorkflowOptions([targetToken.document.uuid]);
         await MidiQOL.completeItemUse(feature, config, options);
-        await warpgate.wait(250);
+        await HomebrewMacros.wait(250);
     }
 }

@@ -7,23 +7,17 @@
 
     If the saving throw is successful, the target takes half the bludgeoning damage and isn't flung away or knocked prone.
 */
-const version = "11.0";
+const version = "12.3.0";
 const optionName = "Whirlwind";
-const conditionName = "Prone";
 
 try {
     if (args[0].macroPass === "postActiveEffects") {
         let targets = workflow.failedSaves;
         if (targets && targets.size > 0) {
             for (let target of targets) {
-                const hasEffectApplied = await game.dfreds.effectInterface.hasEffectApplied(conditionName, target.actor.uuid);
+                const hasEffectApplied = HomebrewHelpers.findEffect(target.actor, 'Prone');
                 if (!hasEffectApplied) {
-                    await game.dfreds.effectInterface.addEffect({
-                        'effectName': conditionName,
-                        'uuid': target.actor.uuid,
-                        'origin': workflow.origin,
-                        'overlay': false
-                    });
+                    await HomebrewEffects.applyProneEffect(target.actor, item);
                 }
 
                 // fling away

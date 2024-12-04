@@ -28,6 +28,6 @@ while (results.flags['monks-tokenbar'][`token${token.id}`].passed === "waiting" 
 
 let result = results.flags["monks-tokenbar"][`token${token.id}`].passed;
 if (result === "won" || result === "tied") {
-	await HomebrewMacros.applyGrappled(token, defender, 'opposed');
+	let grappled = await HomebrewMacros.applyGrappled(token, defender, item, 'opposed');
 	ChatMessage.create({'content': `${token.name} grapples ${defender.name}`})
 }

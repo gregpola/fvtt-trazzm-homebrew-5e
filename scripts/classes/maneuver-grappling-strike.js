@@ -46,7 +46,7 @@ try {
 				flavor: `${targetToken.name} tries to resist ${token.name}'s grapple attempt`,
 				callback: async (result) => {
 					if (result.tokenresults[0].passed) {
-						await HomebrewMacros.applyGrappled(token, targetToken, 'opposed', null, null);
+						await HomebrewMacros.applyGrappled(token, targetToken, item, 'opposed');
 						ChatMessage.create({'content': `${token.name} grapples ${targetToken.name}`})
 					}
 					else {

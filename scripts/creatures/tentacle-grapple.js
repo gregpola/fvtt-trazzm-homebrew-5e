@@ -4,13 +4,13 @@
     a different target. The arboreal grappler has two tentacles, each of which can grapple one target. When the arboreal
     grappler moves, it can drag a Medium or smaller target it is grappling at full speed.
 */
-const version = "11.0";
+const version = "12.3.0";
 const optionName = "Tentacle Grapple";
 
 try {
     let targetToken = workflow?.hitTargets?.first();
     if ((args[0].macroPass === "postActiveEffects") && targetToken) {
-        let grappled = await HomebrewMacros.applyGrappled(token, targetToken, 13, null, null);
+        let grappled = await HomebrewMacros.applyGrappled(token, targetToken, item, 14);
         if (grappled) {
             ChatMessage.create({
                 content: `The vines entwine ${targetToken.name}`,

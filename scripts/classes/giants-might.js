@@ -9,114 +9,130 @@
 
 	You can use this feature a number of times equal to your proficiency bonus, and you regain all expended uses of it when you finish a long rest.
 */
-const version = "10.0.0";
+const version = "12.3.0";
 const optionName = "Giant’s Might";
-const mutationFlag = "giants-might";
-const combatTime = game.combat ? `${game.combat.id}-${game.combat.round + game.combat.turn / 100}` : 1;
+const timeFlag = "giants-might-time";
+const effectName = `${optionName} - enlarged`;
 
 try {
-	const lastArg = args[args.length - 1];
-	const actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
-	const actorToken = canvas.tokens.get(lastArg.tokenId);
-
 	if (args[0] === "on") {
+		let newSize = "large";
 		let runicJuggs = actor.items.getName("Runic Juggernaut");
 		if (runicJuggs) {
 			// ask what size they want to grow to
-			new Dialog({
-				title: 'Runic Juggernaut',
-				content: 'What size do you want to grow to?',
-				buttons:
-				{
-					Large:
-					{
-						label: `Large`,
-						callback: async () => {
-							const updates = {
-								token: {
-									width: 2,
-									height: 2
-								},
-								actor: {
-									"system.traits.size": "lg"
-								}
-							}
-							await warpgate.mutate(actorToken.document, updates, {}, { name: mutationFlag });
-						}
-					},
-					Huge:
-					{
-						label: `Huge`,
-						callback: async () => {
-							const updates = {
-								token: {
-									width: 3,
-									height: 3
-								},
-								actor: {
-									"system.traits.size": "huge"
-								}
-							}
-							await warpgate.mutate(actorToken.document, updates, {}, { name: mutationFlag });
-						}
+			const content = `
+			<p>What size do you want to grow to?</p>
+			<label style="margin-bottom: 10px;"><input type="radio" name="choice" value="large" checked>  Large </label>
+			<label style="margin-bottom: 10px;"><input type="radio" name="choice" value="huge">  Huge </label>`;
+
+			newSize = await foundry.applications.api.DialogV2.prompt({
+				content: content,
+				rejectClose: false,
+				ok: {
+					callback: (event, button, dialog) => {
+						return button.form.elements.choice.value;
 					}
-				}
-			}).render(true);
-		}
-		else {
-			const updates = {
-				token: {
-					width: 2,
-					height: 2
 				},
-				actor: {
-					"system.traits.size": "lg"
+				window: {
+					title: `${optionName}`,
+				},
+				position: {
+					width: 400
 				}
-			}
-			await warpgate.mutate(actorToken.document, updates, {}, { name: mutationFlag });
+			});
 		}
-		
+
+		if (newSize) {
+			let effectData = {
+				name: effectName,
+				icon: item.img,
+				changes: [],
+				origin: item.uuid,
+				disabled: false
+			};
+
+			if (newSize === "large") {
+				effectData.changes.push(
+					{
+						key: 'system.traits.size',
+						mode: CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
+						value: 'lg',
+						priority: 22
+					}
+				);
+				effectData.changes.push(
+					{
+						key: 'ATL.width',
+						mode: CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
+						value: 2,
+						priority: 23
+					}
+				);
+				effectData.changes.push(
+					{
+						key: 'ATL.height',
+						mode: CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
+						value: 2,
+						priority: 24
+					}
+				);
+			}
+			else if (newSize === "huge") {
+				effectData.changes.push(
+					{
+						key: 'system.traits.size',
+						mode: CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
+						value: 'huge',
+						priority: 22
+					}
+				);
+				effectData.changes.push(
+					{
+						key: 'ATL.width',
+						mode: CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
+						value: 3,
+						priority: 23
+					}
+				);
+				effectData.changes.push(
+					{
+						key: 'ATL.height',
+						mode: CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
+						value: 3,
+						priority: 24
+					}
+				);
+			}
+
+			await MidiQOL.socket().executeAsGM("createEffects", {actorUuid: actor.uuid, effects: [effectData]});
+		}
 	}
 	else if (args[0] === "off") {
-		await warpgate.revert(actorToken.document, mutationFlag);
+		await HomebrewEffects.removeEffectByNameAndOrigin(actor, effectName, item.uuid);
 	}
 	else if (args[0].macroPass === "DamageBonus") {
-		
 		// make sure it's an allowed attack
-		if (!["mwak", "rwak"].includes(lastArg.itemData.system.actionType)) {
+		if (!["mwak", "rwak"].includes(item.system.actionType)) {
 			console.log(`${optionName}: not an eligible attack`);
 			return {};
 		}
 		
 		// check once per turn
-		if (isAvailableThisTurn(actor) && game.combat) {
+		if (HomebrewHelpers.isAvailableThisTurn(actor, timeFlag)) {
 			// ask if they want to use it
-			let dialog = new Promise((resolve, reject) => {
-				new Dialog({
-					// localize this text
-					title: optionName,
-					content: `<p>Add extra damage to this attack (once per turn)?</p>`,
-					buttons: {
-						one: {
-							icon: '<p> </p><img src = "icons/magic/earth/strike-fist-stone-gray.webp" width="50" height="50"></>',
-							label: "<p>Yes</p>",
-							callback: () => resolve(true)
-						},
-						two: {
-							icon: '<p> </p><img src = "icons/skills/melee/weapons-crossed-swords-yellow.webp" width="50" height="50"></>',
-							label: "<p>No</p>",
-							callback: () => { resolve(false) }
-						}
-					},
-					default: "two"
-				}).render(true);
+			let useFeature = await foundry.applications.api.DialogV2.confirm({
+				window: {
+					title: `${optionName}`,
+				},
+				content: `<p>Add extra damage to this attack (once per turn)?</p>`,
+				rejectClose: false,
+				modal: true
 			});
-			
-			let useFeature = await dialog;
-			if (useFeature) {
-				await actor.setFlag('midi-qol', 'giantsMightTime', `${combatTime}`);
 
-				const diceCount = lastArg.isCritical ? 2: 1;
+			if (useFeature) {
+				await HomebrewHelpers.setUsedThisTurn(actor, timeFlag);
+
+				const diceCount = workflow.isCritical ? 2: 1;
 				let die = "d6";
 				let greatStature = actor.items.getName("Great Stature");
 				if (greatStature) {
@@ -127,24 +143,11 @@ try {
 					die = "d10";
 				}
 				
-				return {damageRoll: `${diceCount}${die}[${lastArg.damageDetail[0].type}]`, flavor: optionName};
+				return {damageRoll: `${diceCount}${die}`, flavor: optionName};
 			}
 		}		
 	}
 	
 } catch (err) {
     console.error(`${optionName} : ${version}`, err);
-}
-
-function isAvailableThisTurn(actor) {
-	if (game.combat) {
-		const lastTime = actor.getFlag("midi-qol", "giantsMightTime");
-		if (combatTime === lastTime) {
-			return false;
-		}
-		
-		return true;
-	}
-	
-	return false;
 }

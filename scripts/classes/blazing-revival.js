@@ -3,7 +3,7 @@
 
 	Once you use this feature, you can’t use it again until you finish a long rest.
 */
-const version = "11.0";
+const version = "11.1";
 const optionName = "Blazing Revival";
 const spiritEffect = "Wildfire Spirit";
 
@@ -15,7 +15,7 @@ try {
 			return;
 		}
 
-		let effect = findEffect(actor, spiritEffect);
+		let effect = HomebrewHelpers.findEffect(actor, spiritEffect);
 		if (effect) {
 			// apply the heal
 			const healAmount = actor.system.attributes.hp.max / 2;
@@ -24,8 +24,8 @@ try {
 			new MidiQOL.DamageOnlyWorkflow(actor, token, healDamage.total, healingType, [token], healDamage, { flavor: `(${CONFIG.DND5E.healingTypes[healingType]})`, itemCardId: lastArg.itemCardId, useOther: false });
 			
 			// remove unconscious and prone and Wildfire spirit
-			await game.dfreds.effectInterface.removeEffect({effectName: 'Incapacitated', uuid:actor.uuid});
-			await game.dfreds.effectInterface.removeEffect({effectName: 'Prone', uuid:actor.uuid});
+			await HomebrewEffects.removeEffectByName(actor, 'Incapacitated');
+			await HomebrewEffects.removeEffectByName(actor, 'Prone');
 			await MidiQOL.socket().executeAsGM("removeEffects", { actorUuid: actor.uuid, effects: [effect.id] });
 		}
 		else {
@@ -35,10 +35,4 @@ try {
 	
 } catch (err) {
     console.error(`${optionName} ${version}`, err);
-}
-
-function findEffect(actor, effectName) {
-    let effectUuid = null;
-    effectUuid = actor?.effects?.find(ef => ef.name === effectName);
-    return effectUuid;
 }

@@ -3,19 +3,15 @@
 	damage, and the target is grappled (escape DC 14). Until this grapple ends, the target is restrained, the salamander
 	can automatically hit the target with its tail, and the salamander can't make tail attacks against other targets.
 */
-const version = "11.0";
+const version = "12.3.1";
 const optionName = "Salamander Tail";
-const flagName = "salamander-tail-grappled";
 
 try {
-	// Check the grappling state of the Salamander
-	const grappleFlag = actor.getFlag('midi-qol', flagName);
-
-	if (args[0].macroPass === "postActiveEffects" && !grappleFlag) {
+	if (args[0].macroPass === "postActiveEffects") {
 		// make sure it was a hit
 		let targetToken = workflow?.hitTargets?.first();
 		if (targetToken) {
-			let grappled = await HomebrewMacros.applyGrappled(token, targetToken, 14, flagName, null);
+			let grappled = await HomebrewMacros.applyGrappled(token, targetToken, item, 14);
 			if (grappled) {
 				ChatMessage.create({
 					content: `The salamander wraps it's tail around ${targetToken.name}, immobilizing them`,
@@ -24,12 +20,16 @@ try {
 			}
 		}
 	}
-	else if (args[0].macroPass === "preCheckHits" && grappleFlag) {
+	else if (args[0].macroPass === "preCheckHits") {
 		let target = workflow.targets.first();
-		if (target && target.actor.uuid === grappleFlag) {
-			// auto hit
-			let updatedRoll = await new Roll('100').evaluate({async: true});
-			workflow.setAttackRoll(updatedRoll);
+		if (target) {
+			// check grappled
+			let existingGrappled = target.actor.getRollData().effects.find(eff => eff.name === 'Grappled' && eff.origin === item.uuid);
+			if (existingGrappled) {
+				// auto hit
+				let updatedRoll = await new Roll('100').evaluate({async: true});
+				workflow.setAttackRoll(updatedRoll);
+			}
 		}
 	}
 

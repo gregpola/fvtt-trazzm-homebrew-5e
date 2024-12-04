@@ -1,5 +1,4 @@
 import {socket} from "./module.js";
-import {playerForActor} from "./utils.js";
 import {handleRegeneration, checkForRegeneration, applyDamageTypes} from "./regeneration.js";
 
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
@@ -21,13 +20,20 @@ export class CombatHandler {
         });
 
         Hooks.on("deleteCombat", async (combat) => {
-            let tokens = combat.combatants.map(c => c.token);
-
-            // remove temporary mutations related to combat
-            for (let token of tokens) {
-                await warpgate.revert(token, 'Escape Grapple');
-                await warpgate.revert(token, 'Break Free');
-            }
+            // let tokens = combat.combatants.map(c => c.token);
+            //
+            // // remove temporary mutations related to combat
+            // for (let token of tokens) {
+            //     const escapeGrapple = actor.items.find(i => i.name === "Escape Grapple");
+            //     if (escapeGrapple) {
+            //         escapeGrapple.delete();
+            //     }
+            //
+            //     const breakFree = actor.items.find(i => i.name === "Break Free");
+            //     if (breakFree) {
+            //         breakFree.delete();
+            //     }
+            // }
         });
 
         Hooks.on("updateCombat", async (combat, update, context, userId) => {
@@ -36,13 +42,84 @@ export class CombatHandler {
                 return;
             }
 
+            // no use cases for backwards change
+            if (context.direction < 1) {
+                console.log("updateCombat - skipped - backwards")
+                return;
+            }
+
+            // store the prior combatant id
+            const lastCombatantId = combat.previous?.combatantId;
+
+            // first handle legendary actions, since they happen at the end of the prior combatant's turn
+            let legendaryCombatants = CombatHandler.filterForLegendaryActions(combat);
+            if (legendaryCombatants && legendaryCombatants.length > 0) {
+                let legendaryActionData = new Map();
+
+                for (let legendaryData of legendaryCombatants) {
+                    if (legendaryData.combatant.id !== lastCombatantId) {
+                        let usesLeft = legendaryData.legendaryResource.value ?? 0;
+
+                        if (usesLeft > 0) {
+                            // get the available legendary actions with a cost the actor can pay
+                            let legendaryOptions = legendaryData.combatant.actor.items.filter(i => i.system.activation.type === 'legendary' && i.system.activation.cost <= usesLeft);
+                            if (legendaryOptions && legendaryOptions.length > 0) {
+                                let legendaryParams = {
+                                    "combatant": legendaryData.combatant,
+                                    "actionPoints": usesLeft,
+                                    "actions": legendaryOptions
+                                }
+
+                                // get the player to prompt
+                                let playerId;
+                                let player = MidiQOL.playerForActor(legendaryData.combatant.actor);
+                                if (player && player.active) {
+                                    playerId = player.id;
+                                }
+                                else {
+                                    playerId = game.users.activeGM.id;
+                                }
+
+                                if (playerId) {
+                                    if (legendaryActionData.has(playerId)) {
+                                        let data = legendaryActionData.get(playerId);
+                                        data.push(legendaryParams);
+                                        legendaryActionData.set(playerId, data);
+                                    }
+                                    else {
+                                        legendaryActionData.set(playerId, [legendaryParams]);
+                                    }
+                                }
+                            }
+                            else {
+                                console.log("Legendary actions skipped for: " + legendaryData.combatant.name + " -- no options available this turn");
+                            }
+                        }
+                        else {
+                            console.log("Legendary actions skipped for: " + legendaryData.combatant.name + " -- no uses left");
+                        }
+                    }
+                }
+
+                legendaryActionData.forEach(async function(value, key) {
+                    await socket.executeAsUser("doLegendaryAction", key, value);
+                });
+
+                // After notifying of all legendary actions available, check for recharge of the current combatant
+                await HomebrewHelpers.rechargeLegendaryActions(combat?.combatant?.actor);
+            }
+
             // check for any turn start options
             let turnStartOptions = await CombatHandler.hasTurnStartOption(combat?.combatant);
             if (turnStartOptions) {
                 // get the player to prompt
-                let player = playerForActor(combat.combatant.actor);
-                if (player)
+                let player = MidiQOL.playerForActor(combat.combatant.actor);
+                if (player && player.active) {
                     await socket.executeAsUser("doTurnStartOptions", player.id, combat.combatant.actor.uuid, turnStartOptions);
+                }
+                else {game.users?.activeGM
+                    await socket.executeAsUser("doTurnStartOptions", game.users.activeGM.id, combat.combatant.actor.uuid, turnStartOptions);
+                }
             }
 
             let actor = combat?.combatant?.actor;
@@ -94,6 +171,14 @@ export class CombatHandler {
                             speaker: {alias: actor.name},
                             content: actor.name + " is relentless"
                         });
+                    } else if ((actor.name === "Gorthok the Thunder Boar") && (hpValue <= 0) && (appliedDamage <= 27)) {
+                        foundry.utils.setProperty(change, "system.attributes.hp.value", 1);
+                        await relentless.update({"system.uses.value": 0});
+
+                        ChatMessage.create({
+                            speaker: {alias: actor.name},
+                            content: actor.name + " is relentless"
+                        });
                     }
                 }
 
@@ -127,22 +212,30 @@ export class CombatHandler {
                     // look for the death of an actor that is grappling and/or restraining an actor
                     let tokens = canvas.scene.tokens;
                     for (let token of tokens) {
-                        let existingGrappled = token.actor.effects.find(eff => eff.name === 'Grappled' && eff.origin === actor.uuid);
+                        let existingGrappled = token.actor.getRollData().effects.find(eff => eff.name === 'Grappled' && eff.origin === actor.uuid);
                         if (existingGrappled) {
                             await MidiQOL.socket().executeAsGM('removeEffects', {
                                 actorUuid: token.actor.uuid,
                                 effects: [existingGrappled.id]
                             });
-                            await warpgate.revert(token, 'Escape Grapple');
+
+                            const escapeGrapple = token.actor.items.find(i => i.name === "Escape Grapple");
+                            if (escapeGrapple) {
+                                escapeGrapple.delete();
+                            }
                         }
 
-                        let existingRestrained = token.actor.effects.find(eff => eff.name === 'Restrained' && eff.origin === actor.uuid);
+                        let existingRestrained = token.actor.getRollData().effects.find(eff => eff.name === 'Restrained' && eff.origin === actor.uuid);
                         if (existingRestrained) {
                             await MidiQOL.socket().executeAsGM('removeEffects', {
                                 actorUuid: token.actor.uuid,
                                 effects: [existingRestrained.id]
                             });
-                            await warpgate.revert(token, 'Break Free');
+
+                            const breakFree = token.actor.items.find(i => i.name === "Break Free");
+                            if (breakFree) {
+                                breakFree.delete();
+                            }
                         }
                     }
 
@@ -184,42 +277,46 @@ export class CombatHandler {
             const actor = item.actor;
             if ((item.type === 'weapon' || item.type === 'equipment') && actor) {
                 // Handle dual wielder feat
-                let dualWielderFeat = actor.effects.find(ef => ef.name === 'Dual Wielder AC Bonus');
+                const dualWielderFeat = actor.items.find(i => i.name === "Dual Wielder");
                 if (dualWielderFeat) {
-                    let getsACBonus = true;
-
-                    let currentWeapons = actor.items.filter(i => (i.type === `weapon`) && i.system.equipped && i.system.actionType === "mwak");
-                    if (currentWeapons.length < 2) {
-                        console.log('Dual Wielder - no AC bonus, not enough weapons equipped');
-                        getsACBonus = false;
-                    }
-
-                    if (currentWeapons.length > 2) {
-                        console.log('Dual Wielder - no AC bonus, too many weapons equipped');
-                        getsACBonus = false;
-                    }
-
-                    // check for two-handed weapons
-                    if ((currentWeapons[0] && currentWeapons[0].system.properties.two) || (currentWeapons[1] && currentWeapons[1].system.properties.two)) {
-                        console.log('Dual Wielder - no AC bonus, weapon is two handed');
-                        getsACBonus = false;
-                    }
-
-                    // check for a shield equipped
-                    let shields = actor.items.filter(i => i.system.armor?.type === 'shield' && i.system.equipped);
-                    if (shields.length) {
-                        console.log('Dual Wielder - no AC bonus, a shield is equipped');
-                        getsACBonus = false;
-                    }
-
-                    if (getsACBonus) {
-                        dualWielderFeat.update({'disabled': false});
+                    const acBonusEffect = dualWielderFeat.effects.find(i => i.name === "Dual Wielder AC Bonus");
+                    if (!acBonusEffect) {
+                        console.log('Dual Wielder - no AC bonus effect found');
                     }
                     else {
-                        dualWielderFeat.update({'disabled': true});
+                        let getsACBonus = true;
+                        let currentWeapons = actor.items.filter(i => (i.type === `weapon`) && i.system.equipped && i.system.actionType === "mwak");
+                        if (currentWeapons.length < 2) {
+                            console.log('Dual Wielder - no AC bonus, not enough weapons equipped');
+                            getsACBonus = false;
+                        }
+
+                        if (currentWeapons.length > 2) {
+                            console.log('Dual Wielder - no AC bonus, too many weapons equipped');
+                            getsACBonus = false;
+                        }
+
+                        // check for two-handed weapons
+                        if ((currentWeapons[0] && currentWeapons[0].system.properties.has('two')) || (currentWeapons[1] && currentWeapons[1].system.properties.has('two'))) {
+                            console.log('Dual Wielder - no AC bonus, weapon is two handed');
+                            getsACBonus = false;
+                        }
+
+                        // check for a shield equipped
+                        let shields = actor.items.filter(i => i.system.armor?.type === 'shield' && i.system.equipped);
+                        if (shields.length) {
+                            console.log('Dual Wielder - no AC bonus, a shield is equipped');
+                            getsACBonus = false;
+                        }
+
+                        if (getsACBonus) {
+                            acBonusEffect.update({'disabled': false});
+                        }
+                        else {
+                            acBonusEffect.update({'disabled': true});
+                        }
                     }
                 }
-
             }
         });
     }
@@ -242,13 +339,19 @@ export class CombatHandler {
             const actor = combatant.actor;
             if (actor) {
                 const hp = actor.system.attributes.hp.value;
-                const isProne = await game.dfreds?.effectInterface?.hasEffectApplied('Prone', actor.uuid);
-                const isDead = await game.dfreds?.effectInterface?.hasEffectApplied('Dead', actor.uuid);
-                const isUnconscious = await game.dfreds?.effectInterface?.hasEffectApplied('Unconscious', actor.uuid);
-                const isIncapacitated = await game.dfreds?.effectInterface?.hasEffectApplied('Incapacitated', actor.uuid);
-                const isParalyzed = await game.dfreds?.effectInterface?.hasEffectApplied('Paralyzed', actor.uuid);
-                const isPetrified = await game.dfreds?.effectInterface?.hasEffectApplied('Petrified', actor.uuid);
-                const isStunned = await game.dfreds?.effectInterface?.hasEffectApplied('Stunned', actor.uuid);
+                let isProne = MidiQOL.hasCondition(actor, "Prone");
+                const isDead = MidiQOL.hasCondition(actor, "Dead");
+                const isUnconscious = MidiQOL.hasCondition(actor, "Unconscious");
+                const isIncapacitated = MidiQOL.hasCondition(actor, "Incapacitated");
+                const isParalyzed = MidiQOL.hasCondition(actor, "Paralyzed");
+                const isPetrified = MidiQOL.hasCondition(actor, "Petrified");
+                const isStunned = MidiQOL.hasCondition(actor, "Stunned");
+
+                // prone conditionals
+                let laughterEffect =  actor.getRollData().effects.find(eff => eff.name.toLowerCase().includes('hideous laughter'));
+                if (isProne && laughterEffect) {
+                    isProne = false;
+                }
 
                 if ((hp > 0) && isProne && !isDead && !isUnconscious && !isIncapacitated && !isParalyzed && !isPetrified && !isStunned) {
                     return {
@@ -267,6 +370,25 @@ export class CombatHandler {
         }
 
         return undefined;
+    }
+
+    static filterForLegendaryActions(combat) {
+        let result = [];
+
+        if (combat) {
+            for (let combatant of combat.combatants) {
+                // skip dead combatants
+                const hpValue = getProperty(combatant.actor, 'system.attributes.hp.value');
+                if (!hpValue || hpValue < 1) continue;
+
+                let legendaryResource = getProperty(combatant.actor, 'system.resources.legact');
+                if (legendaryResource && legendaryResource.max > 0) {
+                    result.push({combatant: combatant, legendaryResource: legendaryResource});
+                }
+            }
+        }
+
+        return result;
     }
 
     static async transformToZombie(combatant) {
@@ -312,42 +434,16 @@ export class CombatHandler {
                 }
             }
 
-            // hide the original token
-            await tok.document.update({ "hidden": true });
-
-            // spawn the Zombie
-            let position = tok.center;
-            if (position) {
-                //let options = {duplicates: 0, collision: false};
-                let spawned = await warpgate.spawnAt(position, zombieActorName, updates, {}, {}); // last param is options
-                if (!spawned || !spawned[0]) {
-                    ui.notifications.error("The Dead Walk - unable to spawn the zombie");
-                    return;
-                }
-
-                let spawnId = spawned[0];
-                let summonedToken = canvas.tokens.get(spawnId);
-                if (summonedToken) {
-                    new Sequence()
-                        .effect()
-                        .atLocation(summonedToken)
-                        .file("jb2a.misty_step.02.grey")
-                        .scaleToObject(1.5)
-                        .thenDo(async function () {
-                            await summonedToken.toggleCombat();
-                            const zombieInitiative = combatant.initiative ? combatant.initiative - .01
-                                : 1 + (summonedToken.actor.system.abilities.dex.value / 100);
-                            await summonedToken.combatant.update({initiative: zombieInitiative});
-                        })
-                        .play()
-
-                    await warpgate.wait(500);
-                    ChatMessage.create({
-                        speaker: {alias: combatant.actor.name},
-                        content: combatant.actor.name + " rises as a zombie"
-                    });
-                }
-            }
+            // transform the actor
+            await new Portal()
+                .origin(token)
+                .addCreature(zombieActor)
+                .transform();
+            await CombatHandler.wait(500);
+            ChatMessage.create({
+                speaker: {alias: combatant.actor.name},
+                content: combatant.actor.name + " rises as a zombie"
+            });
         }
     }
 }

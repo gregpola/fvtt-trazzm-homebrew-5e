@@ -7,106 +7,68 @@
 	a space within 30 feet of you. It also can’t take reactions. For its action, it can use only the Dash action or try
 	to escape from an effect that prevents it from moving. If there’s nowhere to move, the creature can use the Dodge action.
  */
-const version = "11.2";
-const resourceName = "Channel Divinity";
+const version = "12.3.0";
 const optionName = "Turn Undead";
-const channelDivinityName = "Channel Divinity (Cleric)";
-const cost = 1;
 
-const targetTypes = ["undead"];
-const immunity = ["Turn Immunity"];
-const turnAdvantage = ["Turning Defiance"];
-	
+const resistanceEffectData = {
+	name: "Turn Advantage",
+	origin: workflow.item.uuid,
+	icon: "icons/skills/melee/shield-damaged-broken-orange.webp",
+	changes: [{
+		key: "flags.midi-qol.advantage.ability.save.wis",
+		mode: 5,
+		priority: 20,
+		value: true
+	}],
+	duration: {
+		turns: 1
+	},
+	flags: {
+		dae: {
+			specialDuration: ['isSave']
+		}
+	}
+};
+
 try {
-	if (args[0].macroPass === "preItemRoll") {
-		// check Channel Divinity uses available
-		let channelDivinity = actor.items.find(i => i.name === channelDivinityName);
-		if (channelDivinity) {
-			let usesLeft = channelDivinity.system.uses?.value ?? 0;
-			if (!usesLeft || usesLeft < cost) {
-				console.error(`${optionName} - not enough ${channelDivinityName} uses left`);
-				ui.notifications.error(`${optionName} - not enough ${channelDivinityName} uses left`);
-			}
-			else {
-				const newValue = channelDivinity.system.uses.value - cost;
-				await channelDivinity.update({"system.uses.value": newValue});
-				return true;
-			}
-		}
-		else {
-			console.error(`${optionName} - no ${channelDivinityName} item on actor`);
-			ui.notifications.error(`${optionName} - no ${channelDivinityName} item on actor`);
-		}
+	if (args[0].macroPass === "preambleComplete") {
+		let validTargets = [];
 
-		return false;
-	}
-	else if (args[0].macroPass === "preambleComplete") {
-		// check target types
 		for (let t of workflow.targets) {
-			let creatureType = t.actor.system.details.type;
+			// skip non-undead targets
+			if (MidiQOL.typeOrRace(t.actor) !== 'undead') continue;
+			if (HomebrewHelpers.hasTurnImmunity(t.actor)) continue;
 
-			// remove targets that are not applicable creatures (aka PCs etc)
-			if ((creatureType === null) || (creatureType === undefined)) {
-				workflow.targets.delete(t);
+			// skip dead targets
+			if (t.actor.system.attributes.hp.value < 1) continue;
+
+			// add resistance effect
+			if (HomebrewHelpers.hasTurnResistance(t.actor)) {
+				await MidiQOL.socket().executeAsGM("createEffects", {actorUuid: t.actor.uuid, effects: [resistanceEffectData]});
 			}
-			// remove creatures that are not undead 
-			else if (!targetTypes.some(type => (t?.actor.system.details.type?.value || "").toLowerCase().includes(type))) {
-				workflow.targets.delete(t);
-			}
-			// remove creatures with turn immunity
-			else if (t.actor.items.find(i => immunity.includes(i.name))) {
-				workflow.targets.delete(t);
-			}
+
+			validTargets.push(t);
 		}
 
-		game.user.updateTokenTargets(Array.from(workflow.targets).map(t => t.id));
-		
-	}
-	else if (args[0].macroPass === "preSave") {
-		for (let t of workflow.targets) {
-			let hasAdvantage = false;
+		HomebrewHelpers.updateTargets(validTargets);
 
-			for (let ename of turnAdvantage) {
-				if (t.actor.effects.find(ef => ef.name === ename)) {
-					hasAdvantage = true;
-					break;
-				}
-			}
-
-			if (hasAdvantage) {
-				const data = {
-					changes: [{
-						key: "flags.midi-qol.advantage.ability.save.all",
-						mode: 0,
-						priority: 20,
-						value: "1"
-					}],
-					"duration": {"seconds": 1, "turns": 1},
-					"flags": {"dae": {"specialDuration": ["isSave"]}},
-					"icon": "icons/skills/melee/shield-damaged-broken-orange.webp",
-					"name": "Turn Advantage",
-					"origin": workflow.item.uuid
-				};
-				await MidiQOL.socket().executeAsGM("createEffects", {actorUuid: t.actor.uuid, effects: [data]});
-			}
-		}
 	}
 	else if (args[0].macroPass === "postSave") {
 		let targets = workflow.failedSaves;
 		if (targets && targets.size > 0) {
 			const maxCR = actor.system.scale.cleric["destroy-undead"]?.value ?? 0;
+			let deadTargets = [];
 
 			for (let t of targets) {
-				if (maxCR && (t.actor.system.details.cr <= maxCR)) {
-					await t.actor.update({"system.attributes.hp.value": 0});
+				if (maxCR && (HomebrewHelpers.getLevelOrCR(t.actor) <= maxCR)) {
+					deadTargets.push(t);
 				}
 			}
+
+			await MidiQOL.applyTokenDamage([{ damage: 9999, type: 'none' }], 9999, new Set(deadTargets));
 		}
-		else {
-			console.log("No targets failed their save");
-		}		
 	}
 	
 } catch (err) {
-	console.error(`${workflow.itemData.name}: ${version}`, err);
+	console.error(`${optionName}: ${version}`, err);
 }

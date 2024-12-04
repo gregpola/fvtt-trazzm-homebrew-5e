@@ -11,107 +11,48 @@
 
 	Once you use your Metallic Breath Weapon, you can’t do so again until you finish a long rest.
  */
-const version = "11.0";
+const version = "12.3.0";
 const optionName = "Metallic Breath Weapon";
 
 try {
 	if (args[0].macroPass === "postActiveEffects") {
-		const pb = actor.system.attributes.prof ?? 2;
-		const conMod = actor.system.abilities.con.mod;
-		const saveDC = 8 + pb + conMod;
-
-		const targets = Array.from(workflow.targets);
-
 		// ask which type of breath
-		let dialog = new Promise((resolve, reject) => {
-			new Dialog({
-				// localize this text
+		const content = `
+			<p>Which type of breath?</p>
+			<label><input type="radio" name="choice" value="enervating" checked>  Enervating Breath </label>
+			<label><input type="radio" name="choice" value="repulsion">  Repulsion Breath </label>`;
+
+		let flavor = await foundry.applications.api.DialogV2.prompt({
+			content: content,
+			rejectClose: false,
+			ok: {
+				callback: (event, button, dialog) => {
+					return button.form.elements.choice.value;
+				}
+			},
+			window: {
 				title: `${optionName}`,
-				content: `<p>Which type of breath?</p>`,
-				buttons: {
-					one: {
-						label: "<p>Enervating Breath</p>",
-						callback: () => resolve(1)
-					},
-					two: {
-						label: "<p>Repulsion Breath</p>",
-						callback: () => { resolve(2) }
-					}
-				},
-				default: "two"
-			}).render(true);
+			},
+			position: {
+				width: 400
+			}
 		});
 
-		let breathOption = await dialog;
-		if (breathOption === 1) {
-			const enervationEffectData = {
-				label: "Enervating Breath",
-				icon: "modules/fvtt-trazzm-homebrew-5e/assets/skills/force_breath.jpg",
-				origin: workflow.item.uuid,
-				changes: [
-					{
-						key: 'macro.CE',
-						mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-						value: "Incapacitated",
-						priority: 20
-					}
-				],
-				flags: {
-					dae: {
-						selfTarget: false,
-						stackable: "none",
-						durationExpression: "",
-						macroRepeat: "none",
-						specialDuration: ["turnStartSource"],
-						transfer: false
-					}
-				},
-				disabled: false
-			};
-
-			// roll the saving throws
-			await game.MonksTokenBar.requestRoll(targets, {
-				request:[{"type": "save", "key": "con"}],
-				dc:saveDC, showdc:true, silent:true, fastForward:false,
-				flavor:`${optionName} - Enervating Breath`,
-				rollMode:'roll',
-				callback: async (result) => {
-					console.log(result);
-					for (let tr of result.tokenresults) {
-						if (!tr.passed) {
-							// mark incapacitated
-							await MidiQOL.socket().executeAsGM("createEffects",
-								{ actorUuid: tr.actor.uuid, effects: [enervationEffectData] });
-						}
-					}
-				}
-			});
-
+		if (flavor === 'enervating') {
+			let enervatingBreath = await HomebrewHelpers.getItemFromCompendium('fvtt-trazzm-homebrew-5e.homebrew-automation-items', 'Enervating Breath');
+			await actor.createEmbeddedDocuments("Item", [enervatingBreath]);
+			let actorsItem = actor.items.find(i => i.name === 'Enervating Breath');
+			await MidiQOL.completeItemUse(actorsItem, {}, {});
+			await HomebrewMacros.wait(500);
+			await actor.deleteEmbeddedDocuments('Item', [actorsItem.id]);
 		}
-		else if (breathOption === 2) {
-			// roll the saving throws
-			await game.MonksTokenBar.requestRoll(targets, {
-				request:[{"type": "save", "key": "con"}],
-				dc:saveDC, showdc:true, silent:true, fastForward:false,
-				flavor:`${optionName} - Enervating Breath`,
-				rollMode:'roll',
-				callback: async (result) => {
-					console.log(result);
-					for (let tr of result.tokenresults) {
-						if (!tr.passed) {
-							let targetToken = canvas.tokens.get(tr.id);
-							if (targetToken) {
-								//push and knock prone
-								await HomebrewMacros.pushTarget(token, targetToken, 4);
-								await game.dfreds?.effectInterface.addEffect({ effectName: 'Prone', uuid: tr.actor.uuid });
-							}
-							else {
-								console.error("targetToken not found");
-							}
-						}
-					}
-				}
-			});
+		else if (flavor === 'repulsion') {
+			let enervatingBreath = await HomebrewHelpers.getItemFromCompendium('fvtt-trazzm-homebrew-5e.homebrew-automation-items', 'Repulsion Breath');
+			await actor.createEmbeddedDocuments("Item", [enervatingBreath]);
+			let actorsItem = actor.items.find(i => i.name === 'Repulsion Breath');
+			await MidiQOL.completeItemUse(actorsItem, {}, {});
+			await HomebrewMacros.wait(500);
+			await actor.deleteEmbeddedDocuments('Item', [actorsItem.id]);
 		}
 	}
 	

@@ -1,200 +1,53 @@
-# 11.26
-* Class Features Updated: Dread Ambusher
-* Items Updated: all poisons and venoms, Dagger of Venom
-* Feats Updated: Empowered Cantrips
-* Features Updated: Channel Divinity: Abjure Enemy, Dread Ambusher, Elemental Affinity
-* Monsters Updated: Azer
-* Spells Updated: Fire Shield, Lightning Lure
+# 12.3.0
+* Add support for v12 with DND3.3
+* Class Features Updated: Elemental Affinity, Lay on Hands
 
-# 11.25
-* Features Updated: Dread Ambusher, Rakish Audacity, Turn the Unholy, Turn Undead, Uncanny Dodge
-* Items Updated: Flute of the Genie
-* Monsters Updated: Cultist, Half-Ogre, Ogre  
-* Spells Updated: Color Spray, Fire Shield, Hold Monster, Hold Person, Produce Flame, Shield, Zephyr Strike
+# 12.3.1
+* General: Added a teleportToken function to HomebrewMacros
+* Classes Updated: Barbarian
+* Feats Updated: Crusher, Great Weapon Master, Piercer, Poisoner
+* Features Updated: All general actions, Blessing of the Forge, Channel Divinity (all previously automated), Dash through the Shadows, Devil's Sight, Draconic Cry, Expert Divination, Fey Step(s), Fiendish Vigor, Fiery Teleportation, Gathered Swarm, Hex Warrior, Pact of the Blade, Radiant Consumption, Radiant Soul, Shadow Walk, Spirit Totem, Surprise Attack, Swarming Dispersal
+* Items Updated: All standard poisons and venoms, All adamantine armors, Cap of Curing, Dagger of Venom, Dust of Disappearance, Flute of the Genie, Healer's Kit, Healer's Warhammer
+* Macros Updated: Banish, Unbanish
+* Monster Features Updated: Death Lance, Draining Attack, Life Drain, Undead Fortitude
+* Monsters Updated: Assassin Vine, Bearded Devil, Bulette, Fire Elemental, Misc Drow, Misc Demons, Treant, Treant Sapling, all Zombies
+* Spells Updated: Aid, Banishment, Blindness/Deafness, Booming Blade, Cause Fear, Chromatic Orb, Conjure Animals, Darkness, Daylight, Dimension Door, Divine Fury, Find Greater Steed, Find Steed, Green-Flame Blade, Heat Metal, Hex, Lesser Restoration, Longstrider, Mage Hand, Magic Weapon, Mass Cure Wounds, Mass Healing Word, Misty Step, Moonbeam, Prayer of Healing, Protection from Energy, Protection from Poison, Searing Smite, Spike Growth, Spirit Guardians, Spiritual Weapon, Tasha's Caustic Brew, Tasha's Hideous Laughter, Tasha's Mind Whip, Thunderous Smite, Thunderwave, Wrathful Smite
+* Subclasses Updated: Forge Domain, all Paladin subclasses
 
-# 11.24
-* Class Features Added: Aspect of the Moon
-* Class Features Updated: Maneuver - Parry, 
-* Items Updated: Antitoxin, Pipes of Haunting
-
-# 11.23
-* Class Features Updated: Panache
-* Items Updated: RotD character items, Drow Poison, Holy Water
-* Monster Features Updated: Animate Vines, Animate Trees, Ghoul Claws
-* Monsters Updated: Zombie
-* Spells Added: Sunbeam
-* Spells Updated: Animate Objects, Cloudkill, Color Spray, Dancing Lights, Detect Magic, Dimension Door, Find Steed, Lesser Restoration
-
-# 11.22
-* Feature Updates: Blessing of the Forge
-* Item Updates: Flute of the Genie, Torch
-
-# 11.21
-* Feats Updated: Dual Wielder, Sentinel
-* General Actions Updated: Grapple
-* Macros Updated: Draw Darkness Walls, Draw Fog Cloud Walls
-* Regeneration fixed to not bring trolls back from the dead
-
-# 11.20
-* Feats Updated: Dual Wielder, Sentinel
-* Spells Updated: Absorb Elements, Chaos Bolt, Chromatic Orb, Find Steed, Spirit Guardians
-* Subclasses Updated: College of Shadows, The Hexblade
-
-# 11.19
-* Automation Actors: removed the NoTarget creature type flag, which has been replaced by a NeverTarget effect
-* Feats Updated: Metamagic Adept
-* Features Updated: All meta-magic options, Rage
-* Spells Updated: Spiritual Weapon (set initiative right after caster), Updated all cantrips that have save for damage to not do damage if the targets save
-
-# 11.18
-* Creatures Updated: Most spiders, also changed the Creatures compendium name to Monsters and Monster Features
-* Feats Updated: Second Chance
-* Features Updated: Dread Ambusher, Perfect Self, Superior Inspiration, Uncanny Dodge
-* General: Better handling of features that provide advantage on certain saving throws
-* Race Features Updated: Savage Attacks
-* Subclasses Updated: Battle Master (including all maneuvers)
-
-# 11.17
-* Creature Features Updated: Pack Tactics
-* Feats Updated: Poisoner
-* General Features Added: Action - Wake Up
-* Items Updated: Basic Poison, Black Smear Poison, Dagger of Venom, Drow Poison, Poisonous Snake Venom, Purple Worm Poison, Serpent Venom, Spider Poison, Wyvern Poison
-* General: Started updating items/features that have saving throws to prompt players to roll their own save. The player is responsible for rolling the correct type (adv, disadv, normal) based on the save flavor and their character's features.
-* Macros Added: Delete Walled Template
-
-# 11.16
-* Class Features Updated: Jack of all Trades
-* Feat: Sentinel - added automatic reaction attack prompt
-* Racial: Long-Limbed - added +5 to range of melee weapons automatically (no need to modify your weapons anymore)
-* Some general cleanup and fixing of features
-
-# 11.15
-* Races Updated for dnd5e 2.4
-* General Features Added: Action - Stabilize (used to stabilize a downed actor)
-* Items Updated: Drow Poison, Potion of Heroism
-* Race Features Updated: Draconic Cry, Metallic Breath Weapon
-* Races Added: Kender
-* Spells Updated: Green-Flame Blade
-* General: Added a General Features compendium, where items like 'Action - Ready' are stored
-
-# 11.14
-* Features Updated: Deflect Missiles, Lay on Hands, Pack Tactics, Reckless Attack, Stunning Strike
-* Races Updated for dnd5e 2.4 through Human
-* General: More fixes for inappropriate player error messages
-
-# 11.13
-* Backgrounds Updated: all for dnd5e 2.4+
-* Classes Updated: all for dnd5e 2.4+
-* Creature Features Added: Deflect Missiles, Life Drain
-* Creatures Updated: Specter
-* Features Updated: Deflect Missiles (Monk), Sneak Attack
-* Macros Added: Draw Darkness Walls
-* Racial Traits Updated: Radiant Consumption
-* Spells Updated: Darkness, Fog Cloud
-* General: Fix for lack of permission error when initiative is advanced
-
-# 11.12
-* Class Features Updated: Channel Divinity (Cleric), Channel Divinity (Paladin), Channel Divinity - Abjure Enemy, Channel Divinity - Turn Undead, Channel Divinity - Turn the Unholy, Divine Smite, Lay on Hands, Panache, Rage
-* Creatures Updated: Trolls (all), Zombie
-* Items Updated: Keoghtom's Ointment
-* Macros Added: Fully Hide Tokens, Unhide Fully Hidden Tokens
-* Spells Updated: Spiritual Weapon, Vicious Mockery
-* added automatic handling of regeneration. Remove Simbul's Creature Aid support of it in your world. The actor must have a feature named Regeneration with a  of the form:
-  "The troll regains 10 hit points at the start of its turn. If the troll takes acid or fire damage, this trait doesn't function at the start of the troll's next turn. The troll dies only if it starts its turn with 0 hit points and doesn't regenerate."
-    - First sentence must specify how many hit points are recovered and when in it's turn the recovery takes place
-    - Second sentence must specify the damage types that stop regeneration
-* added Undead Fortitude Creature Feature. This needs to be added to the creature to enable it. Disable Simbul's Creature Aide support for Undead Fortitude.
-
-# 11.11
-* Class Features Updated: Action - Hide
-* Creatures Updated: Duergar, Flesh Golem, Medusa, Stone Golem
-* Feats Updated: Poisoner, Resilient (all)
-* Spells Updated: Command, Healing Spirit, Heat Metal, Mass Cure Wounds, Mass Healing Word, Wysard's Snowball
-
-# 11.10
-* Class Features Updated: Elemental Manipulation
-* Creatures Updated: Giant Spider, Ghost, Specter, Water Mephit, Wight
-* Creature Features Updated: Life Drain, Web Attack
-* Items Updated: Wand of Magic Missiles
-* Spells Updated: Banishment, Melf's Acid Arrow, Scorching Ray, Spike Growth
-
-# 11.9
-* Classes Updated: Paladin (added Harness Divine Power)
-* Class Features Added: Invocation: Grasp of Hadar
-* Class Features Updated: Channel Divinity: Sacred Weapon, Channel Divinity: Turn the Unholy, Invocation: Agonizing Blast, Invocation: Repelling Blast
-* Creatures Updated: Stone Golem
+# 12.3.2
+* General: Added legendary action reminder, added automatic legendary action recharge, updated the grapple and restrained logic
+* Class Features Updated: Abjure Enemy, Divine Smite, Favored Foe, Great Weapon Fighting, Sneak Attack
 * Feats Updated: Piercer
-* Race Features Updated: Fey Step (Autumn)
-* Spells Updated: Banishment, Banishing Smite, Blinding Smite, Booming Blade, Branding Smite, Chain Lightning, Eldritch Blast, Feather Fall, Magic Missile, Slow, Staggering Smite, Thunderous Smite, Wrathful Smite
+* General Features Updated: Grapple
+* Items Added: Wand of Conjure Animals, Wand of Enhance Abilities, Wand of Web
+* Items Updated: Bag of Tricks, Alchemist's Fire, Flame Tongue weapons, Pipes of Haunting, Ring of Jumping
+* Monster Features Updated: Legendary Resistance, Slayer
+* Monsters Updated: Ankheg, Assassin Vine, Basilisks, Black Pudding, Darkmantle, Fire Elemental, Giant Spider, Glabrezu, Grick, Poison Weird, Salamander, Water Elemental
+* Spells Updated: Absorb Elements, Animate Dead, Bestow Curse, Chaos Bolt, Command, Contagion, Dancing Lights, Dispel Magic, Eldritch Blast, Enhance Ability, Faerie Fire, Finger of Death, Fog Cloud, Hold Person, Hunter's Mark, Jump, Lathander's Holy Dart, Mage Armor, Produce Flame, Ray of Enfeeblement, Scorching Ray, Shillelagh, Silence, Sleep, Stinking Cloud, Thunderclap, Web, Wysard's Snowball
 
-# 11.8
-* Class Features Updated: Divine Smite, Favored by the Gods, Potent Spellcasting, Rage
-* Feats Updated: Empowered Cantrips, Great Weapon Master, Sharpshooter
-* Items Updated: Luckstone
-* Races Updated: Aasimar
-* Spells Updated: Blindness/Deafness, Faerie Fire, Green-Flame Blade, Heat Metal, Heroism, Lesser Restoration, Light, Magic Weapon, Shocking Grasp, Tasha's Caustic Brew, Tasha's Hideous Laughter, Toll the Dead, Word of Radiance
-* Subclasses Updated: Circle of the Elements, Forge Domain, Path of the Zealot`
+# 12.3.3
+* General: Work to update lots of weapon types that were lost in the foundry updates
+* Class Features Updated: Deflect Missiles, Diamond Soul, Empty Body, Flurry of Blows, Hexblades Curse, Ki, Panache, Patient Defense, Purity of Spirit, Quickened Healing, Sacred Weapon, Stunning Strike, Turn the Unholy, Vow of Enmity
+* Feats Updated: Crusher, Sentinel
+* General Features Updated: Add homebrew condition handling to eliminate dfred's convenient effects dependency, Dodge, Hide, Ready, Shove
+* Items Updated: Coin of Singing, Drow Poison, Pipes of Haunting
+* Monsters Updated: Air Elemental, Drider, Dust Devil, Ghast, Ghoul, Medusa, Otyugh, Purple Worm, Roper, Various RotD Monsters
+* Racial Features Updated: Fey Step, Goring Charge, Metallic Breath Weapon
+* Spells Updated: Bounding Boulder, Branding Smite, Color Spray, Command, Entangle, Protection from Evil and Good, Sleep, Summon Fey, Thunderous Smite, Wrathful Smite
+* Subclasses Updated: Oath of Devotion
 
-# 11.7
-* Classes Updated: All classes, rebuild suggested
-* Creatures Updated: Air Elemental Myrmidon, Bulette, Dao, Dust Devil, Earth Elemental Myrmidon, Fire Elemental, Fire Elemental Myrmidon, Galeb Duhr, Salamander, Water Elemental Myrmidon, Xorn
-* Feature Additions: Feat - Improved Spell Focus, Warlock - Pact of the Talisman
-* Features Updated: Blessed Strikes, Channel Divinity (all automated), Cutting Words, Eldritch Invocations (most), Harness Divine Power, Hex Warrior, Ki - all features, Lay on Hands, Metamagic - all features, Pact of the Blade, Peerless Skill, Sneak Attack, Thunderbolt Strike
-* Items Updated: Elixir of Health
-* Spells Updated: Aid, Conjure Elemental, Conjure Minor Elementals, Flaming Sphere, Gust, Hunter's Mark
-* Subclasses Updated: College of Shadows
+# 12.3.4 - Rime of the Frostmaiden
+* Class Features Updated: Blessed Healer, Cutting Words, Divine Strike (Life Domain), Gathered Swarm, Giant’s Might, Great Weapon Fighting, Potent Spellcasting, Preserve Life, Rune Carver, Wild Shape
+* Feats Updated: Empowered Cantrips, Chef, Healer, Polearm Master, Savage Attacker
+* Items Updated: Healer's Kit, Ring of Animal Influence
+* Races Updated: MooseTaur
+* Racial Features Updated: Hungry Jaws, Powerful Build
+* Spells Updated: Darkvision, Hold Monster, Hold Person, Ice Knife, Lesser Restoration, Produce Flame, Sleep, Tasha's Hideous Laughter, Thorn Whip, Zephyr Strike
+* Subclasses Updated: College of Lore, Life Domain, Path of the Totem Warrior, Rune Knight
 
-# 11.6
-* Classes Updated: Ranger (optional class features)
-* Creatures Updated: Air Elemental, Earth Elemental, Fire Elemental, Ghast, Water Elemental
-* Features Updated: Accursed Specter, Agonizing Blast, Elemental Manipulation, Elemental Resistance, Hexblade's Curse, Hex Warrior, Sneak Attack
-* Spells Updated: Bigby's Hand, Frost Fingers (animation), Hex, Spiritual Weapon
-* Subclasses Updated: Circle of the Elements, The Hexblade
-* General: Re-organized the scripts folder with subfolders, updated module list and settings files
-
-# 11.5
-* Creatures Updated: Hobgoblin, Hobgoblin Captain, Hobgoblin Devastator, Hobgoblin Iron Shadow, Hobgoblin Warlord
-* Feature Updates: Channel Divinity: Turn Undead, Martial Advantage, Sculpt Spells, Shadow Step, Shadow Walk
-* Spells Updated: Darkness, Fireball, Fog Cloud, Moonbeam, Wall of Fire, Wall of Sand, Wall of Thorns
-
-# 11.4
-* Divine Smite - updated for v11
-* Favored Foe - updated for v11
-* Great Weapon Master - updated for v11 
-* Half-Orc - Added Savage Attacks link
-* Sharpshooter - updated for v11
-* Sneak Attack - updated for v11
-* Tabaxi - updated features
-* General - Migrated all effect label references to name
-* Added general actions for: Dash, Disengage, and Hide
-* Dragons - Frightful Presence feature added to the Creature Features compendium
-* Creatures Updated: Adult Black Dragon
-* Feats Updated: Charger, Crusher, Grappler, Slasher
-* Features Updated: Ancestral Protectors, Assassinate, Bestial Soul, Blazing Revival, Blessing of the Forge, Call the Hunt,
-  Channel Divinity (Abjure Enemy), Channel Divinity (Sacred Weapon), Channel Divinity (Twilight Sanctuary), Channel Divinity (Vow of Enmity),
-  Divine Fury, Draconic Cry, Eyes of Night, Surprise Attack, Wild Shape
-* Items Updated: Basic Poison, Black Smear Poison, Cloak of Displacement, Dagger of Venom, Drow Poison, Poisonous Snake Venom,
-  Purple Worm Poison, Serpent Venom, Spider Poison, Wyvern Poison
-* Added some containers using the new item-collection module: Backpack, Bag of Holding, Belt Pouch, Explorer's Pack, Heward's Handy Haversack
-
-# 11.3
-* Bag of tricks (all colors) - added automation
-* Conjure Animals - fixed
-* Creatures updated: Ape, Baboon, Badger, Black Bear, Brown Bear, Cave Badger, Cave Bear, Chimeric Baboon, 
-  Diseased Giant Rat, Elk, Giant Ape, Giant Badger, Giant Boar, Giant Elk, Giant Goat, Giant Hyena, Giant Rat, 
-  Giant Weasel, Goat, Hyena, Jackal, Lion, Mastiff, Mountain Goat, Owl, Panther, Polar Bear, Rat, Sabre-Toothed Tiger, 
-  Tiger, Weasel 
-* Updated Charge functionality
-
-# 11.2
-* Bugbear Surprise Attack - fixed bug that allowed on an attack of opportunity
-* Favored Foe - added concentration
-* Guidance - apply to tool checks
-* Spirit Totem - fixed errors
-
-# 11.1
-* Migrated all data to the new v11 data structure
-* Migrated to v11 support modules 
-
-# 11.0
-* Initial v11 build
+# 12.3.5
+* Feats Updated: Chef
+* Monsters Updated: Banshee, all Boars, Ghost, all Goats, Sheep, Thug
+* Monster Features Updated: Added a generic charge action
+* Spells Updated: numerous fixes to component requirements
+* Rime of the Frostmaiden items 

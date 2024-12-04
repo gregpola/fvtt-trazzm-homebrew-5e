@@ -1,6 +1,6 @@
-const version = "11.0";
-const optionName = "Dawn Bringer";
-const swordItemId = "Compendium.fvtt-trazzm-homebrew-5e.homebrew-automation-items.m4D9LbT7t0KJCvxC";
+const version = "12.3.0";
+const optionName = "Summon Dawn Bringer";
+const swordItemId = "Compendium.fvtt-trazzm-homebrew-5e.homebrew-rise-of-the-drow.Item.NwtEpRUeOsnUgWyN";
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
 const summonFlag = "summon-dawn-bringer";
 

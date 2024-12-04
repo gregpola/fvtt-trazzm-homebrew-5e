@@ -3,8 +3,8 @@
 	spellcasting efforts. When you cast a divination spell of 2nd level or higher using a spell slot, you regain one
 	expended spell slot. The slot you regain must be of a level lower than the spell you cast and can’t be higher than 5th level.
 */
+const version = "12.3.0";
 const optionName = "Expert Divination";
-const version = "10.0.0";
 
 export async function expertDivination({speaker, actor, token, character, item, args}) {
     // make sure it was a spell casting
@@ -80,13 +80,17 @@ export async function expertDivination({speaker, actor, token, character, item, 
         { label: "Cancel", value: false }
     ];
     menuOptions["inputs"] = Array.from(slotOptions);
-    let choice = await warpgate.menu(menuOptions,
+
+    let choice = await HomebrewHelpers.menu(menuOptions,
         { title: `${optionName}: which slot level to recover?`, options: { height: "100%", width: "150px" } });
     let targetButton = choice.buttons;
 
     if (targetButton) {
-        let slot = choice.inputs.filter(Boolean);
-        await actor.update({[`system.spells.spell${slot}.value`]: getProperty(actor, `system.spells.spell${slot}.value`) + 1});
+        let slot = choice.inputs.indexOf(true);
+        if (slot > -1) {
+            slot++;
+            await actor.update({[`system.spells.spell${slot}.value`]: getProperty(actor, `system.spells.spell${slot}.value`) + 1});
+        }
 
         ChatMessage.create({
             content: `${actor.name} recovered a level ${slot} spell slot`,

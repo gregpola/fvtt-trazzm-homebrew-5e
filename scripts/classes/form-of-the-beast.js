@@ -198,9 +198,6 @@ async function applyBiteTransform(actorToken, origin, magicAttack) {
 					  "transfer": true,
 					  "flags": {
 						"times-up": {},
-						"dfreds-convenient-effects": {
-						  "description": ""
-						},
 						"dae": {
 						  "selfTarget": false,
 						  "selfTargetAlways": false,
@@ -639,9 +636,6 @@ async function applyTailTransform(actorToken, origin, magicAttack) {
 					  "transfer": false,
 					  "flags": {
 						"times-up": {},
-						"dfreds-convenient-effects": {
-						  "description": ""
-						},
 						"dae": {
 						  "selfTarget": false,
 						  "selfTargetAlways": true,

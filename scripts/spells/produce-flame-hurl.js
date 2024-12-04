@@ -1,11 +1,13 @@
-const version = "11.0";
-const optionName = "Produce Flame - Hurl";
+const version = "12.3.0";
+const optionName = "Flickering Flame";
+const spellName = "Produce Flame";
 
 try {
     if (args[0].macroPass === "postActiveEffects") {
-        // revert mutation that gave this item
-        await warpgate.revert(token.document, "Hurl Flame");
-
+        let spellEffect = HomebrewHelpers.findEffect(actor, spellName);
+        if (spellEffect) {
+            await MidiQOL.socket().executeAsGM("removeEffects", { actorUuid: actor.uuid, effects: [spellEffect.id] });
+        }
     }
 } catch (err) {
     console.error(`${optionName}: ${version}`, err);

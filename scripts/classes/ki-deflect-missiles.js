@@ -8,55 +8,80 @@
 	proficiency, regardless of your weapon proficiencies, and the missile counts as a monk weapon for the attack, which
 	has a normal range of 20 feet and a long range of 60 feet.
  */
-const version = "11.0";
-const kiName = "Ki";
+const version = "12.3.0";
 const optionName = "Deflect Missiles";
-const cost = 1;
+const damageReductionEffectName = "Deflect Missiles - Damage Reduction";
+let throwbackItem = await HomebrewHelpers.getItemFromCompendium('fvtt-trazzm-homebrew-5e.homebrew-automation-items', 'Deflect Missiles - Throwback');
 
 try {
 	if (args[0].macroPass === "postActiveEffects") {
-		const effect =  actor.effects.find(ef=>ef.name === "Deflect Missiles Damage Reduction");
-		const change = effect.changes.find(change => change.key === "flags.midi-qol.DR.rwak");
-		const dr = (await new Roll(change.value, actor.getRollData()).evaluate({async: true})).total;
+		// check for throw back
+		const reductionEffect = HomebrewHelpers.findEffect(actor, damageReductionEffectName);
+		if (reductionEffect) {
+			const isMelee = workflow.workflowOptions.damageDetail[0].properties.has('mwak');
+			const reductionRoll = reductionEffect.changes.find(change => change.key === `flags.midi-qol.DR.${isMelee ? 'mwak' : 'rwak'}`);
+			if (reductionRoll) {
+				const drAmount = Number(reductionRoll.value);
+				if (drAmount >= workflow.workflowOptions.damageTotal) {
+					const throwBack = await foundry.applications.api.DialogV2.confirm({
+						window: {
+							title: `${optionName}`,
+						},
+						content: `<p>Throw the missile back at the attacker?</p><p>(costs 1 Ki point)</p>`,
+						rejectClose: false,
+						modal: true
+					});
 
-		if (dr >= workflow.workflowOptions.damageTotal) {
-			// check ki points
-			let kiFeature = actor.items.find(i => i.name === kiName);
-			if (!kiFeature) {
-				console.error(`${optionName} - no Ki feature`);
-				return;
+					if (throwBack) {
+						const theItem = await fromUuid(workflow.workflowOptions.sourceItemUuid);
+						const theItemDamageParts = theItem.system.damage.parts;
+						const theItemDamageTerm = theItemDamageParts[0][0];
+						const theItemDamageType = theItemDamageParts[0][1];
+						const modIndex = theItemDamageTerm.indexOf("@mod");
+
+						let baseDamage = theItemDamageTerm;
+						if (modIndex > -1) {
+							baseDamage = theItemDamageTerm.substring(0, modIndex).trim();
+						}
+
+						// get the monk's ability modifier
+						let abilityToUse = "dex";
+						if (actor.system.abilities.str.mod > actor.system.abilities.dex.mod) {
+							abilityToUse = "str";
+						}
+						throwbackItem.system.ability = abilityToUse;
+
+						// apply the item damage data to the throwback item
+						let damageParts = throwbackItem.system.damage.parts;
+						damageParts[0][0] = baseDamage + ' + @mod';
+						damageParts[0][1] = theItemDamageType;
+						throwbackItem.system.damage.parts = damageParts;
+						await actor.createEmbeddedDocuments("Item", [throwbackItem]);
+
+						// get the target
+						const targetTokenOrActor = await fromUuid(workflow.workflowOptions.sourceActorUuid);
+						const targetActor = targetTokenOrActor.actor ?? targetTokenOrActor;
+						const targetToken = targetActor.token ?? targetActor.getActiveTokens()?.shift();
+
+						// throw it
+						const actorKiItem = actor.items.find(i => i.name === 'Ki');
+						let actorsItem = actor.items.find(i => i.name === 'Deflect Missiles - Throwback');
+						await actorsItem.update({'system.consume.target': actorKiItem.id});
+						let throwFeature = new CONFIG.Item.documentClass(actorsItem, {'parent': actor, 'system.consume.target': actorKiItem.id});
+						let [config, options] = HomebrewHelpers.syntheticItemWorkflowOptions([targetToken.uuid], undefined, undefined, true);
+						config.consumeUsage = false;
+						config.consumeQuantity = false;
+						config.consumeRecharge = false;
+
+						await MidiQOL.completeItemUse(throwFeature, config, options);
+						await HomebrewMacros.wait(250);
+						await actor.deleteEmbeddedDocuments('Item', [actorsItem.id]);
+					}
+				}
 			}
-
-			let usesLeft = kiFeature.system.uses?.value ?? 0;
-			if (!usesLeft || usesLeft < cost) {
-				console.error(`${optionName} - not enough Ki left`);
-				return;
-			}
-
-			const throwBack = await Dialog.confirm({
-				title: game.i18n.localize("Return Missile"),
-				content: `<p>Throw the missile back at the attacker</p><p>(costs 1 of ${usesLeft} Ki)</p>`,
-			});
-			if (!throwBack) return;
-
-			let theItem = await fromUuid(workflow.workflowOptions.sourceAmmoUuid ??workflow.workflowOptions.sourceItemUuid); // use the ammo if there is one otherwise the weapon
-			const theItemData = theItem.toObject();
-			theItemData.system.range.value = 20;
-			theItemData.system.range.long = 40;
-			theItemData.actionType = "rwak";
-			theItemData.system.consume = args[0].itemData.system.consume;
-
-			let ownedItem = new CONFIG.Item.documentClass(theItemData, { parent: actor });
-			const newValue = kiFeature.system.uses.value - cost;
-			await kiFeature.update({"system.uses.value": newValue});
-
-			const targetTokenOrActor = await fromUuid(workflow.workflowOptions.sourceActorUuid);
-			const targetActor = targetTokenOrActor.actor ?? targetTokenOrActor;
-			const target = targetActor.token ?? targetActor.getActiveTokens()?.shift();
-			await MidiQOL.completeItemRoll(ownedItem, {targetUuids: [target.uuid ?? target.document.uuid], workflowOptions: {notReaction: true, autoConsumeResource: "both"}});
 		}
 	}
 
 } catch (err) {
-    console.error(`${optionName} - ${version}`, err);
+    console.error(`${optionName}: ${version}`, err);
 }

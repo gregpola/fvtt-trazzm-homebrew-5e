@@ -8,7 +8,7 @@ const optionName = "Dread Ambusher";
 
 // On Combat Starting -- add first round features
 let movementBonusItem = await HomebrewHelpers.getItemFromCompendium('fvtt-trazzm-homebrew-5e.homebrew-automation-items', "Dread Ambusher - Movement Bonus");
-await actor.createEmbeddedDocuments("Item", [movementBonusItem]); // document?
+await actor.createEmbeddedDocuments("Item", [movementBonusItem]);
 
 let extraAttackItem = await HomebrewHelpers.getItemFromCompendium('fvtt-trazzm-homebrew-5e.homebrew-automation-items', "Dread Ambusher - Extra Attack");
 await actor.createEmbeddedDocuments("Item", [extraAttackItem]);

@@ -6,80 +6,67 @@
     At Higher Levels. When you cast this spell using a spell slot of 3rd level or higher, you create one additional ray for each slot level above 2nd.
  */
 const optionName = "Scorching Ray";
-const version = "11.0";
+const version = "12.3.0";
 const damageType = "fire";
-let beamItem = await HomebrewHelpers.getItemFromCompendium('fvtt-trazzm-homebrew-5e.homebrew-automation-items', 'Scorching Ray Ray');
+let missileItem = await HomebrewHelpers.getItemFromCompendium('fvtt-trazzm-homebrew-5e.homebrew-automation-items', 'Scorching Ray');
 
 try {
     if (args[0].macroPass === "postActiveEffects") {
         const spellLevel = workflow.castData.castLevel;
         const missileCount = 3 + (spellLevel - 2);
+        const feature = new CONFIG.Item.documentClass(missileItem, {'parent': workflow.actor});
 
         // check for need to select targets
         if (workflow.targets.size === 1) {
             let target = workflow.targets.first();
-            await launchMissiles(target, missileCount);
+            await launchMissiles(feature, target, missileCount);
         }
         else {
-            let targetList = workflow.targets.reduce((list, target) => {
-                return list + `<tr><td style="width: 75%">${target.name}</td><td style="width: 25%"><input type="num" id="target" min="0" max="${missileCount}" name="${target.id}"></td></tr>`
-            }, "");
+            // ask how many missiles per target
+            let content = `<p>You have <b>${missileCount}</b> total ray\'s. Select how many for each target:</p><div class="flexcol">`;
 
-            let the_content = `<p>You have <b>${missileCount}</b> total ${item.name}'s.</p><form class="flexcol"><table><tbody><tr><th>Target</th><th>Rays</th></tr>${targetList}</tbody></table></form>`;
+            for (let target of workflow.targets) {
+                content += `<div className="flexrow" style="margin-bottom: 10px;"><label style="width: 75%">${target.name}</label><input type="number" name="target" min="0" max="${missileCount}" step="1" value="1" autofocus style="width: 25%;margin-left: 15px;"/></div>`;
+            }
+            content += `</div>`;
 
-            let dialog = new Promise(async (resolve, reject) => {
-                let errorMessage;
-                new Dialog({
-                    title: `${item.name} Targets`,
-                    content: the_content,
-                    buttons: {
-                        damage: {
-                            label: "Cast", callback: async (html) => {
-                                let spentTotal = 0;
-                                let selected_targets = html.find('input#target');
-                                for (let get_total of selected_targets) {
-                                    spentTotal += Number(get_total.value);
+            let targetData = await foundry.applications.api.DialogV2.prompt({
+                window: {title: `${item.name} Targets`},
+                content: content,
+                ok: {
+                    label: "Cast",
+                    callback: (event, button, dialog) => {
+                        let sentMissiles = 0;
+                        let resultData = [];
+
+                        for (let beamTarget of button.form.elements.target) {
+                            let targetCount = beamTarget.valueAsNumber;
+                            if (targetCount > 0) {
+                                let actualCount = Math.min(targetCount, missileCount - sentMissiles);
+
+                                // get the target token
+                                let targetName = beamTarget.previousSibling.innerText.trim();
+                                let targetToken = workflow.targets.find(t => t.name === targetName);
+                                if (targetToken) {
+                                    resultData.push({target: targetToken, count: actualCount});
                                 }
 
-                                if (spentTotal > missileCount) {
-                                    ui.notifications.info("More ray targets selected than available, results will be clipped");
-                                }
-
-                                if (spentTotal === 0) {
-                                    errorMessage = `The spell fails, no rays targeted.`;
-                                    ui.notifications.error(errorMessage);
-                                }
-                                else {
-                                    let sentMissiles = 0;
-                                    for (let selected_target of selected_targets) {
-                                        let damageNum = selected_target.value;
-                                        if (damageNum != null) {
-                                            let targetCount = Number(damageNum);
-                                            if ((targetCount + sentMissiles) > missileCount) {
-                                                targetCount = missileCount - sentMissiles;
-                                            }
-
-                                            if (targetCount < 1)
-                                                break;
-
-                                            let target_id = selected_target.name;
-                                            let targetToken = canvas.tokens.get(target_id);
-                                            sentMissiles += targetCount;
-                                            await launchMissiles(targetToken, targetCount);
-                                        }
-                                    }
-                                }
-                                resolve();
+                                sentMissiles += actualCount;
+                                if (sentMissiles === missileCount)
+                                    break;
                             }
                         }
-                    },
-                    close: async (html) => {
-                        if(errorMessage) reject(new Error(errorMessage));
-                    },
-                    default: "damage"
-                }).render(true);
+
+                        return resultData;
+                    }
+                }
             });
-            await dialog;
+
+            if (targetData) {
+                for (let td of targetData) {
+                    await launchMissiles(feature, td.target, td.count);
+                }
+            }
         }
     }
 
@@ -87,12 +74,10 @@ try {
     console.error(`${optionName}: ${version}`, err);
 }
 
-async function launchMissiles(targetToken, beamCount){
-    let feature = new CONFIG.Item.documentClass(beamItem, {'parent': workflow.actor});
-
+async function launchMissiles(feature, targetToken, beamCount){
     for (let i = 0; i < beamCount; i++) {
         let [config, options] = HomebrewHelpers.syntheticItemWorkflowOptions([targetToken.document.uuid]);
         await MidiQOL.completeItemUse(feature, config, options);
-        await warpgate.wait(250);
+        await HomebrewMacros.wait(250);
     }
 }

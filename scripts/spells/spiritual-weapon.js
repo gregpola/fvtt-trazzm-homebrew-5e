@@ -7,215 +7,143 @@
 
 	Higher Levels. When you cast this spell using a spell slot of 3rd level or higher, the damage increases by 1d8 for every two slot levels above the 2nd.
 */
-const version = "11.2";
+const version = "12.3.0";
 const optionName = "Spiritual Weapon";
-const actorName = "Spiritual Weapon";
-const summonFlag = "spiritual-weapon";
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
+const flagName = "spiritual-weapon";
 
-const weaponTypes = ["Club", "Dagger", "Falchion", "Greataxe", "Greatsword", "Halberd", "Hammer", "Handaxe", "Katana", "Longsword", "Mace", "Maul", "Quarterstaff", "Rapier", "Scimitar", "Scythe", "Shortsword", "Spear", "Trident", "Warhammer"];
-const colorButtons = [{label: "Blue", value: 0}, {label: "Green", value: 1}, {label: "Purple", value: 2}];
-const weaponTokens = [
-	["SpiritualWeapon_Club01_01_Astral_Blue_400x400.webm", "SpiritualWeapon_Club01_02_Spectral_Green_400x400.webm", "SpiritualWeapon_Club01_01_Astral_Purple_400x400.webm"],
-	["SpiritualWeapon_Dagger02_01_Astral_Blue_400x400.webm", "SpiritualWeapon_Dagger02_02_Spectral_Green_Thumb.webp", "SpiritualWeapon_Dagger02_01_Astral_Purple_400x400.webm"],
-	["SpiritualWeapon_Falchion01_01_Astral_Blue_400x400.webm", "SpiritualWeapon_Falchion01_02_Spectral_Green_400x400.webm", "SpiritualWeapon_Falchion01_01_Astral_Purple_400x400.webm"],
-	["SpiritualWeapon_GreatAxe01_01_Astral_Blue_400x400.webm", "SpiritualWeapon_GreatAxe01_02_Spectral_Green_400x400.webm", "SpiritualWeapon_GreatAxe01_01_Astral_Purple_400x400.webm"],
-	["SpiritualWeapon_GreatSword01_01_Liquid_Blue_400x400.webm", "SpiritualWeapon_GreatSword01_02_Spectral_Green_400x400.webm", "SpiritualWeapon_GreatSword01_01_Astral_Purple_400x400.webm"],
-	["SpiritualWeapon_Halberd01_01_Astral_Blue_400x400.webm", "SpiritualWeapon_Halberd01_02_Spectral_Green_400x400.webm", "SpiritualWeapon_Halberd01_01_Astral_Purple_400x400.webm"],
-	["SpiritualWeapon_Hammer01_01_Astral_Blue_400x400.webm", "SpiritualWeapon_Hammer01_02_Spectral_Green_400x400.webm", "SpiritualWeapon_Hammer02_01_Astral_Purple_400x400.webm"],
-	["SpiritualWeapon_HandAxe01_01_Astral_Blue_400x400.webm", "SpiritualWeapon_HandAxe01_02_Spectral_Green_400x400.webm", "SpiritualWeapon_HandAxe01_01_Astral_Purple_400x400.webm"],
-	["SpiritualWeapon_Katana01_01_Astral_Blue_400x400.webm", "SpiritualWeapon_Katana01_02_Spectral_Green_400x400.webm", "SpiritualWeapon_Katana01_01_Astral_Purple_400x400.webm"],
-	["SpiritualWeapon_LongSword01_01_Astral_Blue_400x400.webm", "SpiritualWeapon_LongSword01_02_Spectral_Green_400x400.webm", "SpiritualWeapon_LongSword01_01_Astral_Purple_400x400.webm"],
-	["SpiritualWeapon_Mace01_01_Astral_Blue_400x400.webm", "SpiritualWeapon_Mace01_02_Spectral_Green_400x400.webm", "SpiritualWeapon_Mace01_01_Astral_Purple_400x400.webm"],
-	["SpiritualWeapon_Maul01_01_Astral_Blue_400x400.webm", "SpiritualWeapon_Maul01_02_Spectral_Green_400x400.webm", "SpiritualWeapon_Maul01_01_Astral_Purple_400x400.webm"],
-	["SpiritualWeapon_Quarterstaff01_01_Astral_Blue_400x400.webm", "SpiritualWeapon_Quarterstaff01_02_Spectral_Green_400x400.webm", "SpiritualWeapon_Quarterstaff01_01_Astral_Purple_400x400.webm"],
-	["SpiritualWeapon_Rapier01_01_Astral_Blue_400x400.webm", "SpiritualWeapon_Rapier01_02_Spectral_Green_400x400.webm", "SpiritualWeapon_Rapier01_01_Astral_Purple_400x400.webm"],
-	["SpiritualWeapon_Scimitar01_01_Astral_Blue_400x400.webm", "SpiritualWeapon_Scimitar01_02_Spectral_Green_400x400.webm", "SpiritualWeapon_Scimitar01_01_Astral_Purple_400x400.webm"],
-	["SpiritualWeapon_Scythe01_01_Astral_Blue_400x400.webm", "SpiritualWeapon_Scythe01_02_Spectral_Green_400x400.webm", "SpiritualWeapon_Scythe01_01_Astral_Purple_400x400.webm"],
-	["SpiritualWeapon_Shortsword01_01_Astral_Blue_400x400.webm", "SpiritualWeapon_Shortsword01_02_Spectral_Green_400x400.webm", "SpiritualWeapon_Shortsword01_01_Astral_Purple_400x400.webm"],
-	["SpiritualWeapon_Spear01_01_Astral_Blue_400x400.webm", "SpiritualWeapon_Spear01_02_Spectral_Green_400x400.webm", "SpiritualWeapon_Spear01_01_Astral_Purple_400x400.webm"],
-	["SpiritualWeapon_Trident01_01_Astral_Blue_400x400.webm", "SpiritualWeapon_Trident01_02_Spectral_Green_400x400.webm", "SpiritualWeapon_Trident01_01_Astral_Purple_400x400.webm"],
-	["SpiritualWeapon_Warhammer01_01_Astral_Blue_400x400.webm", "SpiritualWeapon_Warhammer01_02_Spectral_Green_400x400.webm", "SpiritualWeapon_Warhammer01_01_Astral_Purple_400x400.webm"]
-];
+const imagePrefix = "modules/JB2A_DnD5e/Library/2nd_Level/Spiritual_Weapon/";
 
-const weaponPortraits = [
-	["SpiritualWeapon_Club01_01_Astral_Blue_Thumb.webp", "SpiritualWeapon_Club01_02_Spectral_Green_Thumb.webp", "SpiritualWeapon_Club01_01_Astral_Purple_Thumb.webp"],
-	["SpiritualWeapon_Dagger02_01_Astral_Blue_Thumb.webp", "SpiritualWeapon_Dagger02_02_Spectral_Green_Thumb.webp", "SpiritualWeapon_Dagger02_01_Astral_Purple_Thumb.webp"],
-	["SpiritualWeapon_Falchion01_01_Astral_Blue_Thumb.webp", "SpiritualWeapon_Falchion01_02_Spectral_Green_Thumb.webp", "SpiritualWeapon_Falchion01_01_Astral_Purple_Thumb.webp"],
-	["SpiritualWeapon_GreatAxe01_01_Astral_Blue_Thumb.webp", "SpiritualWeapon_GreatAxe01_02_Spectral_Green_Thumb.webp", "SpiritualWeapon_GreatAxe01_01_Astral_Purple_Thumb.webp"],
-	["SpiritualWeapon_GreatSword01_01_Astral_Blue_Thumb.webp", "SpiritualWeapon_GreatSword01_02_Spectral_Green_Thumb.webp", "SpiritualWeapon_GreatSword01_01_Astral_Purple_Thumb.webp"],
-	["SpiritualWeapon_Halberd01_01_Astral_Blue_Thumb.webp", "SpiritualWeapon_Halberd01_02_Spectral_Green_Thumb.webp", "SpiritualWeapon_Halberd01_01_Astral_Purple_Thumb.webp"],
-	["SpiritualWeapon_Hammer01_01_Astral_Blue_Thumb.webp", "SpiritualWeapon_Hammer01_02_Spectral_Green_Thumb.webp", "SpiritualWeapon_Hammer01_01_Astral_Purple_Thumb.webp"],
-	["SpiritualWeapon_HandAxe01_01_Astral_Blue_Thumb.webp", "SpiritualWeapon_HandAxe01_02_Spectral_Green_Thumb.webp", "SpiritualWeapon_HandAxe01_01_Astral_Purple_Thumb.webp"],
-	["SpiritualWeapon_Katana01_01_Astral_Blue_Thumb.webp", "SpiritualWeapon_Katana01_02_Spectral_Green_Thumb.webp", "SpiritualWeapon_Katana01_01_Astral_Purple_Thumb.webp"],
-	["SpiritualWeapon_LongSword01_01_Astral_Blue_Thumb.webp", "SpiritualWeapon_LongSword01_02_Spectral_Green_Thumb.webp", "SpiritualWeapon_LongSword01_01_Astral_Purple_Thumb.webp"],
-	["SpiritualWeapon_Mace01_01_Astral_Blue_Thumb.webp", "SpiritualWeapon_Mace01_01_Flaming_Green_Thumb.webp", "SpiritualWeapon_Mace01_01_Astral_Purple_Thumb.webp"],
-	["SpiritualWeapon_Maul01_01_Flaming_Blue_Thumb.webp", "SpiritualWeapon_Maul01_01_Flaming_Green_Thumb.webp", "SpiritualWeapon_Maul01_01_Flaming_Purple_Thumb.webp"],
-	["SpiritualWeapon_Quarterstaff01_01_Astral_Blue_Thumb.webp", "SpiritualWeapon_Quarterstaff01_02_Spectral_Green_Thumb.webp", "SpiritualWeapon_Quarterstaff01_01_Astral_Purple_Thumb.webp"],
-	["SpiritualWeapon_Rapier01_01_Astral_Blue_Thumb.webp", "SpiritualWeapon_Rapier01_02_Spectral_Green_Thumb.webp", "SpiritualWeapon_Rapier01_01_Astral_Purple_Thumb.webp"],
-	["SpiritualWeapon_Scimitar01_01_Astral_Blue_Thumb.webp", "SpiritualWeapon_Scimitar01_02_Spectral_Green_Thumb.webp", "SpiritualWeapon_Scimitar01_01_Astral_Purple_Thumb.webp"],
-	["SpiritualWeapon_Scythe01_01_Astral_Blue_Thumb.webp", "SpiritualWeapon_Scythe01_02_Spectral_Green_Thumb.webp", "SpiritualWeapon_Scythe01_01_Astral_Purple_Thumb.webp"],
-	["SpiritualWeapon_Shortsword01_01_Astral_Blue_Thumb.webp", "SpiritualWeapon_Shortsword01_02_Spectral_Green_Thumb.webp", "SpiritualWeapon_Shortsword01_01_Astral_Purple_Thumb.webp"],
-	["SpiritualWeapon_Spear01_01_Astral_Blue_Thumb.webp", "SpiritualWeapon_Spear01_02_Spectral_Green_Thumb.webp", "SpiritualWeapon_Spear01_01_Astral_Purple_Thumb.webp"],
-	["SpiritualWeapon_Trident01_01_Astral_Blue_Thumb.webp", "SpiritualWeapon_Trident01_02_Spectral_Green_Thumb.webp", "SpiritualWeapon_Trident01_01_Astral_Purple_Thumb.webp"],
-	["SpiritualWeapon_Warhammer01_01_Astral_Blue_Thumb.webp", "SpiritualWeapon_Warhammer01_02_Spectral_Green_Thumb.webp", "SpiritualWeapon_Warhammer01_01_Astral_Purple_Thumb.webp"]
+const _weaponOptions = [
+	{img: "SpiritualWeapon_Club01_02_Spectral_Green_Thumb.webp", token: "SpiritualWeapon_Club01_02_Spectral_Green_400x400.webm"},
+	{img: "SpiritualWeapon_Dagger02_02_Spectral_Green_Thumb.webp", token: "SpiritualWeapon_Dagger02_02_Spectral_Green_400x400.webm"},
+	{img: "SpiritualWeapon_Falchion01_02_Spectral_Green_Thumb.webp", token: "SpiritualWeapon_Falchion01_02_Spectral_Green_400x400.webm"},
+	{img: "SpiritualWeapon_Glaive01_02_Spectral_Green_Thumb.webp", token: "SpiritualWeapon_Glaive01_02_Spectral_Green_400x400.webm"},
+	{img: "SpiritualWeapon_GreatAxe01_02_Spectral_Green_Thumb.webp", token: "SpiritualWeapon_GreatAxe01_02_Spectral_Green_400x400.webm"},
+	{img: "SpiritualWeapon_GreatClub01_02_Spectral_Green_Thumb.webp", token: "SpiritualWeapon_GreatClub01_02_Spectral_Green_400x400.webm"},
+	{img: "SpiritualWeapon_GreatSword01_02_Spectral_Green_Thumb.webp", token: "SpiritualWeapon_GreatSword01_02_Spectral_Green_400x400.webm"},
+	{img: "SpiritualWeapon_Halberd01_02_Spectral_Green_Thumb.webp", token: "SpiritualWeapon_Halberd01_02_Spectral_Green_400x400.webm"},
+	{img: "SpiritualWeapon_Hammer01_02_Spectral_Green_Thumb.webp", token: "SpiritualWeapon_Hammer01_02_Spectral_Green_400x400.webm"},
+	{img: "SpiritualWeapon_Hammer02_02_Spectral_Green_Thumb.webp", token: "SpiritualWeapon_Hammer02_02_Spectral_Green_400x400.webm"},
+	{img: "SpiritualWeapon_HandAxe01_02_Spectral_Green_Thumb.webp", token: "SpiritualWeapon_HandAxe01_02_Spectral_Green_400x400.webm"},
+	{img: "SpiritualWeapon_Javelin01_02_Spectral_Green_Thumb.webp", token: "SpiritualWeapon_Javelin01_02_Spectral_Green_400x400.webm"},
+	{img: "SpiritualWeapon_Katana01_02_Spectral_Green_Thumb.webp", token: "SpiritualWeapon_Katana01_02_Spectral_Green_400x400.webm"},
+	{img: "SpiritualWeapon_LongSword01_02_Spectral_Green_Thumb.webp", token: "SpiritualWeapon_LongSword01_02_Spectral_Green_400x400.webm"},
+	{img: "SpiritualWeapon_Mace01_01_Flaming_Yellow_Thumb.webp", token: "SpiritualWeapon_Mace01_01_Flaming_Yellow_200x200.webm"},
+	{img: "SpiritualWeapon_Mace01_01_Spectral_Blue_Thumb.webp", token: "SpiritualWeapon_Mace01_01_Spectral_Blue_200x200.webm"},
+	{img: "SpiritualWeapon_Mace01_02_Spectral_Green_Thumb.webp", token: "SpiritualWeapon_Mace01_02_Spectral_Green_400x400.webm"},
+	{img: "SpiritualWeapon_Maul01_01_Flaming_Yellow_Thumb.webp", token: "SpiritualWeapon_Maul01_01_Flaming_Yellow_200x200.webm"},
+	{img: "SpiritualWeapon_Maul01_01_Spectral_Blue_Thumb.webp", token: "SpiritualWeapon_Maul01_01_Spectral_Blue_200x200.webm"},
+	{img: "SpiritualWeapon_Maul01_02_Spectral_Green_Thumb.webp", token: "SpiritualWeapon_Maul01_02_Spectral_Green_400x400.webm"},
+	{img: "SpiritualWeapon_Quarterstaff01_02_Spectral_Green_Thumb.webp", token: "SpiritualWeapon_Quarterstaff01_02_Spectral_Green_400x400.webm"},
+	{img: "SpiritualWeapon_Rapier01_02_Spectral_Green_Thumb.webp", token: "SpiritualWeapon_Rapier01_02_Spectral_Green_400x400.webm"},
+	{img: "SpiritualWeapon_Scimitar01_02_Spectral_Green_Thumb.webp", token: "SpiritualWeapon_Scimitar01_02_Spectral_Green_400x400.webm"},
+	{img: "SpiritualWeapon_Scythe01_02_Spectral_Green_Thumb.webp", token: "SpiritualWeapon_Scythe01_02_Spectral_Green_400x400.webm"},
+	{img: "SpiritualWeapon_Shortsword01_02_Spectral_Green_Thumb.webp", token: "SpiritualWeapon_Shortsword01_02_Spectral_Green_400x400.webm"},
+	{img: "SpiritualWeapon_Spear01_02_Spectral_Green_Thumb.webp", token: "SpiritualWeapon_Spear01_02_Spectral_Green_400x400.webm"},
+	{img: "SpiritualWeapon_Trident01_02_Spectral_Green_Thumb.webp", token: "SpiritualWeapon_Trident01_02_Spectral_Green_400x400.webm"},
+	{img: "SpiritualWeapon_Warhammer01_02_Spectral_Green_Thumb.webp", token: "SpiritualWeapon_Warhammer01_02_Spectral_Green_400x400.webm"},
+	{img: "SpiritualWeapon_Wrench01_02_Spectral_Green_Thumb.webp", token: "SpiritualWeapon_Wrench01_02_Spectral_Green_400x400.webm"}
 ];
 
 try {
-	if (args[0] === "on") {
-        if (!game.modules.get("warpgate")?.active) ui.notifications.error("Please enable the Warp Gate module")
-		
-		const spellLevel = Number(args[1]);
-		const attackDice = 1 + Math.floor((spellLevel-2)/2);
+	if (args[0].macroPass === "preItemRoll") {
+		// pick your weapon appearance
+		const menuOptions = {};
+		menuOptions["buttons"] = [
+			{ label: "Cast", value: true },
+			{ label: "Cancel", value: false }
+		];
 
-		let spellStat = actor.system.attributes.spellcasting;
-		if (spellStat === "") spellStat = "wis";
-		const spellMod = actor.system.abilities[spellStat].mod;
-		const pb = actor.system.attributes.prof;
-		const msakBonus = actor.system.bonuses.msak.attack ? Number(actor.system.bonuses.msak.attack) : 0;
-		const toHitBonus = spellMod + pb + msakBonus;
+		menuOptions["inputs"] = [];
+		_weaponOptions.forEach(item => {
+			menuOptions["inputs"].push({
+				type: "radio",
+				label: `<img src='${imagePrefix}${item.img}' width='30' height='30' style='border: 5px; vertical-align: middle; right-margin: 10px;'>`,
+				value: item.name,
+				options: "group1"
+			});
+		});
 
-		const summonName = `${actorName} (${actor.name})`;
-		let updates = {
-            token: {
-				"name": summonName,
-				"disposition": CONST.TOKEN_DISPOSITIONS.NEUTRAL,
-				"displayName": CONST.TOKEN_DISPLAY_MODES.HOVER,
-				"displayBars": CONST.TOKEN_DISPLAY_MODES.ALWAYS,
-				"bar1": { attribute: "attributes.hp" },
-				"elevation": 5
-			},
-			"name": summonName,	
-			embedded: {
-				Item: {
-					"Spiritual Weapon Attack": {
-						"system.proficient": true,
-						"system.properties.mgc": true,
-						"system.attackBonus": `${toHitBonus}`,
-						"system.damage.parts":[[`${attackDice}d8 + ${spellMod}`,"force"]]
-					}
-				}
+		let choice = await HomebrewHelpers.menu( menuOptions,
+			{ title: `${optionName} - Weapon Style`, options: { height: "100%", width: "100%" } });
+
+		let targetButton = choice.buttons;
+		if (targetButton) {
+			const selectedIndex = choice.inputs.indexOf(true);
+			if (selectedIndex >= 0) {
+				const selectedForm = _weaponOptions[selectedIndex];
+				await actor.setFlag(_flagGroup, flagName, {token: selectedForm.token});
+				return true;
 			}
-		};
-
-        let summonActor = game.actors.getName(summonName);
-        if (!summonActor) {
-			// Get from the compendium
-			const summonId = "eeBrDDxFDlAQNXym";
-			let entity = await fromUuid("Compendium.fvtt-trazzm-homebrew-5e.homebrew-automation-actors." + summonId);
-			if (!entity) {
-				ui.notifications.error(`${optionName} - unable to find the actor`);
-				return;
-			}
-
-			// ask which form and color for the weapon to have
-			const result = await warpgate.menu(
-				{
-					inputs:[{type:"select", label: "Weapon Form", options: weaponTypes}],
-					buttons: colorButtons
-				},
-				{title:`${optionName}: Flavor`});
-
-			// if closed, just use the default values
-			if (result) {
-				//let x = weaponTypes.indexOf(result.inputs[0]);
-				let x = weaponTypes.findIndex((a) => a.value === result.inputs[0]);
-				let y = result.buttons;
-				let tokenImage = weaponTokens[x][y];
-				let actorPortrait = weaponPortraits[x][y];
-
-				updates = {
-					'name': summonName,
-					'img': `modules/jb2a_patreon/Library/2nd_Level/Spiritual_Weapon/${actorPortrait}`,
-					'prototypeToken': {
-						'name': summonName,
-						"disposition": CONST.TOKEN_DISPOSITIONS.NEUTRAL,
-						"displayName": CONST.TOKEN_DISPLAY_MODES.HOVER,
-						"displayBars": CONST.TOKEN_DISPLAY_MODES.ALWAYS,
-						"elevation": 5,
-						"bar1": { attribute: "attributes.hp" },
-						'texture': {
-							'src': `modules/jb2a_patreon/Library/2nd_Level/Spiritual_Weapon/${tokenImage}`
-						}
-					},
-					'token': {
-						'name': summonName,
-						"disposition": CONST.TOKEN_DISPOSITIONS.NEUTRAL,
-						"displayName": CONST.TOKEN_DISPLAY_MODES.HOVER,
-						"displayBars": CONST.TOKEN_DISPLAY_MODES.ALWAYS,
-						"bar1": { attribute: "attributes.hp" },
-						"elevation": 5,
-						'texture': {
-							'src': `modules/jb2a_patreon/Library/2nd_Level/Spiritual_Weapon/${tokenImage}`
-						}
-					},
-					embedded: {
-						Item: {
-							"Spiritual Weapon Attack": {
-								"system.proficient": true,
-								"system.properties.mgc": true,
-								"system.attackBonus": `${toHitBonus}`,
-								"system.damage.parts":[[`${attackDice}d8 + ${spellMod}`,"force"]]
-							}
-						}
-					}
-				};
-			}
-
-			// import the actor
-			let document = await entity.collection.importFromCompendium(game.packs.get(entity.pack), summonId, updates);
-			if (!document) {
-				ui.notifications.error(`${optionName} - unable to import from the compendium`);
-				return;
-			}
-			await warpgate.wait(500);
-			summonActor = game.actors.getName(summonName);
 		}
-		
-		// Spawn the result
-		const maxRange = item.system.range.value ? item.system.range.value : 60;
-		let position = await HomebrewMacros.warpgateCrosshairs(token, maxRange, item, summonActor.prototypeToken);
-		if (position) {
-			const result = await warpgate.spawnAt(position, summonName, updates, { controllingActor: actor, collision: true }, {});
-			if (!result || !result[0]) {
-				ui.notifications.error(`${optionName} - Unable to spawn`);
-				return;
-			}
 
-			let summonedToken = canvas.tokens.get(result[0]);
+		return false;
+
+	}
+	else if (args[0].macroPass === "postActiveEffects") {
+		const summonEffect = HomebrewHelpers.findEffect(actor, "Summon: Spiritual Weapon");
+		if (summonEffect) {
+			let summonFlag = summonEffect.getFlag("dnd5e", "dependents");
+			let summonedToken = await fromUuid(summonFlag[0].uuid);
+
 			if (summonedToken) {
-				await anime(token, summonedToken);
-				await actor.setFlag(_flagGroup, summonFlag, summonedToken.id);
-				await summonedToken.toggleCombat();
+				// update the summoned weapon
+				const spellLevel = workflow.castData.castLevel;
+				const attackDice = 1 + Math.floor((spellLevel - 2) / 2);
+				const spellmod = actor.system.attributes.spellmod;
+				const pb = actor.system.attributes.prof;
+				const msakBonus = actor.system.bonuses.msak.attack ? Number(actor.system.bonuses.msak.attack) : 0;
+				const toHitBonus = spellmod + pb + msakBonus;
+				// TODO update other spellcasting attributes
+
+				// get the appearance
+				let tokenImage = _weaponOptions[0].token;
+				let flag = actor.getFlag(_flagGroup, flagName);
+				if (flag) {
+					tokenImage = flag.token;
+				}
+
+				// update the actor and token data
+				const summonName = `${optionName} (${actor.name})`;
+				await summonedToken.actor.update({
+					"name": summonName,
+					"system.attributes.spellmod": spellmod
+				});
+
+				await summonedToken.update({
+					"name": summonName,
+					"displayName": CONST.TOKEN_DISPLAY_MODES.HOVER,
+					"displayBars": CONST.TOKEN_DISPLAY_MODES.ALWAYS,
+					"bar1": {attribute: "attributes.hp"},
+					"elevation": 5,
+					'texture.src': `${imagePrefix}${tokenImage}`
+				});
+
+				// update the attack damage
+				let attackItem = summonedToken.actor.items.find(i => i.name === "Spiritual Weapon Attack");
+				if (attackItem) {
+					let damageParts = foundry.utils.duplicate(attackItem.system.damage.parts);
+					damageParts[0][0] = `${attackDice}d8 + @mod`;
+					attackItem = attackItem.clone({
+						"system.attack.bonus": toHitBonus,
+						"system.damage.parts" : damageParts
+					}, {keepId: true});
+				}
+
+				await summonedToken.toggleCombatant();
 				const objectInitiative = token.combatant.initiative ? token.combatant.initiative - 0.01
 					: 1 + (summonedToken.actor.system.abilities.dex.value / 100);
 				await summonedToken.combatant.update({initiative: objectInitiative});
+
+			} else {
+				ui.notifications.error(`${optionName}: ${version} - unable to find the summoned token`);
 			}
-			
-		}
-		else {
-			ui.notifications.error(`${optionName} - invalid summon location`);
-			return;
+		} else {
+			ui.notifications.error(`${optionName}: ${version} - unable to find the active effect`);
 		}
 	}
-	else if (args[0] === "off") {
-		// delete the summon
-		const lastSummon = actor.getFlag(_flagGroup, summonFlag);
-		if (lastSummon) {
-			await actor.unsetFlag(_flagGroup, summonFlag);
-			await warpgate.dismiss(lastSummon, game.canvas.scene.id);
-		}
-	}
-	
+
 } catch (err)  {
     console.error(`${optionName}: ${version}`, err);
-}
-
-async function anime(token, target) {
-    new Sequence()
-        .effect()
-        .file("jb2a.misty_step.02.blue")       
-        .atLocation(target)
-		.scaleToObject(1)
-		.play();
 }

@@ -11,7 +11,7 @@
 
 	This feature has no effect on undead and constructs.
  */
-const version = "11.2";
+const version = "12.3.0";
 const optionName = "Lay on Hands";
 const flagName = "lay-on-hands-uses";
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
@@ -58,6 +58,9 @@ try {
 		const currenthp = Number(target.actor?.system.attributes.hp.value);
 		const targetDamage = maxhp - currenthp;
 		const maxHeal = Math.min(targetDamage, usesLeft);
+
+		// build the target effects data
+		let targetEffects = Array.from(target.actor.allApplicableEffects());
 		
 		// ask which type of healing
 		new Dialog({
@@ -79,7 +82,7 @@ try {
 				label: "Cure Disease",
 				icon: '<img src = "icons/skills/wounds/blood-cells-disease-green.webp" width="50" height="50"></>',
 				callback: async (html) => {
-					let effect = target.actor.effects.find( i=> i.name === "Diseased");
+					let effect = targetEffects.find( i=> i.name === "Diseased");
 					if (effect) {
 						await MidiQOL.socket().executeAsGM("removeEffects", { actorUuid: target.actor.uuid, effects: [effect.id] });
 						await reduceUsage(layOnHands, 4);// account for normal usage cost
@@ -94,7 +97,7 @@ try {
 				label: "Neutralize Poison",
 				icon: '<img src = "icons/skills/toxins/symbol-poison-drop-skull-green.webp" width="50" height="50"></>',
 				callback: async (html) => {
-					let effect = target.actor.effects.find( i=> i.name === "Poisoned");
+					let effect = targetEffects.find( i=> i.name === "Poisoned");
 					if (effect) {
 						await MidiQOL.socket().executeAsGM("removeEffects", { actorUuid: target.actor.uuid, effects: [effect.id] });
 						await reduceUsage(layOnHands, 4);// account for normal usage cost

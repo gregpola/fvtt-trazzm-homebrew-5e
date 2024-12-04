@@ -1,4 +1,11 @@
-const version = "11.0";
+/*
+	You’ve developed the skills necessary to hold your own in close-quarters grappling. You gain the following benefits:
+
+	- You have advantage on attack rolls against a creature you are grappling.
+	- You can use your action to try to pin a creature Grappled by you. To do so, make another grapple check. If you
+	succeed, you and the creature are both Restrained until the grapple ends.
+ */
+const version = "12.3.0";
 const optionName = "Grappler";
 
 try {
@@ -60,4 +67,8 @@ try {
 	
 } catch (err) {
     console.error(`Grappler feat ${version}`, err);
+}
+
+async function success(token, targetToken, item) {
+	await HomebrewMacros.applyRestrained(token, targetToken, item, 'opposed');
 }

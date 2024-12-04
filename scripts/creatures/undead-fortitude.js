@@ -2,7 +2,7 @@
     If damage reduces the undead to 0 hit points, it must make a Constitution saving throw with a DC of 5 + the damage
     taken, unless the damage is radiant or from a critical hit. On a success, the undead drops to 1 hit point instead.
 */
-const version = "11.0";
+const version = "12.3.0";
 const optionName = "Undead Fortitude";
 
 try {
@@ -15,23 +15,22 @@ try {
 
         if (workflow.damageDetail) {
             // look for radiant damage
-            for (let dd of workflow.damageItem.damageDetail) {
-                if (dd.type && dd.type.toLowerCase() === "radiant") {
-                    console.log(`${optionName}: ${version} - skipping for radiant damage`);
-                    return;
-                }
+            const radiantRolls = workflow.damageDetail.filter(i => ['radiant'].includes(i.type));
+            if (radiantRolls && radiantRolls.length > 1) {
+                console.log(`${optionName}: ${version} - skipping for radiant damage`);
+                return;
             }
 
             // check for reduction to 0 hp
             if (workflow.damageItem.newHP === 0) {
                 // roll the con save
-                const saveDC = 5 + workflow.damageItem.appliedDamage;
+                const saveDC = 5 + workflow.damageItem.totalDamage;
                 const saveResult = (await actor.rollAbilitySave('con', {flavor: `${optionName} - DC ${saveDC}`, rollMode: 'roll'})).total;
 
                 if (saveResult >= saveDC) {
                     let currentHP = actor.system.attributes.hp.value;
                     const newDamage = currentHP - 1;
-                    workflow.damageItem.appliedDamage = newDamage;
+                    workflow.damageItem.totalDamage = newDamage;
                     workflow.damageItem.hpDamage = newDamage;
                     workflow.damageItem.newHP = 1;
 

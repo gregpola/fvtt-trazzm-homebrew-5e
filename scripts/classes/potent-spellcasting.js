@@ -1,9 +1,8 @@
 /*
     Starting at 8th level, you add your Wisdom modifier to the damage you deal with any cleric cantrip.
  */
-const version = "11.0";
+const version = "12.3.0";
 const optionName = "Potent Spellcasting";
-
 
 try {
     if (args[0].macroPass === "DamageBonus") {
@@ -21,8 +20,7 @@ try {
         }
 
         // add damage bonus
-        const ability = actor.system.attributes.spellcasting;
-        const abilityBonus = actor.system.abilities[ability].mod;
+        const abilityBonus = actor.system.attributes.spellmod;
         let damageType = workflow.item.system.damage.parts[0][1];
         return {damageRoll: `${abilityBonus}[${damageType}]`, flavor: optionName};
     }

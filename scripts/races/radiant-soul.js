@@ -1,11 +1,16 @@
-const version = "11.0";
+/*
+	Two luminous, spectral wings sprout from your back temporarily. Until the transformation ends, you have a Fly speed
+	equal to your walking speed, and once on each of your turns, you can deal extra radiant damage to one target when
+	you deal damage to it with an attack or a spell. The extra damage equals your proficiency bonus.
+ */
+const version = "12.3.0";
 const optionName = "Radiant Soul";
 const timeFlag = "radiantSoulTime";
 
 try {
 	if (args[0].macroPass === "DamageBonus") {
 		// Check for availability i.e. once per actors turn
-		if (!isAvailableThisTurn() || !game.combat) {
+		if (!HomebrewHelpers.isAvailableThisTurn(actor, timeFlag) || !game.combat) {
 			console.log(`${optionName}: is not available for this damage`);
 			return {};
 		}
@@ -38,29 +43,11 @@ try {
 			return {};
 		}
 
-		const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn /100}`;
-		const lastTime = actor.getFlag("midi-qol", timeFlag);
-		if (combatTime !== lastTime) {
-			await actor.setFlag("midi-qol", timeFlag, combatTime)
-		}
-
+		await HomebrewHelpers.setUsedThisTurn(actor, timeFlag);
 		const pb = actor.system.attributes.prof ?? 2;
 		return {damageRoll: `${pb}[radiant]`, flavor: `${optionName} Damage`};
 	}
 
 } catch (err) {
     console.error(`${optionName}: ${version}`, err);
-}
-
-// Check to make sure the actor hasn't already applied the damage this turn
-function isAvailableThisTurn() {
-	if (game.combat) {
-		const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn /100}`;
-		const lastTime = actor.getFlag("midi-qol", timeFlag);
-		if (combatTime === lastTime) {
-			return false;
-		}
-		return true;
-	}	
-	return false;
 }

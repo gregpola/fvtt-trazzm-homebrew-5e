@@ -1,61 +1,66 @@
-const version = "11.0";
+const version = "12.3.0";
 const optionName = "Absorb Elements";
 const elements = { acid: "acid", cold: "cold", fire: "fire", lightning: "lightning", thunder: "thunder" };
+const meleeEffectName = "Absorb Elements (Melee Damage)";
+const resistanceEffectName = "Absorb Elements (Resistance)";
 
 try {
 	if (args[0].macroPass === "postActiveEffects") {
-		let msgHistory = game.messages.reduce((list, message) => {
-			let damage = message.flags["midi-qol"]?.damageDetail;
-			if (damage) list.push(damage);
-			return list;
-		}, []);
+		// Ask the player for the damage type
+		let content = `
+            <label><input type="radio" name="choice" value="acid" checked>  Acid </label>
+            <label><input type="radio" name="choice" value="cold">  Cold </label>
+            <label><input type="radio" name="choice" value="fire">  Fire </label>
+            <label><input type="radio" name="choice" value="lightning">  Lightning </label>
+            <label><input type="radio" name="choice" value="thunder">  Thunder </label>
+        `;
 
-		let triggeringDamage = msgHistory[msgHistory.length - 1];
-		let damageType;
-		if (triggeringDamage && triggeringDamage.length > 0) {
-			damageType = elements[triggeringDamage[0].type.toLowerCase()];
-		}
+		let flavor = await foundry.applications.api.DialogV2.prompt({
+			content: content,
+			rejectClose: false,
+			ok: {
+				callback: (event, button, dialog) => {
+					return button.form.elements.choice.value;
+				}
+			},
+			window: {
+				title: `${optionName} - Select the Damage Type`,
+			},
+			position: {
+				width: 400
+			}
+		});
 
-		if (damageType) {
-			// add damage resistance
-			let effectDataResistance = {
-				name: optionName + "- Damage Resistance",
-				icon: workflow.item.img,
-				origin: workflow.item.uuid,
-				changes: [
-					{ key: `system.traits.dr.value`, mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM, value: `${damageType}`, priority: 20 }
-				],
-				disabled: false,
-				flags: { dae: { specialDuration: ["turnStartSource"] } },
-			};
-			await MidiQOL.socket().executeAsGM("createEffects", { actorUuid: actor.uuid, effects: [effectDataResistance] });
-
-			// add weapon daamage bonus effect
+		if (flavor) {
 			const spellLevel = workflow.castData.castLevel;
-			let effectDataAttack = {
-				name: optionName + "- Damage Bonus",
-				icon: workflow.item.img,
-				origin: workflow.item.uuid,
-				changes: [
-					{ key: `system.bonuses.mwak.damage`, mode: 2, value: `${spellLevel}d6[${damageType}]`, priority: 20 },
-					{ key: `system.bonuses.msak.damage`, mode: 2, value: `${spellLevel}d6[${damageType}]`, priority: 21 }
-				],
-				disabled: false,
-				flags: { dae: { specialDuration: ["1Hit", "turnEndSource"] } },
-			};
-			await MidiQOL.socket().executeAsGM("createEffects", { actorUuid: actor.uuid, effects: [effectDataAttack] });
+			let targetToken = workflow.targets.firsts();
+
+			// update the melee damage
+			let effect = HomebrewHelpers.findEffect(targetToken.actor, meleeEffectName);
+			let changes;
+			if (effect) {
+				changes = duplicate(effect.changes);
+				changes[0].value = `${spellLevel}d6[${flavor}]`;
+				changes[1].value = `${spellLevel}d6[${flavor}]`;
+				await effect.update({changes});
+			}
+			else {
+				ui.notifications.error(`${optionName}: ${version} - no melee damage effect found`);
+			}
+
+			// update the resistance
+			effect = HomebrewHelpers.findEffect(targetToken.actor, resistanceEffectName);
+			if (effect) {
+				changes = duplicate(effect.changes);
+				changes[0].value = element;
+				await effect.update({changes});
+			}
+			else {
+				ui.notifications.error(`${optionName}: ${version} - no resistance effect found`);
+			}
 		}
 	}
 
 } catch (err) {
     console.error(`${optionName}: ${version}`, err);
 }
-
-
-/*
-	Reaction condition:
-
-	reaction === 'isDamaged' &&
-
-	workflow.damageDetail.some(d => ['acid', 'cold', 'fire', 'lightning', 'thunder'].includes(d.type.toLowerCase())) || ['acid', 'cold', 'fire', 'lightning', 'thunder'].some(dt => workflow.item.formula.toLowerCase().includes(dt)) || ['acid', 'cold', 'fire', 'lightning', 'thunder'].some(dt => workflow.item.damage.versatile.toLowerCase().includes(dt))
- */

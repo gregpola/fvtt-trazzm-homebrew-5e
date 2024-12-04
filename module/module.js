@@ -5,9 +5,11 @@ import {SpellHandler} from "./SpellHandler.js";
 import {BarbarianFeatures} from "./BarbarianFeatures.js";
 import {WarlockFeatures} from "./WarlockFeatures.js";
 import {WizardFeatures} from "./WizardFeatures.js";
+import {SummonHelper} from "./SummonHelper.js";
 import {macros} from './macros.js';
 import {registerSettings} from './settings.js';
 import {doTurnStartOptions} from "./utils.js";
+import {doLegendaryAction} from "./utils.js";
 
 const SUB_MODULES = {
     CombatHandler,
@@ -16,7 +18,8 @@ const SUB_MODULES = {
     SpellHandler,
     BarbarianFeatures,
     WarlockFeatures,
-    WizardFeatures
+    WizardFeatures,
+    SummonHelper
 };
 
 export let socket = undefined;
@@ -30,6 +33,7 @@ Hooks.once('init', async function () {
 Hooks.once('socketlib.ready', async function() {
     socket = socketlib.registerModule('fvtt-trazzm-homebrew-5e');
     socket.register('doTurnStartOptions', doTurnStartOptions);
+    socket.register('doLegendaryAction', doLegendaryAction);
 });
 
 /**

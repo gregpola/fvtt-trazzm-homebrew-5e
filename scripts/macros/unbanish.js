@@ -1,4 +1,4 @@
-const version = "11.0";
+const version = "12.3.0";
 const optionName = "Unbanish";
 const mutationFlag = "banished";
 const flagName = "banished-effects-disabled";
@@ -16,7 +16,11 @@ for(let tok of canvas.tokens.controlled) {
         }
     }
 
-    await warpgate.revert(tok.document, mutationFlag);
+    let banishedEffect = tok.actor.effects.find(eff => eff.name === "Banished");
+    if (banishedEffect) {
+        banishedEffect.delete();
+    }
+
     await tok.document.update({ "hidden": false });
     await ChatMessage.create({ content: `${tok.name} has returned`});
 }

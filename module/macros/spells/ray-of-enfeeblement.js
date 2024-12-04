@@ -1,8 +1,5 @@
-/*
-
- */
 const optionName = "Ray of Enfeeblement";
-const version = "10.0";
+const version = "12.3.0";
 
 export async function rayOfEnfeeblement({speaker, actor, token, character, item, args}) {
     if (this.isFumble || this.item.type != 'weapon') return;

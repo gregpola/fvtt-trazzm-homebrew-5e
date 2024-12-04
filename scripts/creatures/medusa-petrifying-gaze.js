@@ -6,105 +6,91 @@
     becoming petrified on a failure or ending the effect on a success. The petrification lasts until the creature is
     freed by the greater restoration spell or other magic.
 */
-const version = "11.0";
+const version = "12.3.0";
 const optionName = "Petrifying Gaze";
-const effectName = "Petrifying Gaze - Restrained";
-const flagName = "petrifying-gaze-flag";
+const avertingGazeName = "Averting Gaze";
+const avertGazeItem = await HomebrewHelpers.getItemFromCompendium('fvtt-trazzm-homebrew-5e.homebrew-automation-items', "Avert Gaze");
 
 try {
-    if (args[0].macroPass === "postActiveEffects") {
-        const saveDC = item.system.save.dc;
+    let existingAvertGazeItem = actor.items.find(i => i.name === "Avert Gaze");
 
-        for (let target of workflow.failedSaves) {
-            let flag = target.actor.getFlag("fvtt-trazzm-homebrew-5e", flagName);
-            if (flag) {
-                await target.actor.unsetFlag("fvtt-trazzm-homebrew-5e", flagName);
-                if (!hasPetrifiedImmunity(target.actor)) {
-                    await game.dfreds.effectInterface.addEffect({
-                        'effectName': 'Petrified',
-                        'uuid': target.actor.uuid,
-                        'origin': actor.uuid,
-                        'overlay': true
+    if (args[0] === "on") {
+        if (!HomebrewHelpers.hasConditionImmunity(actor, 'Petrified')) {
+            if (!existingAvertGazeItem) {
+                await actor.createEmbeddedDocuments("Item", [avertGazeItem]);
+                const favoriteItem = actor.items.find(i => i.name === "Avert Gaze");
+                if (favoriteItem) {
+                    await HomebrewHelpers.addFavorite(actor, favoriteItem);
+                }
+            }
+        }
+    }
+    else if (args[0] === "off") {
+        if (existingAvertGazeItem) {
+            existingAvertGazeItem.delete();
+        }
+    }
+    else if (args[0] === "each") {
+        // skip source actor
+        // get the source token
+        let effectItem = await fromUuid(lastArgValue.effectUuid);
+        let sourceToken = fromUuidSync(effectItem.origin.substring(0, effectItem.origin.indexOf('.Actor.')));
+        if (sourceToken?.id === token.id) {
+            console.log(`${optionName} - skipping source token in EACH`);
+            return;
+        }
+
+        if (!HomebrewHelpers.hasConditionImmunity(actor, 'Petrified')) {
+            const avertingGazeEffect = HomebrewHelpers.findEffect(actor, avertingGazeName);
+            const turningToStone = HomebrewHelpers.findEffect(actor, 'Restrained', effectItem.origin);
+            const canSeeMedusa = await MidiQOL.canSee(token, sourceToken);
+            const canSeeTarget = await MidiQOL.canSee(sourceToken, token);
+            const petrifiedEffect = HomebrewHelpers.findEffect(actor, 'Petrified', effectItem.origin);
+
+            if (lastArgValue.turn === "startTurn") {
+                if (!avertingGazeEffect && !turningToStone && !petrifiedEffect && canSeeMedusa && canSeeTarget) {
+                    await game.MonksTokenBar.requestRoll([{token: token}], {
+                        request: [{"type": "save", "key": "con"}],
+                        dc: 14, showdc: true, silent: true, fastForward: false,
+                        flavor: `${optionName}`,
+                        rollMode: 'roll',
+                        callback: async (result) => {
+                            for (let tr of result.tokenresults) {
+                                if (!tr.passed) {
+                                    if (tr.roll.total < 10) {
+                                        await HomebrewEffects.applyPetrifiedEffect(tr.actor, effectItem.origin);
+                                    }
+                                    else {
+                                        await HomebrewEffects.applyRestrainedEffect(tr.actor, effectItem.origin, undefined, undefined, ['turnEnd']);
+                                    }
+                                }
+                            }
+                        }
                     });
                 }
-                
-                continue;
             }
-
-            // check how much they failed by
-            let saveData = workflow.saveResults.find(r => r.data.token === target);
-            if (saveData) {
-                let saveTotal = saveData.total;
-                let saveDiff = saveDC - saveTotal;
-
-                if (saveDiff < 5) {
-                    if (!hasRestrainedImmunity(target.actor)) {
-                        await target.actor.setFlag("fvtt-trazzm-homebrew-5e", flagName, actor.uuid);
-
-                        // add the Restrained effect to the target
-                        let restrainedEffect = {
-                            'name': effectName,
-                            'icon': 'icons/magic/control/encase-creature-spider-hold.webp',
-                            'changes': [
-                                {
-                                    'key': 'macro.CE',
-                                    'mode': CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-                                    'value': 'Restrained',
-                                    'priority': 21
-                                },
-                                {
-                                    'key': 'flags.midi-qol.OverTime',
-                                    'mode': CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
-                                    'value': `turn=end, label=Medusa Restrained, saveAbility=con, saveDC=${saveDC}, macro=ItemMacro.${item.uuid}`,
-                                    'priority': 20
+            else if (lastArgValue.turn === "endTurn") {
+                // skip if same turn that started turning to stone
+                if (turningToStone && !petrifiedEffect && (game.combat.round !== turningToStone.duration.startRound)) {
+                    await game.MonksTokenBar.requestRoll([{token: token}], {
+                        request: [{"type": "save", "key": "con"}],
+                        dc: 14, showdc: true, silent: true, fastForward: false,
+                        flavor: `${optionName}`,
+                        rollMode: 'roll',
+                        callback: async (result) => {
+                            for (let tr of result.tokenresults) {
+                                if (!tr.passed) {
+                                    await HomebrewEffects.applyPetrifiedEffect(tr.actor, effectItem.origin);
                                 }
-                            ],
-                            'origin': actor.uuid,
-                            'flags': {
-                                'dae': {
-                                    'specialDuration': ['turnEnd']
-                                },
                             }
-                        };
+                        }
+                    });
 
-                        await MidiQOL.socket().executeAsGM("createEffects",
-                            { actorUuid: target.actor.uuid, effects: [restrainedEffect] });
-
-                    }
                 }
-                else {
-                    if (!hasPetrifiedImmunity(target.actor)) {
-                        await game.dfreds.effectInterface.addEffect({
-                            'effectName': 'Petrified',
-                            'uuid': target.actor.uuid,
-                            'origin': actor.uuid,
-                            'overlay': true
-                        });
-                    }
-                }
-            }
-            else {
-                console.error(`${optionName}: ${version}`, 'Unable to find the failed target save data');
             }
         }
     }
 
 } catch (err) {
     console.error(`${optionName}: ${version}`, err);
-}
-
-// TODO check for petrified immunity
-
-function hasPetrifiedImmunity(actor) {
-    if (actor) {
-        return actor.system.traits.ci?.value?.has('petrified');
-    }
-    return false;
-}
-
-function hasRestrainedImmunity(actor) {
-    if (actor) {
-        return actor.system.traits.ci?.value?.has('restrained');
-    }
-    return false;
 }

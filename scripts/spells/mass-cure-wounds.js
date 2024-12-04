@@ -6,17 +6,15 @@
 	At Higher Levels. When you cast this spell using a spell slot of 6th level or higher, the healing increases by 1d8
 	for each slot level above 5th.
 */
-const version = "11.0";
+const version = "12.3.0";
 const optionName = "Mass Cure Wounds";
 
 try {
-	if (args[0].macroPass === "postActiveEffects") {
-		const level = workflow.castData.castLevel;
+	if (args[0].macroPass === "preambleComplete") {
 		let targets = workflow.targets;
-		let spellStat = actor.system.attributes.spellcasting;
-		if (spellStat === "") spellStat = "wis";
-		const spellcastingModifier = actor.system.abilities[spellStat].mod;
-		
+		const level = workflow.castData.castLevel;
+		const spellcastingModifier = actor.system.attributes.spellmod;
+
 		if (targets.size > 0) {
 			// build the target data
 			let choices = [];
@@ -27,7 +25,7 @@ try {
 				let maxHP = t.actor?.system.attributes.hp.max;
 				
 				if (!["construct", "undead"].includes(t.actor.system.details?.type?.value) && (totalHP < maxHP)) {
-					let row = `<div><input type="checkbox" style="margin-right:10px;"/><label>${t.actor.name}</label></div>`;
+					let row = `<div><input type="checkbox" style="margin-right:10px;"/><label>${t.name} (${t.actor.system.attributes.hp.value} of ${t.actor.system.attributes.hp.max})</label></div>`;
 					rows += row;
 					choices.push(t);
 				}
@@ -62,14 +60,18 @@ try {
 									recipients.push(choices[i]);
 								}
 							}
-							
+
+							if (recipients.length !== workflow.targets.size) {
+								game.user.updateTokenTargets(recipients);
+							}
+
 							if (recipients.length > 0) {
 								let diceCount = 3 + level - 5;
-								
-								const healRoll = await new Roll(`${diceCount}d8 + ${spellcastingModifier}`).evaluate({ async: false });
+								const healRoll = await new Roll(`${diceCount}d8 + ${spellcastingModifier}`).evaluate();
 								await game.dice3d?.showForRoll(healRoll);
-								await new MidiQOL.DamageOnlyWorkflow(actor, token, healRoll.total, "healing", recipients, healRoll, 
-									{flavor: `${optionName}`, itemCardId: args[0].itemCardId});
+
+								await new MidiQOL.DamageOnlyWorkflow(actor, token, healRoll.total, "healing", recipients, healRoll,
+									{flavor: `${optionName}`, itemCardId: workflow.itemCardId});
 							}
 						}
 					}

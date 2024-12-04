@@ -7,57 +7,53 @@
 	a space within 30 feet of you. It also can’t take reactions. For its action, it can use only the Dash action or try
 	to escape from an effect that prevents it from moving. If there’s nowhere to move, the creature can use the Dodge action.
 */
-const version = "11.3";
+const version = "12.3.0";
 const optionName = "Turn the Unholy";
-const channelDivinityName = "Channel Divinity (Paladin)";
-const cost = 1;
-
 const targetTypes = ["undead", "fiend"];
-const immunity = ["Turn Immunity"];
+
+const resistanceEffectData = {
+	name: "Turn Advantage",
+	origin: workflow.item.uuid,
+	icon: "icons/skills/melee/shield-damaged-broken-orange.webp",
+	changes: [{
+		key: "flags.midi-qol.advantage.ability.save.wis",
+		mode: 5,
+		priority: 20,
+		value: true
+	}],
+	duration: {
+		turns: 1
+	},
+	flags: {
+		dae: {
+			specialDuration: ['isSave']
+		}
+	}
+};
+
 
 try {
-	if (args[0].macroPass === "preItemRoll") {
-		// check Channel Divinity uses available
-		let channelDivinity = actor.items.find(i => i.name === channelDivinityName);
-		if (channelDivinity) {
-			let usesLeft = channelDivinity.system.uses?.value ?? 0;
-			if (!usesLeft || usesLeft < cost) {
-				console.error(`${optionName} - not enough ${channelDivinityName} uses left`);
-				ui.notifications.error(`${optionName} - not enough ${channelDivinityName} uses left`);
-			}
-			else {
-				const newValue = channelDivinity.system.uses.value - cost;
-				await channelDivinity.update({"system.uses.value": newValue});
-				return true;
-			}
-		}
-		else {
-			console.error(`${optionName} - no ${channelDivinityName} item on actor`);
-			ui.notifications.error(`${optionName} - no ${channelDivinityName} item on actor`);
-		}
+	if (args[0].macroPass === "preambleComplete") {
+		let validTargets = [];
 
-		return false;
-	}
-	else if (args[0].macroPass === "preambleComplete") {
-		// check target types
-		for (let target of workflow.targets) {
-			let creatureType = target.actor.system.details.type;
+		for (let t of workflow.targets) {
+			// skip non-undead targets
+			if (!targetTypes.some(type => (MidiQOL.typeOrRace(t.actor) || "").toLowerCase().includes(type))) continue;
+			if (HomebrewHelpers.hasTurnImmunity(t.actor)) continue;
 
-			// remove targets that are not applicable creatures (aka PCs etc)
-			if ((creatureType === null) || (creatureType === undefined)) {
-				workflow.targets.delete(target);
+			// skip dead targets
+			if (t.actor.system.attributes.hp.value < 1) continue;
+
+			// add resistance effect
+			if (HomebrewHelpers.hasTurnResistance(t.actor)) {
+				await MidiQOL.socket().executeAsGM("createEffects", {actorUuid: t.actor.uuid, effects: [resistanceEffectData]});
 			}
-			// remove creatures that are not undead or fiends
-			else if (!targetTypes.some(type => (target?.actor.system.details.type?.value || "").toLowerCase().includes(type))) {
-				workflow.targets.delete(target);
-			}
-			// remove creatures with turn immunity
-			else if (target.actor.items.find(i => immunity.includes(i.name))) {
-				workflow.targets.delete(target);
-			}
+
+			validTargets.push(t);
 		}
 
-		game.user.updateTokenTargets(Array.from(workflow.targets).map(t => t.id));
+		HomebrewHelpers.updateTargets(validTargets);
+
 	}
 
 } catch (err) {

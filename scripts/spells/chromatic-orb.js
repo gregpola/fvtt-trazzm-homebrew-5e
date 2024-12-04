@@ -1,4 +1,4 @@
-const version = "11.0";
+const version = "12.3.0";
 const optionName = "Chromatic Orb";
 
 const _elementOptions = [
@@ -26,7 +26,7 @@ try {
 				options: "group1" });
 		});
 
-		let choice = await warpgate.menu( menuOptions,
+		let choice = await HomebrewHelpers.menu( menuOptions,
 			{ title: `${optionName} - Type of Orb`, options: { height: "100%", width: "100%" } });
 
 		let targetButton = choice.buttons;

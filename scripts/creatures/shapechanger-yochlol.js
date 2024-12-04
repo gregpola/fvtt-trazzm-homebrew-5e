@@ -1,11 +1,8 @@
-const version = "10.0.0";
+const version = "12.3.0";
 const optionName = "Shapechanger (Yochlol)";
 
 try {
-	const lastArg = args[args.length - 1];
-	const actorToken = canvas.tokens.get(lastArg.tokenId);
-	
-	if (args[0] === "on") {
+	if (args[0].macroPass === "postActiveEffects") {
 		// ask which form
 		let dialog = new Promise((resolve, reject) => {
 			new Dialog({
@@ -17,16 +14,20 @@ try {
 						icon: '<img src = "modules/fvtt-trazzm-homebrew-5e/assets/monsters/npc-Drow.webp" width="50" height="50"/>',
 						label: "<p>Female Drow</p>",
 						callback: () => {
-							resolve({name: "Female Drow", 
-							img: "modules/fvtt-trazzm-homebrew-5e/assets/monsters/npc-Drow.webp"});
+							resolve({
+								name: "Female Drow",
+								img: "modules/fvtt-trazzm-homebrew-5e/assets/monsters/npc-Drow.webp",
+								transformActorId: "Compendium.fvtt-trazzm-homebrew-5e.homebrew-creatures.Actor.CGc0Rgg1V1knUeQu"});
 						}
 					},
 					spider: {
 						icon: '<img src = "modules/fvtt-trazzm-homebrew-5e/assets/monsters/giant-spider.webp" width="50" height="50"/>',
 						label: "<p>Giant Spider</p>",
 						callback: () => {
-							resolve({name: "Giant Spider", 
-							img: "modules/fvtt-trazzm-homebrew-5e/assets/monsters/giant-spider.webp"});
+							resolve({
+								name: "Giant Spider",
+								img: "modules/fvtt-trazzm-homebrew-5e/assets/monsters/giant-spider.webp",
+								transformActorId: "Compendium.fvtt-trazzm-homebrew-5e.homebrew-creatures.Actor.FdCL6zWkQCoglDjT"});
 						}
 					},
 					cancel: {
@@ -41,23 +42,23 @@ try {
 		});
 
 		let result = await dialog;
-		
 		if (result) {
-			const updates = {
-				token : {
-					name: result.name,
-					"texture.src": result.img,
-				}
+			let transformActor = await HomebrewMacros.getActorFromCompendium(result.transformActorId);
+
+			if (transformActor) {
+				const keepParameters = { keepPhysical:true, keepMental:true, keepSaves:true, keepSkills:true,
+					mergeSaves:true, mergeSkills:true, keepClass:true, keepFeats:true, keepSpells:true, keepItems:false,
+					keepBio:true, keepVision:true, keepSelf:true, keepAE:true, keepOriginAE:true, keepOtherOriginAE:true,
+					keepSpellAE:true, keepEquipmentAE:true, keepFeatAE:true, keepClassAE:true, keepBackgroundAE:true,
+					transformTokens:true };
+				return actor.transformInto(transformActor, keepParameters, {renderSheet:true});
 			}
-			
-			/* Mutate the actor */
-			await warpgate.mutate(actorToken.document, updates);
+			else {
+				return ui.notifications.error(`${optionName}: ${version}: - missing transform actor!`);
+			}
 		}
 	}
-	else if (args[0] === "off") {
-		await warpgate.revert(actorToken.document);
-	}
-	
+
 } catch (err) {
     console.error(`${optionName}: ${version}`, err);
 }

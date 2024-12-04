@@ -220,12 +220,56 @@
         "PLAYER": "OBSERVER",
         "ASSISTANT": "OWNER"
       }
+    },
+    {
+      "name": "homebrew-rise-of-the-drow",
+      "label": "Homebrew Rise of the Drow",
+      "path": "packs/homebrew-rise-of-the-drow",
+      "type": "Item",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "system": "dnd5e"
+    },
+    {
+      "name": "homebrew-ravenloft",
+      "label": "Homebrew Ravenloft",
+      "path": "packs/homebrew-ravenloft",
+      "type": "Item",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "system": "dnd5e"
+    },
+    {
+      "name": "homebrew-princes-of-the-apocalypse",
+      "label": "Homebrew Princes of the Apocalypse",
+      "path": "packs/homebrew-princes-of-the-apocalypse",
+      "type": "Item",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "system": "dnd5e"
+    },
+    {
+      "name": "homebrew-rime-of-the-frostmaiden",
+      "label": "Homebrew Rime of the Frostmaiden",
+      "path": "packs/homebrew-rime-of-the-frostmaiden",
+      "type": "Item",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "system": "dnd5e"
     }
   ],
   "compatibility": {
-    "minimum": "11",
-    "verified": "11",
-    "maximum": "11"
+    "minimum": "12",
+    "verified": "12",
+    "maximum": "12"
   },
   "relationships": {
     "requires": [
@@ -235,7 +279,7 @@
         "compatibility": {}
       },
       {
-        "id": "dfreds-convenient-effects",
+        "id": "ATL",
         "type": "module",
         "compatibility": {}
       },
@@ -250,22 +294,7 @@
         "compatibility": {}
       },
       {
-        "id": "warpgate",
-        "type": "module",
-        "compatibility": {}
-      },
-      {
-        "id": "autoanimations",
-        "type": "module",
-        "compatibility": {}
-      },
-      {
         "id": "effectmacro",
-        "type": "module",
-        "compatibility": {}
-      },
-      {
-        "id": "templatemacro",
         "type": "module",
         "compatibility": {}
       },
@@ -275,7 +304,32 @@
         "compatibility": {}
       },
       {
-        "id": "tokenmagic",
+        "id": "item-piles",
+        "type": "module",
+        "compatibility": {}
+      },
+      {
+        "id": "region-active-effects",
+        "type": "module",
+        "compatibility": {}
+      },
+      {
+        "id": "region-attacher",
+        "type": "module",
+        "compatibility": {}
+      },
+      {
+        "id": "token-attacher",
+        "type": "module",
+        "compatibility": {}
+      },
+      {
+        "id": "vision-5e",
+        "type": "module",
+        "compatibility": {}
+      },
+      {
+        "id": "portal-lib",
         "type": "module",
         "compatibility": {}
       }
@@ -285,7 +339,8 @@
         "id": "dnd5e",
         "type": "system",
         "compatibility": {
-          "minimum": "2.4.1"
+          "minimum": "3.3.0",
+          "maximum": "3.3.99"
         }
       }
     ]
@@ -296,7 +351,8 @@
   "scripts": [
     "module/HomebrewMacros.js",
     "module/HomebrewHelpers.js",
-    "module/MonsterMacros.js"
+    "module/MonsterMacros.js",
+    "module/HomebrewEffects.js"
   ],
   "flags": {
     "allowBugReporter": true

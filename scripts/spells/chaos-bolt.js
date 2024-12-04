@@ -7,7 +7,7 @@
 
 	At Higher Levels. When you cast this spell using a spell slot of 2nd level or higher, each target takes 1d6 extra damage of the type rolled for each slot level above 1st.
 */
-const version = "11.0";
+const version = "12.3.0";
 const optionName = "Chaos Bolt";
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
 const flagName = "chaos-bolt-flag";
@@ -28,8 +28,6 @@ try {
 	if (args[0].macroPass === "postDamageRoll") {
 		const targetToken = workflow.hitTargets.first();
 		if (targetToken) {
-			//const spellLevel = workflow.castData.castLevel;
-
 			// check the d8 damage dice to determine the damageType
 			let damageTerms = workflow.damageRoll.terms;
 			const firstRoll = damageTerms[0].results[0].result;
@@ -45,12 +43,12 @@ try {
 			}
 
 			// change damage type based on rolls
-			for (let i = 0; i < damageTerms.length; i++) {
-				if (damageTerms[i] instanceof Die) {
-					damageTerms[i].options.flavor = selectedElement.name;
+			const newDamageRoll = CONFIG.Dice.DamageRoll.fromTerms(workflow.damageRoll.terms);
+			for (let term of newDamageRoll.terms) {
+				if (term instanceof Die) {
+					term.options.flavor = selectedElement.name;
 				}
 			}
-			const newDamageRoll = CONFIG.Dice.DamageRoll.fromTerms(workflow.damageRoll.terms);
 			await workflow.setDamageRoll(newDamageRoll);
 
 			// ask for next target
@@ -103,11 +101,11 @@ try {
 						// cast on the next target
 						const nextTarget = canvas.tokens.get(lastTargetId);
 						if (nextTarget) {
-							let leapItem = duplicate(item);
+							let leapItem = foundry.utils.duplicate(item);
 							let feature = new CONFIG.Item.documentClass(leapItem, {'parent': workflow.actor});
 							let [config, options] = HomebrewHelpers.syntheticItemWorkflowOptions([nextTarget.document.uuid]);
 							await MidiQOL.completeItemUse(feature, config, options);
-							await warpgate.wait(250);
+							await HomebrewMacros.wait(250);
 						}
 					}
 				}
@@ -120,34 +118,31 @@ try {
 }
 
 async function pickElement(first, second) {
-	let buttons = [
-		{
-			label: `<p><img src=${first.image} width='30' height='30' style='border: 5px; vertical-align: middle;'></p><p>${first.name}</p>`,
-			value: first
-		},
-		{
-			label: `<p><img src=${second.image} width='30' height='30' style='border: 5px; vertical-align: middle;'></p><p>${second.name}</p>`,
-			value: second
-		}];
+	let content = `
+            <label><img src=${first.image} width='30' height='30' style='border: 5px; vertical-align: middle;'/><input type="radio" name="choice" value="${first.name}" checked />  ${first.name} </label>
+            <label><img src=${second.image} width='30' height='30' style='border: 5px; vertical-align: middle;'/><input type="radio" name="choice" value="${second.name}" checked />  ${second.name} </label>
+        `;
 
-	const menuOptions = {
-		title: `${optionName} - Bolt Damage Type`,
-		close: (resolve, ...args) => {
-			resolve(first);
+	let elementName = await foundry.applications.api.DialogV2.prompt({
+		content: content,
+		rejectClose: false,
+		ok: {
+			callback: (event, button, dialog) => {
+				return button.form.elements.choice.value;
+			}
 		},
-		options: {
-			width: '100px',
-			height: '100%',
+		window: {
+			title: `${optionName} - Bolt Damage Type`
+		},
+		position: {
+			width: 400
 		}
-	}
+	});
 
-	let choice = await warpgate.menu({buttons}, menuOptions);
-	let selectedButton = choice.buttons;
-	if (selectedButton) {
-		return selectedButton;
-	}
+	if (elementName === first.name)
+		return first;
 
-	return first;
+	return second;
 }
 
 async function pickNextTarget(leapTargets) {
@@ -166,7 +161,7 @@ async function pickNextTarget(leapTargets) {
 			options: "group1" });
 	});
 
-	let choice = await warpgate.menu( menuOptions,
+	let choice = await HomebrewHelpers.menu( menuOptions,
 		{ title: `${optionName} - Leap Target`, options: { height: "100%", width: "100%" } });
 
 	let targetButton = choice.buttons;

@@ -71,7 +71,7 @@ else {
 	let buttons = generatedMenu.map(([label,value]) => ({label,value}));
 	const title = `${optionName} - Which option for ${actor.name}?`;
 	
-	let selection = await warpgate.buttonDialog(
+	let selection = await HomebrewHelpers.buttonDialog(
 		{
 			buttons,
 			title,

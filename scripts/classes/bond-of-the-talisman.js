@@ -4,54 +4,16 @@
     using their action to teleport to you. The teleportation can be used a number of times equal to your proficiency bonus,
     and all expended uses are restored when you finish a long rest.
  */
-const version = "11.1";
+const version = "12.3.0";
 const optionName = "Bond of the Talisman";
 
 try {
     if (args[0].macroPass === "postActiveEffects") {
-        // find the target actor
-        
         const maxRange = item.system.range.value ?? 30;
-
-        // transport the caster
-        let position = await HomebrewMacros.warpgateCrosshairs(token, maxRange, item, token);
-        if (position) {
-            // check for token collision
-            const newCenter = canvas.grid.getSnappedPosition(position.x - token.width / 2, position.y - token.height / 2, 1);
-            if (HomebrewMacros.checkPosition(token, newCenter.x, newCenter.y)) {
-                ui.notifications.error(`${optionName} - can't teleport on top of another token`);
-                return false;
-            }
-
-            const portalScale = token.w / canvas.grid.size * 0.7;
-            new Sequence()
-                .effect()
-                .file("jb2a.misty_step.01.green")
-                .atLocation(token)
-                .scale(portalScale)
-                .fadeOut(200)
-                .wait(500)
-                .thenDo(() => {
-                    canvas.pan(position)
-                })
-                .animation()
-                .on(token)
-                .teleportTo(position, { relativeToCenter: true })
-                .fadeIn(200)
-                .effect()
-                .file("jb2a.misty_step.02.blue")
-                .atLocation({x: position.x, y: position.y})
-                .scale(portalScale)
-                .anchor(0.5,0.5)
-                .play();
-        }
-        else {
-            ui.notifications.error(`${optionName} - invalid teleport location`);
-            return false;
-        }
+        await HomebrewMacros.teleportToken(token, maxRange);
 
         // Ask which targets to try to charm
-        await wait(1000);
+        await HomebrewMacros.wait(1000);
         const potentialTargets = MidiQOL.findNearby(null, token, 10);
         if (potentialTargets.length === 0) {
             console.log(`${optionName} - no targets within 10 feet to charm`);
@@ -122,34 +84,6 @@ try {
             const saveDC = actor.system.attributes.spelldc;
             const saveFlavor = `${CONFIG.DND5E.abilities["wis"].label} DC${saveDC} ${optionName}`;
 
-            const charmedEffectData = {
-                label: "Charmed",
-                icon: "modules/dfreds-convenient-effects/images/charmed.svg",
-                origin: workflow.origin,
-                duration: {startTime: game.time.worldTime, seconds: 60},
-                changes: [
-                    {
-                        key: 'macro.CE',
-                        mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-                        value: "Charmed",
-                        priority: 20
-                    }
-                ],
-                flags: {
-                    dae: {
-                        selfTarget: false,
-                        stackable: "none",
-                        durationExpression: "",
-                        macroRepeat: "none",
-                        specialDuration: [
-                            "isDamaged", "isSave"
-                        ],
-                        transfer: false
-                    }
-                },
-                disabled: false
-            };
-
             for (let uuid of charmTargets.values()) {
                 let targetActor = MidiQOL.MQfromActorUuid(uuid);
                 if (targetActor) {
@@ -157,7 +91,7 @@ try {
                     await game.dice3d?.showForRoll(saveRoll);
 
                     if (saveRoll.total < saveDC) {
-                        await MidiQOL.socket().executeAsGM("createEffects", { actorUuid: uuid, effects: [charmedEffectData] });
+                        await HomebrewEffects.applyCharmedEffect(targetActor, item, ["isDamaged", "isSave"]);
                     }
                 }
             }
@@ -167,5 +101,3 @@ try {
 } catch (err) {
     console.error(`${optionName} ${version}`, err);
 }
-
-async function wait(ms) { return new Promise(resolve => { setTimeout(resolve, ms); });}

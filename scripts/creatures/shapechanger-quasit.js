@@ -1,11 +1,13 @@
-const version = "10.0.0";
+const version = "12.3.0";
 const optionName = "Shapechanger (Quasit)";
 
 try {
-	const lastArg = args[args.length - 1];
-	const actorToken = canvas.tokens.get(lastArg.tokenId);
-	
-	if (args[0] === "on") {
+	if (args[0].macroPass === "postActiveEffects") {
+		const {isPolymorphed} = actor.flags?.dnd5e;
+		if (isPolymorphed) {
+			return ui.notifications.error(`${optionName}: ${version}: - token is already polymorphed`);
+		}
+
 		// ask which form
 		let dialog = new Promise((resolve, reject) => {
 			new Dialog({
@@ -17,36 +19,42 @@ try {
 						icon: '<img src = "modules/fvtt-trazzm-homebrew-5e/assets/monsters/npc-Bat.webp" width="50" height="50"/>',
 						label: "<p>Bat</p>",
 						callback: () => {
-							resolve({name: "Bat Form (Quasit)", 
-							img: "modules/fvtt-trazzm-homebrew-5e/assets/monsters/npc-Bat.webp",
-							walk: 10,
-							climb: 0,
-							fly: 40,
-							swim: 0});
+							resolve({
+								name: "Bat",
+								transformActorId: "Compendium.fvtt-trazzm-homebrew-5e.homebrew-creatures.Actor.SABQ5fwTw2CgT7N1",
+								img: "modules/fvtt-trazzm-homebrew-5e/assets/monsters/npc-Bat.webp",
+								walk: 10,
+								climb: 0,
+								fly: 40,
+								swim: 0});
 						}
 					},
 					centipede: {
 						icon: '<img src = "modules/fvtt-trazzm-homebrew-5e/assets/monsters/giant-centipede.webp" width="50" height="50"/>',
 						label: "<p>Centipede</p>",
 						callback: () => {
-							resolve({name: "Centipede Form (Quasit)", 
-							img: "modules/fvtt-trazzm-homebrew-5e/assets/monsters/giant-centipede.webp",
-							walk: 40,
-							climb: 40,
-							fly: 0,
-							swim: 0});
+							resolve({
+								name: "Centipede",
+								transformActorId: "Compendium.fvtt-trazzm-homebrew-5e.homebrew-creatures.Actor.CdD0hG0a7z6Q6Al8",
+								img: "modules/fvtt-trazzm-homebrew-5e/assets/monsters/giant-centipede.webp",
+								walk: 40,
+								climb: 40,
+								fly: 0,
+								swim: 0});
 						}
 					},
 					toad: {
 						icon: '<img src = "modules/fvtt-trazzm-homebrew-5e/assets/monsters/giant-toad.jpg" width="50" height="50"/>',
 						label: "<p>Toad</p>",
 						callback: () => {
-							resolve({name: "Toad Form (Quasit)", 
-							img: "modules/fvtt-trazzm-homebrew-5e/assets/monsters/giant-toad.jpg",
-							walk: 40,
-							climb: 0,
-							fly: 0,
-							swim: 40});
+							resolve({
+								name: "Toad",
+								transformActorId: "Compendium.fvtt-trazzm-homebrew-5e.homebrew-creatures.Actor.N8UMHxLsdnk9dmAy",
+								img: "modules/fvtt-trazzm-homebrew-5e/assets/monsters/giant-toad.jpg",
+								walk: 40,
+								climb: 0,
+								fly: 0,
+								swim: 40});
 						}
 					},
 					cancel: {
@@ -61,36 +69,23 @@ try {
 		});
 
 		let result = await dialog;
-		
 		if (result) {
-			const updates = {
-				token : {
-					name: result.name,
-					"texture.src": result.img,
-				},
-				actor: {
-					name: result.name,
-					system: {
-						attributes: {
-							movement: {
-								walk: result.walk,
-								climb: result.climb,
-								fly: result.fly,
-								swim: result.swim
-							}
-						}
-					}
-				}
+			let transformActor = await HomebrewMacros.getActorFromCompendium(result.transformActorId);
+
+			if (transformActor) {
+				const keepParameters = { keepPhysical:true, keepMental:true, keepSaves:true, keepSkills:true,
+					mergeSaves:true, mergeSkills:true, keepClass:true, keepFeats:true, keepSpells:true, keepItems:false,
+					keepBio:true, keepVision:true, keepSelf:true, keepAE:true, keepOriginAE:true, keepOtherOriginAE:true,
+					keepSpellAE:true, keepEquipmentAE:true, keepFeatAE:true, keepClassAE:true, keepBackgroundAE:true,
+					transformTokens:true };
+				return actor.transformInto(transformActor, keepParameters, {renderSheet:true});
 			}
-			
-			/* Mutate the actor */
-			await warpgate.mutate(actorToken.document, updates);
+			else {
+				return ui.notifications.error(`${optionName}: ${version}: - missing transform actor!`);
+			}
 		}
 	}
-	else if (args[0] === "off") {
-		await warpgate.revert(actorToken.document);
-	}
-	
+
 } catch (err) {
     console.error(`${optionName}: ${version}`, err);
 }
