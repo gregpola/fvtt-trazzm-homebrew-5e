@@ -3,13 +3,13 @@
 	the target is Large or smaller, it must make a Strength saving throw against your DC of 8 + your proficiency bonus
 	+ your Strength modifier. On a failed save, you knock the target Prone.
  */
-const version = "12.3.0";
+const version = "12.3.1";
 const optionName = "Goring Charge";
 
 try {
 	let targetToken = workflow?.hitTargets?.first();
 
-	if ((args[0].macroPass === "DamageBonus") && targetToken) {
+	if ((args[0].macroPass === "postActiveEffects") && targetToken) {
 		// check the target's size, must be Large or smaller to knock prone
 		const tsize = targetToken.actor.system.traits.size;
 		if (["tiny","sm","med","lg"].includes(tsize)) {
@@ -22,6 +22,9 @@ try {
 				await HomebrewEffects.applyProneEffect(targetToken.actor, item);
 				ChatMessage.create({'content': `${token.name} knocks ${defender.name} prone!`});
 			}
+		}
+		else {
+			ui.notifications.warn(`${optionName}: ${version} - target is too big`);
 		}
 	}
 	else if (args[0].macroPass === "preItemRoll") {

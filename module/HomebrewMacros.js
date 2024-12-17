@@ -20,7 +20,8 @@ class HomebrewMacros {
     static async teleportToken(token, maxRange = 30, destination = undefined) {
         // sanity checks
         if (token && maxRange) {
-            const portalScale = token.w / canvas.grid.size * 0.7;
+            const tokenWidth = token.w ? token.w : token.width;
+            const portalScale = tokenWidth / canvas.grid.size * 0.7;
 
             if (destination) {
                 new Sequence()
@@ -47,9 +48,10 @@ class HomebrewMacros {
                 return destination;
 
             } else {
+                let texture = token.document ? token.document.texture.src : token.texture.src;
                 let position = await new Portal()
                     .color("#ff0000")
-                    .texture(token.document.texture.src)
+                    .texture(texture)
                     .origin(token)
                     .range(maxRange)
                     .pick();
@@ -565,5 +567,20 @@ class HomebrewMacros {
         }
 
         return undefined;
+    }
+
+    static async swapTokenPositions(tokenA, tokenB) {
+        const x = tokenA.center.x;
+        const y = tokenA.center.y;
+
+        await new Portal()
+            .origin(tokenA)
+            .setLocation({x: tokenB.center.x, y: tokenB.center.y})
+            .teleport();
+
+        await new Portal()
+            .origin(tokenB)
+            .setLocation({x: x, y: y})
+            .teleport();
     }
 }

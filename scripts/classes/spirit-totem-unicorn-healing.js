@@ -1,4 +1,4 @@
-const version = "12.3.0";
+const version = "12.3.1";
 
 if (args[0].macroPass === "DamageBonus") {
 	const druidLevel = actor.classes.druid?.system.levels ?? 0;
@@ -12,7 +12,7 @@ if (args[0].macroPass === "DamageBonus") {
 	// get the totem spirit
 	const summonData = actor.getFlag("fvtt-trazzm-homebrew-5e", "spirit-totem");
 	if (summonData) {
-		let spiritToken = game.canvas.tokens.get(summonData.tokenId);
+		const spiritToken = await fromUuid(summonData);
 		if (spiritToken) {
 			// ask which tokens in the aura to heal
 			const possibleTargets = MidiQOL.findNearby(null, spiritToken, 30);

@@ -51,3 +51,12 @@
 * Monster Features Updated: Added a generic charge action
 * Spells Updated: numerous fixes to component requirements
 * Rime of the Frostmaiden items 
+
+# 12.3.7
+* Class Features Updated: All Combat Maneuvers, Spirit Totem
+* Feats Updated: Heavy Armor Master
+* Items Added: Oil of Impact
+* Items updated: Arrows, Blowgun Needles, Blowguns, Bows, Chain Mails, Crossbow Bolts, Crossbows, Darts, Giant Slayer Weapons, Hand Crossbows, Light Hammers, Nets, Shields, Slings, Sling Bullets, Wand of Fireballs, Wand of Lightning Bolts, Wand of Magic Missiles, Wand of the War Mage, Warhammers
+* Racial Traits Updated: Goring Charge
+* Spells Updated: Magic Missile
+* Rime of the Frostmaiden items 

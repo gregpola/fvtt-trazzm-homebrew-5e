@@ -90,7 +90,7 @@ export class BarbarianFeatures {
                     for (let ally of allyIter) {
                         if (workflow.token === ally) continue;
 
-                        let rageEffect = HomebrewHelpers.findEffect(token.actor, "Rage");
+                        let rageEffect = HomebrewHelpers.findEffect(workflow.token.actor, "Rage");
                         let totemSpiritWolf = ally.actor.items.getName("Totem Spirit - Wolf");
 
                         if (rageEffect && totemSpiritWolf) {
@@ -107,7 +107,7 @@ export class BarbarianFeatures {
             if (nearbyEnemies.length > 0) {
                 const enemyIter = nearbyEnemies.values();
                 for (let enemy of enemyIter) {
-                    let rageEffect = HomebrewHelpers.findEffect(token.actor, "Rage");
+                    let rageEffect = HomebrewHelpers.findEffect(workflow.token.actor, "Rage");
                     let totemAttunementBear = enemy.actor.items.getName("Totemic Attunement - Bear");
                     if (rageEffect && totemAttunementBear) {
                         totemicBears.add(enemy.actor.uuid);
