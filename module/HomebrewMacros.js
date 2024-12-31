@@ -296,7 +296,7 @@ class HomebrewMacros {
         }
 
         // verify minimum distance
-        const tokenDistance = MidiQOL.computeDistance(chargerToken, targetToken, true);
+        const tokenDistance = MidiQOL.computeDistance(chargerToken, targetToken, {wallsBlock: true, includeCover: true});
         if (tokenDistance < minimumDistance) {
             ui.notifications.error(`${targetToken.name} is too close to charge`);
             return false;
@@ -582,5 +582,9 @@ class HomebrewMacros {
             .origin(tokenB)
             .setLocation({x: x, y: y})
             .teleport();
+    }
+
+    static async applyHeatedBody() {
+
     }
 }

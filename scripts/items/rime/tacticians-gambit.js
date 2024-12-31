@@ -1,9 +1,9 @@
-const version = "12.3.0";
+const version = "12.3.2";
 const optionName = "Tacticians Gambit";
 
 try {
     let targetToken = workflow.hitTargets.first();
-    if (args[0].macroPass === "DamageBonus" && targetToken) {
+    if (args[0].macroPass === "DamageBonus" && targetToken && item.name === 'Tactician\'s Gambit') {
         // make sure the actor has charges remaining
         let usesLeft = macroItem.system.uses?.value ?? 0;
         if (!usesLeft) {

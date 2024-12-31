@@ -1,4 +1,4 @@
-const version = "12.3.0";
+const version = "12.3.1";
 const optionName = "Handaxe of Mischief";
 const damageTypes = ['acid', 'cold', 'fire', 'force', 'lightning', 'poison'];
 const videoFiles = ['Flames_01_Regular_Green_200x200.webm',
@@ -11,7 +11,7 @@ const baseFilePath = "modules/fvtt-trazzm-homebrew-5e/assets/effects/";
 
 try {
     // make sure it's an attack with the axe
-    if (macroItem.name === 'Handaxe of Mischief') {
+    if (item.name === 'Handaxe of Mischief') {
         let targetToken = workflow.hitTargets.first();
         if (args[0].macroPass === "DamageBonus" && targetToken) {
             // add random damage type

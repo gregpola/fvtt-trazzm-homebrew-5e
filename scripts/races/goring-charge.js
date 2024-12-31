@@ -3,7 +3,7 @@
 	the target is Large or smaller, it must make a Strength saving throw against your DC of 8 + your proficiency bonus
 	+ your Strength modifier. On a failed save, you knock the target Prone.
  */
-const version = "12.3.1";
+const version = "12.3.2";
 const optionName = "Goring Charge";
 
 try {
@@ -20,7 +20,7 @@ try {
 			let saveRoll = await targetToken.actor.rollAbilitySave("str", {flavor: saveFlavor});
 			if (saveRoll.total < saveDC) {
 				await HomebrewEffects.applyProneEffect(targetToken.actor, item);
-				ChatMessage.create({'content': `${token.name} knocks ${defender.name} prone!`});
+				ChatMessage.create({'content': `${token.name} knocks ${targetToken.name} prone!`});
 			}
 		}
 		else {
