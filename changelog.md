@@ -65,3 +65,8 @@
 * Monsters Updated: Remorhaz
 * Racial Traits Updated: Goring Charge
 * Weapons Updated: Arrows, Dwarven Thrower, Handaxe of Mischief, Javelins, Tactician's Gambit, fixed weapon flags through 'H'
+
+# 12.3.9
+* General: Added a Foundry Tips journal entry which currently includes the character building recipe 
+* Maintenance: fixed remaining weapon flags, fixed common armor and shield flags
+* Spells Updated: Cloud of Daggers, Cloudkill, Moonbeam, Spike Growth

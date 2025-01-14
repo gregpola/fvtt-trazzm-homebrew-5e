@@ -1,40 +1,33 @@
-const version = "11.0"
+const version = "12.3.0"
 const optionName = "Cloudkill";
 const templateFlag = "cloudkill-template";
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
+const movedFlag = "moved-cloudkill-flag";
 
 try {
 	if (args[0].macroPass === "postActiveEffects") {
-		
-		// build the template macro
-		let templateDoc = canvas.scene.collections.templates.get(workflow.templateId);
-		if (!templateDoc) return;
-		
-		// store template id in actor to move it
-		await actor.setFlag(_flagGroup, templateFlag, workflow.templateId);
-
-		const spellLevel = workflow.castData.castLevel;
-		let spelldc = actor.system.attributes.spelldc;
-		let touchedTokens = await game.modules.get('templatemacro').api.findContained(templateDoc);
-		await templateDoc.setFlag('world', 'spell.cloudkill', {spellLevel, spelldc, touchedTokens});
-		await HomebrewMacros.cloudkillEffects(touchedTokens);
+		await HomebrewHelpers.storeSpellDataInRegion(workflow.templateId, token, workflow.castData.castLevel, templateFlag, 'spell.Cloudkill');
 	}
 	else if (args[0] === "each") {
-		const templateId = actor.getFlag(_flagGroup, templateFlag);
-		if (templateId) {
-			let templateDoc = canvas.scene.collections.templates.get(templateId);
-			if (templateDoc) {
-				let newCenter = getAllowedMoveLocation(token, templateDoc, 2);
-				if(!newCenter) {
-					return ui.notifications.error(`${optionName} - no room to move the template`);
+		if (HomebrewHelpers.isAvailableThisTurn(actor, movedFlag)) {
+			HomebrewHelpers.setUsedThisTurn(actor, movedFlag);
+
+			const templateId = actor.getFlag(_flagGroup, `${templateFlag}.templateId`);
+			if (templateId) {
+				let templateDoc = await fromUuid(templateId);
+				if (templateDoc) {
+					let newCenter = getAllowedMoveLocation(token, templateDoc, 2);
+					if (!newCenter) {
+						return ui.notifications.error(`${optionName} - no room to move the template`);
+					}
+					newCenter = canvas.grid.getSnappedPosition(newCenter.x, newCenter.y, 1);
+					await templateDoc.update({x: newCenter.x, y: newCenter.y});
 				}
-				newCenter = canvas.grid.getSnappedPosition(newCenter.x, newCenter.y, 1);
-				await templateDoc.update({x: newCenter.x, y: newCenter.y});
 			}
 		}
 	}
 	else if (args[0] === "off") {
-		// delete the effects
+		// delete the actor flag
 		const templateId = actor.getFlag(_flagGroup, templateFlag);
 		if (templateId) {
 			await actor.unsetFlag(_flagGroup, templateFlag);

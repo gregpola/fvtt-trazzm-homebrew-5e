@@ -958,4 +958,38 @@ class HomebrewHelpers {
 
         return duration;
     }
+
+    static async storeSpellDataInRegion(templateId, casterToken, castLevel, actorFlag, regionFlag) {
+        let templateDoc = canvas.scene.collections.templates.get(templateId);
+        if (templateDoc) {
+            const templateRegionId = templateDoc.flags['region-attacher']?.attachedRegion;
+            if (templateRegionId) {
+                const templateRegion = canvas.scene?.regions?.get(templateRegionId.substring(templateRegionId.lastIndexOf(".") + 1));
+                if (templateRegion) {
+                    // store the spell data in the region
+                    const spelldc = casterToken.actor.system.attributes.spelldc ?? 12;
+
+                    await templateRegion.setFlag('world', regionFlag, {
+                        castLevel: castLevel,
+                        saveDC: spelldc,
+                        sourceTokenId: casterToken.id
+                    });
+
+                    await casterToken.actor.setFlag("fvtt-trazzm-homebrew-5e", actorFlag, {templateId: templateDoc.uuid});
+                }
+                else {
+                    ui.notifications.error(`storeSpellDataInRegion() - unable to find the region`);
+                    console.error(`storeSpellDataInRegion() - unable to find the region`);
+                }
+            }
+            else {
+                ui.notifications.error(`storeSpellDataInRegion() - unable to find the region id`);
+                console.error(`storeSpellDataInRegion() - unable to find the region id`);
+            }
+        }
+        else {
+            ui.notifications.error(`storeSpellDataInRegion() - unable to find template by id: ${templateId}`);
+            console.error(`storeSpellDataInRegion() - unable to find template by id: ${templateId}`);
+        }
+    }
 }

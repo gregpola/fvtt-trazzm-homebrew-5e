@@ -1,13 +1,60 @@
-// initial entry damage macro
-let templateFlag = region.flags?.world?.spell?.Moonbeam;
-if (templateFlag) {
-    let sourceToken = canvas.tokens.get(templateFlag.sourceTokenId);
-    const item = sourceToken.actor.items.get(templateFlag.spellId);
-    const token = event.data.token;
-    let damageRoll = await new Roll(templateFlag.damageRoll).roll();
-    await game.dice3d?.showForRoll(damageRoll);
-    await new MidiQOL.DamageOnlyWorkflow(sourceToken.actor, sourceToken, damageRoll.total, 'radiant', [token], damageRoll, {itemData: item, itemCardId: 'new'});
+// damage macro
+const version = "12.3.0"
+const optionName = "Moonbeam Damage";
+const lastAppliedTimeFlag = "last-applied-moonbeam-flag";
+
+try {
+    const templateFlag = region.flags?.world?.spell?.Moonbeam;
+
+    if (templateFlag) {
+        const targetToken = event.data.token;
+
+        if (HomebrewHelpers.isAvailableThisTurn(targetToken.actor, lastAppliedTimeFlag)) {
+            const isDead = HomebrewHelpers.findEffect(targetToken.actor, "Dead");
+            if (!isDead) {
+                HomebrewHelpers.setUsedThisTurn(targetToken.actor, lastAppliedTimeFlag);
+
+                const sourceToken = canvas.tokens.get(templateFlag.sourceTokenId);
+                let damageItem = await HomebrewHelpers.getItemFromCompendium('fvtt-trazzm-homebrew-5e.homebrew-automation-items', 'Moonbeam Damage');
+                if (damageItem) {
+                    const damageRoll = templateFlag?.damageRoll ?? '2d10';
+                    const damageType = templateFlag?.damageType ?? 'radiant';
+                    const saveDC = templateFlag?.saveDC ?? '13';
+
+                    const itemData = foundry.utils.mergeObject(foundry.utils.duplicate(damageItem), {
+                        type: "spell",
+                        effects: [],
+                        flags: {
+                            "midi-qol": {
+                                noProvokeReaction: true, // no reactions triggered
+                                onUseMacroName: null //
+                            },
+                        },
+                        system: {
+                            damage: {parts: [[damageRoll, damageType]]},
+                            save: {dc: saveDC, ability: "con", scaling: "flat"}
+                        }
+                    }, {overwrite: true, inlace: true, insertKeys: true, insertValues: true});
+                    const item = new CONFIG.Item.documentClass(itemData, {parent: sourceToken.actor});
+
+                    let [config, options] = HomebrewHelpers.syntheticItemWorkflowOptions([targetToken.uuid]);
+                    await MidiQOL.completeItemUse(item, config, options);
+                    await HomebrewMacros.wait(250);
+                }
+                else {
+                    console.error(`${optionName}: ${version}`, 'Missing damage item');
+                }
+            }
+        }
+    }
+    else {
+        console.error(`${optionName}: ${version}`, 'Missing template flag');
+    }
 }
+catch (err) {
+    console.error(`${optionName}: ${version}`, err);
+}
+
 
 // moonbeam move
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
@@ -26,33 +73,4 @@ if (flag) {
             await template.update({x: position.x, y: position.y});
         }
     }
-}
-
-// Move In
-let effect = event.data.token?.actor?.effects?.find(eff => eff.name === 'Moonbeam Damage');
-if (!effect) {
-    let templateFlag = region.flags?.world?.spell?.Moonbeam;
-    if (templateFlag) {
-        let effectData = {
-            'name': 'Moonbeam Damage',
-            'icon': 'icons/magic/light/beam-rays-yellow-blue.webp',
-            'changes': [
-                {
-                    'key': 'flags.midi-qol.OverTime',
-                    'mode': 5,
-                    'value': 'turn=start, rollType=save, saveAbility=con, saveDamage=halfdamage, saveRemove=false, saveMagic=true, damageType=radiant, damageRoll=' + templateFlag.damageRoll + ', saveDC=' + templateFlag.saveDC,
-                    'priority': 20
-                }
-            ],
-            'origin': origin,
-        };
-
-        await MidiQOL.socket().executeAsGM("createEffects", {actorUuid: event.data.token.actor.uuid, effects: [effectData]});
-    }
-}
-
-// Move Out
-let effect = event.data.token?.actor?.effects?.find(eff => eff.name === 'Moonbeam Damage');
-if (effect) {
-    await MidiQOL.socket().executeAsGM("removeEffects", {actorUuid: event.data.token.actor.uuid, effects: [effect.id]});
 }

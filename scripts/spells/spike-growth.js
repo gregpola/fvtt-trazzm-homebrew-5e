@@ -7,70 +7,24 @@
 	the spell is cast must make a Wisdom (Perception) check against your spell save DC to recognize the terrain as
 	hazardous before entering it.
 */
-const version = "12.3.0";
+const version = "12.3.1";
 const optionName = "Spike Growth";
-
-// Move Into
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-let effect = event.data.token?.actor?.effects?.find(eff => eff.name === 'In Spike Growth');
-if (!effect) {
-	let effectData = {
-		'name': 'In Spike Growth',
-		'icon': 'icons/magic/nature/vines-thorned-curled-glow-green.webp',
-		'changes': [
-			{
-				'key': 'system.attributes.movement.walk',
-				'mode': CONST.ACTIVE_EFFECT_MODES.MULTIPLY,
-				'value': '0.5',
-				'priority': 20
-			}
-		],
-		'origin': origin,
-	};
-
-	await MidiQOL.socket().executeAsGM("createEffects", {actorUuid: event.data.token.actor.uuid, effects: [effectData]});
-}
-
-// TODO apply first 5 feet of damage? -- handled sort of when they move out
-
-// Move Out
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-let effect = event.data.token?.actor?.effects?.find(eff => eff.name === 'In Spike Growth');
-if (effect) {
-	await MidiQOL.socket().executeAsGM("removeEffects", {actorUuid: event.data.token.actor.uuid, effects: [effect.id]});
-}
-
 
 // Move within
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const startPoint = {x: event.data.segments[0].from.x, y: event.data.segments[0].from.y};
-const endPoint = {x: event.data.segments[0].to.x, y: event.data.segments[0].to.y};
-const distanceMoved = canvas.grid.measureDistance(startPoint, endPoint, {gridSpaces: true});
-const squaresMoved = distanceMoved / 5;
-if (squaresMoved > 0) {
-	for (let i = 0; i < squaresMoved; i++) {
-		let diceRoll = await new Roll('2d4').roll();
-		let diceTotal = diceRoll.total;
-		diceRoll.toMessage({
-			rollMode: 'roll',
-			speaker: {alias: name},
-			flavor: 'Spike Growth Damage'
-		});
-
-		await MidiQOL.applyTokenDamage(
-			[
-				{
-					damage: diceTotal,
-					type: 'piercing'
-				}
-			],
-			diceTotal,
-			new Set([event.data.token]),
-			null,
-			null
-		);
+console.log("Spike Growth -- " + event.user.name);
+if (!event.data.teleport) {
+	const startPoint = {x: event.data.segments[0].from.x, y: event.data.segments[0].from.y};
+	const endPoint = {x: event.data.segments[0].to.x, y: event.data.segments[0].to.y};
+	const distanceMoved = canvas.grid.measureDistance(startPoint, endPoint, {gridSpaces: true});
+	const squaresMoved = distanceMoved / 5;
+	if (squaresMoved > 0) {
+		const sourceToken = event.data.token;
+		const sourceActor = event.data.token.actor;
+		const diceCount = squaresMoved * 2;
+		const damageRoll = await new CONFIG.Dice.DamageRoll(`${diceCount}d4`, {}, {type: 'piercing'}).evaluate();
+		await new MidiQOL.DamageOnlyWorkflow(sourceActor, sourceToken, null, null, [sourceToken], damageRoll, {flavor: 'Pierced by spikes', itemCardId: "new"});
+		await new Sequence().effect().file("jb2a.swirling_leaves.loop.01.green").atLocation(sourceToken).scaleToObject(1.5).play();
 	}
 }
