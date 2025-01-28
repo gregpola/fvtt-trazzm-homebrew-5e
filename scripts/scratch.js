@@ -67,7 +67,7 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType))
 			browserUser = game.users?.activeGM;
 		}
 
-		const usePiercerReroll = await foundry.applications.api.DialogV2.confirm({
+		const useFeature = await foundry.applications.api.DialogV2.confirm({
 			window: {
 				title: `${optionName}`,
 			},

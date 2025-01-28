@@ -583,8 +583,4 @@ class HomebrewMacros {
             .setLocation({x: x, y: y})
             .teleport();
     }
-
-    static async applyHeatedBody() {
-
-    }
 }

@@ -1,13 +1,3 @@
-2025/01/14-07:08:24.033 2cafc Recovering log #2226
-2025/01/14-07:08:24.033 2cafc Level-0 table #2228: started
-2025/01/14-07:08:24.037 2cafc Level-0 table #2228: 13398 bytes OK
-2025/01/14-07:08:24.050 2cafc Delete type=0 #2226
-2025/01/14-07:08:24.051 2cafc Delete type=3 #2225
-2025/01/14-07:08:28.853 2b13c Compacting 1@0 + 2@1 files
-2025/01/14-07:08:28.881 2b13c Generated table #2230@0: 1444 keys, 2125970 bytes
-2025/01/14-07:08:28.968 2b13c Generated table #2231@0: 1421 keys, 1304808 bytes
-2025/01/14-07:08:28.968 2b13c Compacted 1@0 + 2@1 files => 3430778 bytes
-2025/01/14-07:08:28.972 2b13c compacted to: files[ 0 2 0 0 0 0 0 ]
-2025/01/14-07:08:28.972 2b13c Delete type=2 #2195
-2025/01/14-07:08:28.972 2b13c Delete type=2 #2196
-2025/01/14-07:08:28.972 2b13c Delete type=2 #2228
+2025/01/28-09:02:05.780 d68 Recovering log #2271
+2025/01/28-09:02:05.792 d68 Delete type=0 #2271
+2025/01/28-09:02:05.792 d68 Delete type=3 #2269

@@ -70,3 +70,10 @@
 * General: Added a Foundry Tips journal entry which currently includes the character building recipe 
 * Maintenance: fixed remaining weapon flags, fixed common armor and shield flags
 * Spells Updated: Cloud of Daggers, Cloudkill, Moonbeam, Spike Growth
+
+# 12.3.10
+* Class Features Updated: Arcane Recovery, Blessed Strikes, Divine Strike, Gathered Swarm, Harness Divine Power
+* Feats Updated: Lucky, Resilient (Constitution)
+* Monsters Updated: Drider
+* Spells Updated: Bane, Faerie Fire, Zephyr Strike
+* Subclasses Updated: Tempest Domain

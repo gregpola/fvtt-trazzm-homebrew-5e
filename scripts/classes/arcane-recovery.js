@@ -10,115 +10,135 @@
 	spell slots. You can recover either a 2nd-level spell slot or two 1st-level spell slots.
 	
 	*/
-
-const version = "10.0.0";
+const version = "12.3.0";
 const optionName = "Arcane Recovery";
-const lastArg = args[args.length - 1];
+const _flagGroup = "fvtt-trazzm-homebrew-5e";
+const flagName = "arcane-recovery-data";
 
 try {
-
 	if (args[0].macroPass === "preItemRoll") {
-		let actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
+		await actor.unsetFlag(_flagGroup, flagName);
 
-		const spells = duplicate(actor.system.spells);
-		if (!spells) {
-			ui.notifications.error(`${optionName} - character has no spells`);
-			return false;
-		}
-		
-		// How many slot points an be recovered
 		const wizardLevel = actor.classes?.wizard?.system?.levels ?? 0;
-		if (wizardLevel === 0){
+		if (wizardLevel === 0) {
 			ui.notifications.error(`${optionName} - character is not a Wizard`);
 			return false;
 		}
-		
-		const recoveryPoints = Math.ceil(wizardLevel / 2);
-		const maxLevel = Math.min(6, recoveryPoints);		
-		
-		// build the checkbox content
-		// loop through each spell level, building a row for each
-		let rows = "";
-		for(let [key, {value, max}] of Object.entries(spells)){
-			const level = Number(key.at(-1));
-			if ((level <= maxLevel) && (value < max)) {
-				let row = `
-					<div class="flexrow">
-						<label>${CONFIG.DND5E.spellLevels[key.at(-1)]}</label>`;
-				for (let i=value; i < max; i++) {
-					row += `<input type="checkbox" style="margin-right:10px;"/>`;
-				}
-				row += `</div>`;
-				rows += row;
+
+		// check for expended spell slots
+		let proceed = false;
+		for (let [key, {level, value, max}] of Object.entries(actor.system.spells)){
+			if (level <= 6 && value < max) {
+				proceed = true;
 			}
 		}
-		
-		// build the dialog content
-		let content = `
-		  <form>
-			<div class="flexcol">
-				<div class="flexrow" style="margin-bottom: 10px;"><label>You can recover ${recoveryPoints} slot levels</label></div>
-				<div id="slotRows" class="flexcol"style="margin-bottom: 10px;">
-					${rows}
-				</div>
-			</div>
-		  </form>
-		`;
-		
-		let dialog = new Promise((resolve, reject) => {
-			new Dialog({
-				title: "Pick which slots to recover",
-				content,
-				buttons:
-				{
-					Ok:
-					{
-						label: `Ok`,
-						callback: async (html) => {
-							// count the cost of the selections
-							let recoveredData = new Set();
-							let spent = 0;
-							var grid = document.getElementById("slotRows");
-							var checkBoxes = grid.getElementsByTagName("INPUT");
-							for (var i = 0; i < checkBoxes.length; i++) {
-								if (checkBoxes[i].checked) {
-									var row = checkBoxes[i].parentNode;
-									const l = checkBoxes[i].parentNode.firstElementChild.innerText.charAt(0);
-									recoveredData.add(l);
-									spent += Number(l);
-								}
-							}
-							
-							if (!spent) {
-								resolve(false);
-							}
-							else if (spent > recoveryPoints) {
-								ui.notifications.error(`${optionName} - too many slot levels selected`);
-								resolve(false);
-							}
-							else {
-								// recover the slots
-								for (let slot of recoveredData) {
-									await actor.update({[`system.spells.spell${slot}.value`]: getProperty(actor, `system.spells.spell${slot}.value`) + 1});
-								}
-								await ChatMessage.create({ content: `${actor.name} recovered ${spent} spell slot levels` });
-							}
-							resolve(true);
-						}
-					},
-					Cancel:
-					{
-						label: `Cancel`,
-						callback: () => { resolve(false) }
-					}
-				}
-			}).render(true);
-		});
-		let useFeature = await dialog;
-		return(useFeature);
-		
+
+		if (proceed) {
+			let recoveryData = await getRecoveryChoices(actor);
+			if (Array.isArray(recoveryData)) {
+				await actor.setFlag(_flagGroup, flagName, recoveryData);
+				return true;
+			}
+		}
+		else {
+			ui.notifications.error(`${optionName} - no missing eligible spell slots`);
+		}
+
+		return false;
+
+	}
+	else if (args[0].macroPass === "postActiveEffects") {
+		let recoveryData = actor.getFlag(_flagGroup, flagName);
+		if (Array.isArray(recoveryData)) {
+			// recover the slots
+			for (let rowData of recoveryData) {
+				let key = 'system.spells.' + rowData.slot + '.value';
+				let currValue = foundry.utils.getProperty(actor, key);
+				await actor.update({[key]: currValue + rowData.count});
+			}
+
+			await ChatMessage.create({content: `${actor.name} recovered spell slots`});
+		}
 	}
 	
 } catch (err) {
     console.error(`${optionName} ${version}`, err);
+}
+
+async function getRecoveryChoices(actor) {
+	// How many slot points can be recovered
+	const wizardLevel = actor.classes?.wizard?.system?.levels ?? 0;
+	const recoveryPoints = Math.ceil(wizardLevel / 2);
+	const maxLevel = Math.min(6, recoveryPoints);
+
+	const rollData = foundry.utils.duplicate(actor.getRollData());
+	const spells = rollData.spells;
+
+	// build the checkbox content
+	// loop through each spell level, building a row for each
+	let rows = "";
+
+	for (let [key, {level, value, max}] of Object.entries(spells)){
+		if (key.startsWith('spell') && level <= maxLevel && value < max && level <= recoveryPoints) {
+			let rowOptions = '';
+			for (let c= 0; c <= max && c <= (max - value) && (c * level <= recoveryPoints); c++ ) {
+				rowOptions += `<option value="${c}">${c}</option>`;
+			}
+
+			let row = `<div class="flexrow"><label>${CONFIG.DND5E.spellLevels[level]}</label>`;
+			row += `<select id="${key}">${rowOptions}</select>`;
+			row += `</div>`;
+			rows += row;
+		}
+	}
+
+	// build the dialog content
+	let content = `
+		  <form>
+			<div class="flexcol">
+				<div class="flexrow" style="margin-bottom: 10px;"><label>Select the spell slots to recover. You can recover ${recoveryPoints} spell levels</label></div>
+				<div id="slotRows" class="flexcol"style="margin-bottom: 10px;">
+					${rows}
+				</div>
+			</div>
+		  </form>`;
+
+	let result = await foundry.applications.api.DialogV2.prompt({
+		content: content,
+		rejectClose: false,
+		ok: {
+			callback: (event, button, dialog) => {
+				// count the cost of the selections
+				let recoveredData = [];
+				let spent = 0;
+				var slots = document.getElementById("slotRows");
+				var rowOptions = slots.getElementsByTagName("SELECT");
+				for (var i = 0; i < rowOptions.length; i++) {
+					if (rowOptions[i].value > 0) {
+						let rowId = rowOptions[i].id;
+						let lvl = Number(rowId[rowId.length - 1]);
+						recoveredData.push({slot: rowId, count: rowOptions[i].value});
+						spent += (rowOptions[i].value * lvl);
+					}
+				}
+
+				if (spent > recoveryPoints) {
+					ui.notifications.error(`${optionName} - too many spell levels selected`);
+					return undefined;
+				} else if (spent) {
+					return recoveredData;
+				}
+
+				return undefined;
+			}
+		},
+		window: {
+			title: `${optionName}`,
+		},
+		position: {
+			width: 500
+		}
+	});
+
+	return result;
 }

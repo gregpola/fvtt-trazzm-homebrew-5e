@@ -5,56 +5,44 @@
     deals an extra 1d8 force damage on a hit. Whether you hit or miss, your walking speed increases by 30 feet until the
     end of that turn.
  */
-const version = "12.3.0";
+const version = "12.3.1";
 const optionName = "Zephyr Strike";
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
 const flagName = "zephyr-strike-used";
-let used = actor.getFlag(_flagGroup, flagName);
 
 try {
     if (args[0].macroPass === "postActiveEffects") {
         await actor.unsetFlag(_flagGroup, flagName);
     }
     else if (args[0].macroPass === "preAttackRoll") {
-        if (workflow.item.type === "weapon" && !isActive() && !used) {
+        if (workflow.item.type === "weapon" && !isActive() && isAvailable()) {
             // ask for damage bonus use
             const useFeature = await foundry.applications.api.DialogV2.confirm({
                 window: {
                     title: `${optionName}`,
                 },
-                content: `<p>Do you want to use Zephyr Strike Advantage and Extra Dice?</p>`,
+                content: '<p>Apply Zephyr Strike advantage and damage to this attack?</p><sub>(also gain 30 extra feet of movement this turn)</sub>',
                 rejectClose: false,
                 modal: true
             });
 
             if (useFeature) {
-                let allEffects = Array.from(actor.allApplicableEffects());
-                let effect = allEffects.find(e => e.name === 'Zephyr Strike Movement');
-                if (effect) {
-                    await effect.update({"disabled" : false});
-                }
-
+                // system.bonuses.weapon.damage
+                await applyDamageBonusEffect(actor);
+                await applyMovementEffect(actor);
                 await actor.setFlag(_flagGroup, flagName, actor.uuid);
                 workflow.advantage = true;
             }
 		}
 	}
-	else if (args[0].macroPass === "DamageBonus") {
-        if (isActive()) {
-            // Use same roll options as the one from the damageRoll
-            const dmgOptions = workflow.damageRoll?.options ? duplicate(workflow.damageRoll.options) : {};
-            dmgOptions.critical = workflow.isCritical;
-            delete dmgOptions.configured;
-            delete dmgOptions.flavor;
-            delete dmgOptions.criticalBonusDice;
-            // Construct a DamageRoll to compute critical damage using the appropriate defined method and use the resulting formula
-            const damageBonusResult = new CONFIG.Dice.DamageRoll("1d8[force]", workflow.rollData, dmgOptions);
-            return {damageRoll: damageBonusResult.formula, flavor: "Zephyr Strike Damage"};
-        }
-	}
 
 } catch (err) {
     console.error(`${optionName}: ${version}`, err);
+}
+
+function isAvailable() {
+    const used = actor.getFlag(_flagGroup, flagName);
+    return !used;
 }
 
 function isActive() {
@@ -64,4 +52,48 @@ function isActive() {
     }
 
     return false;
+}
+
+async function applyDamageBonusEffect(actor) {
+    const effectData = {
+        name: 'Zephyr Strike damage bonus',
+        icon: "icons/skills/melee/maneuver-sword-katana-yellow.webp",
+        origin: actor.uuid,
+        transfer: false,
+        disabled: false,
+        duration: {rounds: 1},
+        flags: { dae: { specialDuration: ["1Attack"] } },
+        changes: [
+            {
+                key: 'system.bonuses.weapon.damage',
+                mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                value: '1d8[force]',
+                priority: 20
+            }
+        ]
+    }
+
+    return await MidiQOL.socket().executeAsGM("createEffects", { actorUuid: actor.uuid, effects: [effectData] });
+}
+
+async function applyMovementEffect(actor) {
+    const effectData = {
+        name: 'Zephyr Strike movement bonus',
+        icon: "icons/skills/melee/maneuver-sword-katana-yellow.webp",
+        origin: actor.uuid,
+        transfer: false,
+        disabled: false,
+        duration: {rounds: 1},
+        flags: { dae: { specialDuration: ["turnStartSource"] } },
+        changes: [
+            {
+                key: 'system.attributes.movement.walk',
+                mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                value: '30',
+                priority: 20
+            }
+        ]
+    }
+
+    return await MidiQOL.socket().executeAsGM("createEffects", { actorUuid: actor.uuid, effects: [effectData] });
 }
