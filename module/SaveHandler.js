@@ -1,4 +1,5 @@
 const _elementalResistanceTypes = new Set(["acid", "cold", "fire", "lightning", "thunder"]);
+const _coronaOfLightTypes = new Set(["fire", "radiant"]);
 
 let conditionResilience = {
     'name': 'Condition Resilience',
@@ -118,6 +119,7 @@ export class SaveHandler {
             // get all the conditions
             let itemConditions = new Set();
             let appliesToElementalResistance = false;
+            let appliesToCoronaOfLight = false;
 
             // first try effects
             if (workflow.item.effects?.size) {
@@ -145,6 +147,10 @@ export class SaveHandler {
 
                     if (_elementalResistanceTypes.has(damageType)) {
                         appliesToElementalResistance = true;
+                    }
+
+                    if (_coronaOfLightTypes.has(damageType)) {
+                        appliesToCoronaOfLight = true;
                     }
                 }
             }
@@ -216,6 +222,16 @@ export class SaveHandler {
                             await SaveHandler.wait(100);
                         }
                     }
+                }
+
+                // Check for Corona of Light
+                let coronaOfLight = HomebrewHelpers.findEffect(tokenDoc.document.actor, 'Corona of Light - Disadvantage (In Aura)');
+                if (coronaOfLight && appliesToCoronaOfLight) {
+                    await MidiQOL.socket().executeAsGM('createEffects', {
+                        'actorUuid': tokenDoc.document.actor.uuid,
+                        'effects': [conditionSensitivity]
+                    });
+                    await SaveHandler.wait(100);
                 }
 
                 if (hasResilience) {

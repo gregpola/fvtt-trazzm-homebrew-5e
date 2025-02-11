@@ -302,6 +302,15 @@ class HomebrewHelpers {
         }
     };
 
+    static findEffectStartsWith(actor, name, origin = undefined) {
+        if (origin) {
+            return actor.getRollData().effects.find(eff => eff.name.startsWith(name) && eff.origin === origin);
+        }
+        else {
+            return actor.getRollData().effects.find(eff => eff.name.startsWith(name));
+        }
+    };
+
     static async updateEffect(effect, updates) {
         if (game.user.isGM) {
             await effect.update(updates);

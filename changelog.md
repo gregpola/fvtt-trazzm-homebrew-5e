@@ -77,3 +77,10 @@
 * Monsters Updated: Drider
 * Spells Updated: Bane, Faerie Fire, Zephyr Strike
 * Subclasses Updated: Tempest Domain
+
+# 12.3.11
+* Class Features Updated: Cleansing Touch, Improved Critical, Remarkable Athlete, Superior Critical
+* Monsters Updated: Wolves, Yetis
+* Races Updated: Aasimar
+* Racial Traits Updated: Astral Knowledge
+* Subclasses Updated: Light Domain

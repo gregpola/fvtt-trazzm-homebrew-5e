@@ -7,8 +7,7 @@ const optionName = "Precision";
 try {
 	if (args[0].macroPass === "postActiveEffects") {
 	}
-}
-catch (err) {
+} catch (err) {
 	console.error(`${optionName}: ${version}`, err);
 }
 
@@ -32,6 +31,8 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType))
 		const abilityBonus = actor.system.attributes.spellmod;
 		const spellLevel = workflow.castData.castLevel;
 		const abilityBonus = Math.max(rollingActor.system.abilities.str.mod, rollingActor.system.abilities.dex.mod);
+		max(1, @abilities.wis.mod)
+		max(1, @abilities.cha.mod)
 
 		flags.midi - qol.neverTarget
 
@@ -138,17 +139,16 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType))
 
 		if (args[0] === "on") {
 			console.log(`${optionName}: ON`);
-		}
-		else if (args[0] === "off") {
+		} else if (args[0] === "off") {
 			console.log(`${optionName}: OFF`);
-		}
-		else if (args[0] === "each") {
+		} else if (args[0] === "each") {
 			console.log(`${optionName}: EACH`);
 		}
 
 
 // Overtime setup to remove a condition on save
-		turn=start, rollType=save, saveAbility=con, saveDamage=halfdamage, saveRemove=false, saveMagic=true, damageType=radiant, damageRoll=(@spellLevel)d10,saveDC=@attributes.spelldc
+		turn = start, rollType = save, saveAbility = con, saveDamage = halfdamage, saveRemove = false, saveMagic = true, damageType = radiant, damageRoll = (@spellLevel)
+		d10, saveDC = @attributes.spelldc
 
 		turn = end, saveAbility = wis, saveDC = 19, label = Frightened
 		turn = end, saveAbility = wis, saveDC = 19, label = Stunned
@@ -180,16 +180,8 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType))
 
 			return;
 		}
-		const data = {
-			request: 'save',
-			targetUuid: targetToken.document.uuid,
-			ability: 'str',
-			options: {
-				skipDialogue: true,
-				saveDC,
-			},
-		};
-		const save = await MidiQOL.socket().executeAsUser('rollAbility', userID, data);
-		if (save.total < save.options.targetValue) {
-//do the deed
-		}
+
+<section className="simple-block">
+	<img style="margin: 0px 15px 15px 0px; border: 0px; float: right"
+		 src="modules/fvtt-trazzm-homebrew-5e/assets/races/race-aarakocra.webp" width="420" height="509"/>
+</section>
