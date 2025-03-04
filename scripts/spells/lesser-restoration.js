@@ -1,7 +1,7 @@
 /*
 	You touch a creature and can end either one disease or one condition afflicting it. The condition can be Blinded, Deafened, Paralyzed, or Poisoned.
 */
-const version = "12.3.1";
+const version = "12.3.2";
 const optionName = "Lesser Restoration";
 const condition_list = ["Blinded", "Deafened", "Paralyzed", "Diseased", "Poisoned"];
 
@@ -46,7 +46,7 @@ try {
 					effects: [removedCondition.id]
 				});
 
-				let chatContent = `<div class="midi-qol-nobox"><div class="midi-qol-flex-container"><div>Cures ${removedCondition}:</div><div class="midi-qol-target-npc midi-qol-target-name" id="${targetToken.id}"> ${targetToken.actor.name}</div><div><img src="${targetToken.document.texture.src}" width="30" height="30" style="border:0px"></img></div></div></div>`;
+				let chatContent = `<div class="midi-qol-nobox"><div class="midi-qol-flex-container"><div>Cures ${removedCondition.name}:</div><div class="midi-qol-target-npc midi-qol-target-name" id="${targetToken.id}"> ${targetToken.actor.name}</div><div><img src="${targetToken.document.texture.src}" width="30" height="30" style="border:0px"></img></div></div></div>`;
 				ChatMessage.create({
 					content: chatContent,
 					speaker: ChatMessage.getSpeaker({actor: actor})

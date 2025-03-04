@@ -34,7 +34,7 @@ class HomebrewEffects {
             for (let effect of actor.getRollData().effects) {
                 if (!effect.flags.dae.autoCreated) {
                     for (let cond of conditions) {
-                        if ((effect.name === cond) || effect.statuses.has(cond)) {
+                        if ((effect.name.toLowerCase() === cond.toLowerCase()) || effect.statuses.has(cond.toLowerCase())) {
                             results.push(effect);
                         }
                     }
@@ -1435,6 +1435,84 @@ class HomebrewEffects {
         }
 
         return undefined;
+    }
+
+    static async resizeActor(actor, size, effectName, originUuid) {
+        // make sure there is a change
+        const currentSize = actor.system.traits?.size ?? undefined;
+        if (currentSize !== size) {
+            if (currentSize) {
+                const sizeData = CONFIG.DND5E.actorSizes[size];
+                if (sizeData) {
+                    const tokenSize = sizeData.token ?? 1;
+
+                    let effectData = {
+                        name: effectName,
+                        icon: 'icons/magic/movement/abstract-ribbons-red-orange.webp',
+                        changes: [
+                            {
+                                key: 'system.traits.size',
+                                mode: CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
+                                value: `${size}`,
+                                priority: 22
+                            },
+                            {
+                                key: 'ATL.width',
+                                mode: CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
+                                value: `${tokenSize}`,
+                                priority: 23
+                            },
+                            {
+                                key: 'ATL.height',
+                                mode: CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
+                                value: `${tokenSize}`,
+                                priority: 24
+                            }
+                        ],
+                        origin: originUuid,
+                        disabled: false
+                    };
+
+                    return await MidiQOL.socket().executeAsGM("createEffects", {actorUuid: actor.uuid, effects: [effectData]});
+                }
+            }
+            else {
+                console.error(`resizeActor() called for ${actor.name} lacking a size attribute`);
+            }
+        }
+        else {
+            console.error(`resizeActor() called for ${actor.name} with same size: ${size}`);
+        }
+    }
+
+    static async enchantItem(item, effectData, {effects = [], items = [], concentrationItem, parentEntity} = {}) {
+        foundry.utils.setProperty(effectData, 'type', 'enchantment');
+        effectData.transfer = false;
+        foundry.utils.setProperty(effectData, 'flags.dnd5e.enchantment', {
+            level: {
+                min: null,
+                max: null
+            },
+            riders: {
+                effect: effects,
+                item: items
+            }
+        });
+
+        let effectList = await item.createEmbeddedDocuments('ActiveEffect', [effectData]);
+        if (effectList && effectList.length > 0) {
+            const enchantEffect = effects[0];
+            await HomebrewEffects.addDependent(parentEntity, enchantEffect);
+        }
+    }
+
+    static async addDependent(entity, dependent) {
+        let hasPermission = game.user.testUserPermission(entity, "OWNER");
+        if (hasPermission) {
+            await entity.addDependent(dependent);
+        } else {
+            await MidiQOL.socket().executeAsGM('addDependent', {concentrationEffectUuid: entity.uuid, dependentUuid: dependent.uuid});
+        }
     }
 
 }

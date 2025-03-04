@@ -377,6 +377,24 @@ class HomebrewHelpers {
         return spellMod;
     };
 
+    static naturalReach(actor) {
+        // 'flags.midi-qol.range.mwak'
+        let reach = 5;
+        if (actor) {
+            for (let effect of actor.getRollData().effects) {
+                const reachChange = effect.changes.find(change => change.key === 'flags.midi-qol.range.mwak');
+                if (reachChange) {
+                    if (reachChange.mode === CONST.ACTIVE_EFFECT_MODES.ADD) {
+                        var value = Number(reachChange.value);
+                        reach += value;
+                    }
+                }
+            }
+        }
+
+        return reach;
+    }
+
     static raceOrType(actor) {
         return actor.type === "npc" ? actor.system.details?.type?.value : actor.system.details?.race;
     };
@@ -437,7 +455,7 @@ class HomebrewHelpers {
                 'targetUuids': targets,
                 'configureDialog': false,
                 'workflowOptions': {
-                    'autoRollDamage': 'always',
+                    'autoRollDamage': 'onHit',
                     'autoFastDamage': true
                 }
             }

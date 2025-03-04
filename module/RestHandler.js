@@ -1,4 +1,4 @@
-const VERSION = "11.0";
+const VERSION = "12.3.0";
 
 export class RestHandler {
 
@@ -8,7 +8,8 @@ export class RestHandler {
     }
 
     static hooks() {
-        Hooks.on("dnd5e.restCompleted", (actor, result) => {
+        Hooks.on("dnd5e.restCompleted", (actor, result, config) => {
+            //console.log(result);
         });
     }
 

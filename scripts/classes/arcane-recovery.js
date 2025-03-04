@@ -97,7 +97,7 @@ async function getRecoveryChoices(actor) {
 		  <form>
 			<div class="flexcol">
 				<div class="flexrow" style="margin-bottom: 10px;"><label>Select the spell slots to recover. You can recover ${recoveryPoints} spell levels</label></div>
-				<div id="slotRows" class="flexcol"style="margin-bottom: 10px;">
+				<div id="slotRows" class="flexcol" style="margin-bottom: 10px;">
 					${rows}
 				</div>
 			</div>

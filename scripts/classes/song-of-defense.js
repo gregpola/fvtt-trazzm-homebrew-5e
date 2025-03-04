@@ -1,5 +1,6 @@
 /*
-	You can direct your magic to absorb damage while your Bladesong is active. When you take damage, you can use your reaction to expend one spell slot and reduce that damage to you by an amount equal to five times the spell slot’s level.
+	You can direct your magic to absorb damage while your Bladesong is active. When you take damage, you can use your
+	reaction to expend one spell slot and reduce that damage to you by an amount equal to five times the spell slot’s level.
 */
 const version = "10.0.0";
 const optionName = "Song of Defense";

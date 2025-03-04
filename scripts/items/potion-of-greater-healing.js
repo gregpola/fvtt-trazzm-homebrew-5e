@@ -1,93 +1,59 @@
-const version = "10.0";
+const version = "12.3.0";
 const optionName = "Potion of Greater Healing";
+const healingType = "healing";
 
 try {
 	if (args[0].macroPass === "preambleComplete") {
-		if(args[0].targets.length === 0) 
-			return ui.notifications.warn(`Please select a target.`);
-		
-		let workflow = MidiQOL.Workflow.getWorkflow(args[0].uuid);
-		let actor = workflow?.actor;
-		let target = args[0].hitTargets[0];
-		let tactor = target?.actor;
-		const token = await canvas.tokens.get(args[0].tokenId);
-		const healingType = "healing";
+		const targetToken = workflow.targets.first();
+		const selfTarget = (token === targetToken);
 
-		// ask which optional house-rule they are using
-		// self target
-		if (actor === tactor) {
-			new Dialog({
-				// localize this text
-				title: `${optionName}`,
-				content: `<p>Which potion usage option are you using?</p>`,
-				buttons: {
-					one: {
-						label: "<p>Self</p><p>Bonus Action</p><p>(Normal)</p>",
-						callback: async (html) => {
-							let healDamage = new Roll(`4d4+4`).evaluate({ async: false });
-							await new MidiQOL.DamageOnlyWorkflow(tactor, token, healDamage.total, healingType, [target], healDamage, { flavor: `(${CONFIG.DND5E.healingTypes[healingType]})`, itemCardId: args[0].itemCardId, useOther: false });
-						}
-					},
-					two: {
-						label: "<p>Self</p>Action</p><p>(Max)</p>",
-						callback: async (html) => {
-							let healDamage = new Roll(`20`).evaluate({ async: false });
-							await new MidiQOL.DamageOnlyWorkflow(tactor, token, healDamage.total, healingType, [target], healDamage, { flavor: `(${CONFIG.DND5E.healingTypes[healingType]})`, itemCardId: args[0].itemCardId, useOther: false });
-						}
-					},
-					three: {
-						label: "<p>Self</p><p>During Rest</p><p>(Max + Con)</p>",
-						callback: async (html) => {
-							const conMod = actor.system.abilities.con.mod;
-							let healDamage = new Roll(`20+${conMod}`).evaluate({ async: false });
-							await new MidiQOL.DamageOnlyWorkflow(tactor, token, healDamage.total, healingType, [target], healDamage, { flavor: `(${CONFIG.DND5E.healingTypes[healingType]})`, itemCardId: args[0].itemCardId, useOther: false });
-						}
-					},
-					cancel: {
-						icon: '<p> </p><img src = "icons/skills/melee/weapons-crossed-swords-yellow.webp" width="50" height="50"></>',
-						label: "<p>Cancel</p>",
-						callback: () => { return; }
-					}
-				},
-				default: "one"
-			}).render(true);
-			
+		let content = '<p>Which potion usage option are you using?</p>';
+
+		if (selfTarget) {
+			content += '<label><input type="radio" name="choice" value="self-bonus" checked style="margin-right: 10px; margin-bottom: 10px;" />Bonus Action (normal)</label>';
+			content += '<label><input type="radio" name="choice" value="self-action" style="margin-right: 10px; margin-bottom: 10px;" />Action (max)</label>';
+			content += '<label><input type="radio" name="choice" value="self-rest" style="margin-right: 10px; margin-bottom: 10px;" />During Rest (max + con)</label>';
 		}
 		else {
-		// other target
-			new Dialog({
-				// localize this text
-				title: `${optionName}`,
-				content: `<p>Which potion feeding option are you using?</p>`,
-				buttons: {
-					one: {
-						label: "<p>Other</p>Action</p><p>(Normal)</p>",
-						callback: async (html) => {
-							let healDamage = new Roll(`4d4+4`).evaluate({ async: false });
-							await new MidiQOL.DamageOnlyWorkflow(tactor, token, healDamage.total, healingType, [target], healDamage, { flavor: `(${CONFIG.DND5E.healingTypes[healingType]})`, itemCardId: args[0].itemCardId, useOther: false });
-						}
-					},
-					two: {
-						label: "<p>Other</p>During Rest</p><p>(Max + Con)</p>",
-						callback: async (html) => {
-							const conMod = tactor.system.abilities.con.mod;
-							let healDamage = new Roll(`20+${conMod}`).evaluate({ async: false });
-							await new MidiQOL.DamageOnlyWorkflow(tactor, token, healDamage.total, healingType, [target], healDamage, { flavor: `(${CONFIG.DND5E.healingTypes[healingType]})`, itemCardId: args[0].itemCardId, useOther: false });
-						}
-					},
-					cancel: {
-						icon: '<p> </p><img src = "icons/skills/melee/weapons-crossed-swords-yellow.webp" width="50" height="50"></>',
-						label: "<p>Cancel</p>",
-						callback: () => { return; }
-					}
-				},
-				default: "one"
-			}).render(true);
-			
+			content += '<label><input type="radio" name="choice" value="other-action" checked style="margin-right: 10px; margin-bottom: 10px;" />Action (normal)</label>';
+			content += '<label><input type="radio" name="choice" value="other-rest" style="margin-right: 10px; margin-bottom: 10px;" />During Rest (max + con)</label>';
 		}
 
+		let flavor = await foundry.applications.api.DialogV2.prompt({
+			content: content,
+			rejectClose: false,
+			ok: {
+				callback: (event, button, dialog) => {
+					return button.form.elements.choice.value;
+				}
+			},
+			window: {
+				title: `${optionName}`,
+			},
+			position: {
+				width: 400
+			}
+		});
+
+		if (flavor) {
+			let rollDice = '4d4+4';
+
+			switch (flavor) {
+				case "self-action":
+					rollDice = '20';
+					break;
+				case "self-rest":
+				case "other-rest":
+					const conMod = targetToken.actor.system.abilities.con.mod;
+					rollDice = `20+${conMod}`;
+					break;
+			}
+
+			let healDamage = await new Roll(rollDice).evaluate();
+			await new MidiQOL.DamageOnlyWorkflow(actor, token, healDamage.total, healingType, [targetToken], healDamage, { flavor: `${item.name}`, itemCardId: args[0].itemCardId, useOther: false });
+		}
 	}
 
 } catch (err) {
-    console.error(`${optionName} v${version}`, err);
+	console.error(`${optionName} : ${version}`, err);
 }

@@ -84,3 +84,12 @@
 * Races Updated: Aasimar
 * Racial Traits Updated: Astral Knowledge
 * Subclasses Updated: Light Domain
+
+# 12.3.12
+* Modules Added: Rest Recovery 5E
+* Class Features Updated: Rage, all Metamagic options
+* Items Updated: all Potions of Healing, Keoghtoms Ointment
+* Monsters Updated: Crag Cat
+* Spells Updated: Lesser Restoration
+* Subclasses Added: Path of the Giant
+* Subclasses Updated: Circle of Stars, Death Domain
