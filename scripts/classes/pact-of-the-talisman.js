@@ -21,7 +21,7 @@ try {
             return;
         }
 
-        const itemData = duplicate(talismanItem);
+        const itemData = foundry.utils.duplicate(talismanItem);
         delete itemData._id;
         itemData.system.equipped = true;
         itemData.system.uses.value = actor.system.attributes.prof;

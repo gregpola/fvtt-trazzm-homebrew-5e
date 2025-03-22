@@ -1,4 +1,4 @@
-const version = "12.3.0";
+const version = "12.3.1";
 const optionName = "Absorb Elements";
 const elements = { acid: "acid", cold: "cold", fire: "fire", lightning: "lightning", thunder: "thunder" };
 const meleeEffectName = "Absorb Elements (Melee Damage)";
@@ -39,7 +39,7 @@ try {
 			let effect = HomebrewHelpers.findEffect(targetToken.actor, meleeEffectName);
 			let changes;
 			if (effect) {
-				changes = duplicate(effect.changes);
+				changes = foundry.utils.duplicate(effect.changes);
 				changes[0].value = `${spellLevel}d6[${flavor}]`;
 				changes[1].value = `${spellLevel}d6[${flavor}]`;
 				await effect.update({changes});
@@ -51,7 +51,7 @@ try {
 			// update the resistance
 			effect = HomebrewHelpers.findEffect(targetToken.actor, resistanceEffectName);
 			if (effect) {
-				changes = duplicate(effect.changes);
+				changes = foundry.utils.duplicate(effect.changes);
 				changes[0].value = element;
 				await effect.update({changes});
 			}

@@ -13,7 +13,7 @@ try {
 
 
 console.info("%c fvtt-trazzm-homebrew-5e", "color: #D030DE", " | Bag of Tricks (Gray)");
-ui.notifications.error(`${optionName}: ${resourceName}: - no resource found`);
+ui.notifications.error(`${optionName}: ${version} - missing Font of Magic`);
 
 // Useful references
 if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType)) {

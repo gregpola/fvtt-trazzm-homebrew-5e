@@ -45,7 +45,7 @@ async function consumeResource(actor, resKey, cost) {
 	if (actor && resKey && cost) {
 		const points = actor.data.data.resources[resKey].value;
 		const pointsMax = actor.data.data.resources[resKey].max;
-		let resources = duplicate(actor.data.data.resources);
+		let resources = foundry.utils.duplicate(actor.data.data.resources);
 		resources[resKey].value = Math.clamped(points - cost, 0, pointsMax);
 		await actor.update({"data.resources": resources});
 	}

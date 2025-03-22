@@ -1,7 +1,6 @@
 /*
 	While this pearl is on your person, you can use an action to speak its command word and regain one expended spell slot of up to 3rd level. Once you use the pearl, it can't be used again until the next dawn.
 */
-
 const version = "10.0.0";
 const optionName = "Pearl of Power";
 
@@ -10,7 +9,7 @@ try {
 	let actor = MidiQOL.MQfromActorUuid(lastArg.actorUuid);
 
 	if (args[0].macroPass === "preItemRoll") {
-		const spells = duplicate(actor.system.spells);
+		const spells = foundry.utils.duplicate(actor.system.spells);
 		if (!spells) {
 			ui.notifications.error(`${optionName} - character has no spells`);
 			return false;
@@ -53,7 +52,7 @@ try {
 		return true;
 	}
 	else if (args[0].macroPass === "postActiveEffects") {
-		const spells = duplicate(actor.system.spells);
+		const spells = foundry.utils.duplicate(actor.system.spells);
 
 		// Get available slots to recover
 		const maxLevel = 3;

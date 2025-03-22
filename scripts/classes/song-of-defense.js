@@ -110,7 +110,7 @@ try {
 		let slot = await dialog;
 		if (slot > 0) {
 			// burn the slot
-			await actor.update({[`system.spells.spell${slot}.value`]: getProperty(actor, `system.spells.spell${slot}.value`) - 1});
+			await actor.update({[`system.spells.spell${slot}.value`]: foundry.utils.getProperty(actor, `system.spells.spell${slot}.value`) - 1});
 			
 			// apply the defense
 			const damageRemoved = slot * 5;

@@ -29,7 +29,7 @@ export class SpellHandler {
             // Mirror Image Handling
             let targetEffect = targetActor.effects.find(eff => eff.name === 'Mirror Image');
             if (targetEffect) {
-                let duplicates = getProperty(targetActor, "flags.world.spell.mirrorimage");
+                let duplicates = foundry.utils.getProperty(targetActor, "flags.world.spell.mirrorimage");
                 if (duplicates) {
                     let roll = await new Roll('1d20').roll({async: true});
                     roll.toMessage({

@@ -93,3 +93,11 @@
 * Spells Updated: Lesser Restoration
 * Subclasses Added: Path of the Giant
 * Subclasses Updated: Circle of Stars, Death Domain
+
+# 12.3.13
+* General Updates: Added folders to several compendiums
+* Classes Updated: Sorcerer
+* Class Features Updated: Eldritch Master, Font of Magic, Harness Divine Power, Sweeping Attack, Wild Shape
+* Items Updated: Bracers of Archery, Bracers of Defense, most potions
+* Monsters Updated: Bulette, Fire Elemental
+* Spells Updated: Absorb Elements, Animal Friendship, Charm Monster, Charm Person, Dimension Door, Enlarge/Reduce, Ensnaring Strike, Flaming Sphere, Gaseous Form, Green-Flame Blade, Hail of Thorns, Ice Knife, Invisibility, Spirit Guardians, Tasha's Caustic Brew

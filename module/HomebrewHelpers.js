@@ -934,11 +934,11 @@ class HomebrewHelpers {
 
     static async rechargeLegendaryActions(actor) {
         // skip if dead
-        const hpValue = getProperty(actor, 'system.attributes.hp.value');
+        const hpValue = foundry.utils.getProperty(actor, 'system.attributes.hp.value');
         if (!hpValue || hpValue < 1)
             return;
 
-        let legendaryResource = getProperty(actor, 'system.resources.legact');
+        let legendaryResource = foundry.utils.getProperty(actor, 'system.resources.legact');
         if (legendaryResource && (legendaryResource.max > 0) && (legendaryResource.value < legendaryResource.max)) {
             await actor.update({'system.resources.legact.value' : legendaryResource.max});
         }
@@ -983,6 +983,12 @@ class HomebrewHelpers {
             duration = d.value * 3600;
         }
 
+        return duration;
+    }
+
+    static itemRemainingDurationSeconds(item, startRound, currentRound) {
+        let duration = this.itemDurationSeconds(item);
+        duration -= ((currentRound - startRound) * 6);
         return duration;
     }
 

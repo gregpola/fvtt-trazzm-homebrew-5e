@@ -7,7 +7,7 @@
 	willing creature of your size or smaller who is carrying gear up to its carrying capacity. The creature must be
 	within 5 feet of you when you cast this spell.
  */
-const version = "12.3.0";
+const version = "12.3.1";
 const optionName = "Dimension Door";
 
 try {
@@ -73,7 +73,7 @@ try {
 
 		// transport the companion
 		if (companion && position) {
-			let compPosition = duplicate(position);
+			let compPosition = foundry.utils.duplicate(position);
 			compPosition.x += xdiff;
 			compPosition.y += ydiff;
 			await HomebrewMacros.teleportToken(companion, 5, compPosition);

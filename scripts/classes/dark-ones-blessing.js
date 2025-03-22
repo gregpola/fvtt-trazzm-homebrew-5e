@@ -4,7 +4,7 @@ const optionName = "Dark One's Blessing";
 try {
 	let tactor = args[0].actor;
 	let Temp = tactor.system.attributes.hp.temp ?? 0;
-	let level = getProperty(args[0].rollData, "classes.warlock.levels");
+	let level = foundry.utils.getProperty(args[0].rollData, "classes.warlock.levels");
 	let newTemp = level + tactor.system.abilities.cha.mod;
 
 	if(newTemp > Temp)

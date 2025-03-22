@@ -4,7 +4,7 @@
 	If the original attack roll would hit the second creature, it takes damage equal to the number you roll on your
 	superiority die. The damage is of the same type dealt by the original attack.
  */
-const version = "12.3.0";
+const version = "12.3.1";
 const optionName = "Sweeping Attack";
 const featureName = "Superiority Dice";
 
@@ -95,7 +95,7 @@ try {
 							const fullSupDie = actor.system.scale["battle-master"]["superiority-die"];
 							let damageType = workflow.item.system.damage.parts[0][1];
 							const damageRoll = await new Roll(`${fullSupDie.die}[${damageType}]`).evaluate();
-							const workflowItemData = duplicate(workflow.item);
+							const workflowItemData = foundry.utils.duplicate(workflow.item);
 							workflowItemData.system.target = {value: 1, units: "", type: "creature"};
 							workflowItemData.name = `${optionName} : secondary damage`;
 

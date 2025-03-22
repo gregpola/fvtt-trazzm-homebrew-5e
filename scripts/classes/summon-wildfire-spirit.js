@@ -89,7 +89,7 @@ try {
 			// Update the spirit's actions
 			let item = spiritToken.actor.items.getName("Fiery Teleportation");
 			if (item) {
-				let copy_item = duplicate(item.toObject());
+				let copy_item = foundry.utils.duplicate(item.toObject());
 				copy_item.system.save.dc = actorDC;
 				spiritToken.actor.updateEmbeddedDocuments("Item", [copy_item]);
 			}

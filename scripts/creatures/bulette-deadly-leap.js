@@ -6,7 +6,7 @@
     of the bulette's space into an unoccupied space of the creature's choice. If no unoccupied space is within range,
     the creature instead falls prone in the bulette's space.
 */
-const version = "12.3.0";
+const version = "12.3.1";
 const optionName = "Deadly Leap";
 
 try {
@@ -34,7 +34,7 @@ try {
                 }
 
                 // build damage features
-                let areaFeatureDexterity = duplicate(workflow.item.toObject());
+                let areaFeatureDexterity = foundry.utils.duplicate(workflow.item.toObject());
                 delete(areaFeatureDexterity.effects);
                 delete(areaFeatureDexterity._id);
                 delete(areaFeatureDexterity.flags['midi-qol'].onUseMacroName);
@@ -74,7 +74,7 @@ try {
                     }
                 ];
 
-                let areaFeatureStrength = duplicate(areaFeatureDexterity);
+                let areaFeatureStrength = foundry.utils.duplicate(areaFeatureDexterity);
                 areaFeatureStrength.name = workflow.item.name + ': Strength';
                 areaFeatureStrength.system.save.ability = 'str';
 

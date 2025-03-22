@@ -1,18 +1,30 @@
-/* Font of Magic
+/*
+	Creating Spell Slots. You can transform unexpended sorcery points into one spell slot as a bonus action on your turn.
+	The Creating Spell Slots table shows the cost of creating a spell slot of a given level. You can create spell slots
+	no higher in level than 5th.
 
-- Convert points to spell slots.
-- Convert spell slots to points.
+	- Points to slots:
+		2 points => 1st-level
+		3 points => 2nd-level
+		5 points => 3rd-level
+		6 points => 4th-level
+		7 points => 5th-level
 
-- Slots to points: 1-1.
-- Points to slots:
-	2 points => 1st-level
-	3 points => 2nd-level
-	5 points => 3rd-level
-	6 points => 4th-level
-	7 points => 5th-level
+	Converting a Spell Slot to Sorcery Points. As a bonus action on your turn, you can expend one spell slot and gain a
+	number of sorcery points equal to the slot’s level.
 */
-const version = "11.0";
 const optionName = "Font of Magic";
+const version = "12.3.0";
+
+try {
+	if (args[0].macroPass === "postActiveEffects") {
+	}
+} catch (err) {
+	console.error(`${optionName}: ${version}`, err);
+}
+
+
+
 
 try {
 	let fontOfMagic = actor.items.find(i => i.name === optionName);
@@ -123,7 +135,7 @@ async function slot_to_points(fontOfMagic, points, pointsMax, spells){
 	console.log(level);
 
 	if (Number(level) > 0) {
-		await actor.update({[`system.spells.spell${level}.value`]: getProperty(actor, `system.spells.spell${level}.value`) - 1});
+		await actor.update({[`system.spells.spell${level}.value`]: foundry.utils.getProperty(actor, `system.spells.spell${level}.value`) - 1});
 		const newValue = Math.clamped(points + Number(level), 0, pointsMax);
 		await fontOfMagic.update({"system.uses.value": newValue});
 		ChatMessage.create({'content': `${actor.name} : regained sorcery points!`});
@@ -166,7 +178,7 @@ async function points_to_slot(fontOfMagic, points, pointsMax, spells){
 	});
 
 	if(Number(level) > 0){
-		await actor.update({[`system.spells.spell${level}.value`]: getProperty(actor, `system.spells.spell${level}.value`) + 1});
+		await actor.update({[`system.spells.spell${level}.value`]: foundry.utils.getProperty(actor, `system.spells.spell${level}.value`) + 1});
 		const newValue = Math.clamped(points - conversion_map[level], 0, pointsMax);
 		await fontOfMagic.update({"system.uses.value": newValue});
 		ChatMessage.create({'content': `${actor.name} : regained a spell slot!`});

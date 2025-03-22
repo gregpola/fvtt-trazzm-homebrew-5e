@@ -1,4 +1,4 @@
-const version = "12.3.0"
+const version = "12.3.1"
 const optionName = "Spirit Guardians";
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
 const lastAppliedTimeFlag = "last-applied-time-flag";
@@ -39,7 +39,7 @@ try {
         let damageType = options[selectedIndex].value;
 
         // update the effect damage type
-        let copy_item = duplicate(item.toObject());
+        let copy_item = foundry.utils.duplicate(item.toObject());
         let effect = copy_item.effects.find(eff =>eff.name === optionName);
         if (effect) {
             let changed = false;

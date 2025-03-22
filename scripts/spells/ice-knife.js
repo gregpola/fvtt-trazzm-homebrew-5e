@@ -1,11 +1,11 @@
-const version = "12.3.0";
+const version = "12.3.1";
 const optionName = "Ice Knife"
 
 try {
 	if (args[0].macroPass === "postActiveEffects") {
 		let targetToken = workflow.targets.first();
 
-		let areaSpellData = duplicate(item);
+		let areaSpellData = foundry.utils.duplicate(item);
 		const damageDice = 1 + workflow.castData.castLevel;
 
 		delete areaSpellData.effects;
@@ -46,8 +46,20 @@ try {
 
 		const [config, options] = HomebrewHelpers.syntheticItemWorkflowOptions(aoeTargets);
 		await MidiQOL.completeItemUse(areaSpell, config, options);
+		await anime(targetToken);
 	}
 }
 catch (err) {
 	console.error(`${optionName}: ${version}`, err);
+}
+
+async function anime(token) {
+	new Sequence()
+		.effect()
+		.file("jb2a.ice_spikes.radial.burst.white")
+		.atLocation(token)
+		.scaleToObject(2)
+		.fadeOut(500)
+		.wait(500)
+		.play();
 }

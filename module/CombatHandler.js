@@ -206,7 +206,7 @@ export class CombatHandler {
             }
 
             // special death handling
-            const hpUpdate = getProperty(change, "system.attributes.hp.value");
+            const hpUpdate = foundry.utils.getProperty(change, "system.attributes.hp.value");
             if (hpUpdate !== undefined) {
                 if (hpUpdate <= 0) {
                     // look for the death of an actor that is grappling and/or restraining an actor
@@ -378,10 +378,10 @@ export class CombatHandler {
         if (combat) {
             for (let combatant of combat.combatants) {
                 // skip dead combatants
-                const hpValue = getProperty(combatant.actor, 'system.attributes.hp.value');
+                const hpValue = foundry.utils.getProperty(combatant.actor, 'system.attributes.hp.value');
                 if (!hpValue || hpValue < 1) continue;
 
-                let legendaryResource = getProperty(combatant.actor, 'system.resources.legact');
+                let legendaryResource = foundry.utils.getProperty(combatant.actor, 'system.resources.legact');
                 if (legendaryResource && legendaryResource.max > 0) {
                     result.push({combatant: combatant, legendaryResource: legendaryResource});
                 }

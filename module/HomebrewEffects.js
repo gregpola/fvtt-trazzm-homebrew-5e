@@ -69,6 +69,16 @@ class HomebrewEffects {
         }
     }
 
+    static async removeConcentrationEffectByName(actor, effectName) {
+        const effect = HomebrewHelpers.findEffect(actor, `Concentrating: ${effectName}`);
+        if (effect) {
+            await MidiQOL.socket().executeAsGM('removeEffects', {
+                'actorUuid': actor.uuid,
+                'effects': [effect.id]
+            });
+        }
+    }
+
     static async applyBlindedEffect(actor, origin, specialDurations = undefined, seconds = undefined) {
         if (actor) {
             const originValue = typeof origin === "string" ? origin : origin.uuid;
@@ -295,7 +305,7 @@ class HomebrewEffects {
     static async applyExhaustionEffect(actor, origin, level, specialDurations = undefined, seconds = undefined) {
         if (actor) {
             const originValue = typeof origin === "string" ? origin : origin.uuid;
-            const existing = actor.getRollData().effects.find(eff => eff.name === exhaustionName && eff.origin === originValue);
+            const existingExhaustion = actor.getRollData().effects.find(eff => eff.name === exhaustionName && eff.origin === originValue);
             if (existingExhaustion) {
                 await MidiQOL.socket().executeAsGM('removeEffects', {'actorUuid': actor.uuid, 'effects': [existingExhaustion.id]});
             }
@@ -973,7 +983,7 @@ class HomebrewEffects {
         return undefined;
     }
 
-    static async applyRestrainedEffect(actor, origin, escapeDC, abilityCheck, specialDurations = undefined, seconds = undefined) {
+    static async applyRestrainedEffect(actor, origin, escapeDC, abilityCheck, specialDurations = undefined, seconds = undefined, overtimeValue = undefined) {
         if (actor) {
             const originValue = typeof origin === "string" ? origin : origin.uuid;
             const existing = actor.getRollData().effects.find(eff => eff.name === restrainedName && eff.origin === originValue);
@@ -1042,6 +1052,15 @@ class HomebrewEffects {
 
             if (seconds) {
                 effectData.duration.seconds = seconds;
+            }
+
+            if (overtimeValue) {
+                effectData.changes.push({
+                    key: 'flags.midi-qol.OverTime',
+                    mode: CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
+                    value: overtimeValue,
+                    priority: 1
+                });
             }
 
             return await MidiQOL.socket().executeAsGM("createEffects",
@@ -1437,7 +1456,7 @@ class HomebrewEffects {
         return undefined;
     }
 
-    static async resizeActor(actor, size, effectName, originUuid) {
+    static async resizeActor(actor, size, effectName, originUuid, extraChanges = undefined) {
         // make sure there is a change
         const currentSize = actor.system.traits?.size ?? undefined;
         if (currentSize !== size) {
@@ -1472,6 +1491,12 @@ class HomebrewEffects {
                         origin: originUuid,
                         disabled: false
                     };
+
+                    if (extraChanges) {
+                        for (let extra of extraChanges) {
+                            effectData.changes.push(extra);
+                        }
+                    }
 
                     return await MidiQOL.socket().executeAsGM("createEffects", {actorUuid: actor.uuid, effects: [effectData]});
                 }

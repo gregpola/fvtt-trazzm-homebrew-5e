@@ -8,7 +8,7 @@
 	damage to the target on a hit, and the fire damage to the second creature increases to 1d8 + your spellcasting ability
 	modifier. Both damage rolls increase by 1d8 at 11th level (2d8 and 2d8) and 17th level (3d8 and 3d8).
  */
-const version = "12.3.0";
+const version = "12.3.1";
 const optionName = "Green-Flame Blade";
 const damageType = "fire";
 
@@ -333,11 +333,11 @@ async function handleAutoCast(gfbWorkflow, autoCastWorkflow) {
  * @returns {string} bonusDamage.flavor The damage bonus flavor.
  */
 function handleAutoCastDamageBonus(currentWorkflow, gfbItem) {
-	if (!getProperty(currentWorkflow, "greenFlameBlade.autoCast")) {
+	if (!foundry.utils.getProperty(currentWorkflow, "greenFlameBlade.autoCast")) {
 		// Not the attack workflow that triggered the auto GFB.
 		console.warn(`${optionName}: Not the orignal triggering workflow.`);
 		return {};
 	}
-	const cantripDice = getProperty(currentWorkflow, "greenFlameBlade.cantripDice") ?? 1;
+	const cantripDice = foundry.utils.getProperty(currentWorkflow, "greenFlameBlade.cantripDice") ?? 1;
 	return { damageRoll: `${cantripDice - 1}d8[${damageType}]`, flavor: `${gfbItem.name} Bonus Damage` };
 }

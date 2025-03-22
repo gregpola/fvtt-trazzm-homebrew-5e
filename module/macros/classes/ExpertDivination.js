@@ -3,7 +3,7 @@
 	spellcasting efforts. When you cast a divination spell of 2nd level or higher using a spell slot, you regain one
 	expended spell slot. The slot you regain must be of a level lower than the spell you cast and can’t be higher than 5th level.
 */
-const version = "12.3.0";
+const version = "12.3.1";
 const optionName = "Expert Divination";
 
 export async function expertDivination({speaker, actor, token, character, item, args}) {
@@ -89,7 +89,7 @@ export async function expertDivination({speaker, actor, token, character, item, 
         let slot = choice.inputs.indexOf(true);
         if (slot > -1) {
             slot++;
-            await actor.update({[`system.spells.spell${slot}.value`]: getProperty(actor, `system.spells.spell${slot}.value`) + 1});
+            await actor.update({[`system.spells.spell${slot}.value`]: foundry.utils.getProperty(actor, `system.spells.spell${slot}.value`) + 1});
         }
 
         ChatMessage.create({

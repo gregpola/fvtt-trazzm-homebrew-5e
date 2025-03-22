@@ -4,7 +4,7 @@
 	bonus (rounded up). The number of times you can use this feature is based on the level you’ve reached in this class:
 	2nd level, once; 6th level, twice; and 18th level, thrice. You regain all expended uses when you finish a long rest.
 */
-const version = "12.3.0";
+const version = "12.3.1";
 const optionName = "Harness Divine Power";
 
 try {
@@ -25,7 +25,7 @@ try {
 	else if (args[0].macroPass === "postActiveEffects") {
 		const pb = actor.system.attributes.prof;
 		const maxLevel = Math.ceil(pb / 2);
-		const spells = duplicate(actor.system.spells);
+		const spells = foundry.utils.duplicate(actor.system.spells);
 
 		// build the checkbox content
 		// loop through each spell level, building a row for each

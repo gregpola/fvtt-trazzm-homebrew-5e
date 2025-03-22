@@ -1,21 +1,18 @@
-const version = "10.0.0";
+/*
+	While wearing these bracers, you have proficiency with the longbow and shortbow, and you gain a +2 bonus to damage
+	rolls on ranged attacks made with such weapons.
+ */
+const version = "12.3.0";
 const optionName = "Bracers of Archery";
 try {
 	if (args[0].macroPass === "DamageBonus") {
-		const lastArg = args[args.length - 1];
-
 		// Must be a ranged weapon attack with either a longbow or shortbow
-		if (!["rwak"].includes(lastArg.itemData.system.actionType))
-			return {}; // weapon attack
-		
-		if (!["longbow", "shortbow"].includes(lastArg.itemData.system.baseItem))
-			return {};
-		
-		// apply extra damage for the bracers
-		return {damageRoll: `2`, flavor: `${optionName} Damage`};
+		if (["rwak"].includes(workflow.item.system.actionType)) {
+			if (["longbow", "shortbow"].includes(workflow.item.system.type.baseItem)) {
+				return {damageRoll: '2', flavor: optionName};
+			}
+		}
 	}
-
-	return {};
 
 } catch (err)  {
     console.error(`${optionName}: ${version}`, err);

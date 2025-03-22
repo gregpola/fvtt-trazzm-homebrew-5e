@@ -1,4 +1,4 @@
-const version = "12.3.0";
+const version = "12.3.1";
 const optionName = "Wild Shape";
 
 try {
@@ -106,7 +106,7 @@ try {
 async function revertWildShape(wildShapeActor, originalActor) {
     if (wildShapeActor && originalActor) {
         // copy over spell slots
-        const spells = duplicate(wildShapeActor.system.spells);
+        const spells = foundry.utils.duplicate(wildShapeActor.system.spells);
         if (spells) {
             await originalActor.update({'system.spells' : spells});
         }
