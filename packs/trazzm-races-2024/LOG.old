@@ -1,0 +1,7 @@
+2025/03/25-10:49:21.742 c7c4 Recovering log #79
+2025/03/25-10:49:21.757 c7c4 Delete type=0 #79
+2025/03/25-10:49:21.757 c7c4 Delete type=3 #78
+2025/03/25-13:19:53.218 a6a0 Level-0 table #83: started
+2025/03/25-13:19:53.218 a6a0 Level-0 table #83: 0 bytes OK
+2025/03/25-13:19:53.223 a6a0 Delete type=0 #81
+2025/03/25-13:19:53.223 a6a0 Manual compaction at level-0 from '!folders!2Bw096HjE0HyGMwM' @ 72057594037927935 : 1 .. '!items.effects!phbsptStonecunni.SAbuNo2AO3XXtkdv' @ 0 : 0; will stop at (end)

@@ -3,7 +3,7 @@
     A collection of homebrew content for dnd5e in FoundryVTT
 
 ### Compatibility:
-  - Tested with FVTT v11 and the DND5E system 2.3+
+  - Tested with FVTT v12 and the DND5E system 4.x
 
 ### Installation Instructions
 
@@ -20,13 +20,9 @@ To install a module, follow these instructions:
 ### Module Dependencies
   * active-auras
   * autoanimations
-  * dfreds-convenient-effects
   * dae
   * effectmacro
   * item-macro
   * midi-qol
     * Use the import file found in the config folder to ensure you have the settings required to support automation
   * sequencer
-  * templatemacro
-  * tokenmagic
-  

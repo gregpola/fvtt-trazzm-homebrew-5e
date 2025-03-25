@@ -1,0 +1,7 @@
+2025/03/25-10:49:21.692 ae30 Recovering log #80
+2025/03/25-10:49:21.707 ae30 Delete type=0 #80
+2025/03/25-10:49:21.707 ae30 Delete type=3 #79
+2025/03/25-13:19:53.200 a6a0 Level-0 table #84: started
+2025/03/25-13:19:53.200 a6a0 Level-0 table #84: 0 bytes OK
+2025/03/25-13:19:53.206 a6a0 Delete type=0 #82
+2025/03/25-13:19:53.223 a6a0 Manual compaction at level-0 from '!folders!7zo2bljGLQY3uwXI' @ 72057594037927935 : 1 .. '!items.effects!phbftWarCaster00.gKKDiaGFwszZNCHr' @ 0 : 0; will stop at (end)

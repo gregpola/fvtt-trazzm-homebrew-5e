@@ -226,28 +226,149 @@
       "label": "Homebrew Rise of the Drow",
       "path": "packs/homebrew-rise-of-the-drow",
       "type": "Item",
+      "system": "dnd5e",
       "ownership": {
         "PLAYER": "OBSERVER",
         "ASSISTANT": "OWNER"
-      },
-      "system": "dnd5e"
+      }
     },
     {
       "name": "homebrew-ravenloft",
       "label": "Homebrew Ravenloft",
       "path": "packs/homebrew-ravenloft",
       "type": "Item",
+      "system": "dnd5e",
       "ownership": {
         "PLAYER": "OBSERVER",
         "ASSISTANT": "OWNER"
-      },
-      "system": "dnd5e"
+      }
     },
     {
       "name": "homebrew-princes-of-the-apocalypse",
       "label": "Homebrew Princes of the Apocalypse",
       "path": "packs/homebrew-princes-of-the-apocalypse",
       "type": "Item",
+      "system": "dnd5e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "homebrew-rime-of-the-frostmaiden",
+      "label": "Homebrew Rime of the Frostmaiden",
+      "path": "packs/homebrew-rime-of-the-frostmaiden",
+      "type": "Item",
+      "system": "dnd5e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "homebrew-dungeons-drakkenheim",
+      "label": "Homebrew Dungeons of Darkkenheim",
+      "path": "packs/homebrew-dungeons-drakkenheim",
+      "type": "Item",
+      "system": "dnd5e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "trazzm-classes-2024",
+      "label": "Classes (2024)",
+      "path": "packs/trazzm-classes-2024",
+      "type": "Item",
+      "system": "dnd5e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "trazzm-feats-2024",
+      "label": "Feats (2024)",
+      "path": "packs/trazzm-feats-2024",
+      "type": "Item",
+      "system": "dnd5e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "trazzm-items-2024",
+      "label": "Items (2024)",
+      "path": "packs/trazzm-items-2024",
+      "type": "Item",
+      "system": "dnd5e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "trazzm-races-2024",
+      "label": "Races (2024)",
+      "path": "packs/trazzm-races-2024",
+      "type": "Item",
+      "system": "dnd5e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "trazzm-spells-2024",
+      "label": "Spells (2024)",
+      "path": "packs/trazzm-spells-2024",
+      "type": "Item",
+      "system": "dnd5e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "trazzm-subclasses-2024",
+      "label": "Subclasses (2024)",
+      "path": "packs/trazzm-subclasses-2024",
+      "type": "Item",
+      "system": "dnd5e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "trazzm-automation-actors-2024",
+      "label": "Automation Actors (2024)",
+      "path": "packs/trazzm-automation-actors-2024",
+      "type": "Actor",
+      "system": "dnd5e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "trazzm-automation-items-2024",
+      "label": "Automation Items (2024)",
+      "path": "packs/trazzm-automation-items-2024",
+      "type": "Item",
+      "system": "dnd5e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "trazzm-backgrounds-2024",
+      "label": "Backgrounds (2024)",
+      "path": "packs/trazzm-backgrounds-2024",
+      "type": "Item",
       "ownership": {
         "PLAYER": "OBSERVER",
         "ASSISTANT": "OWNER"
@@ -255,15 +376,84 @@
       "system": "dnd5e"
     },
     {
-      "name": "homebrew-rime-of-the-frostmaiden",
-      "label": "Homebrew Rime of the Frostmaiden",
-      "path": "packs/homebrew-rime-of-the-frostmaiden",
-      "type": "Item",
+      "name": "trazzm-monsters-2024",
+      "label": "Monsters (2024)",
+      "path": "packs/trazzm-monsters-2024",
+      "type": "JournalEntry",
       "ownership": {
         "PLAYER": "OBSERVER",
         "ASSISTANT": "OWNER"
       },
       "system": "dnd5e"
+    }
+  ],
+  "packFolders": [
+    {
+      "name": "Trazzm Homebrew",
+      "sorting": "a",
+      "color": "#fd5a1e",
+      "folders": [
+        {
+          "name": "2024",
+          "sorting": "a",
+          "color": "#d26841",
+          "packs": [
+            "trazzm-backgrounds-2024",
+            "trazzm-classes-2024",
+            "trazzm-feats-2024",
+            "trazzm-items-2024",
+            "trazzm-monsters-2024",
+            "trazzm-races-2024",
+            "trazzm-spells-2024",
+            "trazzm-subclasses-2024",
+            "trazzm-automation-actors-2024",
+            "trazzm-automation-items-2024"
+          ],
+          "folders": []
+        },
+        {
+          "name": "2014",
+          "sorting": "a",
+          "color": "#eeb5a0",
+          "packs": [
+            "homebrew-backgrounds",
+            "homebrew-background-features",
+            "homebrew-classes",
+            "homebrew-class-features",
+            "homebrew-creatures",
+            "homebrew-creature-features",
+            "homebrew-feats",
+            "homebrew-items",
+            "homebrew-races",
+            "homebrew-racial-traits",
+            "homebrew-spells",
+            "homebrew-subclasses",
+            "homebrew-general-features",
+            "homebrew-playlists",
+            "homebrew-roll-tables",
+            "homebrew-automation-actors",
+            "homebrew-automation-items"
+          ],
+          "folders": []
+        },
+        {
+          "name": "Campaigns",
+          "sorting": "a",
+          "color": "#ca866d",
+          "packs": [
+            "homebrew-dungeons-drakkenheim",
+            "homebrew-princes-of-the-apocalypse",
+            "homebrew-ravenloft",
+            "homebrew-rime-of-the-frostmaiden",
+            "homebrew-rise-of-the-drow"
+          ],
+          "folders": []
+        }
+      ],
+      "packs": [
+        "homebrew-macros",
+        "homebrew-journal-entries"
+      ]
     }
   ],
   "compatibility": {
@@ -339,8 +529,8 @@
         "id": "dnd5e",
         "type": "system",
         "compatibility": {
-          "minimum": "3.3.0",
-          "maximum": "3.3.99"
+          "minimum": "4.2.2",
+          "maximum": "4.9.99"
         }
       }
     ]
