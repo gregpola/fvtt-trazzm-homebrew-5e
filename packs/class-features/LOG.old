@@ -1,7 +1,16 @@
-2025/03/25-10:49:21.060 8650 Recovering log #2616
-2025/03/25-10:49:21.074 8650 Delete type=0 #2616
-2025/03/25-10:49:21.074 8650 Delete type=3 #2615
-2025/03/25-13:19:53.058 a6a0 Level-0 table #2620: started
-2025/03/25-13:19:53.058 a6a0 Level-0 table #2620: 0 bytes OK
-2025/03/25-13:19:53.063 a6a0 Delete type=0 #2618
-2025/03/25-13:19:53.069 a6a0 Manual compaction at level-0 from '!folders!C34xaX3BRdF4tHd4' @ 72057594037927935 : 1 .. '!items.effects!zzpc39jf3JeWiO8l.d6i6fVoEeclMYIx6' @ 0 : 0; will stop at (end)
+2025/03/31-07:02:50.218 117d0 Recovering log #2681
+2025/03/31-07:02:50.218 117d0 Level-0 table #2683: started
+2025/03/31-07:02:50.222 117d0 Level-0 table #2683: 10335 bytes OK
+2025/03/31-07:02:50.234 117d0 Delete type=0 #2681
+2025/03/31-07:02:50.234 117d0 Delete type=3 #2680
+2025/03/31-07:12:22.880 f500 Level-0 table #2686: started
+2025/03/31-07:12:22.880 f500 Level-0 table #2686: 0 bytes OK
+2025/03/31-07:12:22.885 f500 Delete type=0 #2684
+2025/03/31-07:12:22.907 f500 Manual compaction at level-0 from '!folders!C34xaX3BRdF4tHd4' @ 72057594037927935 : 1 .. '!items.effects!zzpc39jf3JeWiO8l.d6i6fVoEeclMYIx6' @ 0 : 0; will stop at '!items!zGqMQnYucbjjnbUh' @ 14310 : 1
+2025/03/31-07:12:22.907 f500 Compacting 1@0 + 1@1 files
+2025/03/31-07:12:22.933 f500 Generated table #2687@0: 1231 keys, 1676589 bytes
+2025/03/31-07:12:22.933 f500 Compacted 1@0 + 1@1 files => 1676589 bytes
+2025/03/31-07:12:22.939 f500 compacted to: files[ 0 1 0 0 0 0 0 ]
+2025/03/31-07:12:22.939 f500 Delete type=2 #2633
+2025/03/31-07:12:22.939 f500 Delete type=2 #2683
+2025/03/31-07:12:22.949 f500 Manual compaction at level-0 from '!items!zGqMQnYucbjjnbUh' @ 14310 : 1 .. '!items.effects!zzpc39jf3JeWiO8l.d6i6fVoEeclMYIx6' @ 0 : 0; will stop at (end)

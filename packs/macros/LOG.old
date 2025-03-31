@@ -1,8 +1,8 @@
-2025/03/25-10:49:21.356 ae30 Recovering log #2406
-2025/03/25-10:49:21.368 ae30 Delete type=0 #2406
-2025/03/25-10:49:21.370 ae30 Delete type=3 #2405
-2025/03/25-13:19:53.097 a6a0 Level-0 table #2410: started
-2025/03/25-13:19:53.097 a6a0 Level-0 table #2410: 0 bytes OK
-2025/03/25-13:19:53.102 a6a0 Delete type=0 #2408
-2025/03/25-13:19:53.119 a6a0 Manual compaction at level-0 from '!folders!Ii9HIim9aSo4W1as' @ 72057594037927935 : 1 .. '!macros!x3Tut8mXj1SqABEa' @ 0 : 0; will stop at (end)
-2025/03/25-13:19:53.119 a6a0 Manual compaction at level-1 from '!folders!Ii9HIim9aSo4W1as' @ 72057594037927935 : 1 .. '!macros!x3Tut8mXj1SqABEa' @ 0 : 0; will stop at (end)
+2025/03/31-07:02:51.176 e188 Recovering log #2470
+2025/03/31-07:02:51.187 e188 Delete type=0 #2470
+2025/03/31-07:02:51.187 e188 Delete type=3 #2469
+2025/03/31-07:12:22.966 f500 Level-0 table #2474: started
+2025/03/31-07:12:22.966 f500 Level-0 table #2474: 0 bytes OK
+2025/03/31-07:12:22.972 f500 Delete type=0 #2472
+2025/03/31-07:12:22.981 f500 Manual compaction at level-0 from '!folders!Ii9HIim9aSo4W1as' @ 72057594037927935 : 1 .. '!macros!x3Tut8mXj1SqABEa' @ 0 : 0; will stop at (end)
+2025/03/31-07:12:23.009 f500 Manual compaction at level-1 from '!folders!Ii9HIim9aSo4W1as' @ 72057594037927935 : 1 .. '!macros!x3Tut8mXj1SqABEa' @ 0 : 0; will stop at (end)

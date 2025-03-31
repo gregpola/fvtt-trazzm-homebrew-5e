@@ -1,4 +1,4 @@
-const _flagGroup = "fvtt-trazzm-homebrew-5e";
+const _flagGroup = "trazzm";
 const _poisonedWeaponFlag = "poisoned-weapon";
 
 class HomebrewMacros {
@@ -231,9 +231,10 @@ class HomebrewMacros {
         const tokenDistance = MidiQOL.computeDistance(pullerToken, targetToken);
 
         const squares = maxSquares ? maxSquares : 1;
-        let pullBackFt = 5 * squares;
-        pullBackFt = Math.min(pullBackFt, tokenDistance - 5);
-        await MidiQOL.moveTokenAwayFromPoint(targetToken, -pullBackFt, pullerToken.center);
+        let distance = 5 * squares;
+        distance = Math.min(distance, tokenDistance - 5);
+        let ray = new Ray(pullerToken.center, targetToken.center);
+        await HomebrewMacros.moveTokenAlongRay(targetToken, ray, -distance);
     }
 
     /**
@@ -252,8 +253,36 @@ class HomebrewMacros {
         }
 
         const squares = maxSquares ? maxSquares : 1;
-        const knockBackFt = 5 * squares;
-        await MidiQOL.moveTokenAwayFromPoint(targetToken, knockBackFt, pusherToken.center);
+        const distance = 5 * squares;
+        let ray = new Ray(pusherToken.center, targetToken.center);
+        await HomebrewMacros.moveTokenAlongRay(targetToken, ray, distance);
+    }
+
+    static async moveTokenAlongRay(targetToken, origRay, distance) {
+        let knockBackFactor;
+        let newCenter;
+        let hitsWall = true;
+        let oldDistance;
+        let ray = Ray.fromAngle(targetToken.center.x, targetToken.center.y, origRay.angle, origRay.distance);
+        if (ray.distance === 0) {
+            return;
+        }
+
+        while (hitsWall) {
+            knockBackFactor = distance / canvas.dimensions.distance;
+            newCenter = ray.project((canvas.dimensions.size * knockBackFactor) / ray.distance);
+            hitsWall = targetToken.checkCollision(newCenter, {origin: ray.A, type: 'move', mode: 'any'});
+            if (hitsWall) {
+                oldDistance = distance;
+                distance += distance > 0 ? -5 : 5;
+                if (distance === 0 || (Math.sign(oldDistance) !== Math.sign(distance))) {
+                    return;
+                }
+            }
+        }
+
+        newCenter = canvas.grid.getSnappedPoint({x: newCenter.x - targetToken.w / 2, y: newCenter.y - targetToken.h / 2}, {mode: 0xFF0});
+        await targetToken.document.update({ x: newCenter?.x ?? 0, y: newCenter?.y ?? 0 }, { animate: true });
     }
 
     /**
@@ -419,7 +448,7 @@ class HomebrewMacros {
      * @param actor         the actor applying the poison
      * @param poisonItem    the poison item
      *
-     * @returns {Promise<void>}
+     * @returns true if a weapon is poisoned
      */
     static async applyPoisonToWeapon(actor, poisonItem) {
         let speaker = ChatMessage.getSpeaker({actor: actor});
@@ -441,53 +470,44 @@ class HomebrewMacros {
 		  </form>
 		`;
 
-        let dialog = new Promise((resolve, reject) => {
-            new Dialog({
-                // localize this text
-                title: `Apply ${poisonItem.name}`,
-                content: content,
-                buttons: {
-                    one: {
-                        label: "<p>OK</p>",
-                        callback: async (html) => {
-                            let itemId = html.find('[name=weapons]')[0].value;
-                            let weapon = actor.items.get(itemId);
-                            const itemName = weapon.name;
-                            let mutations = {
-                                "name": `${weapon.name} (${poisonItem.name})`
-                            };
+        await foundry.applications.api.DialogV2.prompt({
+            content: content,
+            rejectClose: false,
+            ok: {
+                callback: async(event, button, dialog) => {
+                    let weaponId = button.form.elements.weapons.value;
+                    let weapon = actor.items.get(weaponId);
+                    const itemName = weapon.name;
+                    let mutations = {
+                        "name": `${weapon.name} (${poisonItem.name})`
+                    };
 
-                            // Update the weapon name to show it as poisoned
-                            await weapon.update(mutations);
+                    // Update the weapon name to show it as poisoned
+                    await weapon.update(mutations);
 
-                            // check weapon type to see if it should be single or triple use
-                            let useCount = 1;
-                            if ((weapon.system.actionType === "rwak") && weapon.system.properties.has("amm")) {
-                                useCount = 3;
-                            }
-
-                            // track poison info in the actor
-                            await actor.setFlag(_flagGroup, _poisonedWeaponFlag, {
-                                itemName: itemName,
-                                itemId: weapon.id,
-                                applications: useCount
-                            });
-
-                            ChatMessage.create({content: `${itemName} is poisoned`, speaker: speaker});
-                            resolve(true);
-                        }
-                    },
-                    two: {
-                        label: "<p>Cancel</p>",
-                        callback: () => {
-                            resolve(false);
-                        }
+                    // check weapon type to see if it should be single or triple use
+                    let useCount = 1;
+                    if ((weapon.system.actionType === "rwak") && weapon.system.properties.has("amm")) {
+                        useCount = 3;
                     }
-                },
-                default: "two"
-            }).render(true);
+
+                    // track poison info in the actor
+                    await actor.setFlag(_flagGroup, _poisonedWeaponFlag, {
+                        itemName: itemName,
+                        itemId: weapon.id,
+                        applications: useCount
+                    });
+
+                    ChatMessage.create({content: `${itemName} is poisoned`, speaker: speaker});
+                }
+            },
+            window: {
+                title: `Apply ${poisonItem.name}`,
+            },
+            position: {
+                width: 500
+            }
         });
-        await dialog;
     }
 
     static async removePoisonFromWeapon(actor) {

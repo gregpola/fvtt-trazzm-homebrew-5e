@@ -1,7 +1,7 @@
-2025/03/25-10:49:21.610 8650 Recovering log #689
-2025/03/25-10:49:21.625 8650 Delete type=0 #689
-2025/03/25-10:49:21.625 8650 Delete type=3 #688
-2025/03/25-13:19:53.191 a6a0 Level-0 table #693: started
-2025/03/25-13:19:53.191 a6a0 Level-0 table #693: 0 bytes OK
-2025/03/25-13:19:53.197 a6a0 Delete type=0 #691
-2025/03/25-13:19:53.198 a6a0 Manual compaction at level-0 from 'undefined' @ 72057594037927935 : 1 .. 'undefined' @ 0 : 0; will stop at (end)
+2025/03/31-07:02:51.519 94bc Recovering log #753
+2025/03/31-07:02:51.531 94bc Delete type=0 #753
+2025/03/31-07:02:51.531 94bc Delete type=3 #752
+2025/03/31-07:12:23.069 f500 Level-0 table #757: started
+2025/03/31-07:12:23.069 f500 Level-0 table #757: 0 bytes OK
+2025/03/31-07:12:23.075 f500 Delete type=0 #755
+2025/03/31-07:12:23.084 f500 Manual compaction at level-0 from 'undefined' @ 72057594037927935 : 1 .. 'undefined' @ 0 : 0; will stop at (end)

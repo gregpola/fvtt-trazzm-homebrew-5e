@@ -1,7 +1,7 @@
 /*
 	
 */
-const version = "12.3.0";
+const version = "12.4.0";
 const optionName = "Precision";
 
 try {
@@ -186,4 +186,3 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType))
 		 src="modules/fvtt-trazzm-homebrew-5e/assets/races/race-aarakocra.webp" width="420" height="509"/>
 </section>
 
-FD5A1E
