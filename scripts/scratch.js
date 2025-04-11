@@ -35,12 +35,12 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType))
 		max(1, @abilities.cha.mod)
 
 		flags.midi - qol.neverTarget
-
-		"50% chance of success"
+		system.attributes.attunement.max
 
 		item.system.prof.hasProficiency
 		foundry.utils.setProperty(lastChange, "value", totalLifeDrained);
 		const isSurprised = actor.statuses.has("surprised");
+		acBonusEffect.update({'disabled': false});
 
 
 		const _flagGroup = "fvtt-trazzm-homebrew-5e";
@@ -53,12 +53,18 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType))
 		actor.getRollData().effects.find(eff => eff.name === name);
 		let effectIdsToRemove = actor.getRollData().effects.filter(e => e.origin === stuckEffect.origin).map(effect => effect.id);
 
+		const sneakActivity = macroItem.system.activities?.contents[0];
+
+
 		ui.notifications.error(`${optionName}: ${version} - no shared language`);
 
 		ChatMessage.create({
 			content: `${actorToken.name}'s ${selectedItem.name} is blessed with positive energy`,
 			speaker: ChatMessage.getSpeaker({actor: actor})
 		});
+
+		await targetToken.actor.toggleStatusEffect("poisoned", {active: false});
+
 
 		const damageTypes = [['🧪 Acid', 'acid'], ['❄️ Cold', 'cold'], ['🔥 Fire', 'fire'], ['⚡ Lightning', 'lightning'], ['☁️ Thunder', 'thunder']]; //All possible damage types
 
@@ -128,13 +134,13 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType))
 				}
 			});
 
-
-		macro.tokenMagic
-		system.attributes.exhaustion = 2;
-		system.attributes.ac.bonus
-
-		let saveRoll = await targetActor.rollAbilitySave("con", {flavor: saveFlavor});
-		await game.dice3d?.showForRoll(saveRoll);
+		const config = { event, ability: "wis", target: actor.system.attributes.spelldc };
+		const dialog = {};
+		const message = { data: { speaker: ChatMessage.implementation.getSpeaker({ actor: targetToken.actor }) } };
+		let saveResult = await targetToken.actor.rollSavingThrow(config, dialog, message);
+		if (!saveResult[0].isSuccess) {
+			await applyEffects(targetToken, actor.system.attributes.spelldc, spellLevel);
+		}
 
 
 		if (args[0] === "on") {
@@ -147,6 +153,7 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType))
 
 
 // Overtime setup to remove a condition on save
+		turn=end, saveAbility=wis, saveDC=@attributes.spelldc, label=Wrathful Smite
 		turn = start, rollType = save, saveAbility = con, saveDamage = halfdamage, saveRemove = false, saveMagic = true, damageType = radiant, damageRoll = (@spellLevel)
 		d10, saveDC = @attributes.spelldc
 
@@ -181,8 +188,54 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType))
 			return;
 		}
 
-<section className="simple-block">
-	<img style="margin: 0px 15px 15px 0px; border: 0px; float: right"
-		 src="modules/fvtt-trazzm-homebrew-5e/assets/races/race-aarakocra.webp" width="420" height="509"/>
+		<section className="simple-block">
+			<img style="margin: 0px 15px 15px 0px; border: 0px; float: right"
+				 src="modules/fvtt-trazzm-homebrew-5e/assets/races/race-aarakocra.webp" width="420" height="509"/>
+		</section>
+
+		<section className="secret">
+			<p><strong>Foundry Note</strong></p>
+			<p>Our house rule gives three times your Druid level in temporary hit points</p>
+		</section>
+
+<section className="secret">
+	<p><strong>Foundry Note</strong></p>
+	<p>Not yet automated.</p>
 </section>
 
+
+		async function applyEffects(targetToken, macroItem) {
+			let effectData = {
+				name: optionName,
+				icon: "icons/skills/melee/strike-sword-dagger-runes-yellow.webp",
+				origin: macroItem.uuid,
+				changes: [
+					{
+						key: 'flags.midi-qol.grants.advantage.attack.all',
+						value: '1',
+						mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
+						priority: 20
+					},
+					{
+						key: 'system.traits.ci.value',
+						value: 'invisible',
+						mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+						priority: 20
+					},
+					{
+						key: 'ATL.light.bright',
+						mode: CONST.ACTIVE_EFFECT_MODES.UPGRADE,
+						value: '5',
+						priority: 22
+					},
+					{
+						key: 'ATL.light.alpha',
+						mode: CONST.ACTIVE_EFFECT_MODES.UPGRADE,
+						value: '0.4',
+						priority: 23
+					}
+				],
+				duration: {seconds: 60}};
+
+			await MidiQOL.socket().executeAsGM("createEffects", { actorUuid: targetToken.actor.uuid, effects: [effectData] });
+		}

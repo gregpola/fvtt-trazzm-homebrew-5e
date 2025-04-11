@@ -1,16 +1,3 @@
-2025/03/31-07:02:51.740 94bc Recovering log #145
-2025/03/31-07:02:51.740 94bc Level-0 table #147: started
-2025/03/31-07:02:51.748 94bc Level-0 table #147: 167612 bytes OK
-2025/03/31-07:02:51.760 94bc Delete type=0 #145
-2025/03/31-07:02:51.761 94bc Delete type=3 #144
-2025/03/31-07:12:23.171 f500 Level-0 table #150: started
-2025/03/31-07:12:23.171 f500 Level-0 table #150: 0 bytes OK
-2025/03/31-07:12:23.176 f500 Delete type=0 #148
-2025/03/31-07:12:23.176 f500 Manual compaction at level-0 from '!folders!Buv3AxwmtHvZPiGg' @ 72057594037927935 : 1 .. '!items.effects!phbsptLargeForm0.QI7POclNlvX9a8VD' @ 0 : 0; will stop at '!items.effects!fALB3pNdV39QzHff.3tx9rRWykNUm6tB4' @ 448 : 1
-2025/03/31-07:12:23.176 f500 Compacting 1@0 + 1@1 files
-2025/03/31-07:12:23.186 f500 Generated table #151@0: 40 keys, 71962 bytes
-2025/03/31-07:12:23.186 f500 Compacted 1@0 + 1@1 files => 71962 bytes
-2025/03/31-07:12:23.191 f500 compacted to: files[ 0 1 0 0 0 0 0 ]
-2025/03/31-07:12:23.191 f500 Delete type=2 #119
-2025/03/31-07:12:23.191 f500 Delete type=2 #147
-2025/03/31-07:12:23.207 f500 Manual compaction at level-0 from '!items.effects!fALB3pNdV39QzHff.3tx9rRWykNUm6tB4' @ 448 : 1 .. '!items.effects!phbsptLargeForm0.QI7POclNlvX9a8VD' @ 0 : 0; will stop at (end)
+2025/04/10-10:55:58.256 9748 Recovering log #232
+2025/04/10-10:55:58.268 9748 Delete type=0 #232
+2025/04/10-10:55:58.269 9748 Delete type=3 #230

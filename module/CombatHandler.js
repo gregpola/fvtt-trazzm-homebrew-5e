@@ -274,50 +274,6 @@ export class CombatHandler {
         });
 
         Hooks.on("updateItem", async(item, updates, options, userId) => {
-            const actor = item.actor;
-            if ((item.type === 'weapon' || item.type === 'equipment') && actor) {
-                // Handle dual wielder feat
-                const dualWielderFeat = actor.items.find(i => i.name === "Dual Wielder");
-                if (dualWielderFeat) {
-                    const acBonusEffect = dualWielderFeat.effects.find(i => i.name === "Dual Wielder AC Bonus");
-                    if (!acBonusEffect) {
-                        console.log('Dual Wielder - no AC bonus effect found');
-                    }
-                    else {
-                        let getsACBonus = true;
-                        let currentWeapons = actor.items.filter(i => (i.type === `weapon`) && i.system.equipped && i.system.actionType === "mwak");
-                        if (currentWeapons.length < 2) {
-                            console.log('Dual Wielder - no AC bonus, not enough weapons equipped');
-                            getsACBonus = false;
-                        }
-
-                        if (currentWeapons.length > 2) {
-                            console.log('Dual Wielder - no AC bonus, too many weapons equipped');
-                            getsACBonus = false;
-                        }
-
-                        // check for two-handed weapons
-                        if ((currentWeapons[0] && currentWeapons[0].system.properties.has('two')) || (currentWeapons[1] && currentWeapons[1].system.properties.has('two'))) {
-                            console.log('Dual Wielder - no AC bonus, weapon is two handed');
-                            getsACBonus = false;
-                        }
-
-                        // check for a shield equipped
-                        let shields = actor.items.filter(i => i.system.armor?.type === 'shield' && i.system.equipped);
-                        if (shields.length) {
-                            console.log('Dual Wielder - no AC bonus, a shield is equipped');
-                            getsACBonus = false;
-                        }
-
-                        if (getsACBonus) {
-                            acBonusEffect.update({'disabled': false});
-                        }
-                        else {
-                            acBonusEffect.update({'disabled': true});
-                        }
-                    }
-                }
-            }
         });
     }
 

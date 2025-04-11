@@ -102,19 +102,3 @@ try {
 } catch (err) {
     console.error(`${optionName}: ${version}`, err);
 }
-
-async function revertWildShape(wildShapeActor, originalActor) {
-    if (wildShapeActor && originalActor) {
-        // copy over spell slots
-        const spells = foundry.utils.duplicate(wildShapeActor.system.spells);
-        if (spells) {
-            await originalActor.update({'system.spells' : spells});
-        }
-
-        // remove features
-        let itemEffect = HomebrewHelpers.findEffect(originalActor, optionName);
-        if (itemEffect) {
-            await MidiQOL.socket().executeAsGM("removeEffects", { actorUuid: originalActor.uuid, effects: [itemEffect.id] });
-        }
-    }
-}

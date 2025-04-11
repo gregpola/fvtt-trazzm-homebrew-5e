@@ -38,7 +38,7 @@ try {
             let content = `
               <form>
                 <div class="flexcol">
-                    <div class="flexrow" style="margin-bottom: 10px;"><label>Select the spell slot to convert: </label></div>
+                    <div class="flexrow" style="margin-bottom: 5px;"><label>Select the spell slot to convert: </label></div>
                     <div class="flexrow" style="margin-bottom: 10px;"><sub>(gain 1 sorcery point per spell level)</sub></div>
                     <div id="slotRows" class="flexcol" style="margin-bottom: 10px;">
                         ${rows}

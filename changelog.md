@@ -9,6 +9,13 @@
 * All origin feats updated
 * Most general feats updated
 * All fighting style feats updated
-* All Tasha's feats updated
-* Added Air Genasi and Kobold for RotD characters
+* Added species: Air Genasi, Bugbear, Kobold, Lizardfolk and Moosetaur for existing campaign characters
 * All classes updated
+* Items Updated: Torch, all potions of healing, alchemist's fire 
+* Subclasses Updated: Arcane Trickster, Illusionist, Oath of Vengeance, Path of the Zealot, Warrior of Shadow
+* Subclasses Added: College of Shadows, Divine Soul Sorcery, Forge Domain, Hexblade Patron
+* Added a new list of active modules and configuration files to the config folder
+* Added all Weapon Mastery features 
+* Added homebrew feats: Bonus Attunement, Elastic Soul, Improved Concentration, Potent Cantrips 
+* Spells updated: Absorb Elements, Banishing Smite, Banishment, Blinding Smite, Blur, Booming Blade, Command, Darkness, Detect Magic, Divine Smite, Elemental Weapon, Faerie Fire, Frostbite, Goodberry, Green-Flame Blade, Guidance, Guiding Bolt, Haste, Hex, Hunter's Mark, Lesser Restoration, Mind Sliver, Produce Flame, Protection from Energy, Protection from Evil and Good, Searing Smite, Shield, Shining Smite, Spike Growth, Spirit Guardians, Staggering Smite, Starry Wisp, Thorn Whip, Thunderous Smite, True Strike, Wrathful Smite, Zephyr Strike
+* Updated poisons: Basic, Drow, Purple Worm Poison, Serpent Venom, Wyvern Poison

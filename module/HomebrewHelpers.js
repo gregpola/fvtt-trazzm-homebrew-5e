@@ -4,7 +4,8 @@ const _charmResistLabels = new Set(["alien mind", "countercharm", "dark devotion
 const _deafenedResistLabels = new Set(["second head"]);
 const _frightenedResistLabels = new Set(["brave", "countercharm", "dark devotion", "fearless", "leviathan will", "mental discipline", "heart of hruggek", "second head", "two heads", "kobold legacy - defiance"]);
 const _paralyzedResistLabels = new Set(["duergar resilience", "leviathan will", "heart of hruggek"]);
-const _poisonResistLabels = new Set(["duergar resilience", "deathless nature (reborn)", "dwarven resilience", "hill rune", "infernal constitution", "leviathan will", "poison resilience", "stout resilience", "heart of hruggek", "antitoxin", "protection from poison"]);
+const _poisonResistItems = new Set(["duergar resilience", "deathless nature (reborn)", "dwarven resilience", "infernal constitution", "leviathan will", "poison resilience", "stout resilience", "heart of hruggek"]);
+const _poisonResistEffects = new Set(["hill rune", "leviathan will", "antitoxin", "protection from poison"]);
 const _proneResistLabels = new Set(["sure-footed"]);
 const _sleepResistLabels = new Set(["leviathan will", "heart of hruggek", "wakeful"]);
 const _stunResistLabels = new Set(["leviathan will", "heart of hruggek", "psionic fortitude", "second head", "two heads"]);
@@ -551,11 +552,11 @@ class HomebrewHelpers {
                 break;
             case "poison":
             case "poisoned":
-                let poisonFeature = actor.items.find(f => _poisonResistLabels.has(f.name.toLowerCase()));
+                let poisonFeature = actor.items.find(f => _poisonResistItems.has(f.name.toLowerCase()));
                 if (poisonFeature) {
                     return true;
                 } else {
-                    let poisonEffect = actor.getRollData().effects.find(f => _poisonResistLabels.has(f.name.toLowerCase()));
+                    let poisonEffect = actor.getRollData().effects.find(f => _poisonResistEffects.has(f.name.toLowerCase()));
                     if (poisonEffect) {
                         return true;
                     }
@@ -659,30 +660,56 @@ class HomebrewHelpers {
         if (actor) {
             let metaMagicAdept = actor.items.find(i => i.name === "Metamagic Adept");
             if (metaMagicAdept) {
-                let val = metaMagicAdept.system.uses?.value ?? 0;
-                if (val >= cost) {
-                    const newValue = metaMagicAdept.system.uses.value - cost;
-                    await metaMagicAdept.update({"system.uses.value": newValue});
+                let spent = metaMagicAdept.system.uses?.spent ?? 0;
+                let max = metaMagicAdept.system.uses?.max ?? 0;
+                if ((spent + cost) <= max) {
+                    const newValue = metaMagicAdept.system.uses.spent + cost;
+                    await metaMagicAdept.update({"system.uses.spent": newValue});
                     return true;
                 }
-                else if (val > 0) {
-                    await metaMagicAdept.update({"system.uses.value": 0});
-                    cost -= val;
+                else if ((max - spent) > 0) {
+                    await metaMagicAdept.update({"system.uses.spent": max});
+                    cost -= (max - spent);
                 }
             }
 
             let fontOfMagic = actor.items.find(i => i.name === "Font of Magic");
             if (fontOfMagic) {
-                let val2 = fontOfMagic.system.uses?.value ?? 0;
-                if (val2 >= cost) {
-                    const newValue = fontOfMagic.system.uses.value - cost;
-                    await fontOfMagic.update({"system.uses.value": newValue});
+                let spent = fontOfMagic.system.uses?.spent ?? 0;
+                let max = fontOfMagic.system.uses?.max ?? 0;
+                if ((spent + cost) <= max) {
+                    const newValue = fontOfMagic.system.uses.spent + cost;
+                    await fontOfMagic.update({"system.uses.spent": newValue});
                     return true;
                 }
             }
         }
 
         return false;
+    }
+
+    /**
+     * Gets the applied enchantments for the specified item or activity uuid if any exist.
+     *
+     * @param {string} entityUuid - The UUID of the item or activity for which to find associated enchantments.
+     * @returns {ActiveEffect5e[]} list of applied enchantments.
+     */
+    static async getAppliedEnchantments(entityUuid) {
+        return dnd5e.registry.enchantments.applied(entityUuid);
+    }
+
+    /**
+     * Deletes the applied enchantments for the specified item or activity uuid.
+     *
+     * @param {string} entityUuid - The UUID of the item or activity for which to delete the associated enchantments.
+     * @returns {ActiveEffect5e[]} the list of applied enchantments that was deleted.
+     */
+    static async deleteAppliedEnchantments(entityUuid) {
+        const appliedEnchantements = getAppliedEnchantments(entityUuid);
+        for (let activeEffect of appliedEnchantements) {
+            await activeEffect.delete();
+        }
+        return appliedEnchantements;
     }
 
     static async menu(prompts = {}, config = {}) {

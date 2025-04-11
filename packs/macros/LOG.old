@@ -1,8 +1,3 @@
-2025/03/31-07:02:51.176 e188 Recovering log #2470
-2025/03/31-07:02:51.187 e188 Delete type=0 #2470
-2025/03/31-07:02:51.187 e188 Delete type=3 #2469
-2025/03/31-07:12:22.966 f500 Level-0 table #2474: started
-2025/03/31-07:12:22.966 f500 Level-0 table #2474: 0 bytes OK
-2025/03/31-07:12:22.972 f500 Delete type=0 #2472
-2025/03/31-07:12:22.981 f500 Manual compaction at level-0 from '!folders!Ii9HIim9aSo4W1as' @ 72057594037927935 : 1 .. '!macros!x3Tut8mXj1SqABEa' @ 0 : 0; will stop at (end)
-2025/03/31-07:12:23.009 f500 Manual compaction at level-1 from '!folders!Ii9HIim9aSo4W1as' @ 72057594037927935 : 1 .. '!macros!x3Tut8mXj1SqABEa' @ 0 : 0; will stop at (end)
+2025/04/10-10:55:57.837 a7ac Recovering log #2550
+2025/04/10-10:55:57.851 a7ac Delete type=0 #2550
+2025/04/10-10:55:57.851 a7ac Delete type=3 #2548

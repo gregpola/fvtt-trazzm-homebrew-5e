@@ -525,6 +525,29 @@ class HomebrewMacros {
         }
     }
 
+    static async revertWildShape(actor, effectName) {
+        if (actor.isPolymorphed) {
+            let originalActor = await actor.revertOriginalForm();
+
+            // copy over spell slots
+            const spells = foundry.utils.duplicate(actor.system.spells);
+            if (spells) {
+                await originalActor.update({'system.spells' : spells});
+            }
+
+            // remove features
+            let itemEffect = HomebrewHelpers.findEffect(originalActor, effectName);
+            if (itemEffect) {
+                await MidiQOL.socket().executeAsGM("removeEffects", { actorUuid: originalActor.uuid, effects: [itemEffect.id] });
+            }
+
+            let wildShapeFeature = originalActor.items.find(i => i.name === "Revert Wild Shape");
+            if (wildShapeFeature) {
+                await originalActor.deleteEmbeddedDocuments('Item', [wildShapeFeature.id]);
+            }
+        }
+    }
+
     static async applyLifeDrainEffect(sourceActor, targetActor, damage) {
         // check for existing
         let drainedEffect = targetActor.effects.find(eff => eff.name === "Life Drained");

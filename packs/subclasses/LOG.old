@@ -1,7 +1,3 @@
-2025/03/31-07:02:51.372 d804 Recovering log #2480
-2025/03/31-07:02:51.385 d804 Delete type=0 #2480
-2025/03/31-07:02:51.385 d804 Delete type=3 #2479
-2025/03/31-07:12:23.027 f500 Level-0 table #2484: started
-2025/03/31-07:12:23.027 f500 Level-0 table #2484: 0 bytes OK
-2025/03/31-07:12:23.036 f500 Delete type=0 #2482
-2025/03/31-07:12:23.052 f500 Manual compaction at level-0 from '!items!07UAoZ4FtR0CJzEf' @ 72057594037927935 : 1 .. '!items!zpacKdoHDOzCBBxb' @ 0 : 0; will stop at (end)
+2025/04/10-10:55:58.005 4f48 Recovering log #2563
+2025/04/10-10:55:58.020 4f48 Delete type=0 #2563
+2025/04/10-10:55:58.021 4f48 Delete type=3 #2561

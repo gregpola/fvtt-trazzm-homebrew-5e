@@ -840,6 +840,57 @@ class HomebrewEffects {
         return undefined;
     }
 
+    // for 2024 the origin must be the activating item, not an uuid
+    static async applyPoisonedEffect2024(actor, origin, specialDurations = undefined, seconds = undefined) {
+        if (actor) {
+            const originValue = origin.uuid;
+            const existing = actor.getRollData().effects.find(eff => eff.name === poisonedName && eff.origin === originValue);
+            if (existing) {
+                console.log("HomebrewEffects - not applying condition poisoned, already exists");
+                return false;
+            }
+
+            const hasPoisonImmunity = actor.system.traits.di.value.has('poison');
+            if (hasPoisonImmunity) {
+                console.log("HomebrewEffects - not applying condition poisoned, target is immune");
+                return false;
+            }
+
+            let effectData = {
+                name: origin.name,
+                icon: origin.img,
+                changes: [
+                ],
+                statuses: [
+                    'poisoned'
+                ],
+                flags: {
+                    dae: {
+                        specialDuration: []
+                    }
+                },
+                origin: originValue,
+                duration: {
+                    seconds: null
+                },
+                disabled: false
+            };
+
+            if (specialDurations) {
+                effectData.flags.dae.specialDuration = effectData.flags.dae.specialDuration.concat(specialDurations);
+            }
+
+            if (seconds) {
+                effectData.duration.seconds = seconds;
+            }
+
+            return await MidiQOL.socket().executeAsGM("createEffects",
+                {actorUuid: actor.uuid, effects: [effectData]});
+        }
+
+        return undefined;
+    }
+
     static async applyPoisonedEffect(actor, origin, specialDurations = undefined, seconds = undefined) {
         if (actor) {
             const originValue = typeof origin === "string" ? origin : origin.uuid;
@@ -1081,6 +1132,47 @@ class HomebrewEffects {
         }
     }
 
+    // for 2024 the origin must be the activating item, not an uuid
+    static async applySleepingEffect2024(actor, origin, specialDurations = undefined, seconds = undefined) {
+        if (actor) {
+            const originValue = origin.uuid;
+            const existing = actor.getRollData().effects.find(eff => eff.name === sleepingName && eff.origin === originValue);
+            if (existing) {
+                console.log("HomebrewEffects - not applying condition sleeping, already exists");
+                return false;
+            }
+
+            let sleepingEffect = {
+                name: origin.name,
+                icon: origin.img,
+                changes: [
+                ],
+                statuses: [
+                    'sleeping'
+                ],
+                flags: {
+                    'dae': {
+                        'specialDuration': ['shortRest', 'longRest']
+                    }
+                },
+                origin: originValue,
+                duration: {
+                    seconds: seconds
+                },
+                disabled: false
+            };
+
+            if (specialDurations) {
+                sleepingEffect.flags.dae.specialDuration = sleepingEffect.flags.dae.specialDuration.concat(specialDurations);
+            }
+
+            return await MidiQOL.socket().executeAsGM("createEffects",
+                {actorUuid: actor.uuid, effects: [sleepingEffect]});
+        }
+
+        return undefined;
+    }
+
     static async applySleepingEffect(actor, origin, specialDurations = undefined, seconds = undefined) {
         if (actor) {
             const originValue = typeof origin === "string" ? origin : origin.uuid;
@@ -1141,11 +1233,11 @@ class HomebrewEffects {
             };
 
             if (specialDurations) {
-                effectData.flags.dae.specialDuration = effectData.flags.dae.specialDuration.concat(specialDurations);
+                sleepingEffect.flags.dae.specialDuration = sleepingEffect.flags.dae.specialDuration.concat(specialDurations);
             }
 
             if (seconds) {
-                effectData.duration.seconds = seconds;
+                sleepingEffect.duration.seconds = seconds;
             }
 
             return await MidiQOL.socket().executeAsGM("createEffects",
