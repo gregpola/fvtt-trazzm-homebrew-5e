@@ -1052,4 +1052,51 @@ class HomebrewHelpers {
             console.error(`storeSpellDataInRegion() - unable to find template by id: ${templateId}`);
         }
     }
+
+    static currentTurn() {
+        return game.combat.round + '-' + game.combat.turn;
+    }
+
+    static previousTurn() {
+        let round = game.combat.round;
+        let turn = game.combat.turn;
+
+        if (turn === 0) {
+            round--;
+            turn = game.combat.turns.length - 1;
+        }
+        else {
+            turn--;
+        }
+        return round + '-' + turn;
+    }
+
+    static inCombat() {
+        return !!game.combat;
+    }
+
+    static perTurnCheck(entity, name, eventName, ownTurnOnly, tokenId) {
+        if (!HomebrewHelpers.inCombat()) return true;
+        if (ownTurnOnly && (tokenId !== game.combat.current.tokenId)) return false;
+
+        let checkTurn = HomebrewHelpers.currentTurn();
+        if (eventName === 'tokenTurnEnd') {
+            checkTurn = HomebrewHelpers.previousTurn();
+        }
+
+        let flagValue = entity.flags['fvtt-trazzm-homebrew-5e']?.[name]?.turn;
+        return checkTurn !== flagValue;
+    }
+
+    static async setTurnCheck(entity, name, reset) {
+        let turn = '';
+        if (HomebrewHelpers.inCombat() && !reset) turn = game.combat.round + '-' + game.combat.turn;
+        await entity.setFlag('fvtt-trazzm-homebrew-5e', name + '.turn', turn);
+    }
+
+    static isOwnTurn(token) {
+        if (!HomebrewHelpers.inCombat()) return true;
+        return token.document.id === game.combat.current.tokenId;
+    }
+
 }

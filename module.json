@@ -13,94 +13,6 @@
   ],
   "packs": [
     {
-      "name": "homebrew-backgrounds",
-      "label": "Homebrew Backgrounds",
-      "path": "packs/backgrounds",
-      "type": "Item",
-      "system": "dnd5e",
-      "ownership": {
-        "PLAYER": "OBSERVER",
-        "ASSISTANT": "OWNER"
-      }
-    },
-    {
-      "name": "homebrew-background-features",
-      "label": "Homebrew Background Features",
-      "path": "packs/background-features",
-      "type": "Item",
-      "system": "dnd5e",
-      "ownership": {
-        "PLAYER": "OBSERVER",
-        "ASSISTANT": "OWNER"
-      }
-    },
-    {
-      "name": "homebrew-classes",
-      "label": "Homebrew Classes",
-      "path": "packs/classes",
-      "type": "Item",
-      "system": "dnd5e",
-      "ownership": {
-        "PLAYER": "OBSERVER",
-        "ASSISTANT": "OWNER"
-      }
-    },
-    {
-      "name": "homebrew-class-features",
-      "label": "Homebrew Class Features",
-      "path": "packs/class-features",
-      "type": "Item",
-      "system": "dnd5e",
-      "ownership": {
-        "PLAYER": "OBSERVER",
-        "ASSISTANT": "OWNER"
-      }
-    },
-    {
-      "name": "homebrew-creatures",
-      "label": "Homebrew Monsters",
-      "path": "packs/creatures",
-      "type": "Actor",
-      "system": "dnd5e",
-      "ownership": {
-        "PLAYER": "OBSERVER",
-        "ASSISTANT": "OWNER"
-      }
-    },
-    {
-      "name": "homebrew-creature-features",
-      "label": "Homebrew Monster Features",
-      "path": "packs/creature-features",
-      "type": "Item",
-      "system": "dnd5e",
-      "ownership": {
-        "PLAYER": "OBSERVER",
-        "ASSISTANT": "OWNER"
-      }
-    },
-    {
-      "name": "homebrew-feats",
-      "label": "Homebrew Feats",
-      "path": "packs/feats",
-      "type": "Item",
-      "system": "dnd5e",
-      "ownership": {
-        "PLAYER": "OBSERVER",
-        "ASSISTANT": "OWNER"
-      }
-    },
-    {
-      "name": "homebrew-items",
-      "label": "Homebrew Items",
-      "path": "packs/items",
-      "type": "Item",
-      "system": "dnd5e",
-      "ownership": {
-        "PLAYER": "OBSERVER",
-        "ASSISTANT": "OWNER"
-      }
-    },
-    {
       "name": "homebrew-journal-entries",
       "label": "Homebrew Journal Entries",
       "path": "packs/journal-entries",
@@ -123,97 +35,9 @@
       }
     },
     {
-      "name": "homebrew-playlists",
-      "label": "Homebrew Playlists",
-      "path": "packs/playlists",
-      "type": "Playlist",
-      "system": "dnd5e",
-      "ownership": {
-        "PLAYER": "OBSERVER",
-        "ASSISTANT": "OWNER"
-      }
-    },
-    {
-      "name": "homebrew-races",
-      "label": "Homebrew Races",
-      "path": "packs/races",
-      "type": "Item",
-      "system": "dnd5e",
-      "ownership": {
-        "PLAYER": "OBSERVER",
-        "ASSISTANT": "OWNER"
-      }
-    },
-    {
-      "name": "homebrew-racial-traits",
-      "label": "Homebrew Racial Traits",
-      "path": "packs/racial-traits",
-      "type": "Item",
-      "system": "dnd5e",
-      "ownership": {
-        "PLAYER": "OBSERVER",
-        "ASSISTANT": "OWNER"
-      }
-    },
-    {
-      "name": "homebrew-roll-tables",
-      "label": "Homebrew Roll Tables",
-      "path": "packs/roll-tables",
-      "type": "RollTable",
-      "system": "dnd5e",
-      "ownership": {
-        "PLAYER": "OBSERVER",
-        "ASSISTANT": "OWNER"
-      }
-    },
-    {
       "name": "homebrew-spells",
       "label": "Homebrew Spells",
       "path": "packs/spells",
-      "type": "Item",
-      "system": "dnd5e",
-      "ownership": {
-        "PLAYER": "OBSERVER",
-        "ASSISTANT": "OWNER"
-      }
-    },
-    {
-      "name": "homebrew-subclasses",
-      "label": "Homebrew Subclasses",
-      "path": "packs/subclasses",
-      "type": "Item",
-      "system": "dnd5e",
-      "ownership": {
-        "PLAYER": "OBSERVER",
-        "ASSISTANT": "OWNER"
-      }
-    },
-    {
-      "name": "homebrew-automation-actors",
-      "label": "Homebrew Automation Actors",
-      "path": "packs/automation-actors",
-      "type": "Actor",
-      "system": "dnd5e",
-      "ownership": {
-        "PLAYER": "OBSERVER",
-        "ASSISTANT": "OWNER"
-      }
-    },
-    {
-      "name": "homebrew-automation-items",
-      "label": "Homebrew Automation Items",
-      "path": "packs/automation-items",
-      "type": "Item",
-      "system": "dnd5e",
-      "ownership": {
-        "PLAYER": "OBSERVER",
-        "ASSISTANT": "OWNER"
-      }
-    },
-    {
-      "name": "homebrew-general-features",
-      "label": "Homebrew General Features",
-      "path": "packs/general-features",
       "type": "Item",
       "system": "dnd5e",
       "ownership": {
@@ -369,6 +193,28 @@
       "label": "Backgrounds (2024)",
       "path": "packs/trazzm-backgrounds-2024",
       "type": "Item",
+      "system": "dnd5e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "trazzm-monsters-2024",
+      "label": "Monsters (2024)",
+      "path": "packs/trazzm-monsters-2024",
+      "type": "Actor",
+      "system": "dnd5e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "trazzm-roll-tables-2024",
+      "label": "Roll Tables (2024)",
+      "path": "packs/trazzm-roll-tables-2024",
+      "type": "RollTable",
       "ownership": {
         "PLAYER": "OBSERVER",
         "ASSISTANT": "OWNER"
@@ -376,10 +222,10 @@
       "system": "dnd5e"
     },
     {
-      "name": "trazzm-monsters-2024",
-      "label": "Monsters (2024)",
-      "path": "packs/trazzm-monsters-2024",
-      "type": "JournalEntry",
+      "name": "trazzm-monster-features-2024",
+      "label": "Monster Features (2024)",
+      "path": "packs/trazzm-monster-features-2024",
+      "type": "Item",
       "ownership": {
         "PLAYER": "OBSERVER",
         "ASSISTANT": "OWNER"
@@ -403,7 +249,9 @@
             "trazzm-feats-2024",
             "trazzm-items-2024",
             "trazzm-monsters-2024",
+            "trazzm-monster-features-2024",
             "trazzm-races-2024",
+            "trazzm-roll-tables-2024",
             "trazzm-spells-2024",
             "trazzm-subclasses-2024",
             "trazzm-automation-actors-2024",
@@ -416,23 +264,7 @@
           "sorting": "a",
           "color": "#eeb5a0",
           "packs": [
-            "homebrew-backgrounds",
-            "homebrew-background-features",
-            "homebrew-classes",
-            "homebrew-class-features",
-            "homebrew-creatures",
-            "homebrew-creature-features",
-            "homebrew-feats",
-            "homebrew-items",
-            "homebrew-races",
-            "homebrew-racial-traits",
-            "homebrew-spells",
-            "homebrew-subclasses",
-            "homebrew-general-features",
-            "homebrew-playlists",
-            "homebrew-roll-tables",
-            "homebrew-automation-actors",
-            "homebrew-automation-items"
+            "homebrew-spells"
           ],
           "folders": []
         },
@@ -532,6 +364,13 @@
           "minimum": "4.2.2",
           "maximum": "4.9.99"
         }
+      }
+    ],
+    "recommends": [
+      {
+        "id": "automated-conditions-5e",
+        "type": "module",
+        "compatibility": {}
       }
     ]
   },
