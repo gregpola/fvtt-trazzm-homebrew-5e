@@ -194,7 +194,11 @@
       "dnd-tashas-cauldron.tattoo"
     ],
     "markPlayerDefeated": false,
-    "markNonPlayerDefeated": false
+    "markNonPlayerDefeated": false,
+    "enableDDBGL": false,
+    "defaultSaveMultiplier": 0.5,
+    "activationAutomation": "auto",
+    "gmAttackDamageCards": false
   },
   "midiSoundSettings": {
     "any": {},
@@ -233,7 +237,7 @@
       "system": "dnd5e",
       "coreVersion": "12.331",
       "systemVersion": "4.3.8",
-      "midiVersion": "12.4.39"
+      "midiVersion": "12.4.41"
     }
   }
 }

@@ -1,3 +1,7 @@
-2025/04/16-06:49:37.415 45dc Recovering log #316
-2025/04/16-06:49:37.429 45dc Delete type=0 #316
-2025/04/16-06:49:37.430 45dc Delete type=3 #314
+2025/04/23-08:51:12.514 fd7c Recovering log #343
+2025/04/23-08:51:12.527 fd7c Delete type=0 #343
+2025/04/23-08:51:12.527 fd7c Delete type=3 #342
+2025/04/23-08:52:02.063 fb24 Level-0 table #347: started
+2025/04/23-08:52:02.063 fb24 Level-0 table #347: 0 bytes OK
+2025/04/23-08:52:02.068 fb24 Delete type=0 #345
+2025/04/23-08:52:02.076 fb24 Manual compaction at level-0 from '!folders!3wY92TRgyyyDkpmF' @ 72057594037927935 : 1 .. '!items.effects!phbscrInnateSorc.WtiHwWONdmCOeSDR' @ 0 : 0; will stop at (end)

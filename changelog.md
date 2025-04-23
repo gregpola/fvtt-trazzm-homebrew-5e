@@ -27,3 +27,8 @@
 * Monsters Added: various Drow
 * Spells Updated: Dispel Magic, Insect Plague, Magic Missile, Mass Cure Wounds, Moonbeam, Ray of Sickness, Spike Growth, Wall of Fire
 * Updated all custom character items for Rise of the Drow
+
+# 12.4.3
+* Built spell lists for all casting classes. You can use the 'Compendium Browser' to pick your spells, filtering by class, and if it shows in the Homebrew and PHB please select the one from the Homebrew.
+* Races Updated: Added the three starting languages to all races
+* Spells Updated: Magic Stone, Spirit Guardians

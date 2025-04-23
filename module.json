@@ -91,7 +91,7 @@
     },
     {
       "name": "homebrew-dungeons-drakkenheim",
-      "label": "Homebrew Dungeons of Darkkenheim",
+      "label": "Homebrew Dungeons of Drakkenheim",
       "path": "packs/homebrew-dungeons-drakkenheim",
       "type": "Item",
       "system": "dnd5e",
@@ -384,7 +384,19 @@
     "module/HomebrewEffects.js"
   ],
   "flags": {
-    "allowBugReporter": true
+    "allowBugReporter": true,
+    "dnd5e": {
+      "spellLists": [
+        "Compendium.fvtt-trazzm-homebrew-5e.homebrew-journal-entries.JournalEntry.wCf1ircfVpCmXLbf.JournalEntryPage.wwia6Wwo4BgE9GSI",
+        "Compendium.fvtt-trazzm-homebrew-5e.homebrew-journal-entries.JournalEntry.wCf1ircfVpCmXLbf.JournalEntryPage.SkHptN2PTzFGDaEj",
+        "Compendium.fvtt-trazzm-homebrew-5e.homebrew-journal-entries.JournalEntry.wCf1ircfVpCmXLbf.JournalEntryPage.LhvuDQEyrCdg5EfU",
+        "Compendium.fvtt-trazzm-homebrew-5e.homebrew-journal-entries.JournalEntry.wCf1ircfVpCmXLbf.JournalEntryPage.8yD9Jgp404hfZ9ie",
+        "Compendium.fvtt-trazzm-homebrew-5e.homebrew-journal-entries.JournalEntry.wCf1ircfVpCmXLbf.JournalEntryPage.5HnIk6HsrSxkvkz5",
+        "Compendium.fvtt-trazzm-homebrew-5e.homebrew-journal-entries.JournalEntry.wCf1ircfVpCmXLbf.JournalEntryPage.VfZ5mH2ZuyFq82Ga",
+        "Compendium.fvtt-trazzm-homebrew-5e.homebrew-journal-entries.JournalEntry.wCf1ircfVpCmXLbf.JournalEntryPage.sSzagq8GvYXpfmfs",
+        "Compendium.fvtt-trazzm-homebrew-5e.homebrew-journal-entries.JournalEntry.wCf1ircfVpCmXLbf.JournalEntryPage.6AnqLUowgdsqMFvz"
+      ]
+    }
   },
   "url": "https://github.com/gregpola/fvtt-trazzm-homebrew-5e",
   "manifest": "This is auto replaced",
