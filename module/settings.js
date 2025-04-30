@@ -3,8 +3,8 @@ export function registerSettings() {
 
     game.settings.register("fvtt-trazzm-homebrew-5e", "lastVersion", {
         name: "Last Version",
-        hint: "The last version checked against to determine whether to show the changelog.",
-        scope: "world",
+        hint: "The last version checked against to determine whether to show the changelog",
+        scope: "client",
         config: false,
         type: String,
         default: "1.0.0"
