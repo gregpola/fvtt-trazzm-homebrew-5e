@@ -14,7 +14,7 @@
   "packs": [
     {
       "name": "homebrew-journal-entries",
-      "label": "Homebrew Journal Entries",
+      "label": "Homebrew Journals",
       "path": "packs/journal-entries",
       "type": "JournalEntry",
       "system": "dnd5e",
@@ -47,7 +47,7 @@
     },
     {
       "name": "homebrew-rise-of-the-drow",
-      "label": "Homebrew Rise of the Drow",
+      "label": "Rise of the Drow",
       "path": "packs/homebrew-rise-of-the-drow",
       "type": "Item",
       "system": "dnd5e",
@@ -58,7 +58,7 @@
     },
     {
       "name": "homebrew-ravenloft",
-      "label": "Homebrew Ravenloft",
+      "label": "Ravenloft",
       "path": "packs/homebrew-ravenloft",
       "type": "Item",
       "system": "dnd5e",
@@ -69,7 +69,7 @@
     },
     {
       "name": "homebrew-princes-of-the-apocalypse",
-      "label": "Homebrew Princes of the Apocalypse",
+      "label": "Princes of the Apocalypse",
       "path": "packs/homebrew-princes-of-the-apocalypse",
       "type": "Item",
       "system": "dnd5e",
@@ -80,7 +80,7 @@
     },
     {
       "name": "homebrew-rime-of-the-frostmaiden",
-      "label": "Homebrew Rime of the Frostmaiden",
+      "label": "Rime of the Frostmaiden",
       "path": "packs/homebrew-rime-of-the-frostmaiden",
       "type": "Item",
       "system": "dnd5e",
@@ -91,7 +91,7 @@
     },
     {
       "name": "homebrew-dungeons-drakkenheim",
-      "label": "Homebrew Dungeons of Drakkenheim",
+      "label": "Dungeons of Drakkenheim",
       "path": "packs/homebrew-dungeons-drakkenheim",
       "type": "Item",
       "system": "dnd5e",

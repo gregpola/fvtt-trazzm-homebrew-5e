@@ -45,7 +45,6 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType))
 
 		const _flagGroup = "fvtt-trazzm-homebrew-5e";
 		const _poisonedWeaponFlag = "poisoned-weapon";
-
 		await actor.setFlag(_flagGroup, flagName, target.actor.uuid);
 		let flag = actor.getFlag(_flagGroup, flagName);
 		await actor.unsetFlag(_flagGroup, flagName);
@@ -53,11 +52,8 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType))
 		actor.getRollData().effects.find(eff => eff.name === name);
 		let effectIdsToRemove = actor.getRollData().effects.filter(e => e.origin === stuckEffect.origin).map(effect => effect.id);
 
-		const sneakActivity = macroItem.system.activities?.contents[0];
-
 
 		ui.notifications.error(`${optionName}: ${version} - no shared language`);
-
 		ChatMessage.create({
 			content: `${actorToken.name}'s ${selectedItem.name} is blessed with positive energy`,
 			speaker: ChatMessage.getSpeaker({actor: actor})
@@ -73,31 +69,6 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType))
 			console.info(`${optionName} - unable to locate the actor player, sending to GM`);
 			browserUser = game.users?.activeGM;
 		}
-
-		const useFeature = await foundry.applications.api.DialogV2.confirm({
-			window: {
-				title: `${optionName}`,
-			},
-			content: `<p>Use Piercer Reroll on ${roll.result} on a d${roll.die}?</p>`,
-			rejectClose: false,
-			modal: true
-		});
-
-		await foundry.applications.api.DialogV2.prompt({
-			content: content,
-			rejectClose: false,
-			ok: {
-				callback: (event, button) => {
-					return button.form.elements.ability.value;
-				}
-			},
-			window: {
-				title: title
-			},
-			position: {
-				width: 400
-			}
-		});
 
 		await game.MonksTokenBar.requestRoll([{token: targetToken}], {
 			request: [{"type": "save", "key": "con"}],

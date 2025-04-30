@@ -12,43 +12,43 @@
     Using a Higher-Level Spell Slot.The damage increases by 1d10 for each spell slot level above 2.
  */
 const optionName = "Moonbeam";
-const version = "12.4.0";
+const version = "12.4.1";
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
 
 // the enter or end turn macro
+const combatTime = game.combat ? `${game.combat.id}-${game.combat.round + game.combat.turn / 100}` : 1;
 let targetToken = event.data.token;
 if (targetToken) {
-    let [targetCombatant] = game.combat.getCombatantsByToken(targetToken);
-    if (!targetCombatant) return;
+    const originActor = await fromUuid(region.flags['region-attacher'].actorUuid);
+    const sourceItem = await fromUuid(region.flags['region-attacher'].itemUuid);
 
-    const flagName = `moonbeam-${region.id}`;
-    if (!HomebrewHelpers.perTurnCheck(targetCombatant, flagName, event.name)) return;
-    await HomebrewHelpers.setTurnCheck(targetCombatant, flagName);
+    let targetCombatant = game.combat.getCombatantByToken(targetToken);
+    if (targetCombatant) {
+        const flagName = `moonbeam-${originActor.id}`;
+        if (HomebrewHelpers.perTurnCheck(targetCombatant, flagName, event.name)) {
+            // synthetic activity use
+            const activity = sourceItem.system.activities.find(a => a.identifier === 'moonbeam-damage');
+            if (activity) {
+                await HomebrewHelpers.setTurnCheck(targetCombatant, flagName);
+                let targetUuids = [targetToken.uuid];
 
-    // get cast data
-    let sourceActor = targetToken.actor; // default
-    let sourceToken = targetToken; // default
-    let saveDC = 14;
-    let diceCount = 2;
-    const itemUuid = region.getFlag('region-attacher', 'itemUuid');
-    const sourceItem = await fromUuid(itemUuid);
-    if (sourceItem) {
-        if (sourceItem.actor) {
-            sourceActor = sourceItem.actor;
-            sourceToken = canvas.scene.tokens.find(t => t.actor.id === sourceActor.id);
-            saveDC = sourceItem.actor.system.attributes.spelldc;
-            diceCount = 2 + (sourceItem.system.level - 2);
+                const options = {
+                    midiOptions: {
+                        targetUuids: targetUuids,
+                        noOnUseMacro: true,
+                        configureDialog: false,
+                        showFullCard: false,
+                        ignoreUserTargets: true,
+                        checkGMStatus: true,
+                        autoRollAttack: true,
+                        autoRollDamage: "always",
+                        fastForwardAttack: true,
+                        fastForwardDamage: true,
+                        workflowData: true
+                    }
+                };
+                let activityUse = await MidiQOL.completeActivityUse(activity.uuid, options, {}, {});
+            }
         }
     }
-
-    // roll save
-    const config = { undefined, ability: "con", target: saveDC };
-    const dialog = {};
-    const message = { data: { speaker: ChatMessage.implementation.getSpeaker({ actor: targetToken.actor }) } };
-    let saveResult = await targetToken.actor.rollSavingThrow(config, dialog, message);
-    const divisor = saveResult[0].isSuccess ? 2 : 1;
-
-    // apply damage
-    const damageRoll = await new CONFIG.Dice.DamageRoll(`${diceCount}d10/${divisor}`, {}, {type: 'radiant'}).evaluate();
-    await new MidiQOL.DamageOnlyWorkflow(sourceActor, sourceToken, null, null, [targetToken], damageRoll, {flavor: 'Struck by moon light', itemCardId: "new", itemData: sourceItem?.toObject()});
 }

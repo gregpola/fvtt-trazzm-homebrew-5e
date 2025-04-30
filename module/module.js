@@ -30,6 +30,20 @@ Hooks.once('init', async function () {
     initialize_module();
 });
 
+Hooks.once("ready", async () => {
+    // Handle showing changelog
+    const currentVersion = game.modules.get("fvtt-trazzm-homebrew-5e").version;
+    const lastVersion = game.settings.get("fvtt-trazzm-homebrew-5e", "lastVersion");
+
+    if (foundry.utils.isNewerVersion(currentVersion, lastVersion)) {
+        const journal = await fromUuid("Compendium.fvtt-trazzm-homebrew-5e.homebrew-journal-entries.JournalEntry.L9YHsoeODbdhqdKU");
+        const page = journal.pages.contents[journal.pages.contents.length - 1];
+        journal.sheet.render(true, {pageId: page.id});
+        game.settings.set("fvtt-trazzm-homebrew-5e", "lastVersion", currentVersion)
+    }
+});
+
+
 Hooks.once('socketlib.ready', async function() {
     socket = socketlib.registerModule('fvtt-trazzm-homebrew-5e');
     socket.register('doTurnStartOptions', doTurnStartOptions);

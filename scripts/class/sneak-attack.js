@@ -10,7 +10,7 @@
 
     Current Sneak Attack Damage: @scale.rogue.sneak-attack
 */
-const version = "12.4.0";
+const version = "12.4.1";
 const optionName = "Sneak Attack";
 const timeFlag = "last-sneak-attack";
 
@@ -36,14 +36,15 @@ try {
         if (workflow.activity.actionType === "mwak" && !rolledItem?.system.properties?.has("fin")) return {};
 
         // check for sneak attack dice
-        const sneakScale = actor.system.scale?.rogue['sneak-attack']; //  ? sneakDamageFormula =
-        let sneakDice = sneakScale?.number;
-        let sneakDamageFormula = sneakScale?.formula;
-        if (!sneakDamageFormula) {
-            if (actor.type === "npc") {
-                sneakDice = Math.ceil(actor.system.details.cr / 2);
-                sneakDamageFormula = `${sneakDice}d6`;
-            }
+        let sneakDice = 1;
+        let sneakDamageFormula = '1d6';
+        if (actor.system.scale && actor.system.scale.rogue) {
+            sneakDice = actor.system.scale.rogue['sneak-attack'].number;
+            sneakDamageFormula = actor.system.scale.rogue['sneak-attack'].formula;
+        }
+        else if (actor.type === "npc") {
+            sneakDice = Math.ceil(actor.system.details.cr / 2);
+            sneakDamageFormula = `${sneakDice}d6`;
         }
 
         if (!sneakDamageFormula) {

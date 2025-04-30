@@ -32,3 +32,14 @@
 * Built spell lists for all casting classes. You can use the 'Compendium Browser' to pick your spells, filtering by class, and if it shows in the Homebrew and PHB please select the one from the Homebrew.
 * Races Updated: Added the three starting languages to all races
 * Spells Updated: Magic Stone, Spirit Guardians
+
+# 12.4.4
+* Added Magic Stone to the Druid and Warlock spell lists
+* Added a changelog Journal and display it on startup 
+* Backgrounds: Custom
+* Classes: Barbarian
+* Items: Klavek Moonpier
+* Monsters: More Drow
+* Races: All to fix language choices, Aasimar features
+* Spells: Beacon of Hope, Cloud of Daggers, Cloudkill, Grease, Hold Person, Holy Dart, Insect Plague, Moonbeam, Scorching Ray, Stinking Cloud, Web
+* Subclasses: Oath of Devotion

@@ -241,40 +241,14 @@ export class SaveHandler {
                     });
                     await SaveHandler.wait(100);
                 }
-
-                // check for concentration save modifiers
-                if (workflow.item.name === 'Concentration') {
-                    // Check for Starry Form - Dragon which grants minimum concentration save of 10
-                    let starryFormDragonEffect = tokenDoc.document.actor.effects.find(f => f.name === 'starry-form-dragon');
-                    if (starryFormDragonEffect) {
-                        await MidiQOL.socket().executeAsGM('createEffects', {
-                            'actorUuid': tokenDoc.document.actor.uuid,
-                            'effects': [starryFormDragonConcentration]
-                        });
-                        await SaveHandler.wait(100);
-                    }
-                }
             }
         });
 
         /**
          * Handle macro enforced save, the rollData must include the damageType for support
          */
-        Hooks.on("dnd5e.preRollAbilitySave", async (actor, rollData, ability) => {
-            logger.info("dnd5e.preRollAbilitySave");
-
-            // get all the conditions in the rollData
-            let itemConditions = new Set();
-            if (rollData.damageType)
-                itemConditions.add(rollData.damageType);
-
-            if (itemConditions.size > 0) {
-                for (const condition of itemConditions) {
-                    if (HomebrewHelpers.hasResilience(actor, condition)) {
-                        rollData.advantage = true;
-                    }
-                }
-            }
+        Hooks.on("dnd5e.preRollSavingThrowV2", async (config, dialog, message) => {
+            logger.info("dnd5e.preRollSavingThrowV2");
         });
 
 
