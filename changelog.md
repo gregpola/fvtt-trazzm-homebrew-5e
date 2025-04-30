@@ -39,7 +39,10 @@
 * Backgrounds: Custom
 * Classes: Barbarian
 * Items: Klavek Moonpier
-* Monsters: More Drow
+* Monsters: More RotD additions
 * Races: All to fix language choices, Aasimar features
 * Spells: Beacon of Hope, Cloud of Daggers, Cloudkill, Grease, Hold Person, Holy Dart, Insect Plague, Moonbeam, Scorching Ray, Stinking Cloud, Web
 * Subclasses: Oath of Devotion
+
+# 12.4.4.1
+* Fixed the module version check for displaying the changelog
