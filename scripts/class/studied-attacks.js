@@ -4,87 +4,46 @@
  */
 const version = "12.4.0";
 const optionName = "Studied Attacks";
-const effectName = `${optionName} - Advantage`;
+const _flagGroup = "fvtt-trazzm-homebrew-5e";
+const _flagName = "studied-attacks";
 
 try {
-    if (game.combat && ["mwak", "rwak", "msak", "rsak"].includes(rolledItem.system.actionType)) {
-        if (args[0].tag === "OnUse" && args[0].macroPass === "postAttackRoll") {
-            let activeEffects = actor.getRollData().effects.filter(i => i.name === effectName);
-            const effect = HomebrewHelpers.findEffect(actor, effectName);
-            const targetToken = workflow.hitTargets.first();
-            let extraDamageTargets = workflow.hitTargets.filter(target => flag.targets.includes(target.document.uuid));
-
-            if (targetToken) {
-
-            }
-        }
-        else if (args[0].tag === "OnUse" && args[0].macroPass === "preAttackRoll") {
+    if (args[0].tag === "OnUse" && args[0].macroPass === "preAttackRoll") {
+        let flag = actor.getFlag(_flagGroup, _flagName);
+        if (flag && !checkExpired(flag)) {
             const targetToken = workflow.targets.first();
-            let flag = actor.getFlag(_flagGroup, _flagName);
-            const isExpired = checkExpired(flag);
-
-            if (flag) {
-                if (!isExpired && targetToken && flag.targetId === targetToken.id) {
-                    workflow.advantage = true;
-                }
-
-                if (isExpired) {
-                    await actor.unsetFlag(_flagGroup, _flagName);
-                }
+            if (targetToken.id === flag.targetTokenId) {
+                workflow.advantage = true;
+                await actor.setFlag(_flagGroup, _flagName, {targetTokenId: flag.targetTokenId, round: flag.round, expired: true });
             }
         }
     }
-    else {
-        console.debug(`${optionName} - not in combat -OR- an attack roll`);
+    else if (args[0].tag === "OnUse" && args[0].macroPass === "postAttackRoll") {
+        let flag = actor.getFlag(_flagGroup, _flagName);
+        if (flag) {
+            await actor.unsetFlag(_flagGroup, _flagName);
+        }
+        else {
+            let targetToken = workflow.hitTargets.first();
+            if (!targetToken) {
+                targetToken = workflow.targets.first();
+                await actor.setFlag(_flagGroup, _flagName, {targetTokenId: targetToken.id, round: game.combat.round, expired: false });
+            }
+        }
     }
 
 } catch (err) {
     console.error(`${optionName}: ${version}`, err);
 }
 
-async function markAdvantage(actorId, targetId) {
-    const effectData = {
-        name: `${effectName}`,
-        icon: "icons/skills/targeting/crosshair-ringed-gray.webp",
-        origin: macroItem.uuid,
-        type: "base",
-        changes: [
-            {
-                key: 'flags.midi-qol.advantage.attack.all',
-                mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-                value: 'targetId === "' + targetId + '"',
-                priority: 20
-            }
-        ],
-        disabled: false,
-        duration: {
-        },
-        transfer: false,
-        flags: {
-            dae: {
-                stackable: "multi",
-                specialDuration: [
-                    "turnEndSource"
-                ]
-            },
-            trazzm: {
-                targetId: targetId
-            }
-        }
-    };
-
-    await MidiQOL.socket().executeAsGM("createEffects", { actorUuid: actorId, effects: [effectData] });
-}
-
 function checkExpired(flag) {
     if (flag) {
         const roundDiff = game.combat.round - flag.round;
-        const turnDiff = game.combat.turn - flag.turn;
-
         if (roundDiff > 1) {
             return true;
         }
-        else if ((roundDiff === 1) && (turnDiff > 0)) {
+
+        if (flag.expired) {
             return true;
         }
     }

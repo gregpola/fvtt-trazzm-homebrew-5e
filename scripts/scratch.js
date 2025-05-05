@@ -1,8 +1,8 @@
 /*
 	
 */
-const version = "12.4.0";
 const optionName = "Precision";
+const version = "12.4.0";
 
 try {
 	if (args[0].macroPass === "postActiveEffects") {
@@ -113,15 +113,10 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType))
 			await applyEffects(targetToken, actor.system.attributes.spelldc, spellLevel);
 		}
 
-
-		if (args[0] === "on") {
-			console.log(`${optionName}: ON`);
-		} else if (args[0] === "off") {
-			console.log(`${optionName}: OFF`);
-		} else if (args[0] === "each") {
-			console.log(`${optionName}: EACH`);
+		let targetToken = macroActivity.targets.first();
+		if (targetToken) {
+			await targetToken.actor.toggleStatusEffect('prone', {active: true});
 		}
-
 
 // Overtime setup to remove a condition on save
 		turn=end, saveAbility=wis, saveDC=@attributes.spelldc, label=Wrathful Smite

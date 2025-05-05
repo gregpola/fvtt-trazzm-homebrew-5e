@@ -11,6 +11,8 @@ const optionName = "Spirit Guardians";
 const version = "12.4.0";
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
 
+// NO LONGER USED!
+
 // once per turn damage
 // only during 'on' phase
 if (args[0] !== 'off') {

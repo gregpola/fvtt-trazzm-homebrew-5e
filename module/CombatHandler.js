@@ -14,26 +14,23 @@ export class CombatHandler {
 
     static hooks() {
         Hooks.on("dnd5e.preRollInitiative", (actor, roll) => {
+            console.log('dnd5e.preRollInitiative');
         });
 
         Hooks.on("dnd5e.rollInitiative", async (actor, combatants) => {
+            // TODO for some reason this is only called when initiative is rolled from the sheet
+            // handle Bard's Superior Inspiration
+            //const relentless = actor.items.getName("Relentless");
+
+            // handle Monk's Perfect Focus
+            // const monksFocus = actor.items.getName("Monk's Focus");
+            // const perfectFocus = actor.items.getName("Perfect Focus");
+            // if (monksFocus && perfectFocus) {
+            //     console.log('Monk');
+            // }
         });
 
         Hooks.on("deleteCombat", async (combat) => {
-            // let tokens = combat.combatants.map(c => c.token);
-            //
-            // // remove temporary mutations related to combat
-            // for (let token of tokens) {
-            //     const escapeGrapple = actor.items.find(i => i.name === "Escape Grapple");
-            //     if (escapeGrapple) {
-            //         escapeGrapple.delete();
-            //     }
-            //
-            //     const breakFree = actor.items.find(i => i.name === "Break Free");
-            //     if (breakFree) {
-            //         breakFree.delete();
-            //     }
-            // }
         });
 
         Hooks.on("updateCombat", async (combat, update, context, userId) => {

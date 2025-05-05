@@ -44,5 +44,8 @@
 * Spells: Beacon of Hope, Cloud of Daggers, Cloudkill, Grease, Hold Person, Holy Dart, Insect Plague, Moonbeam, Scorching Ray, Stinking Cloud, Web
 * Subclasses: Oath of Devotion
 
-# 12.4.4.1
-* Fixed the module version check for displaying the changelog
+# 12.4.5
+* Classes: Fixed Reckless Attack, Updated Brutal Strike and Improved Brutal Strike, Updated Studied Attacks, Added Perfect Focus, Added Superior Inspiration, Updated Quickened Spell
+* Races: Fixed all races that are granted spells, fixed all races so that Thieves' Cant cannot be chosen as a starting language
+* Spells: Fog Cloud, Spirit Guardians
+* Rise of the Drow Items: Klavek Moonpier, Sashka
