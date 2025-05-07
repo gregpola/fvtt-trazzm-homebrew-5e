@@ -4,13 +4,18 @@
 
     @scale.druid.elemental-fury
 */
-const version = "12.4.0";
+const version = "12.4.1";
 const optionName = "Elemental Fury: Primal Strike";
 const timeFlag = "primal-strike-time";
 
 try {
     if (args[0].macroPass === "DamageBonus") {
         if (!workflow.hitTargets.size) return {};
+
+        // make sure it is an attack
+        if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType)) {
+            return {};
+        }
 
         // Check for availability i.e. once per actors turn
         if (!game.combat || !HomebrewHelpers.isAvailableThisTurn(actor, timeFlag)) {

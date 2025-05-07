@@ -1,7 +1,3 @@
-2025/05/05-12:17:05.440 aeec Recovering log #2716
-2025/05/05-12:17:05.454 aeec Delete type=0 #2716
-2025/05/05-12:17:05.454 aeec Delete type=3 #2715
-2025/05/05-12:17:15.234 34e8 Level-0 table #2720: started
-2025/05/05-12:17:15.234 34e8 Level-0 table #2720: 0 bytes OK
-2025/05/05-12:17:15.239 34e8 Delete type=0 #2718
-2025/05/05-12:17:15.253 34e8 Manual compaction at level-0 from '!journal!L9YHsoeODbdhqdKU' @ 72057594037927935 : 1 .. '!journal.pages!wCf1ircfVpCmXLbf.yspaGdvukcwiodvl' @ 0 : 0; will stop at (end)
+2025/05/07-15:12:03.660 6ec Recovering log #2743
+2025/05/07-15:12:03.672 6ec Delete type=0 #2743
+2025/05/07-15:12:03.672 6ec Delete type=3 #2741

@@ -49,3 +49,8 @@
 * Races: Fixed all races that are granted spells, fixed all races so that Thieves' Cant cannot be chosen as a starting language
 * Spells: Fog Cloud, Spirit Guardians
 * Rise of the Drow Items: Klavek Moonpier, Sashka
+
+# 12.4.6
+* Classes: Fixed Primal Strike to only apply on attacks
+* Spells: Fixed duration bug in Hex
+* Subclasses: Updated Hexblade to match the Unearthed Arcana

@@ -18,7 +18,7 @@
     "hidePlayerDamageCard": true,
     "autoCEEffects": "none",
     "autoCheckHit": "all",
-    "autoCheckSaves": "all",
+    "autoCheckSaves": "allShow",
     "autoFastForward": "all",
     "autoItemEffects": "applyLeave",
     "autoRemoveSummonedCreature": true,
@@ -70,8 +70,8 @@
     "gmDoReactions": "all",
     "gmHide3dDice": false,
     "gmLateTargeting": "none",
-    "gmRemoveButtons": "all",
-    "hideRollDetails": "all",
+    "gmRemoveButtons": "off",
+    "hideRollDetails": "none",
     "ignoreSpellReactionRestriction": false,
     "itemRollStartWorkflow": false,
     "itemUseSound": "",
@@ -236,8 +236,8 @@
     "exportSource": {
       "system": "dnd5e",
       "coreVersion": "12.331",
-      "systemVersion": "4.3.8",
-      "midiVersion": "12.4.41"
+      "systemVersion": "4.4.1",
+      "midiVersion": "12.4.50"
     }
   }
 }

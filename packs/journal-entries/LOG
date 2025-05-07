@@ -1,3 +1,5 @@
-2025/05/05-12:18:52.943 aef4 Recovering log #2719
-2025/05/05-12:18:52.955 aef4 Delete type=0 #2719
-2025/05/05-12:18:52.955 aef4 Delete type=3 #2717
+2025/05/07-16:23:07.857 aec8 Recovering log #2746
+2025/05/07-16:23:07.858 aec8 Level-0 table #2748: started
+2025/05/07-16:23:07.868 aec8 Level-0 table #2748: 9843 bytes OK
+2025/05/07-16:23:07.885 aec8 Delete type=0 #2746
+2025/05/07-16:23:07.887 aec8 Delete type=3 #2745
