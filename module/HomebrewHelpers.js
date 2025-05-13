@@ -1110,4 +1110,14 @@ class HomebrewHelpers {
 
         return false;
     }
+
+    static hasMastery(actor, item) {
+        if (actor && item) {
+            if (actor.system.traits.weaponProf.mastery.value.has(item.system.type.baseItem)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

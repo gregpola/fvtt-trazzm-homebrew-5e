@@ -1,3 +1,7 @@
-2025/05/07-16:23:08.123 b124 Recovering log #473
-2025/05/07-16:23:08.144 b124 Delete type=0 #473
-2025/05/07-16:23:08.145 b124 Delete type=3 #472
+2025/05/13-10:31:26.491 c848 Recovering log #502
+2025/05/13-10:31:26.503 c848 Delete type=0 #502
+2025/05/13-10:31:26.503 c848 Delete type=3 #500
+2025/05/13-10:34:05.019 105ec Level-0 table #507: started
+2025/05/13-10:34:05.019 105ec Level-0 table #507: 0 bytes OK
+2025/05/13-10:34:05.025 105ec Delete type=0 #505
+2025/05/13-10:34:05.025 105ec Manual compaction at level-0 from '!folders!3wY92TRgyyyDkpmF' @ 72057594037927935 : 1 .. '!items.effects!phbscrInnateSorc.WtiHwWONdmCOeSDR' @ 0 : 0; will stop at (end)

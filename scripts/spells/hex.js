@@ -5,7 +5,7 @@
 
     If the target drops to 0 Hit Points before this spell ends, you can take a Bonus Action on a later turn to curse a new creature.
 */
-const version = "12.4.0";
+const version = "12.4.1";
 const optionName = "Hex";
 
 try {
@@ -28,9 +28,7 @@ try {
             }
 
             if (isMarked) {
-                const diceMult = workflow.isCritical ? 2 : 1;
-
-                return new game.system.dice.DamageRoll(`${diceMult}d6`, {}, {
+                return new game.system.dice.DamageRoll('1d6', {}, {
                     isCritical: workflow.isCritical,
                     properties: ["mgc"],
                     type: "necrotic",

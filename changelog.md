@@ -51,6 +51,13 @@
 * Rise of the Drow Items: Klavek Moonpier, Sashka
 
 # 12.4.6
-* Classes: Fixed Primal Strike to only apply on attacks
+* Classes: Fixed Druid - Primal Strike to only apply on attacks
 * Spells: Fixed duration bug in Hex
 * Subclasses: Updated Hexblade to match the Unearthed Arcana
+
+# 12.4.7
+* Aasimar: fixed Celestial Revelation damage bonus and improved visuals.
+* Smite Spells: all smite spells have been updated to be used by the new Smite Handler feature. If you prepare any smite spells, add the feature from the Spells (2024) compendium.
+* Spells: Fixed Hex damage when rolling a critical hit. Added Conjure Barrage.
+* Added Undead Fortitude feature to the Monster Features (2024) compendium. Replace the one in your actors to get automation.
+* Added automation to the following weapon masteries: Cleave, Graze, Push, Sap, Slow, Topple, Vex

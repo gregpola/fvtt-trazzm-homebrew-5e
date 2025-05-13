@@ -44,6 +44,7 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType))
 
 
 		const _flagGroup = "fvtt-trazzm-homebrew-5e";
+		const _flagName = "mastery-vex-target";
 		const _poisonedWeaponFlag = "poisoned-weapon";
 		await actor.setFlag(_flagGroup, flagName, target.actor.uuid);
 		let flag = actor.getFlag(_flagGroup, flagName);
@@ -61,6 +62,7 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType))
 
 		await targetToken.actor.toggleStatusEffect("poisoned", {active: false});
 
+		'flags.fvtt-trazzm-homebrew-5e.DivineSmite.level OVERRIDE @scaling'
 
 		const damageTypes = [['🧪 Acid', 'acid'], ['❄️ Cold', 'cold'], ['🔥 Fire', 'fire'], ['⚡ Lightning', 'lightning'], ['☁️ Thunder', 'thunder']]; //All possible damage types
 
@@ -152,56 +154,4 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType))
 		if (!userID) {
 
 			return;
-		}
-
-		<section className="simple-block">
-			<img style="margin: 0px 15px 15px 0px; border: 0px; float: right"
-				 src="modules/fvtt-trazzm-homebrew-5e/assets/races/race-aarakocra.webp" width="420" height="509"/>
-		</section>
-
-		<section className="secret">
-			<p><strong>Foundry Note</strong></p>
-			<p>Our house rule gives three times your Druid level in temporary hit points</p>
-		</section>
-
-<section className="secret">
-	<p><strong>Foundry Note</strong></p>
-	<p>Not yet automated.</p>
-</section>
-
-
-		async function applyEffects(targetToken, macroItem) {
-			let effectData = {
-				name: optionName,
-				icon: "icons/skills/melee/strike-sword-dagger-runes-yellow.webp",
-				origin: macroItem.uuid,
-				changes: [
-					{
-						key: 'flags.midi-qol.grants.advantage.attack.all',
-						value: '1',
-						mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-						priority: 20
-					},
-					{
-						key: 'system.traits.ci.value',
-						value: 'invisible',
-						mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-						priority: 20
-					},
-					{
-						key: 'ATL.light.bright',
-						mode: CONST.ACTIVE_EFFECT_MODES.UPGRADE,
-						value: '5',
-						priority: 22
-					},
-					{
-						key: 'ATL.light.alpha',
-						mode: CONST.ACTIVE_EFFECT_MODES.UPGRADE,
-						value: '0.4',
-						priority: 23
-					}
-				],
-				duration: {seconds: 60}};
-
-			await MidiQOL.socket().executeAsGM("createEffects", { actorUuid: targetToken.actor.uuid, effects: [effectData] });
 		}

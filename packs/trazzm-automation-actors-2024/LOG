@@ -1,3 +1,7 @@
-2025/05/07-16:23:08.310 9e98 Recovering log #439
-2025/05/07-16:23:08.324 9e98 Delete type=0 #439
-2025/05/07-16:23:08.324 9e98 Delete type=3 #438
+2025/05/13-10:31:26.591 11ae8 Recovering log #468
+2025/05/13-10:31:26.603 11ae8 Delete type=0 #468
+2025/05/13-10:31:26.603 11ae8 Delete type=3 #466
+2025/05/13-10:34:05.072 105ec Level-0 table #473: started
+2025/05/13-10:34:05.072 105ec Level-0 table #473: 0 bytes OK
+2025/05/13-10:34:05.078 105ec Delete type=0 #471
+2025/05/13-10:34:05.078 105ec Manual compaction at level-0 from '!actors!awH2xhaeuIrl3oRw' @ 72057594037927935 : 1 .. '!actors.items.effects!awH2xhaeuIrl3oRw.R1Nnsyi89PGYNzus.dnd5espellchange' @ 0 : 0; will stop at (end)
