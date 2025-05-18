@@ -3,9 +3,9 @@
     1d6 Force damage to the target whenever you hit it with an attack roll. You also have Advantage on any
     Wisdom (Perception) or Wisdom (Survival) check you make to find it.
 */
-const version = "12.4.0";
+const version = "12.4.1";
 const optionName = "Hunter's Mark";
-const targetEffectName = "Hunter's Marked";
+const targetEffectName = "Hunters Marked";
 
 try {
     if (args[0].macroPass === "DamageBonus") {
@@ -23,7 +23,7 @@ try {
                 if ((targetEffect.name === targetEffectName) && targetEffect.origin.startsWith(originStart)) {
                     isMarked = true;
                     break;
-                }
+            }
             }
 
             if (isMarked) {

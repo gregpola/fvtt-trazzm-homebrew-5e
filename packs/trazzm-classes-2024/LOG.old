@@ -1,7 +1,7 @@
-2025/05/13-10:27:47.722 10c28 Recovering log #499
-2025/05/13-10:27:47.735 10c28 Delete type=0 #499
-2025/05/13-10:27:47.735 10c28 Delete type=3 #498
-2025/05/13-10:30:28.556 105ec Level-0 table #503: started
-2025/05/13-10:30:28.556 105ec Level-0 table #503: 0 bytes OK
-2025/05/13-10:30:28.562 105ec Delete type=0 #501
-2025/05/13-10:30:28.578 105ec Manual compaction at level-0 from '!folders!3wY92TRgyyyDkpmF' @ 72057594037927935 : 1 .. '!items.effects!phbscrInnateSorc.WtiHwWONdmCOeSDR' @ 0 : 0; will stop at (end)
+2025/05/18-09:33:40.224 d1e0 Recovering log #547
+2025/05/18-09:33:40.240 d1e0 Delete type=0 #547
+2025/05/18-09:33:40.241 d1e0 Delete type=3 #544
+2025/05/18-12:51:02.047 cdb8 Level-0 table #553: started
+2025/05/18-12:51:02.047 cdb8 Level-0 table #553: 0 bytes OK
+2025/05/18-12:51:02.052 cdb8 Delete type=0 #551
+2025/05/18-12:51:02.063 cdb8 Manual compaction at level-0 from '!folders!3wY92TRgyyyDkpmF' @ 72057594037927935 : 1 .. '!items.effects!phbscrInnateSorc.WtiHwWONdmCOeSDR' @ 0 : 0; will stop at (end)

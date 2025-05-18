@@ -61,3 +61,12 @@
 * Spells: Fixed Hex damage when rolling a critical hit. Added Conjure Barrage.
 * Added Undead Fortitude feature to the Monster Features (2024) compendium. Replace the one in your actors to get automation.
 * Added automation to the following weapon masteries: Cleave, Graze, Push, Sap, Slow, Topple, Vex
+
+# 12.4.8
+* Updated the Assassin subclass features.
+* Updated Sneak Attack to handle Assassin features.
+* Updated all non-custom backgrounds to remove excess language choices.
+* Updated Rogue Cunning Strike options to be automated in the Sneak Attack dialog.
+* Updated Hex and Hunter's Mark to provide an activity to move the effect if the target drops to 0.
+* Added Spells: Gust
+* Added the Genie Patron subclass and features.

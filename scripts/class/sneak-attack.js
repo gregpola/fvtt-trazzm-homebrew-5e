@@ -10,7 +10,7 @@
 
     Current Sneak Attack Damage: @scale.rogue.sneak-attack
 */
-const version = "12.4.1";
+const version = "12.4.2";
 const optionName = "Sneak Attack";
 const timeFlag = "last-sneak-attack";
 
@@ -36,18 +36,18 @@ try {
         if (workflow.activity.actionType === "mwak" && !rolledItem?.system.properties?.has("fin")) return {};
 
         // check for sneak attack dice
-        let sneakDice = 1;
-        let sneakDamageFormula = '1d6';
+        let sneakDice = 0;
+        let sneakDie = 'd6';
+
         if (actor.system.scale && actor.system.scale.rogue) {
             sneakDice = actor.system.scale.rogue['sneak-attack'].number;
-            sneakDamageFormula = actor.system.scale.rogue['sneak-attack'].formula;
+            sneakDie = actor.system.scale.rogue['sneak-attack'].die;
         }
         else if (actor.type === "npc") {
             sneakDice = Math.ceil(actor.system.details.cr / 2);
-            sneakDamageFormula = `${sneakDice}d6`;
         }
 
-        if (!sneakDamageFormula) {
+        if (!sneakDice) {
             console.debug(`${optionName} - no rogue levels`);
             return {};
         }
@@ -81,90 +81,155 @@ try {
             // ask if they want to use sneak attack, and if so which Cunning/Devious Strikes to use
             let content = `
               <form>
-                <div class="flexcol">
-                    <div class="flexrow" style=""><p>Use Sneak attack on this attack? [${sneakDamageFormula}]</p></div>
-                </div>`;
+                <div><strong><label>Use Sneak attack on this attack? [${sneakDice}${sneakDie}]</label></strong></div>
+                <hr />`;
 
             if (cunningStrike) {
                 let cunningStrikeRows = "";
-                cunningStrikeRows += `<div class="flexrow"><label>Poison (Cost: 1d6)</label><input type="checkbox" value="poison" style="margin-right:10px;"/></div>`;
-                cunningStrikeRows += `<div class="flexrow"><label>Trip (Cost: 1d6)</label><input type="checkbox" value="trip" style="margin-right:10px;"/></div>`;
-                cunningStrikeRows += `<div class="flexrow"><label>Withdraw (Cost: 1d6)</label><input type="checkbox" value="withdraw" style="margin-right:10px;"/></div>`;
+                cunningStrikeRows += `<div><input type="checkbox" value="poison" style="margin-left:10px;" /><label style="margin-left: 10px;">Poison (Cost: 1d6)</label></div>`;
+                cunningStrikeRows += `<div><input type="checkbox" value="trip" style="margin-left:10px;" /><label style="margin-left: 10px;">Trip (Cost: 1d6)</label></div>`;
+                cunningStrikeRows += `<div><input type="checkbox" value="withdraw" style="margin-left:10px;" /><label style="margin-left: 10px;">Withdraw (Cost: 1d6)</label></div>`;
 
                 if (supremeSneak) {
-                    cunningStrikeRows += `<div class="flexrow"><label>Stealth Attack (Cost: 1d6)</label><input type="checkbox" value="stealthAttack" style="margin-right:10px;"/></div>`;
+                    cunningStrikeRows += `<div><input type="checkbox" value="stealthAttack" style="margin-right:10px;" /><label style="margin-left: 10px;">Stealth Attack (Cost: 1d6)</label></div>`;
                 }
 
                 if (deviousStrikes) {
-                    cunningStrikeRows += `<div class="flexrow"><label>Daze (Cost: 2d6)</label><input type="checkbox" value="daze" style="margin-right:10px;"/></div>`;
-                    cunningStrikeRows += `<div class="flexrow"><label>Knock Out (Cost: 6d6)</label><input type="checkbox" value="knockout" style="margin-right:10px;"/></div>`;
-                    cunningStrikeRows += `<div class="flexrow"><label>Obscure (Cost: 3d6)</label><input type="checkbox" value="obscure" style="margin-right:10px;"/></div>`;
+                    cunningStrikeRows += `<div><input type="checkbox" value="daze" style="margin-left:10px;" /><label style="margin-left: 10px;">Daze (Cost: 2d6)</label></div>`;
+                    cunningStrikeRows += `<div><input type="checkbox" value="knockout" style="margin-left:10px;" /><label style="margin-left: 10px;">Knock Out (Cost: 6d6)</label></div>`;
+                    cunningStrikeRows += `<div><input type="checkbox" value="obscure" style="margin-left:10px;" /><label style="margin-left: 10px;">Obscure (Cost: 3d6)</label></div>`;
                 }
 
-                content += `
-                    <div class="flexcol">
-                        <div class="flexrow" style="">
-                            <p>Select up to ${maxOptions} Cunning Strike option(s):</p>
-                        </div>
-                        <div class="flexrow" style="margin-bottom: 10px;">
-                            <sub>(activate these features after a successfull sneak attack)</sub>
-                        </div>
-                        <div id="cunningStrikeOptions" class="flexcol" style="margin-bottom: 10px;">
-                            ${cunningStrikeRows}
-                        </div>
-                    </div>                    
-                `;
+                content += `<div style="margin-bottom: 10px;"><strong><label>Select up to ${maxOptions} Cunning Strike option(s):</label></strong></div>`;
+                content += `<div id="cunningStrikeOptions" class="flexcol" style="margin-bottom: 5px;"> ${cunningStrikeRows}</div>`;
+                content += `<div style="margin-bottom: 10px;"><sub>(these options reduce the sneak attack damage by the number of dice noted)</sub></div>`;
             }
             content += '</form>';
 
             // show dialog
             let cunningStrikeCost = 0;
 
-            let sneakOptions = await foundry.applications.api.DialogV2.prompt({
+            const sneakOptions = await foundry.applications.api.DialogV2.wait({
+                window: { title: `${optionName}` },
+                form: { closeOnSubmit: true },
                 content: content,
-                rejectClose: false,
-                ok: {
-                    callback: (event, button, dialog) => {
-                        // check the cunning strike options count
-                        let cunningStrikeChoices = [];
+                buttons: [
+                    {
+                        action: "Cast",
+                        default: true,
+                        label: "Use Sneak Attack",
+                        callback: (event, button, dialog) => {
+                            // check the cunning strike options count
+                            let cunningStrikeChoices = [];
 
-                        var grid = document.getElementById("cunningStrikeOptions");
-                        var checkBoxes = grid.getElementsByTagName("INPUT");
-                        for (var i = 0; i < checkBoxes.length; i++) {
-                            if (checkBoxes[i].checked) {
-                                cunningStrikeChoices.push(checkBoxes[i].value);
-                                cunningStrikeCost += cunningStrikeCosts[checkBoxes[i].value];
+                            var grid = document.getElementById("cunningStrikeOptions");
+                            var checkBoxes = grid.getElementsByTagName("INPUT");
+                            for (var i = 0; i < checkBoxes.length; i++) {
+                                if (checkBoxes[i].checked) {
+                                    cunningStrikeChoices.push(checkBoxes[i].value);
+                                    cunningStrikeCost += cunningStrikeCosts[checkBoxes[i].value];
+                                }
                             }
-                        }
 
-                        if ((cunningStrikeChoices.length > maxOptions) || (cunningStrikeCost > sneakDice)) {
-                            ui.notifications.error(`${optionName}: ${version} - too many or too costly of cunning strike options selected`);
-                            return { useSneak: true, options: []};
-                        }
+                            if ((cunningStrikeChoices.length > maxOptions) || (cunningStrikeCost > sneakDice)) {
+                                ui.notifications.error(`${optionName}: ${version} - too many or too costly of cunning strike options selected`);
+                                return { useSneak: true, options: []};
+                            }
 
-                        return { useSneak: true, options: cunningStrikeChoices};
-                    }
-                },
-                window: {
-                    title: `${optionName}`,
-                },
-                position: {
-                    width: 500
-                }
+                            return { useSneak: true, options: cunningStrikeChoices};
+                        }
+                    },
+                    {
+                        action: "Pass",
+                        default: false,
+                        label: "Pass",
+                        callback: () => "Pass"
+                    },
+                ],
+                rejectClose: false,
+                modal: true
             });
 
             if (sneakOptions && sneakOptions.useSneak) {
-                await HomebrewHelpers.setUsedThisTurn(actor, timeFlag);
+                // handle subclass features
+                const assassinate = actor.items.find(i => i.name === "Assassinate");
+                const deathStrike = actor.items.find(i => i.name === "Death Strike");
+                let rogueLevels = actor.getRollData().classes?.rogue?.levels ?? 0;
+                const saveDC = 8 + actor.system.abilities.dex.mod + actor.system.attributes.prof;
+
+                // Death Strike -->
+                // When you hit with your Sneak Attack on the first round of a combat, the target must succeed on a
+                // Constitution saving throw (DC 8 plus your Dexterity modifier and Proficiency Bonus), or the attack’s
+                // damage is doubled against the target.
+                let applyDeathStrike = (deathStrike && game.combat.round === 1);
+
+                if (applyDeathStrike) {
+                    // roll save
+                    const config = { undefined, ability: "con", target: saveDC };
+                    const dialog = {};
+                    const message = { data: { speaker: ChatMessage.implementation.getSpeaker({ actor: targetToken.actor }) } };
+                    let saveResult = await targetToken.actor.rollSavingThrow(config, dialog, message);
+                    if (saveResult[0].isSuccess) {
+                        applyDeathStrike = false;
+                    }
+                }
 
                 // handle the cunning strike options
                 if (sneakOptions.options.length > 0) {
-                    sneakDamageFormula = `${sneakDice - cunningStrikeCost}d6`;
-
+                    sneakDice -= cunningStrikeCost;
                     ChatMessage.create({
                         content: `Selected Cunning Strike options: ${sneakOptions.options}, reducing sneak attack damage dice by ${cunningStrikeCost}`,
                         speaker: ChatMessage.getSpeaker({actor: actor})
                     });
+
+                    for (let cs of sneakOptions.options) {
+                        switch(cs) {
+                            case "poison":
+                                await handleCunningStrikePoison(actor, targetToken, saveDC);
+                                break;
+                            case "trip":
+                                await handleCunningStrikeTrip(actor, targetToken, saveDC);
+                                break;
+                            case "withdraw":
+                                console.log('Cunning Strike - Withdraw');
+                                break;
+                            case "stealthAttack":
+                                // TODO how handle?
+                                console.log('Cunning Strike - Stealth Attack');
+                                break;
+                            case "daze":
+                                await handleCunningStrikeDaze(actor, targetToken, saveDC);
+                                break;
+                            case "knockout":
+                                await handleCunningStrikeKnockout(actor, targetToken, saveDC);
+                                break;
+                            case "obscure":
+                                await handleCunningStrikeObscure(actor, targetToken, saveDC);
+                                break;
+                        }
+                    }
                 }
+
+                // build the sneak damage formula
+                if (applyDeathStrike) {
+                    sneakDice *= 2;
+                }
+                let sneakDamageFormula = `${sneakDice}${sneakDie}`;
+
+                if (assassinate && rogueLevels && game.combat.round === 1) {
+                    if (applyDeathStrike) {
+                        rogueLevels *= 2;
+                    }
+                    sneakDamageFormula += ` + ${rogueLevels}`;
+                }
+
+                if (applyDeathStrike) {
+                    // double the weapon damage
+                    workflow.damageRolls.push(...workflow.damageRolls);
+                    await workflow.setDamageRolls(workflow.damageRolls);
+                }
+
+                await HomebrewHelpers.setUsedThisTurn(actor, timeFlag);
 
                 // return the damage
                 return new CONFIG.Dice.DamageRoll(`${sneakDamageFormula}[Sneak]`, {}, {type:workflow.defaultDamageType, properties: [...rolledItem.system.properties]});
@@ -191,4 +256,182 @@ function checkAllyNearTarget(rogueToken, targetToken) {
     });
 
     return (nearbyEnemy.length > 0);
+}
+
+/*
+    You add a toxin to your strike, forcing the target to make a Constitution saving throw. On a failed save, the target
+    has the Poisoned condition for 1 minute. At the end of each of its turns, the Poisoned target repeats the save,
+    ending the effect on itself on a success.
+
+    Envenom Weapons
+    When you use the Poison option of your Cunning Strike, the target also takes 2d6 Poison damage whenever it fails the
+    saving throw. This damage ignores Resistance to Poison damage.
+ */
+async function handleCunningStrikePoison(actor, targetToken, saveDC) {
+    const envenomWeapons = actor.items.find(i => i.name === "Envenom Weapons");
+
+    // roll save
+    const config = {undefined, ability: "con", target: saveDC};
+    const dialog = {};
+    const message = {data: {speaker: ChatMessage.implementation.getSpeaker({actor: targetToken.actor})}};
+    let saveResult = await targetToken.actor.rollSavingThrow(config, dialog, message);
+
+    if (!saveResult[0].isSuccess) {
+        let effectValue = `turn=end, saveAbility=con, saveDC=${saveDC}, label=Poisoned`;
+        if (envenomWeapons) {
+            effectValue += ', damageRoll=2d6, damageType=poison';
+        }
+
+        let effectData = {
+            name: "Cunning Strike - Poison",
+            icon: "icons/skills/melee/blade-tip-acid-poison-green.webp",
+            origin: actor.uuid,
+            statuses: [
+                "poisoned"
+            ],
+            changes: [
+                {
+                    key: "flags.midi-qol.OverTime",
+                    value: effectValue,
+                    mode: CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
+                    priority: 20
+                },
+                {
+                    key: "system.traits.dr.value",
+                    value: "-poison",
+                    mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                    priority: 21
+                }
+            ],
+            duration: {seconds: 60}
+        };
+        await MidiQOL.socket().executeAsGM("createEffects", {actorUuid: targetToken.actor.uuid, effects: [effectData]});
+        
+        // apply the damage this round
+        if (envenomWeapons) {
+            const damageRoll = await new CONFIG.Dice.DamageRoll("2d6", {}, {type: "poison"}).evaluate();
+            await new MidiQOL.DamageOnlyWorkflow(actor, token, null, null, [targetToken], damageRoll, {
+                itemCardId: "new",
+                itemData: envenomWeapons.toObject()
+            });
+        }
+    }
+}
+
+/*
+    If the target is Large or smaller, it must succeed on a Dexterity saving throw or have the Prone condition.
+ */
+async function handleCunningStrikeTrip(actor, targetToken, saveDC) {
+    if (["tiny", "sm", "med", "lg"].includes(targetToken.actor.system.traits.size)) {
+
+        // roll save
+        const config = {undefined, ability: "dex", target: saveDC};
+        const dialog = {};
+        const message = {data: {speaker: ChatMessage.implementation.getSpeaker({actor: targetToken.actor})}};
+        let saveResult = await targetToken.actor.rollSavingThrow(config, dialog, message);
+
+        if (!saveResult[0].isSuccess) {
+            await targetToken.actor.toggleStatusEffect('prone', {active: true});
+        }
+    }
+}
+
+/*
+    The target must succeed on a Constitution saving throw, or on its next turn, it can do only one of the following:
+    move or take an action or a Bonus Action.
+ */
+async function handleCunningStrikeDaze(actor, targetToken, saveDC) {
+    // roll save
+    const config = {undefined, ability: "con", target: saveDC};
+    const dialog = {};
+    const message = {data: {speaker: ChatMessage.implementation.getSpeaker({actor: targetToken.actor})}};
+    let saveResult = await targetToken.actor.rollSavingThrow(config, dialog, message);
+
+    if (!saveResult[0].isSuccess) {
+        let effectData = {
+            name: "Cunning Strike - Daze",
+            icon: "icons/skills/melee/blade-tip-acid-poison-green.webp",
+            origin: actor.uuid,
+            description: '<p>Target is dazed, they can do only one of the following on their turn: move or take an action or a Bonus Action</p>',
+            statuses: [],
+            changes: [],
+            duration: {seconds: 6},
+            flags: {
+                dae: {
+                    specialDuration: ['shortRest', 'turnEnd', 'combatEnd']
+                }
+            }
+        };
+
+        await MidiQOL.socket().executeAsGM("createEffects", {actorUuid: targetToken.actor.uuid, effects: [effectData]});
+    }
+}
+
+/*
+    The target must succeed on a Constitution saving throw, or it has the Unconscious condition for 1 minute or until it
+    takes any damage. The Unconscious target repeats the save at the end of each of its turns, ending the effect on
+    itself on a success.
+ */
+async function handleCunningStrikeKnockout(actor, targetToken, saveDC) {
+    // roll save
+    const config = {undefined, ability: "con", target: saveDC};
+    const dialog = {};
+    const message = {data: {speaker: ChatMessage.implementation.getSpeaker({actor: targetToken.actor})}};
+    let saveResult = await targetToken.actor.rollSavingThrow(config, dialog, message);
+
+    if (!saveResult[0].isSuccess) {
+        let effectData = {
+            name: "Cunning Strike - Knockout",
+            icon: "icons/skills/melee/blade-tip-acid-poison-green.webp",
+            origin: actor.uuid,
+            description: '<p>The target must succeed on a Constitution saving throw, or it has the Unconscious condition for 1 minute or until it takes any damage. The Unconscious target repeats the save at the end of each of its turns, ending the effect on itself on a success.</p>',
+            statuses: ["unconscious"],
+            changes: [
+                {
+                    key: "flags.midi-qol.OverTime",
+                    value: `turn=end, saveAbility=con, saveDC=${saveDC}, label=Knocked Out`,
+                    mode: CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
+                    priority: 20
+                }
+            ],
+            duration: {seconds: 60},
+            flags: {
+                dae: {
+                    specialDuration: ['shortRest', 'isDamaged', 'combatEnd']
+                }
+            }
+        };
+
+        await MidiQOL.socket().executeAsGM("createEffects", {actorUuid: targetToken.actor.uuid, effects: [effectData]});
+    }
+}
+
+/*
+    The target must succeed on a Dexterity saving throw, or it has the Blinded condition until the end of its next turn.
+ */
+async function handleCunningStrikeObscure(actor, targetToken, saveDC) {
+    // roll save
+    const config = {undefined, ability: "dex", target: saveDC};
+    const dialog = {};
+    const message = {data: {speaker: ChatMessage.implementation.getSpeaker({actor: targetToken.actor})}};
+    let saveResult = await targetToken.actor.rollSavingThrow(config, dialog, message);
+
+    if (!saveResult[0].isSuccess) {
+        let effectData = {
+            name: "Cunning Strike - Obscure",
+            icon: "icons/skills/melee/blade-tip-acid-poison-green.webp",
+            origin: actor.uuid,
+            description: '<p>The target must succeed on a Dexterity saving throw, or it has the Blinded condition until the end of its next turn.</p>',
+            statuses: ["blinded"],
+            changes: [],
+            duration: {seconds: 6},
+            flags: {
+                dae: {
+                    specialDuration: ['shortRest', 'turnEnd', 'combatEnd']
+                }
+            }
+        };
+
+        await MidiQOL.socket().executeAsGM("createEffects", {actorUuid: targetToken.actor.uuid, effects: [effectData]});
+    }
 }

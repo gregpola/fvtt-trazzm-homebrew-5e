@@ -32,7 +32,6 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType))
 		const spellLevel = workflow.castData.castLevel;
 		const abilityBonus = Math.max(rollingActor.system.abilities.str.mod, rollingActor.system.abilities.dex.mod);
 		max(1, @abilities.wis.mod)
-		max(1, @abilities.cha.mod)
 
 		flags.midi - qol.neverTarget
 		system.attributes.attunement.max
@@ -107,7 +106,7 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType))
 				}
 			});
 
-		const config = { event, ability: "wis", target: actor.system.attributes.spelldc };
+		const config = { undefined, ability: "wis", target: actor.system.attributes.spelldc };
 		const dialog = {};
 		const message = { data: { speaker: ChatMessage.implementation.getSpeaker({ actor: targetToken.actor }) } };
 		let saveResult = await targetToken.actor.rollSavingThrow(config, dialog, message);
