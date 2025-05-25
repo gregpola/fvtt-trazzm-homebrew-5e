@@ -1,7 +1,7 @@
-2025/05/18-09:33:40.343 d4b8 Recovering log #510
-2025/05/18-09:33:40.356 d4b8 Delete type=0 #510
-2025/05/18-09:33:40.356 d4b8 Delete type=3 #508
-2025/05/18-12:51:02.097 cdb8 Level-0 table #515: started
-2025/05/18-12:51:02.097 cdb8 Level-0 table #515: 0 bytes OK
-2025/05/18-12:51:02.102 cdb8 Delete type=0 #513
-2025/05/18-12:51:02.113 cdb8 Manual compaction at level-0 from '!actors!awH2xhaeuIrl3oRw' @ 72057594037927935 : 1 .. '!actors.items.effects!awH2xhaeuIrl3oRw.R1Nnsyi89PGYNzus.dnd5espellchange' @ 0 : 0; will stop at (end)
+2025/05/25-08:40:57.774 12cac Recovering log #556
+2025/05/25-08:40:57.784 12cac Delete type=0 #556
+2025/05/25-08:40:57.784 12cac Delete type=3 #554
+2025/05/25-14:47:14.481 12ef4 Level-0 table #561: started
+2025/05/25-14:47:14.481 12ef4 Level-0 table #561: 0 bytes OK
+2025/05/25-14:47:14.486 12ef4 Delete type=0 #559
+2025/05/25-14:47:14.486 12ef4 Manual compaction at level-0 from '!actors!awH2xhaeuIrl3oRw' @ 72057594037927935 : 1 .. '!actors.items.effects!awH2xhaeuIrl3oRw.R1Nnsyi89PGYNzus.dnd5espellchange' @ 0 : 0; will stop at (end)

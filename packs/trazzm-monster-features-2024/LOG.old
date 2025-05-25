@@ -1,7 +1,7 @@
-2025/05/18-09:33:40.434 390c Recovering log #273
-2025/05/18-09:33:40.446 390c Delete type=0 #273
-2025/05/18-09:33:40.446 390c Delete type=3 #271
-2025/05/18-12:51:02.124 cdb8 Level-0 table #278: started
-2025/05/18-12:51:02.124 cdb8 Level-0 table #278: 0 bytes OK
-2025/05/18-12:51:02.128 cdb8 Delete type=0 #276
-2025/05/18-12:51:02.140 cdb8 Manual compaction at level-0 from '!folders!3tNHK2NPdGlJ18l6' @ 72057594037927935 : 1 .. '!items.effects!pIL1LpRrJOI8amvS.f6Q6dcW2MCGmaUQu' @ 0 : 0; will stop at (end)
+2025/05/25-08:40:57.851 74f4 Recovering log #321
+2025/05/25-08:40:57.863 74f4 Delete type=0 #321
+2025/05/25-08:40:57.863 74f4 Delete type=3 #319
+2025/05/25-14:47:14.550 12ef4 Level-0 table #326: started
+2025/05/25-14:47:14.550 12ef4 Level-0 table #326: 0 bytes OK
+2025/05/25-14:47:14.558 12ef4 Delete type=0 #324
+2025/05/25-14:47:14.569 12ef4 Manual compaction at level-0 from '!folders!3tNHK2NPdGlJ18l6' @ 72057594037927935 : 1 .. '!items.effects!pIL1LpRrJOI8amvS.f6Q6dcW2MCGmaUQu' @ 0 : 0; will stop at (end)

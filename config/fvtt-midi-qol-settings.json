@@ -164,7 +164,7 @@
       "nearbyAllyRanged": 0,
       "nearbyFoe": 5,
       "optionalCritRule": -1,
-      "removeHiddenInvis": false,
+      "removeHiddenInvis": true,
       "wallsBlockRange": "center",
       "mergeCardMulti": false,
       "mergeCardMultiDamage": false,
@@ -235,9 +235,9 @@
   "flags": {
     "exportSource": {
       "system": "dnd5e",
-      "coreVersion": "12.331",
-      "systemVersion": "4.4.1",
-      "midiVersion": "12.4.50"
+      "coreVersion": "12.343",
+      "systemVersion": "4.4.3",
+      "midiVersion": "12.4.53.1"
     }
   }
 }

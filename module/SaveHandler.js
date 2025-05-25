@@ -251,10 +251,20 @@ export class SaveHandler {
             logger.info("dnd5e.preRollSavingThrowV2");
         });
 
-
         Hooks.on("midi-qol.postCheckSaves", async workflow => {
             console.log("postCheckSaves");
         });
+
+        Hooks.on("dnd5e.rollDeathSaveV2", async (rolls, details) => {
+            console.log("rollDeathSaveV2");
+            const theRoll = Number(rolls[0].result);
+            const survivor = details.subject.items.getName("Survivor");
+            if (survivor && rolls[0].total >= 18) {
+                rolls[0].total = 20;
+            }
+        });
+
+
     }
 
     static async wait(ms) { return new Promise(resolve => { setTimeout(resolve, ms); }); }

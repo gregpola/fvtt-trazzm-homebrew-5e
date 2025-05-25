@@ -131,6 +131,26 @@ export class CombatHandler {
                     await actor.unsetFlag(_flagGroup, _theDeadWalkFlag);
                     await CombatHandler.transformToZombie(combat.combatant);
                 }
+
+                // check for heroic warrior
+                const heroicWarrior = actor.items.getName("Heroic Warrior");
+                if (heroicWarrior) {
+                    await actor.update({'system.attributes.inspiration' : true});
+                }
+
+                // check for Survivor
+                // At the start of each of your turns, you regain Hit Points equal to 5 plus your Constitution modifier
+                // if you are Bloodied and have at least 1 Hit Point.
+                const survivor = actor.items.getName("Survivor");
+                const bloodied = HomebrewHelpers.findEffect(actor, "Bloodied");
+                if (survivor && bloodied && (actor.system.attributes.hp.value > 0)) {
+                    const healRoll = 5 + actor.system.abilities.con.mod;
+                    await actor.applyDamage(- healRoll);
+                    ChatMessage.create({
+                        speaker: {alias: actor.name},
+                        content: `${actor.name} recovers ${healRoll} hit points from their Survivor trait`,
+                    });
+                }
             }
         });
 

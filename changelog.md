@@ -70,3 +70,18 @@
 * Updated Hex and Hunter's Mark to provide an activity to move the effect if the target drops to 0.
 * Added Spells: Gust
 * Added the Genie Patron subclass and features.
+
+# 12.4.9
+* Added spells: Mirror Image, Sleep
+* Added equipment: Basilisk Oil, Bracers of Archery, Brooch of Shielding, Flame Tongue enchantment
+* Added monster feature: Petrifying Gaze
+* Updated the Champion subclass
+* Updated the Oath of Vengeance subclass
+* Updated College of Lore subclass
+* Updated the Fiend Patron subclass
+* Updated the Dragonborn Breath Weapon feature
+* Added the Generic Actions feature to all backgrounds. Grab it from the Backgrounds (2024) compendium to add it to your character.
+* Updated the Rogue Cunning Action feature
+* Removed the Perceptive module because it was interfering with stealth/perception
+* Moved to the BG3 Inspired HUD in place of Argon for my games
+* Updated the Foundry settings export to fix stealth/perceptive issues

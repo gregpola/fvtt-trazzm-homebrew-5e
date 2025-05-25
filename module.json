@@ -311,6 +311,11 @@
         "compatibility": {}
       },
       {
+        "id": "automated-conditions-5e",
+        "type": "module",
+        "compatibility": {}
+      },
+      {
         "id": "dae",
         "type": "module",
         "compatibility": {}
@@ -321,12 +326,7 @@
         "compatibility": {}
       },
       {
-        "id": "sequencer",
-        "type": "module",
-        "compatibility": {}
-      },
-      {
-        "id": "item-piles",
+        "id": "JB2A_DnD5e",
         "type": "module",
         "compatibility": {}
       },
@@ -341,7 +341,17 @@
         "compatibility": {}
       },
       {
-        "id": "token-attacher",
+        "id": "sequencer",
+        "type": "module",
+        "compatibility": {}
+      },
+      {
+        "id": "stealthy",
+        "type": "module",
+        "compatibility": {}
+      },
+      {
+        "id": "tokenmagic",
         "type": "module",
         "compatibility": {}
       },
@@ -368,7 +378,22 @@
     ],
     "recommends": [
       {
-        "id": "automated-conditions-5e",
+        "id": "item-piles",
+        "type": "module",
+        "compatibility": {}
+      },
+      {
+        "id": "itempilesdnd5e",
+        "type": "module",
+        "compatibility": {}
+      },
+      {
+        "id": "rest-recovery",
+        "type": "module",
+        "compatibility": {}
+      },
+      {
+        "id": "visual-active-effects",
         "type": "module",
         "compatibility": {}
       }
