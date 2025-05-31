@@ -1,7 +1,3 @@
-2025/05/31-08:33:17.747 de3c Recovering log #1205
-2025/05/31-08:33:17.762 de3c Delete type=0 #1205
-2025/05/31-08:33:17.762 de3c Delete type=3 #1204
-2025/05/31-08:37:03.879 b204 Level-0 table #1209: started
-2025/05/31-08:37:03.879 b204 Level-0 table #1209: 0 bytes OK
-2025/05/31-08:37:03.884 b204 Delete type=0 #1207
-2025/05/31-08:37:03.884 b204 Manual compaction at level-0 from 'undefined' @ 72057594037927935 : 1 .. 'undefined' @ 0 : 0; will stop at (end)
+2025/05/31-08:37:43.866 d2b8 Recovering log #1208
+2025/05/31-08:37:43.878 d2b8 Delete type=0 #1208
+2025/05/31-08:37:43.878 d2b8 Delete type=3 #1206

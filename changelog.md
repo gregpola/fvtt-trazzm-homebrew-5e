@@ -90,7 +90,7 @@
 * Added Path of the Berserker subclass
 * Added Wand of Web
 * Added spell Feather Fall to stop reaction triggering
-* Added feat Mage Slayer
+* Added the feat Mage Slayer
 * Updated Rage to handle Berserker features
 * Fixed the web spell automations
 * Fixed the Lucky feat disadvantage effect
