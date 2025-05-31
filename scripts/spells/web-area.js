@@ -16,48 +16,53 @@
     any creature that starts its turn in the fire.
  */
 const optionName = "Web";
-const version = "12.4.0";
+const version = "12.4.1";
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
+const _flagName = "webEscapeDC";
+const escapeItemId = "Compendium.fvtt-trazzm-homebrew-5e.trazzm-automation-items-2024.Item.Imsl1sUXsDadBB4a";
 
-// the enter or end turn macro
 const combatTime = game.combat ? `${game.combat.id}-${game.combat.round + game.combat.turn / 100}` : 1;
 let targetToken = event.data.token;
 if (targetToken) {
     if (event.name === 'tokenExit') {
         await targetToken.actor.toggleStatusEffect('restrained', {active: false});
+
+        const escapeItem = actor.items.find(i => i.name === 'Escape Webs');
+        if (escapeItem) {
+            await actor.deleteEmbeddedDocuments('Item', [escapeItem.id]);
+        }
     }
     else {
         const originActor = await fromUuid(region.flags['region-attacher'].actorUuid);
-        const sourceItem = await fromUuid(region.flags['region-attacher'].itemUuid);
+        const targetCombatant = game.combat.getCombatantByToken(targetToken);
 
-        let targetCombatant = game.combat.getCombatantByToken(targetToken);
         if (targetCombatant) {
             const flagName = `web-${originActor.id}`;
             if (HomebrewHelpers.perTurnCheck(targetCombatant, flagName, event.name)) {
-                // synthetic activity use
-                const activity = sourceItem.system.activities.find(a => a.identifier === 'token-enters');
-                if (activity) {
-                    await HomebrewHelpers.setTurnCheck(targetCombatant, flagName);
-                    let targetUuids = [targetToken.uuid];
+                // roll saving throw
+                const saveDC = originActor.system.attributes.spelldc ?? 12;
+                const config = { undefined, ability: "dex", target: saveDC };
+                const dialog = {};
+                const message = { data: { speaker: ChatMessage.implementation.getSpeaker({ actor: targetToken.actor }) } };
+                let saveResult = await targetToken.actor.rollSavingThrow(config, dialog, message);
+                await HomebrewHelpers.setTurnCheck(targetCombatant, flagName);
 
-                    const options = {
-                        midiOptions: {
-                            targetUuids: targetUuids,
-                            noOnUseMacro: true,
-                            configureDialog: false,
-                            showFullCard: false,
-                            ignoreUserTargets: true,
-                            checkGMStatus: true,
-                            autoRollAttack: true,
-                            autoRollDamage: "always",
-                            fastForwardAttack: true,
-                            fastForwardDamage: true,
-                            workflowData: true
-                        }
-                    };
-                    let activityWorkflow = await MidiQOL.completeActivityUse(activity.uuid, options, {}, {});
-                    for (let tt of activityWorkflow.failedSaves) {
-                        await tt.actor.toggleStatusEffect('restrained', {active: true});
+                if (!saveResult[0].isSuccess) {
+                    await targetToken.actor.toggleStatusEffect('restrained', {active: true});
+                    ChatMessage.create({
+                        content: `${targetToken.name} is stuck in the webs`,
+                        speaker: ChatMessage.getSpeaker({actor: originActor})
+                    });
+
+                    await targetToken.actor.setFlag(_flagGroup, _flagName, saveDC);
+                    let escapeItem = await fromUuid(escapeItemId);
+                    let tempItem = escapeItem.toObject();
+                    await actor.createEmbeddedDocuments('Item',[tempItem]);
+                }
+                else {
+                    const escapeItem = actor.items.find(i => i.name === 'Escape Webs');
+                    if (escapeItem) {
+                        await actor.deleteEmbeddedDocuments('Item', [escapeItem.id]);
                     }
                 }
             }

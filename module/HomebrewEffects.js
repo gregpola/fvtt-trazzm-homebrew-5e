@@ -32,7 +32,8 @@ class HomebrewEffects {
         if (Array.isArray(conditions)) {
             let results = [];
             for (let effect of actor.getRollData().effects) {
-                if (!effect.flags.dae.autoCreated) {
+                let autoCreated = effect.flags.dae?.autoCreated ?? false;
+                if (!autoCreated) {
                     for (let cond of conditions) {
                         if ((effect.name.toLowerCase() === cond.toLowerCase()) || effect.statuses.has(cond.toLowerCase())) {
                             results.push(effect);

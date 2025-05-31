@@ -85,3 +85,13 @@
 * Removed the Perceptive module because it was interfering with stealth/perception
 * Moved to the BG3 Inspired HUD in place of Argon for my games
 * Updated the Foundry settings export to fix stealth/perceptive issues
+
+# 12.4.10
+* Added Path of the Berserker subclass
+* Added Wand of Web
+* Added spell Feather Fall to stop reaction triggering
+* Added feat Mage Slayer
+* Updated Rage to handle Berserker features
+* Fixed the web spell automations
+* Fixed the Lucky feat disadvantage effect
+* Fixed Command spell not offering all options

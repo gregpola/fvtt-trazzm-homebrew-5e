@@ -45,66 +45,32 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType))
 		const _flagGroup = "fvtt-trazzm-homebrew-5e";
 		const _flagName = "mastery-vex-target";
 		const _poisonedWeaponFlag = "poisoned-weapon";
-		await actor.setFlag(_flagGroup, flagName, target.actor.uuid);
-		let flag = actor.getFlag(_flagGroup, flagName);
-		await actor.unsetFlag(_flagGroup, flagName);
+		await actor.setFlag(_flagGroup, _flagName, target.actor.uuid);
+		let flag = actor.getFlag(_flagGroup, _flagName);
+		await actor.unsetFlag(_flagGroup, _flagName);
 
 		actor.getRollData().effects.find(eff => eff.name === name);
 		let effectIdsToRemove = actor.getRollData().effects.filter(e => e.origin === stuckEffect.origin).map(effect => effect.id);
-
+		const damageDice = actor.system.scale.barbarian["brutal-strike"];
 
 		ui.notifications.error(`${optionName}: ${version} - no shared language`);
 		ChatMessage.create({
-			content: `${actorToken.name}'s ${selectedItem.name} is blessed with positive energy`,
-			speaker: ChatMessage.getSpeaker({actor: actor})
+			content: `${targetToken.name} is stuck in the webs`,
+			speaker: ChatMessage.getSpeaker({actor: originActor})
 		});
 
 		await targetToken.actor.toggleStatusEffect("poisoned", {active: false});
 
 		'flags.fvtt-trazzm-homebrew-5e.DivineSmite.level OVERRIDE @scaling'
 
-		const damageTypes = [['🧪 Acid', 'acid'], ['❄️ Cold', 'cold'], ['🔥 Fire', 'fire'], ['⚡ Lightning', 'lightning'], ['☁️ Thunder', 'thunder']]; //All possible damage types
+		const damageTypes = [['🧪 Acid', 'acid'], ['❄️ Cold', 'cold'], ['🔥 Fire', 'fire'], ['⚡ Lightning', 'lightning'], ['☁️ Thunder', 'thunder']];
 
 		let browserUser = MidiQOL.playerForActor(origin.parent);
 		if (!browserUser?.active) {
 			console.info(`${optionName} - unable to locate the actor player, sending to GM`);
 			browserUser = game.users?.activeGM;
 		}
-
-		await game.MonksTokenBar.requestRoll([{token: targetToken}], {
-			request: [{"type": "save", "key": "con"}],
-			dc: saveDC, showdc: true, silent: true, fastForward: false,
-			flavor: `${optionName} - Enervating Breath`,
-			rollMode: 'roll',
-			callback: async (result) => {
-				console.log(result);
-				for (let tr of result.tokenresults) {
-					if (!tr.passed) {
-						// mark incapacitated
-						await MidiQOL.socket().executeAsGM("createEffects",
-							{actorUuid: tr.actor.uuid, effects: [enervationEffectData]});
-					}
-				}
-			}
-		});
-
-
-		await game.MonksTokenBar.requestContestedRoll(
-			{token: token, request: 'skill:ath'},
-			{token: targetToken, request: `skill:${skilltoberolled}`},
-			{
-				silent: true,
-				fastForward: false,
-				flavor: `${targetToken.name} tries to resist ${token.name}'s grapple attempt`,
-				callback: async (result) => {
-					if (result.tokenresults[0].passed) {
-						await HomebrewMacros.applyGrappled(token, targetToken, item, 'opposed', null, null);
-						ChatMessage.create({'content': `${token.name} grapples ${targetToken.name}`})
-					} else {
-						ChatMessage.create({'content': `${actor.name} fails to grapple ${targetToken.name}`});
-					}
-				}
-			});
+		const userID = MidiQOL.playerForActor(target.actor)?.active?.id ?? game.users.activeGM?.id;
 
 		const config = { undefined, ability: "wis", target: actor.system.attributes.spelldc };
 		const dialog = {};
@@ -119,38 +85,11 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType))
 			await targetToken.actor.toggleStatusEffect('prone', {active: true});
 		}
 
-// Overtime setup to remove a condition on save
+		// Overtime setup to remove a condition on save
 		turn=end, saveAbility=wis, saveDC=@attributes.spelldc, label=Wrathful Smite
-		turn = start, rollType = save, saveAbility = con, saveDamage = halfdamage, saveRemove = false, saveMagic = true, damageType = radiant, damageRoll = (@spellLevel)
-		d10, saveDC = @attributes.spelldc
-
+		turn = start, rollType = save, saveAbility = con, saveDamage = halfdamage, saveRemove = false, saveMagic = true, damageType = radiant, damageRoll = (@spellLevel)d10, saveDC = @attributes.spelldc
 		turn = end, saveAbility = wis, saveDC = 19, label = Frightened
-		turn = end, saveAbility = wis, saveDC = 19, label = Stunned
-		turn = end, saveAbility = con, saveDC = 12, label = Poisoned
-		turn = start, damageRoll = 2
-		d6, damageType = poison, label = Constricted
-		turn = start, damageRoll = 10, damageType = radiant, label = Holy
-		Nimbus
 
-		flags.midi - qol.optional.BardicInspiration.ac
-
-// options = { maxSize: undefined, includeIncapacitated: false, canSee: false }
+		// options = { maxSize: undefined, includeIncapacitated: false, canSee: false }
 		let secondTarget = await MidiQOL.findNearby(CONST.TOKEN_DISPOSITIONS.FRIENDLY, ttoken, 5, {canSee: true});
 
-
-// Monks token bar
-		let message = await game.MonksTokenBar.requestRoll([targetToken], {
-			request: 'save:con',
-			flavor: 'Poisoned weapon',
-			silent: true
-		});
-		await wait(10000);
-		let tokenid = 'token' + targetToken.id;
-		saveTotal = message.flags["monks-tokenbar"][tokenid].total;
-
-
-		const userID = MidiQOL.playerForActor(target.actor)?.active?.id ?? game.users.activeGM?.id;
-		if (!userID) {
-
-			return;
-		}
