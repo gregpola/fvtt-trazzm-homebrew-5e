@@ -89,7 +89,8 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType))
 		turn=end, saveAbility=wis, saveDC=@attributes.spelldc, label=Wrathful Smite
 		turn = start, rollType = save, saveAbility = con, saveDamage = halfdamage, saveRemove = false, saveMagic = true, damageType = radiant, damageRoll = (@spellLevel)d10, saveDC = @attributes.spelldc
 		turn = end, saveAbility = wis, saveDC = 19, label = Frightened
+		label=Watery Grapple, turn = start, damageType = bludgeoning, damageRoll = 2d8
 
-		// options = { maxSize: undefined, includeIncapacitated: false, canSee: false }
+			// options = { maxSize: undefined, includeIncapacitated: false, canSee: false }
 		let secondTarget = await MidiQOL.findNearby(CONST.TOKEN_DISPOSITIONS.FRIENDLY, ttoken, 5, {canSee: true});
 

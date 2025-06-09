@@ -64,7 +64,7 @@
 
 # 12.4.8
 * Updated the Assassin subclass features.
-* Updated Sneak Attack to handle Assassin features.
+* Updated Sneak Attack to handle Assassin features. 
 * Updated all non-custom backgrounds to remove excess language choices.
 * Updated Rogue Cunning Strike options to be automated in the Sneak Attack dialog.
 * Updated Hex and Hunter's Mark to provide an activity to move the effect if the target drops to 0.
@@ -95,3 +95,16 @@
 * Fixed the web spell automations
 * Fixed the Lucky feat disadvantage effect
 * Fixed Command spell not offering all options
+
+# 12.4.11
+* Added Water Elemental
+* Added Kenku species
+* Added Draconic Sorcery subclass
+* Added Shadow Dancer rogue subclass
+* Added Gloom Stalker ranger subclass
+* Added Sword Burst, Tasha's Caustic Brew, and Tasha's Mind Whip spells
+* Updated the Defensive Duelist and Dwarven Fortitude feats
+* Updated Magic Missile to configure all targets during casting
+* Updated Paladin to always have the Smite Handler feature
+* Fixed Petrifying Gaze to work on multiple targets
+* Fix for Spirit Guardians hitting tokens with zero hit points

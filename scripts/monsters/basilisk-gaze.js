@@ -8,14 +8,13 @@
     Second Failure: The target has the Petrified condition instead of the Restrained condition.
 */
 const optionName = "Basilisk Gaze";
-const version = "12.4.0";
+const version = "12.4.1";
 
 try {
     if (args[0].macroPass === "postActiveEffects") {
-        const targetToken = workflow.failedSaves.first();
-        if (targetToken) {
+        for (let targetToken of workflow.failedSaves) {
             await targetToken.actor.toggleStatusEffect('restrained', {active: true});
-            await targetToken.actor.toggleStatusEffect('petrified', {active: true});
+            //await targetToken.actor.toggleStatusEffect('petrified', {active: true});
         }
     }
 } catch (err) {
