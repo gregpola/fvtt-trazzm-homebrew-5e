@@ -108,3 +108,13 @@
 * Updated Paladin to always have the Smite Handler feature
 * Fixed Petrifying Gaze to work on multiple targets
 * Fix for Spirit Guardians hitting tokens with zero hit points
+
+# 12.4.12
+* Added Circle of the Elements subclass
+* Added Empowered Cantrips feat
+* Added spells: Create Bonfire, Fire Shield, Immolation, Melf's Acid Arrow, Thunderwave
+* Added monsters: Air Elemental, Fire Elemental
+* Updated Elemental Weapon spell to add the effect to the name of the weapon
+* Updated the Skulker feat
+* Fixed Forge Domain to grant proficiency with Heavy Armor and Smith's Tools
+* Fixed the Flute of the Genie 

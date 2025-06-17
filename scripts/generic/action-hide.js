@@ -9,11 +9,12 @@
     You stop being hidden immediately after any of the following occurs: you make a sound louder than a whisper, an
     enemy finds you, you make an attack roll, or you cast a spell with a Verbal component.
  */
-const version = "12.4.0";
+const version = "12.4.1";
 const optionName = "Hide Action";
 
 try {
-    await actor.rollSkill("ste");
+    let result = await actor.rollSkill("ste");
+    console.log(result);
 } catch (err) {
     console.error(`${optionName}: ${version}`, err);
 }
