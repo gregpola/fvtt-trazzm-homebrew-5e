@@ -23,7 +23,7 @@ try {
                 if ((targetEffect.name === targetEffectName) && targetEffect.origin.startsWith(originStart)) {
                     isMarked = true;
                     break;
-            }
+                }
             }
 
             if (isMarked) {

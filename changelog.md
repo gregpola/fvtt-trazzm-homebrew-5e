@@ -118,3 +118,9 @@
 * Updated the Skulker feat
 * Fixed Forge Domain to grant proficiency with Heavy Armor and Smith's Tools
 * Fixed the Flute of the Genie 
+
+# 12.4.13
+* Added the Beast Master, Fey Wanderer, Hunter, Life Domain, Light Domain, Trickery Domain, and War Domain subclasses
+* Added the Aura of Life, Blade Ward, Counterspell, Crusader's Mantle, Hold Monster, Hypnotic Pattern, Pass without Trace, and Steel Wind Strike spells
+* Added Salamander
+* Updated Fire Elemental to automatically apply the Fire Aura

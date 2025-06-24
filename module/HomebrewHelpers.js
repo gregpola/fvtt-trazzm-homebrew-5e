@@ -1120,4 +1120,34 @@ class HomebrewHelpers {
 
         return false;
     }
+
+    static findSummonedOwner(dependentUuid, summonedEffectName) {
+        for (let token of canvas.scene.tokens) {
+            let summonedEffect = token.actor.effects.find(eff => eff.name === summonedEffectName);
+            if (summonedEffect) {
+                let flag = summonedEffect.getFlag("dnd5e", "dependents");
+                if ( flag && flag[0] && flag[0].uuid === dependentUuid) {
+                    return token.actor;
+                }
+            }
+        }
+
+        return undefined;
+    }
+
+    static async findBeastCompanion(actor) {
+        const effect = HomebrewHelpers.findEffect(actor, "Summon: Primal Companion");
+        if (effect) {
+            const beastUuid = effect.flags?.dnd5e?.dependents[0]?.uuid ?? undefined;
+            if (beastUuid) {
+                const tokenDoc = await fromUuid(beastUuid);
+                if (tokenDoc) {
+                    return tokenDoc.actor;
+                }
+            }
+        }
+
+        return undefined;
+    }
+
 }

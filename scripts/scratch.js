@@ -7,6 +7,7 @@ const version = "12.4.0";
 try {
 	if (args[0].macroPass === "postActiveEffects") {
 	}
+
 } catch (err) {
 	console.error(`${optionName}: ${version}`, err);
 }
@@ -44,12 +45,10 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType))
 
 		const _flagGroup = "fvtt-trazzm-homebrew-5e";
 		const _flagName = "mastery-vex-target";
-		const _poisonedWeaponFlag = "poisoned-weapon";
-		await actor.setFlag(_flagGroup, _flagName, target.actor.uuid);
 		let flag = actor.getFlag(_flagGroup, _flagName);
+		await actor.setFlag(_flagGroup, _flagName, target.actor.uuid);
 		await actor.unsetFlag(_flagGroup, _flagName);
 
-		actor.getRollData().effects.find(eff => eff.name === name);
 		let effectIdsToRemove = actor.getRollData().effects.filter(e => e.origin === stuckEffect.origin).map(effect => effect.id);
 		const damageDice = actor.system.scale.barbarian["brutal-strike"];
 
@@ -70,6 +69,9 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType))
 			console.info(`${optionName} - unable to locate the actor player, sending to GM`);
 			browserUser = game.users?.activeGM;
 		}
+
+		const sourceActor = macroItem.parent;
+		const sourceToken = await MidiQOL.tokenForActor(sourceActor);
 		const userID = MidiQOL.playerForActor(target.actor)?.active?.id ?? game.users.activeGM?.id;
 
 		const config = { undefined, ability: "wis", target: actor.system.attributes.spelldc };

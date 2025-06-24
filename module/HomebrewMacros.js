@@ -362,6 +362,15 @@ class HomebrewMacros {
             .play()
     }
 
+    static async moveToTarget(token, targetToken) {
+        await new Sequence()
+            .animation()
+            .on(token)
+            .moveTowards(targetToken, {ease: "easeInOutBack"})
+            .closestSquare()
+            .play();
+    }
+
     static async handleDistractingStrike({speaker, actor, token, character, item, args, scope, workflow}) {
         if (args[0].macroPass === "isAttacked") {
             if (actor) {
