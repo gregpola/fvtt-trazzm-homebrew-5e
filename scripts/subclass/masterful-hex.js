@@ -4,13 +4,14 @@
     Accursed Critical. Any attack roll you make against the target cursed by your Hex scores a Critical Hit on a roll of
     a 19 or 20 on the d20.
 
-    Infectious Hex. When you use one of your Hexblade’s Maneuvers, you can target one additional creature within 30 feet
-    of the cursed target. The additional target takes 1d6 Necrotic damage.
-
-    Resilient Hex. Taking damage can’t break your Concentration on Hex.
+    Explosive Hex. When you deal damage to the target cursed by your Hexblade’s Curse, you can cause your curse to
+    explode with sinister energy. The target and each creature of your choice in a 30-foot Emanation originating from
+    the target take 3d6 Necrotic, Psychic, or Radiant damage (your choice), and their Speed is reduced by 10 feet until
+    the start of your next turn. Once you use this benefit, you can’t use it again until you finish a Long Rest unless
+    you expend a Pact Magic slot (no action required) to restore your use of it.
 */
 const optionName = "Masterful Hex";
-const version = "12.4.0";
+const version = "12.4.1";
 
 try {
     if (args[0].tag === "OnUse" && args[0].macroPass === "preAttackRoll") {
@@ -43,41 +44,6 @@ try {
                 {actorUuid: targetToken.actor.uuid, effects: [effectData]});
         }
 
-    }
-    else if (args[0].tag === "TargetOnUse" && args[0].macroPass === "isDamaged") {
-        // check for concentrating on Hex
-        const hexItem = actor.items?.find(a => a.name === "Hex");
-        if (hexItem) {
-            let existingConcentration = MidiQOL.getConcentrationEffect(actor, hexItem);
-            if (existingConcentration) {
-                let effectData = {
-                    name: optionName,
-                    icon: item.img,
-                    changes: [
-                        {
-                            key: 'flags.automated-conditions-5e.concentration.success',
-                            mode: CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
-                            value: true,
-                            priority: 20
-                        }
-                    ],
-                    flags: {
-                        dae: {
-                            specialDuration: ['isSave', 'turnStart']
-                        }
-                    },
-                    origin: item.uuid,
-                    duration: {
-                        seconds: null
-                    },
-                    disabled: false
-                };
-
-                await MidiQOL.socket().executeAsGM("createEffects",
-                    {actorUuid: actor.uuid, effects: [effectData]});
-
-            }
-        }
     }
 
 } catch (err) {

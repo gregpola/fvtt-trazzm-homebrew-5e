@@ -124,3 +124,13 @@
 * Added the Aura of Life, Blade Ward, Counterspell, Crusader's Mantle, Hold Monster, Hypnotic Pattern, Pass without Trace, and Steel Wind Strike spells
 * Added Salamander
 * Updated Fire Elemental to automatically apply the Fire Aura
+
+# 12.4.14
+* Added Thief subclass
+* Fixed Celestial Revelation to prompt for optional damage on all damage; added an aura animation; drop effects when unconscious
+* Fixed Spirit Guardians to not damage tokens with zero hit points and to correctly damage at end of turn
+* Updated midi and full export settings to fix issue with concentration not ending when incapacitated
+* Updated Interception fighting style to only heal up to the amount of damage the target previously received
+* Updated Cloud of Daggers, Cloudkill, Create Bonfire, Fog Cloud, Insect Plague, Moonbeam, Stinking Cloud, and Web to improve display of the animation/template
+* Updated the Hexblade to the latest Unearthed Arcana -- lots of changes
+* Updated Protection fighting style

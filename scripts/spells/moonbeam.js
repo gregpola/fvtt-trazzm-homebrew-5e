@@ -21,7 +21,7 @@ try {
         if (args[0].macroPass === "preItemRoll") {
             Hooks.once("createMeasuredTemplate", async (template) => {
                 await actor.setFlag(_flagGroup, flagName, {templateUuid: template.uuid});
-                await template.update({'hidden': true});
+                await template.update({'fillColor': null});
             });
 
             Hooks.once("createRegion", async (region) => {

@@ -8,7 +8,7 @@
 
     Using a Higher-Level Spell Slot. The damage increases by 1d10 for each spell slot level above 5.
 */
-const version = "12.4.1";
+const version = "12.4.2";
 const optionName = "Insect Plague";
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
 
@@ -16,7 +16,12 @@ try {
     if (args[0].macroPass === "preItemRoll") {
         Hooks.once("createMeasuredTemplate", async (template) => {
             // look for visibility and region
-            await template.update({'hidden': true});
+            await template.update({
+                fillColor: 0,
+                fillAlpha: 0,
+                alpha: 0,
+                opacity: 0.1
+            });
         });
 
         Hooks.once("createRegion", async (region) => {

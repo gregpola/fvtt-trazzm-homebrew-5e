@@ -4,7 +4,7 @@
 
     Using a Higher-Level Spell Slot. The fog’s radius increases by 20 feet for each spell slot level above 1.
 */
-const version = "12.4.0";
+const version = "12.4.1";
 const optionName = "Fog Cloud";
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
 const templateFLag = "fog-cloud-template-uuid";
@@ -14,7 +14,7 @@ const TEMPLATE_DARK_LIGHT = {
     "priority": 0,
     "alpha": 0.1,
     "angle": 360,
-    "bright": 18,
+    "bright": 16,
     "color": null,
     "coloration": 1,
     "dim": 0,
@@ -39,7 +39,12 @@ try {
     if (args[0].macroPass === "preItemRoll") {
         Hooks.once("createMeasuredTemplate", async (template) => {
             // look for visibility and region
-            await template.update({'hidden': true});
+            await template.update({
+                fillColor: 0,
+                fillAlpha: 0,
+                alpha: 0,
+                opacity: 0.1
+            });
             let radius = canvas.grid.size * (template.distance / canvas.grid.distance);
             await actor.setFlag(_flagGroup, templateFLag, {templateUuid: template.uuid, radius: radius, x: template.x, y: template.y});
         });

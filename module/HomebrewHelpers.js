@@ -1102,7 +1102,7 @@ class HomebrewHelpers {
     static isHexed(sourceActor, targetActor) {
         if (sourceActor && targetActor) {
             const originStart = `Actor.${sourceActor.id}.`;
-            let hexedEffect = targetActor.getRollData().effects.find(e => e.name.startsWith("Hexed ") && e.origin.startsWith(originStart) && e.statuses.has("cursed"));
+            let hexedEffect = targetActor.getRollData().effects.find(e => e.name === "Hexblade's Curse" && e.origin.startsWith(originStart) && e.statuses.has("cursed"));
             if (hexedEffect) {
                 return true;
             }

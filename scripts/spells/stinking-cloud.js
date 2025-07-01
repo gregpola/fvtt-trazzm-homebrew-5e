@@ -7,18 +7,17 @@
     condition until the end of the current turn. While Poisoned in this way, the creature can’t take an action or a
     Bonus Action.
  */
-const version = "12.4.0";
+const version = "12.4.1";
 const optionName = "Cloudkill";
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
 const templateFLag = "stinking-cloud-template-uuid";
-const animationFile = "modules/fvtt-trazzm-homebrew-5e/assets/animations/FogCloud_02_Regular_Green02_800x800.webm";
 
 const TEMPLATE_DARK_LIGHT = {
     "negative": true,
     "priority": 0,
     "alpha": 0.1,
     "angle": 360,
-    "bright": 18,
+    "bright": 16,
     "color": null,
     "coloration": 1,
     "dim": 0,
@@ -43,7 +42,12 @@ try {
     if (args[0].macroPass === "preItemRoll") {
         Hooks.once("createMeasuredTemplate", async (template) => {
             // look for visibility and region
-            await template.update({'hidden': true});
+            await template.update({
+                fillColor: 0,
+                fillAlpha: 0,
+                alpha: 0,
+                opacity: 0.1
+            });
             let radius = canvas.grid.size * (template.distance / canvas.grid.distance);
             await actor.setFlag(_flagGroup, templateFLag, {templateUuid: template.uuid, radius: radius, x: template.x, y: template.y});
         });
@@ -92,18 +96,6 @@ try {
                     },
                 };
                 await canvas.scene.createEmbeddedDocuments("AmbientLight", [lightTemplate]);
-
-                new Sequence()
-                    .effect()
-                    .file(animationFile)
-                    .scaleToObject(1.05)
-                    .aboveInterface()
-                    .opacity(0.75)
-                    .xray(true)
-                    .mask(template)
-                    .persist(true)
-                    .attachTo(template)
-                    .play();
             }
         }
     }

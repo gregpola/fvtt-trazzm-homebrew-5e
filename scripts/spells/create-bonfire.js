@@ -4,7 +4,7 @@
     1d8 fire damage. A creature must also make the saving throw when it moves into the bonfire’s space for the first
     time on a turn or ends its turn there.
  */
-const version = "12.4.0";
+const version = "12.4.1";
 const optionName = "Create Bonfire";
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
 const flagName = "create-bonfire-flag";
@@ -15,20 +15,12 @@ try {
         if (args[0].macroPass === "preItemRoll") {
             Hooks.once("createMeasuredTemplate", async (template) => {
                 await actor.setFlag(_flagGroup, flagName, {templateUuid: template.uuid});
-                await template.update({'hidden': true});
-
-                new Sequence()
-                    .effect()
-                    .file(animationFile)
-                    .scaleToObject(1.05)
-                    .aboveInterface()
-                    .opacity(0.75)
-                    .mask(template)
-                    .persist(true)
-                    .attachTo(template)
-                    .play();
-
-            // .xray(true)
+                await template.update({
+                    fillColor: 0,
+                    fillAlpha: 0,
+                    alpha: 0,
+                    opacity: 0.1
+                });
             });
 
             Hooks.once("createRegion", async (region) => {

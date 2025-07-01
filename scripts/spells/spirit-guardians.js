@@ -10,7 +10,7 @@
 
     Using a Higher-Level Spell Slot. The damage increases by 1d8 for each spell slot level above 3.
 */
-const version = "12.4.1";
+const version = "12.4.2";
 const optionName = "Spirit Guardians";
 
 try {
@@ -36,7 +36,7 @@ try {
 
         await applySpellDamage(targetToken, originActor, sourceItem, eventName);
     }
-    else if (args[0] === "each") {
+    else if (args[0] === "each" && lastArgValue.turn === 'endTurn') {
         eventName = 'tokenTurnStart';
         if (lastArgValue.turn === 'endTurn') {
             eventName = 'tokenTurnEnd';

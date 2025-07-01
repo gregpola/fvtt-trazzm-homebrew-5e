@@ -2,7 +2,7 @@
     For the duration, magical Darkness spreads from a point within range and fills a 15-foot-radius Sphere. Darkvision
     can’t see through it, and non-magical light can’t illuminate it.
 */
-const version = "12.4.0";
+const version = "12.4.1";
 const optionName = "Darkness";
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
 const templateFLag = "darkness-template-uuid";
@@ -12,7 +12,7 @@ const TEMPLATE_DARK_LIGHT = {
     "priority": 0,
     "alpha": 0.1,
     "angle": 360,
-    "bright": 15,
+    "bright": 13,
     "color": null,
     "coloration": 1,
     "dim": 0,

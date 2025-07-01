@@ -131,7 +131,7 @@
     "spellUseSound": "",
     "spellUseSoundRanged": "",
     "tempHPDamageConcentrationCheck": true,
-    "concentrationIncapacitatedConditionCheck": false,
+    "concentrationIncapacitatedConditionCheck": true,
     "toggleOptionalRules": false,
     "useCustomSounds": true,
     "usePlayerPortrait": true,
@@ -236,8 +236,8 @@
     "exportSource": {
       "system": "dnd5e",
       "coreVersion": "12.343",
-      "systemVersion": "4.4.3",
-      "midiVersion": "12.4.53.1"
+      "systemVersion": "4.4.4",
+      "midiVersion": "12.4.59"
     }
   }
 }
