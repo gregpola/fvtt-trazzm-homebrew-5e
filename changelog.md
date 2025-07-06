@@ -131,6 +131,19 @@
 * Fixed Spirit Guardians to not damage tokens with zero hit points and to correctly damage at end of turn
 * Updated midi and full export settings to fix issue with concentration not ending when incapacitated
 * Updated Interception fighting style to only heal up to the amount of damage the target previously received
+* Updated Protection fighting style
 * Updated Cloud of Daggers, Cloudkill, Create Bonfire, Fog Cloud, Insect Plague, Moonbeam, Stinking Cloud, and Web to improve display of the animation/template
 * Updated the Hexblade to the latest Unearthed Arcana -- lots of changes
-* Updated Protection fighting style
+
+# 12.4.15
+* Added Cultist Fanatic
+* Added Aganazzar's Scorcher, Blindness/Deafness, Burning Hands, Call Lightning, Dragon's Breath, Ensnaring Strike, Protection from Poison, Sleet Storm, Spiritual Weapon, Tasha's Hideous Laughter, Toll the Dead, Witch Bolt, and Word of Radiance spells
+* Added Tempest Domain subclass
+* Added Soulknife subclass
+* Updated Antitoxin, Brave, Countercharm, Dwarven Resilience, Fey Ancestry, Kobold Legacy - Defiance, Psychic Defenses to use new automated conditions effect
+* Updated Dwarf for Dwarven Resilience update
+* Updated Halfling for Brave update
+* Updated Sneak Attack to improve the dialog
+* Lots of cleanup in condition handling to pass most of the functionality to the Automated Conditions 5E module
+* Fixed Hypnotic Pattern to require concentration
+* Updated system settings export to fix issue with BG3 toolbar.

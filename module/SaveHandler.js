@@ -116,83 +116,9 @@ export class SaveHandler {
             // sanity checks
             if (!workflow.item.hasSave || !workflow.item.hasTarget) return;
 
-            // get all the conditions
-            let itemConditions = new Set();
-            let appliesToElementalResistance = false;
-            let appliesToCoronaOfLight = false;
-
-            // first try effects
-            if (workflow.item.effects?.size) {
-                workflow.item.effects.forEach(effect => {
-                    effect.changes.forEach(element => {
-                        if (element.key === 'StatusEffect') {
-                            itemConditions.add(element.value.toLowerCase());
-                        }
-                    });
-
-                    effect.statuses.forEach(status => {
-                        itemConditions.add(status.toLowerCase());
-                    });
-                });
-            }
-
-            // check damage types
-            if (workflow.damageDetail) {
-                const damageParts = workflow.damageDetail;
-                for (let i = 0; i < damageParts.length; i++) {
-                    let damageType = damageParts[i].type.toLowerCase();
-                    if (!itemConditions.has(damageType)) {
-                        itemConditions.add(damageType);
-                    }
-
-                    if (_elementalResistanceTypes.has(damageType)) {
-                        appliesToElementalResistance = true;
-                    }
-
-                    if (_coronaOfLightTypes.has(damageType)) {
-                        appliesToCoronaOfLight = true;
-                    }
-                }
-            }
-
-            if (workflow.otherDamageDetail) {
-                const otherDamageParts = workflow.otherDamageDetail;
-                for (let i = 0; i < otherDamageParts.length; i++) {
-                    let damageType = otherDamageParts[i].type.toLowerCase();
-                    if (!itemConditions.has(damageType)) {
-                        itemConditions.add(damageType);
-                    }
-
-                    if (_elementalResistanceTypes.has(damageType)) {
-                        appliesToElementalResistance = true;
-                    }
-                }
-            }
-
             // look for options that allow save modifiers
             const targetIterator = workflow.targets.values();
             for (const tokenDoc of targetIterator) {
-                let hasResilience = false;
-
-                // Condition resistance handling
-                if (itemConditions.size > 0) {
-                    const condIterator = itemConditions.values();
-                    for (const entry of condIterator) {
-                        if (HomebrewHelpers.hasResilience(tokenDoc.document.actor, entry)) {
-                            hasResilience = true;
-                        }
-                    }
-                }
-
-                // Check for other features that allow save mods
-                let holyNimbus = HomebrewHelpers.findEffect(tokenDoc.document.actor, 'Holy Nimbus');
-                if (holyNimbus) {
-                    let undeadOrFiend = ["undead", "fiend"].some(type => (workflow.actor.system.details.type?.value || "").toLowerCase().includes(type));
-                    if (undeadOrFiend) {
-                        hasResilience = true;
-                    }
-                }
-
                 // check for Keening Mist and a Necromancy spell
                 let keeningMist = game.settings.get("fvtt-trazzm-homebrew-5e", "keening-mist");
                 if (keeningMist && workflow.item.system.school === "nec") {
@@ -203,41 +129,12 @@ export class SaveHandler {
                     await SaveHandler.wait(100);
                 }
 
-                // Check for Elemental Resistance (Circle of the Elements) applicability
-                let elementalResistance = tokenDoc.document.actor.items.find(f => f.name === "Elemental Resistance");
-                if (elementalResistance && appliesToElementalResistance) {
-                    hasResilience = true;
-                }
-
-                // check Protection from Evil and Good
-                let protectionFromEvil = HomebrewHelpers.findEffect(tokenDoc.document.actor, 'Protection from Evil and Good');
-                let purityOfSpirit = HomebrewHelpers.findEffect(tokenDoc.document.actor, 'Purity of Spirit');
-                if (protectionFromEvil || purityOfSpirit) {
-                    if (["aberration", "celestial", "elemental", "fey", "fiend", "undead"].some(type => (workflow.actor.system.details.type?.value || "").toLowerCase().includes(type))) {
-                        if (itemConditions.has('charmed') || itemConditions.has('frightened')) {
-                            await MidiQOL.socket().executeAsGM('createEffects', {
-                                'actorUuid': tokenDoc.document.actor.uuid,
-                                'effects': [protectionFromEvilImmunity]
-                            });
-                            await SaveHandler.wait(100);
-                        }
-                    }
-                }
-
                 // Check for Corona of Light
                 let coronaOfLight = HomebrewHelpers.findEffect(tokenDoc.document.actor, 'Corona of Light - Disadvantage (In Aura)');
                 if (coronaOfLight && appliesToCoronaOfLight) {
                     await MidiQOL.socket().executeAsGM('createEffects', {
                         'actorUuid': tokenDoc.document.actor.uuid,
                         'effects': [conditionSensitivity]
-                    });
-                    await SaveHandler.wait(100);
-                }
-
-                if (hasResilience) {
-                    await MidiQOL.socket().executeAsGM('createEffects', {
-                        'actorUuid': tokenDoc.document.actor.uuid,
-                        'effects': [conditionResilience]
                     });
                     await SaveHandler.wait(100);
                 }

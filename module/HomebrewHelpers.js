@@ -1,17 +1,3 @@
-// These values must be lower case
-const _blindedResistLabels = new Set(["second head"]);
-const _charmResistLabels = new Set(["alien mind", "countercharm", "dark devotion", "duergar resilience", "fey ancestry", "leviathan will", "mental discipline", "heart of hruggek", "psionic fortitude", "second head", "two heads"]);
-const _deafenedResistLabels = new Set(["second head"]);
-const _frightenedResistLabels = new Set(["brave", "countercharm", "dark devotion", "fearless", "leviathan will", "mental discipline", "heart of hruggek", "second head", "two heads", "kobold legacy - defiance"]);
-const _paralyzedResistLabels = new Set(["duergar resilience", "leviathan will", "heart of hruggek"]);
-const _poisonResistItems = new Set(["duergar resilience", "deathless nature (reborn)", "dwarven resilience", "infernal constitution", "leviathan will", "poison resilience", "stout resilience", "heart of hruggek"]);
-const _poisonResistEffects = new Set(["hill rune", "leviathan will", "antitoxin", "protection from poison"]);
-const _proneResistLabels = new Set(["sure-footed"]);
-const _sleepResistLabels = new Set(["leviathan will", "heart of hruggek", "wakeful"]);
-const _stunResistLabels = new Set(["leviathan will", "heart of hruggek", "psionic fortitude", "second head", "two heads"]);
-const _turnResistLabels = new Set(["turning defiance"]);
-const _turnImmunityLabels = new Set(["turn immunity"]);
-
 class HomebrewHelpers {
 
     static hasAvailableGold(actor, amount) {
@@ -241,6 +227,17 @@ class HomebrewHelpers {
         return true;
     }
 
+    static isLargeOrLarger(target) {
+        const mediumIndex = Object.keys(CONFIG.DND5E.actorSizes).indexOf("med");
+        const targetSizeIndex = Object.keys(CONFIG.DND5E.actorSizes).indexOf(target.actor.system.traits.size);
+
+        if (targetSizeIndex - mediumIndex > 0) {
+            return true;
+        }
+
+        return false;
+    }
+
     static isAvailableThisTurn(actor, flagName) {
         if (game.combat) {
             const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn / 100}`;
@@ -461,179 +458,6 @@ class HomebrewHelpers {
                 }
             }
         ];
-    }
-
-    static hasConditionImmunity(actor, conditionType) {
-        if (!actor || !conditionType)
-            return false;
-
-        return actor.system.traits.ci?.value?.has(conditionType);
-    }
-
-    static hasSaveAdvantage(actor, conditionType) {
-        return HomebrewHelpers.hasResilience(actor, conditionType);
-    }
-
-    static hasResilience(actor, conditionType) {
-        // sanity checks
-        if (!actor) {
-            console.error("fvtt-trazzm-homebrew-5e | ", "hasResilience() - No actor specified");
-            return false;
-        }
-
-        if (!conditionType || conditionType.length === 0) {
-            console.error("fvtt-trazzm-homebrew-5e | ", "hasResilience() - No conditionType specified");
-            return false;
-        }
-
-        let ct = conditionType.toLowerCase();
-        switch (ct) {
-            case "blind":
-            case "blinded":
-                let blindFeature = actor.items.find(f => _blindedResistLabels.has(f.name.toLowerCase()));
-                if (blindFeature) {
-                    return true;
-                } else {
-                    let blindFeature = actor.getRollData().effects.find(f => _blindedResistLabels.has(f.name.toLowerCase()));
-                    if (blindFeature) {
-                        return true;
-                    }
-                }
-                break;
-            case "charm":
-            case "charmed":
-                let charmFeature = actor.items.find(f => _charmResistLabels.has(f.name.toLowerCase()));
-                if (charmFeature) {
-                    return true;
-                } else {
-                    let charmEffect = actor.getRollData().effects.find(f => _charmResistLabels.has(f.name.toLowerCase()));
-                    if (charmEffect) {
-                        return true;
-                    }
-                }
-                break;
-            case "deaf":
-            case "deafened":
-                let deafFeature = actor.items.find(f => _deafenedResistLabels.has(f.name.toLowerCase()));
-                if (deafFeature) {
-                    return true;
-                } else {
-                    let deafFeature = actor.getRollData().effects.find(f => _deafenedResistLabels.has(f.name.toLowerCase()));
-                    if (deafFeature) {
-                        return true;
-                    }
-                }
-                break;
-            case "fear":
-            case "fright":
-            case "frightened":
-                let frightFeature = actor.items.find(f => _frightenedResistLabels.has(f.name.toLowerCase()));
-                if (frightFeature) {
-                    return true;
-                } else {
-                    let frightEffect = actor.getRollData().effects.find(f => _frightenedResistLabels.has(f.name.toLowerCase()));
-                    if (frightEffect) {
-                        return true;
-                    }
-                }
-                break;
-            case "paralyze":
-            case "paralyzed":
-            case "paralysis":
-                let paralyzeFeature = actor.items.find(f => _paralyzedResistLabels.has(f.name.toLowerCase()));
-                if (paralyzeFeature) {
-                    return true;
-                } else {
-                    let paralyzeEffect = actor.getRollData().effects.find(f => _paralyzedResistLabels.has(f.name.toLowerCase()));
-                    if (paralyzeEffect) {
-                        return true;
-                    }
-                }
-                break;
-            case "poison":
-            case "poisoned":
-                let poisonFeature = actor.items.find(f => _poisonResistItems.has(f.name.toLowerCase()));
-                if (poisonFeature) {
-                    return true;
-                } else {
-                    let poisonEffect = actor.getRollData().effects.find(f => _poisonResistEffects.has(f.name.toLowerCase()));
-                    if (poisonEffect) {
-                        return true;
-                    }
-                }
-                break;
-            case "prone":
-                let proneFeature = actor.items.find(f => _proneResistLabels.has(f.name.toLowerCase()));
-                if (proneFeature) {
-                    return true;
-                } else {
-                    let proneEffect = actor.getRollData().effects.find(f => _proneResistLabels.has(f.name.toLowerCase()));
-                    if (proneEffect) {
-                        return true;
-                    }
-                }
-                break;
-            case "asleep":
-            case "sleep":
-                let sleepFeature = actor.items.find(f => _sleepResistLabels.has(f.name.toLowerCase()));
-                if (sleepFeature) {
-                    return true;
-                } else {
-                    let sleepEffect = actor.getRollData().effects.find(f => _sleepResistLabels.has(f.name.toLowerCase()));
-                    if (sleepEffect) {
-                        return true;
-                    }
-                }
-                break;
-            case "stun":
-            case "stunned":
-                let stunFeature = actor.items.find(f => _stunResistLabels.has(f.name.toLowerCase()));
-                if (stunFeature) {
-                    return true;
-                } else {
-                    let stunEffect = actor.getRollData().effects.find(f => _stunResistLabels.has(f.name.toLowerCase()));
-                    if (stunEffect) {
-                        return true;
-                    }
-                }
-                break;
-        }
-
-        return false;
-    }
-
-    static hasTurnImmunity(actor) {
-        if (!actor)
-            return false;
-
-        let feature = actor.items.find(f => _turnImmunityLabels.has(f.name.toLowerCase()));
-        if (feature) {
-            return true;
-        } else {
-            feature = actor.getRollData().effects.find(f => _turnImmunityLabels.has(f.name.toLowerCase()));
-            if (feature) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    static hasTurnResistance(actor) {
-        if (!actor)
-            return false;
-
-        let feature = actor.items.find(f => _turnResistLabels.has(f.name.toLowerCase()));
-        if (feature) {
-            return true;
-        } else {
-            feature = actor.getRollData().effects.find(f => _turnResistLabels.has(f.name.toLowerCase()));
-            if (feature) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     static getAvailableSorceryPoints(actor) {
@@ -1116,6 +940,10 @@ class HomebrewHelpers {
             if (actor.system.traits.weaponProf.mastery.value.has(item.system.type.baseItem)) {
                 return true;
             }
+            else if (item.name === 'Psychic Blade') {
+                // special handling for the Soulknife's Psychic Blade
+                return true;
+            }
         }
 
         return false;
@@ -1150,4 +978,48 @@ class HomebrewHelpers {
         return undefined;
     }
 
+    static hasResilience(actor, conditionType) {
+        // sanity checks
+        if (!actor) {
+            console.error("fvtt-trazzm-homebrew-5e | ", "hasResilience() - No actor specified");
+            return false;
+        }
+
+        if (!conditionType || conditionType.length === 0) {
+            console.error("fvtt-trazzm-homebrew-5e | ", "hasResilience() - No conditionType specified");
+            return false;
+        }
+
+        // get all rider effects that grant save advantage
+        let resiliences = new Set();
+
+        for (let effect of actor.getRollData().effects) {
+            let applicableChanges = effect.changes.filter(c => c.key === 'flags.automated-conditions-5e.save.advantage');
+
+            for (let change of applicableChanges) {
+                let tokens = change.value.split("||");
+
+                for (let token of tokens) {
+                    console.log(token);
+                    if (token.trim().startsWith("riderStatuses.")) {
+                        let status = token.trim().substring(14).trim();
+                        resiliences.add(status);
+                    }
+                }
+            }
+        }
+
+        let ct = conditionType.toLowerCase();
+        switch (ct) {
+            case "poison":
+            case "poisoned":
+                return resiliences.has('poisoned');
+
+            case "asleep":
+            case "sleep":
+                return resiliences.has('sleep');
+        }
+
+        return false;
+    }
 }

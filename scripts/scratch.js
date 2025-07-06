@@ -19,8 +19,7 @@ ui.notifications.error(`${optionName}: ${version} - missing Font of Magic`);
 // Useful references
 if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType)) {
 
-	const tsize = targetToken.actor.system.traits.size;
-	if (["tiny", "sm", "med", "lg"].includes(tsize)) {
+		if (["tiny", "sm", "med", "lg"].includes(targetToken.actor.system.traits.size)) {
 
 		actor.system.abilities.cha.mod
 
@@ -41,6 +40,18 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType))
 		foundry.utils.setProperty(lastChange, "value", totalLifeDrained);
 		const isSurprised = actor.statuses.has("surprised");
 		acBonusEffect.update({'disabled': false});
+		
+		
+raceOrType.includes('undead')
+['fiend', 'undead'].includes(typeOrRace)
+
+@scale.bard.inspiration
+@scale.paladin.aura
+
+flags.dae.rest-recovery.force.maximiseHitDieRoll
+foundry.utils.getProperty(actor, CONSTANTS.FLAGS.DAE.MAXIMISE_HIT_DIE_ROLL);
+
+flags.automated-conditions-5e.save.advantage | Custom | riderStatuses.charmed || riderStatuses.frightened
 
 
 		const _flagGroup = "fvtt-trazzm-homebrew-5e";

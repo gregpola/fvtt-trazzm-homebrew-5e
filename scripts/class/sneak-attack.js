@@ -10,7 +10,7 @@
 
     Current Sneak Attack Damage: @scale.rogue.sneak-attack
 */
-const version = "12.4.2";
+const version = "12.4.3";
 const optionName = "Sneak Attack";
 const timeFlag = "last-sneak-attack";
 
