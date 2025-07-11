@@ -8,7 +8,7 @@
     Using a Higher-Level Spell Slot. The damage increases by 2d4 for each spell slot level above 2.
  */
 const optionName = "Cloud of Daggers Move";
-const version = "12.4.0";
+const version = "12.4.1";
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
 const flagName = "cloud-of-daggers-flag";
 
@@ -22,7 +22,7 @@ try {
                 if (newTemplate) {
                     const newX = newTemplate.x;
                     const newY = newTemplate.y;
-                    await template.update({x: newX, y: newY});
+                    await game.trazzm.socket.executeAsGM("updateTemplate", template.uuid, {x: newX, y: newY});
 
                 } else {
                     const position = await Sequencer.Crosshair.show({
@@ -39,7 +39,7 @@ try {
                     // LEFT_SIDE_MIDPOINT
 
                     if (position) {
-                        await template.update({x: position.x, y: position.y});
+                        await game.trazzm.socket.executeAsGM("updateTemplate", template.uuid, {x: position.x, y: position.y});
                     }
                 }
             }

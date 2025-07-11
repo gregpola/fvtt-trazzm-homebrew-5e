@@ -1,4 +1,3 @@
-import {socket} from "./module.js";
 import {handleRegeneration, checkForRegeneration, applyDamageTypes} from "./regeneration.js";
 
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
@@ -99,7 +98,7 @@ export class CombatHandler {
                 }
 
                 legendaryActionData.forEach(async function(value, key) {
-                    await socket.executeAsUser("doLegendaryAction", key, value);
+                    await game.trazzm.socket.executeAsUser("doLegendaryAction", key, value);
                 });
 
                 // After notifying of all legendary actions available, check for recharge of the current combatant
@@ -112,10 +111,10 @@ export class CombatHandler {
                 // get the player to prompt
                 let player = MidiQOL.playerForActor(combat.combatant.actor);
                 if (player && player.active) {
-                    await socket.executeAsUser("doTurnStartOptions", player.id, combat.combatant.actor.uuid, turnStartOptions);
+                    await game.trazzm.socket.executeAsUser("doTurnStartOptions", player.id, combat.combatant.actor.uuid, turnStartOptions);
                 }
                 else {game.users?.activeGM
-                    await socket.executeAsUser("doTurnStartOptions", game.users.activeGM.id, combat.combatant.actor.uuid, turnStartOptions);
+                    await game.trazzm.socket.executeAsUser("doTurnStartOptions", game.users.activeGM.id, combat.combatant.actor.uuid, turnStartOptions);
                 }
             }
 

@@ -4,7 +4,7 @@
     Cylinder up to 60 feet.
  */
 const optionName = "Moonbeam Move";
-const version = "12.4.0";
+const version = "12.4.1";
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
 const flagName = "moonbeam-flag";
 
@@ -18,7 +18,7 @@ try {
                 if (newTemplate) {
                     const newX = newTemplate.x;
                     const newY = newTemplate.y;
-                    await template.update({x: newX, y: newY});
+                    await game.trazzm.socket.executeAsGM("updateTemplate", template.uuid, {x: newX, y: newY});
 
                 } else {
                     const position = await Sequencer.Crosshair.show({
@@ -33,7 +33,7 @@ try {
                     });
 
                     if (position) {
-                        await template.update({x: position.x, y: position.y});
+                        await game.trazzm.socket.executeAsGM("updateTemplate", template.uuid, {x: position.x, y: position.y});
                     }
                 }
             }

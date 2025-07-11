@@ -147,3 +147,11 @@
 * Lots of cleanup in condition handling to pass most of the functionality to the Automated Conditions 5E module
 * Fixed Hypnotic Pattern to require concentration
 * Updated system settings export to fix issue with BG3 toolbar.
+
+# 12.4.16
+* Fixed Sneak Attack giving Assassinate damage on later rounds
+* Fixed Destructive Wrath
+* Fixed all healing potions to destroy on empty
+* Updated the Spiritual Weapon token to not provide flanking
+* Updated Cloud of Daggers and Moonbeam to support player move functionality
+* Removed the 2024 suffix from all the compendiums and removed the last 2014 compendium

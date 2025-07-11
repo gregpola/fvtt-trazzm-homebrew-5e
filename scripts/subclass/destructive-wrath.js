@@ -4,7 +4,7 @@
     When you roll lightning or thunder damage, you can use your Channel Divinity to deal maximum damage, instead of rolling.
 */
 const optionName = "Destructive Wrath";
-const version = "12.4.0";
+const version = "12.4.1";
 const validTypes = ['lightning', 'thunder'];
 
 try {
@@ -15,7 +15,7 @@ try {
             if (channelDivinity.system.uses.spent < channelDivinity.system.uses.max) {
                 // look for the eligible damage types
                 const isEligibleType = workflow.damageRolls.filter(i => validTypes.includes(i.options.type));
-                if (isEligibleType && (elementalTypes.length > 0)) {
+                if (isEligibleType && (isEligibleType.length > 0)) {
                     const proceed = await foundry.applications.api.DialogV2.confirm({
                         window: {
                             title: `${optionName}`,

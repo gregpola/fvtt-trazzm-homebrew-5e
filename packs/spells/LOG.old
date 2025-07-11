@@ -1,3 +1,7 @@
-2025/07/06-09:18:30.643 bdf4 Recovering log #3381
-2025/07/06-09:18:30.654 bdf4 Delete type=0 #3381
-2025/07/06-09:18:30.655 bdf4 Delete type=3 #3379
+2025/07/10-13:58:43.832 27ac Recovering log #3399
+2025/07/10-13:58:43.844 27ac Delete type=0 #3399
+2025/07/10-13:58:43.844 27ac Delete type=3 #3397
+2025/07/10-13:59:34.467 6730 Level-0 table #3404: started
+2025/07/10-13:59:34.467 6730 Level-0 table #3404: 0 bytes OK
+2025/07/10-13:59:34.473 6730 Delete type=0 #3402
+2025/07/10-13:59:34.490 6730 Manual compaction at level-0 from '!folders!VR6oTSq50hfCIYri' @ 72057594037927935 : 1 .. '!items.effects!zMAWdyc8UVb37BK4.XdZQbOAy9cAfEGC8' @ 0 : 0; will stop at (end)

@@ -10,6 +10,7 @@ import {macros} from './macros.js';
 import {registerSettings} from './settings.js';
 import {doTurnStartOptions} from "./utils.js";
 import {doLegendaryAction} from "./utils.js";
+import {doUpdateTemplate} from "./utils.js";
 
 const SUB_MODULES = {
     CombatHandler,
@@ -21,8 +22,6 @@ const SUB_MODULES = {
     WizardFeatures,
     SummonHelper
 };
-
-export let socket = undefined;
 
 Hooks.once('init', async function () {
     console.log('%c fvtt-trazzm-homebrew-5e | Initializing homebrew-5e', 'color: #D030DE');
@@ -45,9 +44,12 @@ Hooks.once("ready", async () => {
 
 
 Hooks.once('socketlib.ready', async function() {
-    socket = socketlib.registerModule('fvtt-trazzm-homebrew-5e');
-    socket.register('doTurnStartOptions', doTurnStartOptions);
-    socket.register('doLegendaryAction', doLegendaryAction);
+    game.trazzm = game.trazzm || {};
+    game.trazzm.socket = socketlib.registerModule("fvtt-trazzm-homebrew-5e");
+
+    game.trazzm.socket.register('doTurnStartOptions', doTurnStartOptions);
+    game.trazzm.socket.register('doLegendaryAction', doLegendaryAction);
+    game.trazzm.socket.register('updateTemplate', doUpdateTemplate);
 });
 
 /**
@@ -57,6 +59,6 @@ function initialize_module() {
     Object.values(SUB_MODULES).forEach(cl => cl.register());
 }
 
-globalThis['trazzmHomebrew'] = {
+globalThis.TrazzmHomebrew = {
     macros
 }

@@ -25,6 +25,13 @@ export async function turnStartDialog(actorUuid, options = {}) {
     }).render(true);
 }
 
+export async function doUpdateTemplate(templateUuid, updates = {}) {
+    let template = await fromUuid(templateUuid);
+    if (template) {
+        await template.update(updates);
+    }
+}
+
 /**
  * A dialog to show options at the start of a combatants turn.
  *
