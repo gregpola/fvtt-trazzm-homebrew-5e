@@ -155,3 +155,7 @@
 * Updated the Spiritual Weapon token to not provide flanking
 * Updated Cloud of Daggers and Moonbeam to support player move functionality
 * Removed the 2024 suffix from all the compendiums and removed the last 2014 compendium
+
+# 12.4.16.1
+* Added missed image file updates
+
