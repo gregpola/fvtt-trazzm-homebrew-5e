@@ -159,3 +159,6 @@
 # 12.4.16.1
 * Added missed image file updates
 
+# 12.4.17
+* Added Shadow Blade and Flame Blade spells
+* Added some monsters
