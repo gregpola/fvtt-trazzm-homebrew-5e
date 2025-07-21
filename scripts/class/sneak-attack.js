@@ -10,7 +10,7 @@
 
     Current Sneak Attack Damage: @scale.rogue.sneak-attack
 */
-const version = "12.4.3";
+const version = "12.4.4";
 const optionName = "Sneak Attack";
 const timeFlag = "last-sneak-attack";
 
@@ -38,10 +38,12 @@ try {
         // check for sneak attack dice
         let sneakDice = 0;
         let sneakDie = 'd6';
+        let sneakDieFaces = 6;
 
         if (actor.system.scale && actor.system.scale.rogue) {
             sneakDice = actor.system.scale.rogue['sneak-attack'].number;
             sneakDie = actor.system.scale.rogue['sneak-attack'].die;
+            sneakDieFaces = actor.system.scale.rogue['sneak-attack'].faces;
         }
         else if (actor.type === "npc") {
             sneakDice = Math.ceil(actor.system.details.cr / 2);
@@ -123,11 +125,13 @@ try {
                             let cunningStrikeChoices = [];
 
                             var grid = document.getElementById("cunningStrikeOptions");
-                            var checkBoxes = grid.getElementsByTagName("INPUT");
-                            for (var i = 0; i < checkBoxes.length; i++) {
-                                if (checkBoxes[i].checked) {
-                                    cunningStrikeChoices.push(checkBoxes[i].value);
-                                    cunningStrikeCost += cunningStrikeCosts[checkBoxes[i].value];
+                            if (grid) {
+                                var checkBoxes = grid.getElementsByTagName("INPUT");
+                                for (var i = 0; i < checkBoxes.length; i++) {
+                                    if (checkBoxes[i].checked) {
+                                        cunningStrikeChoices.push(checkBoxes[i].value);
+                                        cunningStrikeCost += cunningStrikeCosts[checkBoxes[i].value];
+                                    }
                                 }
                             }
 
@@ -231,6 +235,11 @@ try {
 
                 await HomebrewHelpers.setUsedThisTurn(actor, timeFlag);
 
+                if (workflow.isCritical) {
+                    const critDamage = sneakDice * sneakDieFaces;
+                    sneakDamageFormula += ` + ${critDamage}`;
+                }
+
                 // return the damage
                 return new CONFIG.Dice.DamageRoll(`${sneakDamageFormula}[Sneak]`, {}, {type:workflow.defaultDamageType, properties: [...rolledItem.system.properties]});
             }
@@ -240,22 +249,20 @@ try {
     console.error(`${optionName}: ${version}`, err);
 }
 
-// Check if there is an enemy of the target adjacent to it
+// Check if there is an ally of the rogue adjacent to the target
 function checkAllyNearTarget(rogueToken, targetToken) {
-    let foundEnemy = false;
-    let nearbyEnemy = canvas.tokens.placeables.filter(t => {
+    let nearbyAlly = canvas.tokens.placeables.filter(t => {
         let nearby = (t.actor &&
             t.actor?.id !== rogueToken.actor._id && // not me
             t.id !== targetToken.id && // not the target
             t.actor?.system.attributes?.hp?.value > 0 && // not incapacitated
-            t.document.disposition !== targetToken.document.disposition && // not an ally
+            t.document.disposition === rogueToken.document.disposition && // an ally
             MidiQOL.computeDistance(t, targetToken, {wallsBlock: false}) <= 5 // close to the target
         );
-        foundEnemy = foundEnemy || (nearby && t.document.disposition === -targetToken.document.disposition)
         return nearby;
     });
 
-    return (nearbyEnemy.length > 0);
+    return (nearbyAlly.length > 0);
 }
 
 /*

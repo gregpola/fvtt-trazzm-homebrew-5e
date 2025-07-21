@@ -14,3 +14,7 @@ Homing Strikes. If you make an attack roll with your Psychic Blade and miss the 
 Die and add the number rolled to the attack roll. If this causes the attack to hit, the die is expended.
  */
 
+let healDamage = await new Roll(rollDice).evaluate();
+
+const coinFlip = await new Roll('1dc').evaluate();
+await game.dice3d?.showForRoll(coinFlip);

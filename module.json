@@ -14,7 +14,7 @@
   "packs": [
     {
       "name": "homebrew-journal-entries",
-      "label": "Homebrew Journals",
+      "label": "Journals",
       "path": "packs/journal-entries",
       "type": "JournalEntry",
       "system": "dnd5e",
@@ -25,7 +25,7 @@
     },
     {
       "name": "homebrew-macros",
-      "label": "Homebrew Macros",
+      "label": "Macros",
       "path": "packs/macros",
       "type": "Macro",
       "system": "dnd5e",

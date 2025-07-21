@@ -1039,4 +1039,82 @@ class HomebrewHelpers {
         if (inBright) return 'bright';
         return 'dim';
     }
+
+    static async drawWallTemplateWalls(template, templateName, actorId) {
+        let wallsData = [];
+
+        // template.width = 10
+        const sceneScale = canvas.grid.size / canvas.dimensions.distance;
+        const effectiveWidth = template.width * sceneScale;
+        const rayAngle = template.direction * (Math.PI/180);
+        const templateLength = template.distance * sceneScale;
+
+        // draw the walls around the template
+        let segmentLength = Math.floor(effectiveWidth / 2) - 5;
+        let segmentAngle = (template.direction + 90)* (Math.PI/180);
+        let segmentRay = Ray.fromAngle(template.x, template.y, segmentAngle, segmentLength);
+        wallsData.push({
+            c: [segmentRay.A.x, segmentRay.A.y, segmentRay.B.x, segmentRay.B.y],
+            move: CONST.WALL_MOVEMENT_TYPES.NONE,
+            sense: CONST.WALL_SENSE_TYPES.NORMAL,
+            dir: CONST.WALL_DIRECTIONS.BOTH,
+            door: CONST.WALL_DOOR_TYPES.NONE,
+            ds: CONST.WALL_DOOR_STATES.CLOSED,
+            flags: { "fvtt-trazzm-homebrew-5e": { template: { ActorId: actorId, TemplateName: templateName } } }
+        });
+
+        segmentLength = templateLength;
+        segmentAngle = rayAngle;
+        segmentRay = Ray.fromAngle(segmentRay.B.x, segmentRay.B.y, segmentAngle, segmentLength);
+        wallsData.push({
+            c: [segmentRay.A.x, segmentRay.A.y, segmentRay.B.x, segmentRay.B.y],
+            move: CONST.WALL_MOVEMENT_TYPES.NONE,
+            sense: CONST.WALL_SENSE_TYPES.NORMAL,
+            dir: CONST.WALL_DIRECTIONS.BOTH,
+            door: CONST.WALL_DOOR_TYPES.NONE,
+            ds: CONST.WALL_DOOR_STATES.CLOSED,
+            flags: { "fvtt-trazzm-homebrew-5e": { template: { ActorId: actorId, TemplateName: templateName } } }
+        });
+
+        segmentLength = effectiveWidth - 10;
+        segmentAngle = (template.direction + 270)* (Math.PI/180);;
+        segmentRay = Ray.fromAngle(segmentRay.B.x, segmentRay.B.y, segmentAngle, segmentLength);
+        wallsData.push({
+            c: [segmentRay.A.x, segmentRay.A.y, segmentRay.B.x, segmentRay.B.y],
+            move: CONST.WALL_MOVEMENT_TYPES.NONE,
+            sense: CONST.WALL_SENSE_TYPES.NORMAL,
+            dir: CONST.WALL_DIRECTIONS.BOTH,
+            door: CONST.WALL_DOOR_TYPES.NONE,
+            ds: CONST.WALL_DOOR_STATES.CLOSED,
+            flags: { "fvtt-trazzm-homebrew-5e": { template: { ActorId: actorId, TemplateName: templateName } } }
+        });
+
+        segmentLength = templateLength;
+        segmentAngle = (template.direction + 180)* (Math.PI/180);;
+        segmentRay = Ray.fromAngle(segmentRay.B.x, segmentRay.B.y, segmentAngle, segmentLength);
+        wallsData.push({
+            c: [segmentRay.A.x, segmentRay.A.y, segmentRay.B.x, segmentRay.B.y],
+            move: CONST.WALL_MOVEMENT_TYPES.NONE,
+            sense: CONST.WALL_SENSE_TYPES.NORMAL,
+            dir: CONST.WALL_DIRECTIONS.BOTH,
+            door: CONST.WALL_DOOR_TYPES.NONE,
+            ds: CONST.WALL_DOOR_STATES.CLOSED,
+            flags: { "fvtt-trazzm-homebrew-5e": { template: { ActorId: actorId, TemplateName: templateName } } }
+        });
+
+        segmentLength = Math.floor(effectiveWidth / 2) - 5;
+        segmentAngle = (template.direction + 90)* (Math.PI/180);
+        segmentRay = Ray.fromAngle(segmentRay.B.x, segmentRay.B.y, segmentAngle, segmentLength);
+        wallsData.push({
+            c: [segmentRay.A.x, segmentRay.A.y, segmentRay.B.x, segmentRay.B.y],
+            move: CONST.WALL_MOVEMENT_TYPES.NONE,
+            sense: CONST.WALL_SENSE_TYPES.NORMAL,
+            dir: CONST.WALL_DIRECTIONS.BOTH,
+            door: CONST.WALL_DOOR_TYPES.NONE,
+            ds: CONST.WALL_DOOR_STATES.CLOSED,
+            flags: { "fvtt-trazzm-homebrew-5e": { template: { ActorId: actorId, TemplateName: templateName } } }
+        });
+
+        await canvas.scene.createEmbeddedDocuments("Wall", wallsData);
+    }
 }

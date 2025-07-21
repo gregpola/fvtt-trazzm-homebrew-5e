@@ -15,7 +15,7 @@
 	is cast must take a Search action and succeed on a Wisdom (Perception) or Wisdom (Survival) check against your spell
 	save DC to recognize the terrain as hazardous before entering it.
 */
-const version = "12.4.0";
+const version = "12.4.1";
 const optionName = "Spike Growth";
 
 // Move within
@@ -29,13 +29,16 @@ if (!event.data.teleport) {
 	const squaresMoved = distanceMoved / 5;
 
 	if (squaresMoved > 0) {
+		const originActor = await fromUuid(region.flags['region-attacher'].actorUuid);
+		const originToken = await MidiQOL.tokenForActor(originActor);
+
 		const sourceToken = event.data.token;
-		const sourceActor = event.data.token.actor;
+		//const sourceActor = event.data.token.actor;
 		const diceCount = squaresMoved * 2;
 		const itemUuid = region.getFlag('region-attacher', 'itemUuid');
 		const sourceItem = await fromUuid(itemUuid);
 		const damageRoll = await new CONFIG.Dice.DamageRoll(`${diceCount}d4`, {}, {type: 'piercing'}).evaluate();
-		await new MidiQOL.DamageOnlyWorkflow(sourceActor, sourceToken, null, null, [sourceToken], damageRoll, {flavor: 'Pierced by spikes', itemCardId: "new", itemData: sourceItem?.toObject()});
+		await new MidiQOL.DamageOnlyWorkflow(originActor, originToken, null, null, [sourceToken], damageRoll, {flavor: 'Pierced by spikes', itemCardId: "new", itemData: sourceItem?.toObject()});
 		await new Sequence().effect().file("jb2a.swirling_leaves.loop.01.green").atLocation(sourceToken).scaleToObject(1.5).play();
 	}
 }

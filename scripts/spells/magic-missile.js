@@ -14,7 +14,6 @@ try {
         const spellLevel = workflow.castData.castLevel;
         const missileCount = 2 + spellLevel;
 
-
         // check for need to select targets
         if (workflow.targets.size === 1) {
             let target = workflow.targets.first();

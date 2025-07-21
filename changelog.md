@@ -161,4 +161,12 @@
 
 # 12.4.17
 * Added Shadow Blade and Flame Blade spells
-* Added some monsters
+* Added some monsters for RotD session
+
+# 12.4.18
+* Added the Confusion, Erupting Earth, Gust of Wind, Silence, Wall of Sand, Wall of Water, and Wind Wall spells
+* Added Storm Boomerang, and character items for PotA
+* Added Bottled Breath, Elixir of Health, Poisonous Snake Venom, Wand of Magic Missiles
+* Updated Sneak Attack to support critical hits and not be allowed by nearby neutral tokens like spiritual weapon
+* Updated Spike Growth to trigger concentration checks on damage
+* Updated Rage and Fanatical Focus to work better together

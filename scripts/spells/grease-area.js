@@ -7,7 +7,6 @@
 */
 const optionName = "Grease";
 const version = "12.4.0";
-const _flagGroup = "fvtt-trazzm-homebrew-5e";
 
 // the enter or end turn macro
 const combatTime = game.combat ? `${game.combat.id}-${game.combat.round + game.combat.turn / 100}` : 1;

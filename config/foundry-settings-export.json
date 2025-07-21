@@ -1,7 +1,7 @@
 [
   {
     "key": "ActiveAuras.ActiveGM",
-    "value": "\"1cBqnIOdEDUMw3j9\""
+    "value": "\"7k1kgrhEglh3PIvp\""
   },
   {
     "key": "ActiveAuras.combatOnly",
@@ -16,8 +16,16 @@
     "value": "false"
   },
   {
+    "key": "ActiveAuras.scrollingAura",
+    "value": "false"
+  },
+  {
     "key": "ActiveAuras.wall-block",
     "value": "true"
+  },
+  {
+    "key": "ATL.presets",
+    "value": "[{\"name\":\"torch\",\"light\":{\"dim\":40,\"bright\":20,\"color\":\"#a2642a\",\"animation\":{\"type\":\"torch\",\"speed\":1,\"intensity\":1},\"alpha\":0.7},\"id\":\"ATLPresetTorch\"},{\"name\":\"lantern\",\"dim\":60,\"bright\":30,\"color\":\"#a2642a\",\"animation\":{\"type\":\"torch\",\"speed\":1,\"intensity\":1},\"alpha\":0.4,\"id\":\"ATLPresetLantern\"},{\"name\":\"candle\",\"dim\":10,\"bright\":2,\"color\":\"#a2642a\",\"animation\":{\"type\":\"torch\",\"speed\":1,\"intensity\":1},\"alpha\":0.2,\"id\":\"ATLPresetCandle\"},{\"name\":\"flashlight\",\"dim\":60,\"bright\":30,\"color\":\"#8bfdf6\",\"alpha\":0.3,\"id\":\"ATLPresetFlashlight\"},{\"name\":\"o62xg4zixzqiegnj\",\"light\":{\"dim\":15,\"bright\":\"\",\"color\":\"#000000\",\"animation\":{\"type\":\"hole\",\"speed\":6,\"intensity\":6,\"reverse\":false},\"alpha\":1,\"angle\":\"\",\"coloration\":9,\"luminosity\":1,\"gradual\":false,\"saturation\":0,\"contrast\":0,\"shadows\":0.5},\"id\":\"o62xg4zixzqiegnj\"}]"
   },
   {
     "key": "ATL.size",
@@ -29,7 +37,7 @@
   },
   {
     "key": "autoanimations.aaAutorec-aura",
-    "value": "[]"
+    "value": "[{\"id\":\"cb12e700-582e-4166-8219-4ed223191b77\",\"label\":\"Antilife Shell\",\"macro\":{\"enable\":false,\"playWhen\":\"0\"},\"menu\":\"aura\",\"primary\":{\"options\":{\"addTokenWidth\":false,\"alpha\":false,\"alphaMax\":0.5,\"alphaMin\":-0.5,\"alphaDuration\":1000,\"breath\":false,\"breathMax\":1.05,\"breathMin\":0.95,\"breathDuration\":1000,\"delay\":0,\"elevation\":0,\"fadeIn\":250,\"fadeOut\":500,\"playOn\":\"source\",\"isRadius\":true,\"isWait\":false,\"opacity\":0.5,\"size\":2,\"tint\":false,\"tintColor\":\"#FFFFFF\",\"tintSaturate\":0,\"unbindAlpha\":false,\"unbindVisibility\":false,\"zIndex\":1},\"sound\":{\"delay\":0,\"enable\":false,\"file\":\"\",\"startTime\":0,\"volume\":1,\"repeat\":1,\"repeatDelay\":250},\"video\":{\"dbSection\":\"static\",\"menuType\":\"spell\",\"animation\":\"antilifeshell\",\"variant\":\"01\",\"color\":\"blue\",\"enableCustom\":false}},\"secondary\":{\"enable\":false,\"options\":{\"addTokenWidth\":false,\"anchor\":\"0.5\",\"delay\":250,\"elevation\":1000,\"fadeIn\":250,\"fadeOut\":500,\"isMasked\":false,\"isRadius\":true,\"isWait\":false,\"opacity\":1,\"repeat\":1,\"repeatDelay\":0,\"size\":1.5,\"zIndex\":1},\"sound\":{\"delay\":0,\"enable\":false,\"file\":\"\",\"startTime\":0,\"volume\":1,\"repeat\":1,\"repeatDelay\":250},\"video\":{\"dbSection\":\"static\",\"menuType\":\"spell\",\"animation\":\"curewounds\",\"variant\":\"01\",\"color\":\"blue\",\"enableCustom\":false,\"customPath\":\"\"}},\"soundOnly\":{\"sound\":{\"enable\":false,\"delay\":0,\"startTime\":0,\"volume\":1,\"repeat\":1,\"repeatDelay\":250}},\"source\":{\"enable\":false,\"options\":{\"addTokenWidth\":false,\"anchor\":\"0.5\",\"delay\":0,\"elevation\":1000,\"fadeIn\":250,\"fadeOut\":500,\"isMasked\":false,\"isRadius\":false,\"isWait\":true,\"opacity\":1,\"repeat\":1,\"repeatDelay\":250,\"size\":1,\"zIndex\":1},\"sound\":{\"delay\":0,\"enable\":false,\"file\":\"\",\"startTime\":0,\"repeat\":1,\"repeatDelay\":250,\"volume\":1},\"video\":{\"dbSection\":\"static\",\"menuType\":\"spell\",\"animation\":\"curewounds\",\"variant\":\"01\",\"color\":\"blue\",\"enableCustom\":false,\"customPath\":\"\"}},\"target\":{\"enable\":false,\"options\":{\"addTokenWidth\":false,\"anchor\":\"0.5\",\"delay\":0,\"elevation\":1000,\"fadeIn\":250,\"fadeOut\":500,\"isMasked\":false,\"isWait\":false,\"isRadius\":false,\"opacity\":1,\"persistent\":false,\"repeat\":1,\"repeatDelay\":250,\"size\":1,\"unbindAlpha\":false,\"unbindVisibility\":false,\"zIndex\":1},\"sound\":{\"delay\":0,\"enable\":false,\"file\":\"\",\"startTime\":0,\"repeat\":1,\"repeatDelay\":250,\"volume\":1},\"video\":{\"dbSection\":\"static\",\"menuType\":\"spell\",\"animation\":\"curewounds\",\"variant\":\"01\",\"color\":\"blue\",\"enableCustom\":false,\"customPath\":\"\"}}},{\"id\":\"e6dd82de-fa8c-46a7-a154-f4e1319601fc\",\"label\":\"Antimagic Field\",\"macro\":{\"enable\":false,\"playWhen\":\"0\"},\"menu\":\"aura\",\"primary\":{\"options\":{\"addTokenWidth\":false,\"alpha\":false,\"alphaMax\":0.5,\"alphaMin\":-0.5,\"alphaDuration\":1000,\"breath\":false,\"breathMax\":1.05,\"breathMin\":0.95,\"breathDuration\":1000,\"delay\":0,\"elevation\":0,\"fadeIn\":250,\"fadeOut\":500,\"playOn\":\"source\",\"isRadius\":true,\"isWait\":false,\"opacity\":0.25,\"size\":2,\"tint\":false,\"tintColor\":\"#FFFFFF\",\"tintSaturate\":0,\"unbindAlpha\":false,\"unbindVisibility\":false,\"zIndex\":1},\"sound\":{\"delay\":0,\"enable\":false,\"file\":\"\",\"startTime\":0,\"volume\":1,\"repeat\":1,\"repeatDelay\":250},\"video\":{\"dbSection\":\"static\",\"menuType\":\"spell\",\"animation\":\"darkness\",\"variant\":\"01\",\"color\":\"black\",\"enableCustom\":false}},\"secondary\":{\"enable\":false,\"options\":{\"addTokenWidth\":false,\"anchor\":\"0.5\",\"delay\":250,\"elevation\":1000,\"fadeIn\":250,\"fadeOut\":500,\"isMasked\":false,\"isRadius\":true,\"isWait\":false,\"opacity\":1,\"repeat\":1,\"repeatDelay\":0,\"size\":1.5,\"zIndex\":1},\"sound\":{\"delay\":0,\"enable\":false,\"file\":\"\",\"startTime\":0,\"volume\":1,\"repeat\":1,\"repeatDelay\":250},\"video\":{\"dbSection\":\"static\",\"menuType\":\"spell\",\"animation\":\"curewounds\",\"variant\":\"01\",\"color\":\"blue\",\"enableCustom\":false,\"customPath\":\"\"}},\"soundOnly\":{\"sound\":{\"enable\":false,\"delay\":0,\"startTime\":0,\"volume\":1,\"repeat\":1,\"repeatDelay\":250}},\"source\":{\"enable\":false,\"options\":{\"addTokenWidth\":false,\"anchor\":\"0.5\",\"delay\":0,\"elevation\":1000,\"fadeIn\":250,\"fadeOut\":500,\"isMasked\":false,\"isRadius\":false,\"isWait\":true,\"opacity\":1,\"repeat\":1,\"repeatDelay\":250,\"size\":1,\"zIndex\":1},\"sound\":{\"delay\":0,\"enable\":false,\"file\":\"\",\"startTime\":0,\"repeat\":1,\"repeatDelay\":250,\"volume\":1},\"video\":{\"dbSection\":\"static\",\"menuType\":\"spell\",\"animation\":\"curewounds\",\"variant\":\"01\",\"color\":\"blue\",\"enableCustom\":false,\"customPath\":\"\"}},\"target\":{\"enable\":false,\"options\":{\"addTokenWidth\":false,\"anchor\":\"0.5\",\"delay\":0,\"elevation\":1000,\"fadeIn\":250,\"fadeOut\":500,\"isMasked\":false,\"isWait\":false,\"isRadius\":false,\"opacity\":1,\"persistent\":false,\"repeat\":1,\"repeatDelay\":250,\"size\":1,\"unbindAlpha\":false,\"unbindVisibility\":false,\"zIndex\":1},\"sound\":{\"delay\":0,\"enable\":false,\"file\":\"\",\"startTime\":0,\"repeat\":1,\"repeatDelay\":250,\"volume\":1},\"video\":{\"dbSection\":\"static\",\"menuType\":\"spell\",\"animation\":\"curewounds\",\"variant\":\"01\",\"color\":\"blue\",\"enableCustom\":false,\"customPath\":\"\"}}},{\"id\":\"32d2f8fc-320c-47d0-8b12-a41109cc824f\",\"label\":\"Aura of\",\"macro\":{\"enable\":false,\"playWhen\":\"0\"},\"menu\":\"aura\",\"primary\":{\"video\":{\"dbSection\":\"static\",\"menuType\":\"conditions\",\"animation\":\"light\",\"variant\":\"nopulse\",\"color\":\"blue\",\"enableCustom\":false,\"customPath\":\"\"},\"sound\":{\"enable\":false,\"delay\":0,\"repeat\":1,\"repeatDelay\":250,\"startTime\":0,\"volume\":0.75},\"options\":{\"addTokenWidth\":true,\"alpha\":false,\"alphaMax\":0.5,\"alphaMin\":-0.5,\"alphaDuration\":1000,\"breath\":false,\"breathMax\":1.05,\"breathMin\":0.95,\"breathDuration\":1000,\"delay\":0,\"elevation\":1000,\"fadeIn\":250,\"fadeOut\":500,\"isRadius\":true,\"isWait\":false,\"opacity\":1,\"playbackRate\":1,\"playOn\":\"source\",\"size\":4,\"tint\":false,\"tintColor\":\"#FFFFFF\",\"tintSaturate\":0,\"unbindAlpha\":false,\"unbindVisibility\":false,\"zIndex\":1}},\"secondary\":{\"enable\":false,\"video\":{\"dbSection\":\"static\",\"menuType\":\"spell\",\"animation\":\"curewounds\",\"variant\":\"01\",\"color\":\"blue\",\"enableCustom\":false,\"customPath\":\"\"},\"sound\":{\"enable\":false,\"delay\":0,\"repeat\":1,\"repeatDelay\":250,\"startTime\":0,\"volume\":0.75},\"options\":{\"addTokenWidth\":false,\"anchor\":\"0.5\",\"delay\":0,\"elevation\":1000,\"fadeIn\":250,\"fadeOut\":500,\"isMasked\":false,\"isRadius\":true,\"isWait\":false,\"opacity\":1,\"repeat\":1,\"repeatDelay\":250,\"size\":1.5,\"zIndex\":1}},\"soundOnly\":{\"sound\":{\"enable\":false,\"delay\":0,\"repeat\":1,\"repeatDelay\":250,\"startTime\":0,\"volume\":0.75}},\"source\":{\"enable\":false,\"video\":{\"dbSection\":\"static\",\"menuType\":\"spell\",\"animation\":\"curewounds\",\"variant\":\"01\",\"color\":\"blue\",\"enableCustom\":false,\"customPath\":\"\"},\"sound\":{\"enable\":false,\"delay\":0,\"repeat\":1,\"repeatDelay\":250,\"startTime\":0,\"volume\":0.75},\"options\":{\"addTokenWidth\":false,\"anchor\":\"0.5\",\"delay\":0,\"elevation\":1000,\"fadeIn\":250,\"fadeOut\":500,\"isMasked\":false,\"isRadius\":false,\"isWait\":true,\"opacity\":1,\"repeat\":1,\"repeatDelay\":250,\"size\":1,\"zIndex\":1}},\"target\":{\"enable\":false,\"video\":{\"dbSection\":\"static\",\"menuType\":\"spell\",\"animation\":\"curewounds\",\"variant\":\"01\",\"color\":\"blue\",\"enableCustom\":false,\"customPath\":\"\"},\"sound\":{\"enable\":false,\"delay\":0,\"repeat\":1,\"repeatDelay\":250,\"startTime\":0,\"volume\":0.75},\"options\":{\"addTokenWidth\":false,\"anchor\":\"0.5\",\"delay\":0,\"elevation\":1000,\"fadeIn\":250,\"fadeOut\":500,\"isMasked\":false,\"isRadius\":false,\"opacity\":1,\"persistent\":false,\"repeat\":1,\"repeatDelay\":250,\"size\":1,\"unbindAlpha\":false,\"unbindVisibility\":false,\"zIndex\":1}}},{\"id\":\"2a5a8322-917c-4eaa-8974-9a4917160110\",\"label\":\"Aura of Vitality\",\"macro\":{\"enable\":false,\"playWhen\":\"0\"},\"menu\":\"aura\",\"primary\":{\"video\":{\"dbSection\":\"static\",\"menuType\":\"conditions\",\"animation\":\"light\",\"variant\":\"nopulse\",\"color\":\"yellow\",\"enableCustom\":false,\"customPath\":\"\"},\"sound\":{\"enable\":false,\"delay\":0,\"repeat\":1,\"repeatDelay\":250,\"startTime\":0,\"volume\":0.75},\"options\":{\"addTokenWidth\":true,\"alpha\":false,\"alphaMax\":0.5,\"alphaMin\":-0.5,\"alphaDuration\":1000,\"breath\":false,\"breathMax\":1.05,\"breathMin\":0.95,\"breathDuration\":1000,\"delay\":0,\"elevation\":1000,\"fadeIn\":250,\"fadeOut\":500,\"isRadius\":true,\"isWait\":false,\"opacity\":1,\"playbackRate\":1,\"playOn\":\"source\",\"size\":4,\"tint\":false,\"tintColor\":\"#FFFFFF\",\"tintSaturate\":0,\"unbindAlpha\":false,\"unbindVisibility\":false,\"zIndex\":1}},\"secondary\":{\"enable\":false,\"video\":{\"dbSection\":\"static\",\"menuType\":\"spell\",\"animation\":\"curewounds\",\"variant\":\"01\",\"color\":\"blue\",\"enableCustom\":false,\"customPath\":\"\"},\"sound\":{\"enable\":false,\"delay\":0,\"repeat\":1,\"repeatDelay\":250,\"startTime\":0,\"volume\":0.75},\"options\":{\"addTokenWidth\":false,\"anchor\":\"0.5\",\"delay\":0,\"elevation\":1000,\"fadeIn\":250,\"fadeOut\":500,\"isMasked\":false,\"isRadius\":true,\"isWait\":false,\"opacity\":1,\"repeat\":1,\"repeatDelay\":250,\"size\":1.5,\"zIndex\":1}},\"soundOnly\":{\"sound\":{\"enable\":false,\"delay\":0,\"repeat\":1,\"repeatDelay\":250,\"startTime\":0,\"volume\":0.75}},\"source\":{\"enable\":false,\"video\":{\"dbSection\":\"static\",\"menuType\":\"spell\",\"animation\":\"curewounds\",\"variant\":\"01\",\"color\":\"blue\",\"enableCustom\":false,\"customPath\":\"\"},\"sound\":{\"enable\":false,\"delay\":0,\"repeat\":1,\"repeatDelay\":250,\"startTime\":0,\"volume\":0.75},\"options\":{\"addTokenWidth\":false,\"anchor\":\"0.5\",\"delay\":0,\"elevation\":1000,\"fadeIn\":250,\"fadeOut\":500,\"isMasked\":false,\"isRadius\":false,\"isWait\":true,\"opacity\":1,\"repeat\":1,\"repeatDelay\":250,\"size\":1,\"zIndex\":1}},\"target\":{\"enable\":false,\"video\":{\"dbSection\":\"static\",\"menuType\":\"spell\",\"animation\":\"curewounds\",\"variant\":\"01\",\"color\":\"blue\",\"enableCustom\":false,\"customPath\":\"\"},\"sound\":{\"enable\":false,\"delay\":0,\"repeat\":1,\"repeatDelay\":250,\"startTime\":0,\"volume\":0.75},\"options\":{\"addTokenWidth\":false,\"anchor\":\"0.5\",\"delay\":0,\"elevation\":1000,\"fadeIn\":250,\"fadeOut\":500,\"isMasked\":false,\"isRadius\":false,\"opacity\":1,\"persistent\":false,\"repeat\":1,\"repeatDelay\":250,\"size\":1,\"unbindAlpha\":false,\"unbindVisibility\":false,\"zIndex\":1}},\"advanced\":{\"exactMatch\":false,\"excludedTerms\":[],\"excludedType\":{\"enabled\":false,\"path\":\"\",\"property\":\"\"}}},{\"id\":\"c2a251cd-46d0-4e7c-936b-370341543f4f\",\"label\":\"Circle of Power\",\"macro\":{\"enable\":false,\"playWhen\":\"0\"},\"menu\":\"aura\",\"primary\":{\"video\":{\"dbSection\":\"static\",\"menuType\":\"spell\",\"animation\":\"spiritguardians\",\"variant\":\"01\",\"color\":\"lightblue\",\"enableCustom\":false,\"customPath\":\"\"},\"sound\":{\"enable\":false,\"delay\":0,\"repeat\":1,\"repeatDelay\":250,\"startTime\":0,\"volume\":0.75},\"options\":{\"addTokenWidth\":true,\"alpha\":false,\"alphaMax\":0.5,\"alphaMin\":-0.5,\"alphaDuration\":1000,\"breath\":false,\"breathMax\":1.05,\"breathMin\":0.95,\"breathDuration\":1000,\"delay\":0,\"elevation\":1000,\"fadeIn\":250,\"fadeOut\":500,\"isRadius\":true,\"isWait\":false,\"opacity\":1,\"playbackRate\":1,\"playOn\":\"source\",\"size\":3,\"tint\":false,\"tintColor\":\"#FFFFFF\",\"tintSaturate\":0,\"unbindAlpha\":false,\"unbindVisibility\":false,\"zIndex\":1}},\"secondary\":{\"enable\":false,\"video\":{\"dbSection\":\"static\",\"menuType\":\"spell\",\"animation\":\"curewounds\",\"variant\":\"01\",\"color\":\"blue\",\"enableCustom\":false,\"customPath\":\"\"},\"sound\":{\"enable\":false,\"delay\":0,\"repeat\":1,\"repeatDelay\":250,\"startTime\":0,\"volume\":0.75},\"options\":{\"addTokenWidth\":false,\"anchor\":\"0.5\",\"delay\":0,\"elevation\":1000,\"fadeIn\":250,\"fadeOut\":500,\"isMasked\":false,\"isRadius\":true,\"isWait\":false,\"opacity\":1,\"repeat\":1,\"repeatDelay\":250,\"size\":1.5,\"zIndex\":1}},\"soundOnly\":{\"sound\":{\"enable\":false,\"delay\":0,\"repeat\":1,\"repeatDelay\":250,\"startTime\":0,\"volume\":0.75}},\"source\":{\"enable\":false,\"video\":{\"dbSection\":\"static\",\"menuType\":\"spell\",\"animation\":\"curewounds\",\"variant\":\"01\",\"color\":\"blue\",\"enableCustom\":false,\"customPath\":\"\"},\"sound\":{\"enable\":false,\"delay\":0,\"repeat\":1,\"repeatDelay\":250,\"startTime\":0,\"volume\":0.75},\"options\":{\"addTokenWidth\":false,\"anchor\":\"0.5\",\"delay\":0,\"elevation\":1000,\"fadeIn\":250,\"fadeOut\":500,\"isMasked\":false,\"isRadius\":false,\"isWait\":true,\"opacity\":1,\"repeat\":1,\"repeatDelay\":250,\"size\":1,\"zIndex\":1}},\"target\":{\"enable\":false,\"video\":{\"dbSection\":\"static\",\"menuType\":\"spell\",\"animation\":\"curewounds\",\"variant\":\"01\",\"color\":\"blue\",\"enableCustom\":false,\"customPath\":\"\"},\"sound\":{\"enable\":false,\"delay\":0,\"repeat\":1,\"repeatDelay\":250,\"startTime\":0,\"volume\":0.75},\"options\":{\"addTokenWidth\":false,\"anchor\":\"0.5\",\"delay\":0,\"elevation\":1000,\"fadeIn\":250,\"fadeOut\":500,\"isMasked\":false,\"isRadius\":false,\"opacity\":1,\"persistent\":false,\"repeat\":1,\"repeatDelay\":250,\"size\":1,\"unbindAlpha\":false,\"unbindVisibility\":false,\"zIndex\":1}}},{\"id\":\"d97867e2-cd8c-49d8-9398-d2803ea8f36e\",\"label\":\"Detect Evil and Good\",\"macro\":{\"enable\":false,\"playWhen\":\"0\"},\"menu\":\"aura\",\"primary\":{\"options\":{\"addTokenWidth\":false,\"alpha\":false,\"alphaMax\":0.5,\"alphaMin\":-0.5,\"alphaDuration\":1000,\"breath\":false,\"breathMax\":1.05,\"breathMin\":0.95,\"breathDuration\":1000,\"delay\":0,\"elevation\":1000,\"fadeIn\":250,\"fadeOut\":500,\"playOn\":\"source\",\"isRadius\":true,\"isWait\":false,\"opacity\":0.75,\"size\":7,\"tint\":false,\"tintColor\":\"#FFFFFF\",\"tintSaturate\":0,\"unbindAlpha\":false,\"unbindVisibility\":false,\"zIndex\":1},\"sound\":{\"delay\":0,\"enable\":false,\"file\":\"\",\"startTime\":0,\"volume\":1,\"repeat\":1,\"repeatDelay\":250},\"video\":{\"dbSection\":\"static\",\"menuType\":\"spell\",\"animation\":\"detectmagic\",\"variant\":\"01\",\"color\":\"grey\",\"enableCustom\":false}},\"secondary\":{\"enable\":false,\"options\":{\"addTokenWidth\":false,\"anchor\":\"0.5\",\"delay\":250,\"elevation\":1000,\"fadeIn\":250,\"fadeOut\":500,\"isMasked\":false,\"isRadius\":true,\"isWait\":false,\"opacity\":1,\"repeat\":1,\"repeatDelay\":0,\"size\":1.5,\"zIndex\":1},\"sound\":{\"delay\":0,\"enable\":false,\"file\":\"\",\"startTime\":0,\"volume\":1,\"repeat\":1,\"repeatDelay\":250},\"video\":{\"dbSection\":\"static\",\"menuType\":\"spell\",\"animation\":\"curewounds\",\"variant\":\"01\",\"color\":\"blue\",\"enableCustom\":false,\"customPath\":\"\"}},\"soundOnly\":{\"sound\":{\"enable\":false,\"delay\":0,\"startTime\":0,\"volume\":1,\"repeat\":1,\"repeatDelay\":250}},\"source\":{\"enable\":false,\"options\":{\"addTokenWidth\":false,\"anchor\":\"0.5\",\"delay\":0,\"elevation\":1000,\"fadeIn\":250,\"fadeOut\":500,\"isMasked\":false,\"isRadius\":false,\"isWait\":true,\"opacity\":1,\"repeat\":1,\"repeatDelay\":250,\"size\":1,\"zIndex\":1},\"sound\":{\"delay\":0,\"enable\":false,\"file\":\"\",\"startTime\":0,\"repeat\":1,\"repeatDelay\":250,\"volume\":1},\"video\":{\"dbSection\":\"static\",\"menuType\":\"spell\",\"animation\":\"curewounds\",\"variant\":\"01\",\"color\":\"blue\",\"enableCustom\":false,\"customPath\":\"\"}},\"target\":{\"enable\":false,\"options\":{\"addTokenWidth\":false,\"anchor\":\"0.5\",\"delay\":0,\"elevation\":1000,\"fadeIn\":250,\"fadeOut\":500,\"isMasked\":false,\"isWait\":false,\"isRadius\":false,\"opacity\":1,\"persistent\":false,\"repeat\":1,\"repeatDelay\":250,\"size\":1,\"unbindAlpha\":false,\"unbindVisibility\":false,\"zIndex\":1},\"sound\":{\"delay\":0,\"enable\":false,\"file\":\"\",\"startTime\":0,\"repeat\":1,\"repeatDelay\":250,\"volume\":1},\"video\":{\"dbSection\":\"static\",\"menuType\":\"spell\",\"animation\":\"curewounds\",\"variant\":\"01\",\"color\":\"blue\",\"enableCustom\":false,\"customPath\":\"\"}}},{\"id\":\"4e0aa92b-265d-4542-a7fc-745f11823700\",\"label\":\"Detect Magic\",\"macro\":{\"enable\":false,\"playWhen\":\"0\"},\"menu\":\"aura\",\"primary\":{\"options\":{\"addTokenWidth\":false,\"alpha\":false,\"alphaMax\":0.5,\"alphaMin\":-0.5,\"alphaDuration\":1000,\"breath\":false,\"breathMax\":1.05,\"breathMin\":0.95,\"breathDuration\":1000,\"delay\":0,\"elevation\":1000,\"fadeIn\":250,\"fadeOut\":500,\"playOn\":\"source\",\"isRadius\":true,\"isWait\":false,\"opacity\":0.75,\"size\":7,\"tint\":false,\"tintColor\":\"#FFFFFF\",\"tintSaturate\":0,\"unbindAlpha\":false,\"unbindVisibility\":false,\"zIndex\":1},\"sound\":{\"delay\":0,\"enable\":false,\"file\":\"\",\"startTime\":0,\"volume\":1,\"repeat\":1,\"repeatDelay\":250},\"video\":{\"dbSection\":\"static\",\"menuType\":\"spell\",\"animation\":\"detectmagic\",\"variant\":\"01\",\"color\":\"blue\",\"enableCustom\":false}},\"secondary\":{\"enable\":false,\"options\":{\"addTokenWidth\":false,\"anchor\":\"0.5\",\"delay\":250,\"elevation\":1000,\"fadeIn\":250,\"fadeOut\":500,\"isMasked\":false,\"isRadius\":true,\"isWait\":false,\"opacity\":1,\"repeat\":1,\"repeatDelay\":0,\"size\":1.5,\"zIndex\":1},\"sound\":{\"delay\":0,\"enable\":false,\"file\":\"\",\"startTime\":0,\"volume\":1,\"repeat\":1,\"repeatDelay\":250},\"video\":{\"dbSection\":\"static\",\"menuType\":\"spell\",\"animation\":\"curewounds\",\"variant\":\"01\",\"color\":\"blue\",\"enableCustom\":false,\"customPath\":\"\"}},\"soundOnly\":{\"sound\":{\"enable\":false,\"delay\":0,\"startTime\":0,\"volume\":1,\"repeat\":1,\"repeatDelay\":250}},\"source\":{\"enable\":false,\"options\":{\"addTokenWidth\":false,\"anchor\":\"0.5\",\"delay\":0,\"elevation\":1000,\"fadeIn\":250,\"fadeOut\":500,\"isMasked\":false,\"isRadius\":false,\"isWait\":true,\"opacity\":1,\"repeat\":1,\"repeatDelay\":250,\"size\":1,\"zIndex\":1},\"sound\":{\"delay\":0,\"enable\":false,\"file\":\"\",\"startTime\":0,\"repeat\":1,\"repeatDelay\":250,\"volume\":1},\"video\":{\"dbSection\":\"static\",\"menuType\":\"spell\",\"animation\":\"curewounds\",\"variant\":\"01\",\"color\":\"blue\",\"enableCustom\":false,\"customPath\":\"\"}},\"target\":{\"enable\":false,\"options\":{\"addTokenWidth\":false,\"anchor\":\"0.5\",\"delay\":0,\"elevation\":1000,\"fadeIn\":250,\"fadeOut\":500,\"isMasked\":false,\"isWait\":false,\"isRadius\":false,\"opacity\":1,\"persistent\":false,\"repeat\":1,\"repeatDelay\":250,\"size\":1,\"unbindAlpha\":false,\"unbindVisibility\":false,\"zIndex\":1},\"sound\":{\"delay\":0,\"enable\":false,\"file\":\"\",\"startTime\":0,\"repeat\":1,\"repeatDelay\":250,\"volume\":1},\"video\":{\"dbSection\":\"static\",\"menuType\":\"spell\",\"animation\":\"curewounds\",\"variant\":\"01\",\"color\":\"blue\",\"enableCustom\":false,\"customPath\":\"\"}}},{\"id\":\"4223860d-073c-4ea3-b87b-e29a83f4b44f\",\"label\":\"Detect Poison and Disease\",\"macro\":{\"enable\":false,\"playWhen\":\"0\"},\"menu\":\"aura\",\"primary\":{\"options\":{\"addTokenWidth\":false,\"alpha\":false,\"alphaMax\":0.5,\"alphaMin\":-0.5,\"alphaDuration\":1000,\"breath\":false,\"breathMax\":1.05,\"breathMin\":0.95,\"breathDuration\":1000,\"delay\":0,\"elevation\":1000,\"fadeIn\":250,\"fadeOut\":500,\"playOn\":\"source\",\"isRadius\":true,\"isWait\":false,\"opacity\":0.75,\"size\":7,\"tint\":false,\"tintColor\":\"#FFFFFF\",\"tintSaturate\":0,\"unbindAlpha\":false,\"unbindVisibility\":false,\"zIndex\":1},\"sound\":{\"delay\":0,\"enable\":false,\"file\":\"\",\"startTime\":0,\"volume\":1,\"repeat\":1,\"repeatDelay\":250},\"video\":{\"dbSection\":\"static\",\"menuType\":\"spell\",\"animation\":\"detectmagic\",\"variant\":\"01\",\"color\":\"green\",\"enableCustom\":false}},\"secondary\":{\"enable\":false,\"options\":{\"addTokenWidth\":false,\"anchor\":\"0.5\",\"delay\":250,\"elevation\":1000,\"fadeIn\":250,\"fadeOut\":500,\"isMasked\":false,\"isRadius\":true,\"isWait\":false,\"opacity\":1,\"repeat\":1,\"repeatDelay\":0,\"size\":1.5,\"zIndex\":1},\"sound\":{\"delay\":0,\"enable\":false,\"file\":\"\",\"startTime\":0,\"volume\":1,\"repeat\":1,\"repeatDelay\":250},\"video\":{\"dbSection\":\"static\",\"menuType\":\"spell\",\"animation\":\"curewounds\",\"variant\":\"01\",\"color\":\"blue\",\"enableCustom\":false,\"customPath\":\"\"}},\"soundOnly\":{\"sound\":{\"enable\":false,\"delay\":0,\"startTime\":0,\"volume\":1,\"repeat\":1,\"repeatDelay\":250}},\"source\":{\"enable\":false,\"options\":{\"addTokenWidth\":false,\"anchor\":\"0.5\",\"delay\":0,\"elevation\":1000,\"fadeIn\":250,\"fadeOut\":500,\"isMasked\":false,\"isRadius\":false,\"isWait\":true,\"opacity\":1,\"repeat\":1,\"repeatDelay\":250,\"size\":1,\"zIndex\":1},\"sound\":{\"delay\":0,\"enable\":false,\"file\":\"\",\"startTime\":0,\"repeat\":1,\"repeatDelay\":250,\"volume\":1},\"video\":{\"dbSection\":\"static\",\"menuType\":\"spell\",\"animation\":\"curewounds\",\"variant\":\"01\",\"color\":\"blue\",\"enableCustom\":false,\"customPath\":\"\"}},\"target\":{\"enable\":false,\"options\":{\"addTokenWidth\":false,\"anchor\":\"0.5\",\"delay\":0,\"elevation\":1000,\"fadeIn\":250,\"fadeOut\":500,\"isMasked\":false,\"isWait\":false,\"isRadius\":false,\"opacity\":1,\"persistent\":false,\"repeat\":1,\"repeatDelay\":250,\"size\":1,\"unbindAlpha\":false,\"unbindVisibility\":false,\"zIndex\":1},\"sound\":{\"delay\":0,\"enable\":false,\"file\":\"\",\"startTime\":0,\"repeat\":1,\"repeatDelay\":250,\"volume\":1},\"video\":{\"dbSection\":\"static\",\"menuType\":\"spell\",\"animation\":\"curewounds\",\"variant\":\"01\",\"color\":\"blue\",\"enableCustom\":false,\"customPath\":\"\"}}},{\"id\":\"63f96dfb-055c-42ef-b1db-6da8efd5808a\",\"label\":\"Holy Aura\",\"macro\":{\"enable\":false,\"playWhen\":\"0\"},\"menu\":\"aura\",\"primary\":{\"options\":{\"addTokenWidth\":false,\"alpha\":false,\"alphaMax\":0.5,\"alphaMin\":-0.5,\"alphaDuration\":1000,\"breath\":false,\"breathMax\":1.05,\"breathMin\":0.95,\"breathDuration\":1000,\"delay\":0,\"elevation\":0,\"fadeIn\":250,\"fadeOut\":500,\"playOn\":\"source\",\"isRadius\":true,\"isWait\":false,\"opacity\":1,\"size\":7,\"tint\":false,\"tintColor\":\"#FFFFFF\",\"tintSaturate\":0,\"unbindAlpha\":false,\"unbindVisibility\":false,\"zIndex\":1},\"sound\":{\"delay\":0,\"enable\":false,\"file\":\"\",\"startTime\":0,\"volume\":1,\"repeat\":1,\"repeatDelay\":250},\"video\":{\"dbSection\":\"static\",\"menuType\":\"conditions\",\"animation\":\"light\",\"variant\":\"nopulse\",\"color\":\"yellow\",\"enableCustom\":false}},\"secondary\":{\"enable\":false,\"options\":{\"addTokenWidth\":false,\"anchor\":\"0.5\",\"delay\":250,\"elevation\":1000,\"fadeIn\":250,\"fadeOut\":500,\"isMasked\":false,\"isRadius\":true,\"isWait\":false,\"opacity\":1,\"repeat\":1,\"repeatDelay\":0,\"size\":1.5,\"zIndex\":1},\"sound\":{\"delay\":0,\"enable\":false,\"file\":\"\",\"startTime\":0,\"volume\":1,\"repeat\":1,\"repeatDelay\":250},\"video\":{\"dbSection\":\"static\",\"menuType\":\"spell\",\"animation\":\"curewounds\",\"variant\":\"01\",\"color\":\"blue\",\"enableCustom\":false,\"customPath\":\"\"}},\"soundOnly\":{\"sound\":{\"enable\":false,\"delay\":0,\"startTime\":0,\"volume\":1,\"repeat\":1,\"repeatDelay\":250}},\"source\":{\"enable\":false,\"options\":{\"addTokenWidth\":false,\"anchor\":\"0.5\",\"delay\":0,\"elevation\":1000,\"fadeIn\":250,\"fadeOut\":500,\"isMasked\":false,\"isRadius\":false,\"isWait\":true,\"opacity\":1,\"repeat\":1,\"repeatDelay\":250,\"size\":1,\"zIndex\":1},\"sound\":{\"delay\":0,\"enable\":false,\"file\":\"\",\"startTime\":0,\"repeat\":1,\"repeatDelay\":250,\"volume\":1},\"video\":{\"dbSection\":\"static\",\"menuType\":\"spell\",\"animation\":\"curewounds\",\"variant\":\"01\",\"color\":\"blue\",\"enableCustom\":false,\"customPath\":\"\"}},\"target\":{\"enable\":false,\"options\":{\"addTokenWidth\":false,\"anchor\":\"0.5\",\"delay\":0,\"elevation\":1000,\"fadeIn\":250,\"fadeOut\":500,\"isMasked\":false,\"isWait\":false,\"isRadius\":false,\"opacity\":1,\"persistent\":false,\"repeat\":1,\"repeatDelay\":250,\"size\":1,\"unbindAlpha\":false,\"unbindVisibility\":false,\"zIndex\":1},\"sound\":{\"delay\":0,\"enable\":false,\"file\":\"\",\"startTime\":0,\"repeat\":1,\"repeatDelay\":250,\"volume\":1},\"video\":{\"dbSection\":\"static\",\"menuType\":\"spell\",\"animation\":\"curewounds\",\"variant\":\"01\",\"color\":\"blue\",\"enableCustom\":false,\"customPath\":\"\"}}},{\"id\":\"d0d4da10-6d1e-45de-8649-c63824651b2c\",\"label\":\"Pass without Trace\",\"macro\":{\"enable\":false,\"playWhen\":\"0\"},\"menu\":\"aura\",\"primary\":{\"options\":{\"addTokenWidth\":false,\"alpha\":false,\"alphaMax\":0.5,\"alphaMin\":-0.5,\"alphaDuration\":1000,\"breath\":false,\"breathMax\":1.05,\"breathMin\":0.95,\"breathDuration\":1000,\"delay\":0,\"elevation\":0,\"fadeIn\":250,\"fadeOut\":500,\"playOn\":\"source\",\"isRadius\":true,\"isWait\":false,\"opacity\":0.1,\"size\":7,\"tint\":false,\"tintColor\":\"#FFFFFF\",\"tintSaturate\":0,\"unbindAlpha\":false,\"unbindVisibility\":false,\"zIndex\":1},\"sound\":{\"delay\":0,\"enable\":false,\"file\":\"\",\"startTime\":0,\"volume\":1,\"repeat\":1,\"repeatDelay\":250},\"video\":{\"dbSection\":\"static\",\"menuType\":\"spell\",\"animation\":\"darkness\",\"variant\":\"01\",\"color\":\"black\",\"enableCustom\":false}},\"secondary\":{\"enable\":false,\"options\":{\"addTokenWidth\":false,\"anchor\":\"0.5\",\"delay\":250,\"elevation\":1000,\"fadeIn\":250,\"fadeOut\":500,\"isMasked\":false,\"isRadius\":true,\"isWait\":false,\"opacity\":1,\"repeat\":1,\"repeatDelay\":0,\"size\":1.5,\"zIndex\":1},\"sound\":{\"delay\":0,\"enable\":false,\"file\":\"\",\"startTime\":0,\"volume\":1,\"repeat\":1,\"repeatDelay\":250},\"video\":{\"dbSection\":\"static\",\"menuType\":\"spell\",\"animation\":\"curewounds\",\"variant\":\"01\",\"color\":\"blue\",\"enableCustom\":false,\"customPath\":\"\"}},\"soundOnly\":{\"sound\":{\"enable\":false,\"delay\":0,\"startTime\":0,\"volume\":1,\"repeat\":1,\"repeatDelay\":250}},\"source\":{\"enable\":false,\"options\":{\"addTokenWidth\":false,\"anchor\":\"0.5\",\"delay\":0,\"elevation\":1000,\"fadeIn\":250,\"fadeOut\":500,\"isMasked\":false,\"isRadius\":false,\"isWait\":true,\"opacity\":1,\"repeat\":1,\"repeatDelay\":250,\"size\":1,\"zIndex\":1},\"sound\":{\"delay\":0,\"enable\":false,\"file\":\"\",\"startTime\":0,\"repeat\":1,\"repeatDelay\":250,\"volume\":1},\"video\":{\"dbSection\":\"static\",\"menuType\":\"spell\",\"animation\":\"curewounds\",\"variant\":\"01\",\"color\":\"blue\",\"enableCustom\":false,\"customPath\":\"\"}},\"target\":{\"enable\":false,\"options\":{\"addTokenWidth\":false,\"anchor\":\"0.5\",\"delay\":0,\"elevation\":1000,\"fadeIn\":250,\"fadeOut\":500,\"isMasked\":false,\"isWait\":false,\"isRadius\":false,\"opacity\":1,\"persistent\":false,\"repeat\":1,\"repeatDelay\":250,\"size\":1,\"unbindAlpha\":false,\"unbindVisibility\":false,\"zIndex\":1},\"sound\":{\"delay\":0,\"enable\":false,\"file\":\"\",\"startTime\":0,\"repeat\":1,\"repeatDelay\":250,\"volume\":1},\"video\":{\"dbSection\":\"static\",\"menuType\":\"spell\",\"animation\":\"curewounds\",\"variant\":\"01\",\"color\":\"blue\",\"enableCustom\":false,\"customPath\":\"\"}}},{\"id\":\"c20b6386-c1c1-46ba-956c-9583bfa81b8f\",\"label\":\"Spirit Guardians\",\"macro\":{\"enable\":false,\"playWhen\":\"0\"},\"menu\":\"aura\",\"primary\":{\"options\":{\"addTokenWidth\":false,\"alpha\":false,\"alphaMax\":0.5,\"alphaMin\":-0.5,\"alphaDuration\":1000,\"breath\":false,\"breathMax\":1.05,\"breathMin\":0.95,\"breathDuration\":1000,\"delay\":0,\"elevation\":1000,\"fadeIn\":250,\"fadeOut\":500,\"playOn\":\"source\",\"isRadius\":true,\"isWait\":false,\"opacity\":0.75,\"size\":3.5,\"tint\":false,\"tintColor\":\"#FFFFFF\",\"tintSaturate\":0,\"unbindAlpha\":false,\"unbindVisibility\":false,\"zIndex\":1},\"sound\":{\"delay\":0,\"enable\":false,\"file\":\"\",\"startTime\":0,\"volume\":1,\"repeat\":1,\"repeatDelay\":250},\"video\":{\"dbSection\":\"static\",\"menuType\":\"spell\",\"animation\":\"spiritguardians\",\"variant\":\"01\",\"color\":\"darkblue\",\"enableCustom\":false}},\"secondary\":{\"enable\":false,\"options\":{\"addTokenWidth\":false,\"anchor\":\"0.5\",\"delay\":250,\"elevation\":1000,\"fadeIn\":250,\"fadeOut\":500,\"isMasked\":false,\"isRadius\":true,\"isWait\":false,\"opacity\":1,\"repeat\":1,\"repeatDelay\":0,\"size\":1.5,\"zIndex\":1},\"sound\":{\"delay\":0,\"enable\":false,\"file\":\"\",\"startTime\":0,\"volume\":1,\"repeat\":1,\"repeatDelay\":250},\"video\":{\"dbSection\":\"static\",\"menuType\":\"spell\",\"animation\":\"curewounds\",\"variant\":\"01\",\"color\":\"blue\",\"enableCustom\":false,\"customPath\":\"\"}},\"soundOnly\":{\"sound\":{\"enable\":false,\"delay\":0,\"startTime\":0,\"volume\":1,\"repeat\":1,\"repeatDelay\":250}},\"source\":{\"enable\":false,\"options\":{\"addTokenWidth\":false,\"anchor\":\"0.5\",\"delay\":0,\"elevation\":1000,\"fadeIn\":250,\"fadeOut\":500,\"isMasked\":false,\"isRadius\":false,\"isWait\":true,\"opacity\":1,\"repeat\":1,\"repeatDelay\":250,\"size\":1,\"zIndex\":1},\"sound\":{\"delay\":0,\"enable\":false,\"file\":\"\",\"startTime\":0,\"repeat\":1,\"repeatDelay\":250,\"volume\":1},\"video\":{\"dbSection\":\"static\",\"menuType\":\"spell\",\"animation\":\"curewounds\",\"variant\":\"01\",\"color\":\"blue\",\"enableCustom\":false,\"customPath\":\"\"}},\"target\":{\"enable\":false,\"options\":{\"addTokenWidth\":false,\"anchor\":\"0.5\",\"delay\":0,\"elevation\":1000,\"fadeIn\":250,\"fadeOut\":500,\"isMasked\":false,\"isWait\":false,\"isRadius\":false,\"opacity\":1,\"persistent\":false,\"repeat\":1,\"repeatDelay\":250,\"size\":1,\"unbindAlpha\":false,\"unbindVisibility\":false,\"zIndex\":1},\"sound\":{\"delay\":0,\"enable\":false,\"file\":\"\",\"startTime\":0,\"repeat\":1,\"repeatDelay\":250,\"volume\":1},\"video\":{\"dbSection\":\"static\",\"menuType\":\"spell\",\"animation\":\"curewounds\",\"variant\":\"01\",\"color\":\"blue\",\"enableCustom\":false,\"customPath\":\"\"}}}]"
   },
   {
     "key": "autoanimations.aaAutorec-melee",
@@ -105,7 +113,7 @@
   },
   {
     "key": "bg3-inspired-hotbar.container3AutoPopulate",
-    "value": "[\"consumable\",\"equipment\",\"tool\"]"
+    "value": "[\"equipment\",\"tool\",\"consumable:potion\",\"consumable:scroll\"]"
   },
   {
     "key": "bg3-inspired-hotbar.enableGMHotbar",
@@ -209,7 +217,7 @@
   },
   {
     "key": "core.compendiumConfiguration",
-    "value": "{\"dnd5e.rules\":{\"folder\":\"uMh1LAcENXQr5cz2\"},\"dnd5e.tables\":{\"folder\":\"uMh1LAcENXQr5cz2\"},\"dnd5e.heroes\":{\"folder\":\"uMh1LAcENXQr5cz2\"},\"dnd5e.classes\":{\"folder\":\"aB47fI6VcsVWCG5n\"},\"dnd5e.subclasses\":{\"folder\":\"aB47fI6VcsVWCG5n\"},\"dnd5e.classfeatures\":{\"folder\":\"aB47fI6VcsVWCG5n\"},\"dnd5e.backgrounds\":{\"folder\":\"aB47fI6VcsVWCG5n\"},\"dnd5e.races\":{\"folder\":\"aB47fI6VcsVWCG5n\"},\"dnd5e.items\":{\"folder\":\"9DxoSVDSo5AGdnrr\"},\"dnd5e.spells\":{\"folder\":\"9DxoSVDSo5AGdnrr\"},\"dnd5e.tradegoods\":{\"folder\":\"9DxoSVDSo5AGdnrr\"},\"dnd5e.monsters\":{\"folder\":\"FYObCb2kwFgokwoy\"},\"dnd5e.monsterfeatures\":{\"folder\":\"FYObCb2kwFgokwoy\"},\"ActiveAuras.aa-aura-items\":{\"folder\":\"YW3d7bk5JjfMx6UM\"},\"ActiveAuras.aa-zone-actors\":{\"folder\":\"YW3d7bk5JjfMx6UM\"},\"ActiveAuras.aa-macros\":{\"folder\":\"YW3d7bk5JjfMx6UM\"},\"baileywiki-nuts-and-bolts.macros\":{\"folder\":\"rC08WavkdjciQsSN\"},\"baileywiki-nuts-and-bolts.items\":{\"folder\":\"rC08WavkdjciQsSN\"},\"baileywiki-nuts-and-bolts.journals\":{\"folder\":\"rC08WavkdjciQsSN\"},\"baileywiki-nuts-and-bolts.journals-me-prefabs\":{\"folder\":\"rC08WavkdjciQsSN\"},\"baileywiki-nuts-and-bolts.scenes\":{\"folder\":\"ygMbn4tjKalrh4ge\"},\"dnd-dungeon-masters-guide.content\":{\"folder\":\"ktRVGLpRdU7vxj3A\"},\"dnd-dungeon-masters-guide.equipment\":{\"folder\":\"ktRVGLpRdU7vxj3A\"},\"dnd-dungeon-masters-guide.features\":{\"folder\":\"ktRVGLpRdU7vxj3A\"},\"dnd-dungeon-masters-guide.bastions\":{\"folder\":\"ktRVGLpRdU7vxj3A\"},\"dnd-dungeon-masters-guide.tables\":{\"folder\":\"ktRVGLpRdU7vxj3A\"},\"dnd-dungeon-masters-guide.actors\":{\"folder\":\"ktRVGLpRdU7vxj3A\"},\"dnd-dungeon-masters-guide.scenes\":{\"folder\":\"ktRVGLpRdU7vxj3A\"},\"dnd-monster-manual.content\":{\"folder\":\"EAHoWKR5wFfFVM6M\"},\"dnd-monster-manual.features\":{\"folder\":\"EAHoWKR5wFfFVM6M\"},\"dnd-monster-manual.actors\":{\"folder\":\"EAHoWKR5wFfFVM6M\"},\"dnd-monster-manual.tables\":{\"folder\":\"EAHoWKR5wFfFVM6M\"},\"dnd-players-handbook.content\":{\"folder\":\"iXyLfMIPg6AoNYHr\",\"locked\":false,\"sort\":-100000},\"dnd-players-handbook.classes\":{\"folder\":\"iXyLfMIPg6AoNYHr\",\"sort\":200000},\"dnd-players-handbook.origins\":{\"folder\":\"iXyLfMIPg6AoNYHr\",\"locked\":false,\"sort\":300000},\"dnd-players-handbook.feats\":{\"folder\":\"iXyLfMIPg6AoNYHr\",\"sort\":400000},\"dnd-players-handbook.spells\":{\"folder\":\"iXyLfMIPg6AoNYHr\",\"locked\":false,\"sort\":700000},\"dnd-players-handbook.tables\":{\"folder\":\"iXyLfMIPg6AoNYHr\",\"sort\":600000},\"dnd-players-handbook.actors\":{\"folder\":\"iXyLfMIPg6AoNYHr\",\"sort\":0},\"dnd-players-handbook.equipment\":{\"folder\":\"iXyLfMIPg6AoNYHr\",\"sort\":350000},\"dnd-tashas-cauldron.tcoe-content\":{\"folder\":\"aZBI9GZ5bwf4n4mG\"},\"dnd-tashas-cauldron.tcoe-character-options\":{\"folder\":\"aZBI9GZ5bwf4n4mG\"},\"dnd-tashas-cauldron.tcoe-tables\":{\"folder\":\"aZBI9GZ5bwf4n4mG\"},\"dnd-tashas-cauldron.tcoe-actors\":{\"folder\":\"aZBI9GZ5bwf4n4mG\"},\"dnd-tashas-cauldron.tcoe-magic-items\":{\"folder\":\"aZBI9GZ5bwf4n4mG\"},\"dnd-tashas-cauldron.tcoe-dm-tools\":{\"folder\":\"aZBI9GZ5bwf4n4mG\"},\"dnd-tashas-cauldron.tcoe-scenes\":{\"folder\":\"aZBI9GZ5bwf4n4mG\"},\"fvtt-trazzm-homebrew-5e.homebrew-macros\":{\"folder\":\"UTM9Mk5tiVC45jBR\",\"locked\":false,\"sort\":-100000},\"fvtt-trazzm-homebrew-5e.homebrew-journal-entries\":{\"folder\":\"UTM9Mk5tiVC45jBR\",\"locked\":false,\"sort\":-200000},\"fvtt-trazzm-homebrew-5e.trazzm-backgrounds-2024\":{\"folder\":\"HNEYKlXmxWKpHlkh\",\"locked\":false},\"fvtt-trazzm-homebrew-5e.trazzm-classes-2024\":{\"folder\":\"HNEYKlXmxWKpHlkh\",\"locked\":false,\"sort\":-700000},\"fvtt-trazzm-homebrew-5e.trazzm-feats-2024\":{\"folder\":\"HNEYKlXmxWKpHlkh\",\"locked\":false,\"sort\":-100000},\"fvtt-trazzm-homebrew-5e.trazzm-items-2024\":{\"folder\":\"HNEYKlXmxWKpHlkh\",\"locked\":false},\"fvtt-trazzm-homebrew-5e.trazzm-monsters-2024\":{\"folder\":\"HNEYKlXmxWKpHlkh\",\"locked\":false},\"fvtt-trazzm-homebrew-5e.trazzm-races-2024\":{\"folder\":\"HNEYKlXmxWKpHlkh\",\"locked\":false,\"sort\":-300000},\"fvtt-trazzm-homebrew-5e.trazzm-spells-2024\":{\"folder\":\"HNEYKlXmxWKpHlkh\",\"locked\":false,\"sort\":-600000},\"fvtt-trazzm-homebrew-5e.trazzm-subclasses-2024\":{\"folder\":\"HNEYKlXmxWKpHlkh\",\"locked\":false,\"sort\":-800000},\"fvtt-trazzm-homebrew-5e.trazzm-automation-actors-2024\":{\"folder\":\"HNEYKlXmxWKpHlkh\",\"locked\":false},\"fvtt-trazzm-homebrew-5e.trazzm-automation-items-2024\":{\"folder\":\"HNEYKlXmxWKpHlkh\",\"locked\":false},\"fvtt-trazzm-homebrew-5e.homebrew-backgrounds\":{\"folder\":\"x4xMtDfbyVqjVSjl\"},\"fvtt-trazzm-homebrew-5e.homebrew-background-features\":{\"folder\":\"x4xMtDfbyVqjVSjl\"},\"fvtt-trazzm-homebrew-5e.homebrew-classes\":{\"folder\":\"x4xMtDfbyVqjVSjl\"},\"fvtt-trazzm-homebrew-5e.homebrew-class-features\":{\"folder\":\"x4xMtDfbyVqjVSjl\",\"locked\":false},\"fvtt-trazzm-homebrew-5e.homebrew-creatures\":{\"folder\":\"x4xMtDfbyVqjVSjl\"},\"fvtt-trazzm-homebrew-5e.homebrew-creature-features\":{\"folder\":\"x4xMtDfbyVqjVSjl\"},\"fvtt-trazzm-homebrew-5e.homebrew-feats\":{\"folder\":\"x4xMtDfbyVqjVSjl\",\"locked\":true},\"fvtt-trazzm-homebrew-5e.homebrew-items\":{\"folder\":\"x4xMtDfbyVqjVSjl\"},\"fvtt-trazzm-homebrew-5e.homebrew-races\":{\"folder\":\"x4xMtDfbyVqjVSjl\",\"locked\":false},\"fvtt-trazzm-homebrew-5e.homebrew-racial-traits\":{\"folder\":\"x4xMtDfbyVqjVSjl\",\"locked\":false},\"fvtt-trazzm-homebrew-5e.homebrew-spells\":{\"folder\":\"x4xMtDfbyVqjVSjl\",\"locked\":false},\"fvtt-trazzm-homebrew-5e.homebrew-subclasses\":{\"folder\":\"x4xMtDfbyVqjVSjl\",\"locked\":false},\"fvtt-trazzm-homebrew-5e.homebrew-general-features\":{\"folder\":\"x4xMtDfbyVqjVSjl\"},\"fvtt-trazzm-homebrew-5e.homebrew-playlists\":{\"folder\":\"x4xMtDfbyVqjVSjl\"},\"fvtt-trazzm-homebrew-5e.homebrew-roll-tables\":{\"folder\":\"x4xMtDfbyVqjVSjl\"},\"fvtt-trazzm-homebrew-5e.homebrew-automation-actors\":{\"folder\":\"x4xMtDfbyVqjVSjl\"},\"fvtt-trazzm-homebrew-5e.homebrew-automation-items\":{\"folder\":\"x4xMtDfbyVqjVSjl\",\"sort\":-100000},\"fvtt-trazzm-homebrew-5e.homebrew-dungeons-drakkenheim\":{\"folder\":\"OOtBkN3PFKpj7gyz\",\"locked\":false},\"fvtt-trazzm-homebrew-5e.homebrew-princes-of-the-apocalypse\":{\"folder\":\"OOtBkN3PFKpj7gyz\"},\"fvtt-trazzm-homebrew-5e.homebrew-ravenloft\":{\"folder\":\"OOtBkN3PFKpj7gyz\"},\"fvtt-trazzm-homebrew-5e.homebrew-rime-of-the-frostmaiden\":{\"folder\":\"OOtBkN3PFKpj7gyz\"},\"fvtt-trazzm-homebrew-5e.homebrew-rise-of-the-drow\":{\"folder\":\"OOtBkN3PFKpj7gyz\",\"locked\":false},\"gambits-premades.gps-spells\":{\"folder\":\"7h65ZTx5IJe32pqH\"},\"gambits-premades.gps-class-features\":{\"folder\":\"7h65ZTx5IJe32pqH\"},\"gambits-premades.gps-items\":{\"folder\":\"7h65ZTx5IJe32pqH\"},\"gambits-premades.gps-monster-features\":{\"folder\":\"7h65ZTx5IJe32pqH\"},\"gambits-premades.gps-generic-features\":{\"folder\":\"7h65ZTx5IJe32pqH\"},\"gambits-premades.gps-race-features\":{\"folder\":\"7h65ZTx5IJe32pqH\"},\"gambits-premades.gps-homebrew-features\":{\"folder\":\"7h65ZTx5IJe32pqH\"},\"gambits-premades.gps-homebrew-items\":{\"folder\":\"7h65ZTx5IJe32pqH\"},\"gambits-premades.gps-homebrew-spells\":{\"folder\":\"7h65ZTx5IJe32pqH\"},\"gambits-premades.gps-3rd-party-features\":{\"folder\":\"7h65ZTx5IJe32pqH\"},\"gambits-premades.gps-3rd-party-items\":{\"folder\":\"7h65ZTx5IJe32pqH\"},\"gambits-premades.gps-3rd-party-spells\":{\"folder\":\"7h65ZTx5IJe32pqH\"},\"gambits-premades.gps-actors\":{\"folder\":\"7h65ZTx5IJe32pqH\"},\"midi-item-showcase-community.misc-actors\":{\"folder\":\"DhDG2GdyRo8NNgbn\"},\"midi-item-showcase-community.misc-actions\":{\"folder\":\"DhDG2GdyRo8NNgbn\"},\"midi-item-showcase-community.misc-class-features\":{\"folder\":\"DhDG2GdyRo8NNgbn\"},\"midi-item-showcase-community.misc-feats\":{\"folder\":\"DhDG2GdyRo8NNgbn\"},\"midi-item-showcase-community.misc-monster-features\":{\"folder\":\"DhDG2GdyRo8NNgbn\"},\"midi-item-showcase-community.misc-race-features\":{\"folder\":\"DhDG2GdyRo8NNgbn\"},\"midi-item-showcase-community.misc-spells\":{\"folder\":\"DhDG2GdyRo8NNgbn\"},\"midi-item-showcase-community.misc-items\":{\"folder\":\"DhDG2GdyRo8NNgbn\"},\"midi-item-showcase-community.misc-unearthed-arcana\":{\"folder\":\"DhDG2GdyRo8NNgbn\"},\"midi-item-showcase-community.misc-homebrew\":{\"folder\":\"DhDG2GdyRo8NNgbn\"},\"midi-item-showcase-community.misc-feats-2024\":{\"folder\":\"Mwo73a4f5vYMweCb\",\"sort\":-100000},\"midi-item-showcase-community.misc-spells-2024\":{\"folder\":\"Mwo73a4f5vYMweCb\",\"sort\":-200000},\"midi-item-showcase-community.misc-items-2024\":{\"folder\":\"Mwo73a4f5vYMweCb\"},\"midi-item-showcase-community.misc-class-features-items\":{\"folder\":\"l88rJbREMJEpbio8\"},\"midi-item-showcase-community.misc-spell-items\":{\"folder\":\"l88rJbREMJEpbio8\"},\"midi-item-showcase-community.misc-items-features\":{\"folder\":\"l88rJbREMJEpbio8\"},\"milandos-guide-to-magical-marvels.actors\":{\"folder\":\"XYYfZBtr0iGxGv9a\"},\"milandos-guide-to-magical-marvels.items\":{\"folder\":\"XYYfZBtr0iGxGv9a\"},\"milandos-guide-to-magical-marvels.journals\":{\"folder\":\"XYYfZBtr0iGxGv9a\"},\"milandos-guide-to-magical-marvels.maps\":{\"folder\":\"XYYfZBtr0iGxGv9a\"},\"milandos-guide-to-magical-marvels.rolltables\":{\"folder\":\"XYYfZBtr0iGxGv9a\"},\"rest-recovery.exhaustion\":{\"folder\":\"URerb01lekTRUZrK\"},\"wanderers-guide-2-merchants-n-magic.maps\":{\"folder\":\"Bez9DE45GTeKPURB\"},\"wanderers-guide-2-merchants-n-magic.actors\":{\"folder\":\"Bez9DE45GTeKPURB\"},\"wanderers-guide-2-merchants-n-magic.journals\":{\"folder\":\"Bez9DE45GTeKPURB\"},\"wanderers-guide-2-merchants-n-magic.items\":{\"folder\":\"Bez9DE45GTeKPURB\"},\"wanderers-guide-2-merchants-n-magic.rolltables\":{\"folder\":\"Bez9DE45GTeKPURB\"},\"wanderers-guide-2-merchants-n-magic.macros\":{\"folder\":\"Bez9DE45GTeKPURB\"},\"token-attacher.example-macros\":{\"folder\":\"3dGNm7VD8UkbWKJx\",\"sort\":100000},\"monks-active-tiles.active-tile-macros\":{\"folder\":\"3dGNm7VD8UkbWKJx\",\"sort\":200000},\"item-piles.item-piles-custom-items\":{\"folder\":\"3dGNm7VD8UkbWKJx\",\"sort\":150000},\"item-piles.item-piles-macros\":{\"folder\":\"3dGNm7VD8UkbWKJx\",\"sort\":125000},\"item-piles.item-piles-merchant-tables\":{\"folder\":\"3dGNm7VD8UkbWKJx\",\"sort\":112500},\"JB2A_DnD5e.jb2a-actors\":{\"folder\":\"3dGNm7VD8UkbWKJx\",\"sort\":106250},\"JB2A_DnD5e.jb2a-sequencer\":{\"folder\":\"3dGNm7VD8UkbWKJx\",\"sort\":103125},\"multi-token-edit.meSampleMacros\":{\"folder\":\"3dGNm7VD8UkbWKJx\",\"sort\":101563},\"midi-qol.midiqol-sample-items\":{\"folder\":null,\"sort\":100000,\"locked\":false},\"perceptive.perceptive\":{\"folder\":\"3dGNm7VD8UkbWKJx\",\"sort\":100391},\"Rideable.rideable\":{\"folder\":\"3dGNm7VD8UkbWKJx\",\"sort\":100196},\"ATL.premade\":{\"folder\":\"3dGNm7VD8UkbWKJx\",\"sort\":100098},\"tokenmagic.tmSampleCompendium\":{\"folder\":\"3dGNm7VD8UkbWKJx\",\"sort\":100049},\"tokenmagic.tmMacros\":{\"folder\":\"3dGNm7VD8UkbWKJx\",\"sort\":100025,\"locked\":false},\"wall-height.wall-height-macros\":{\"folder\":\"3dGNm7VD8UkbWKJx\",\"sort\":100013},\"drakkenheim-core.adventures\":{\"folder\":\"BGsd0k9wsiW9lxL5\"},\"drakkenheim-core.items\":{\"folder\":\"BGsd0k9wsiW9lxL5\"},\"drakkenheim-core.spells\":{\"folder\":\"BGsd0k9wsiW9lxL5\"},\"drakkenheim-core.tables\":{\"folder\":\"BGsd0k9wsiW9lxL5\"},\"drakkenheim-core.journals\":{\"folder\":\"BGsd0k9wsiW9lxL5\"},\"baileywiki-nuts-and-bolts.scenes-prefabs-2d\":{\"folder\":\"o1gBFqsbDSp17f55\"},\"midi-item-showcase-community.misc-monster-features-2024\":{\"folder\":\"Mwo73a4f5vYMweCb\"},\"chris-premades.CPRMiscellaneousItems\":{\"folder\":\"4WTQEwfGitooNTdF\"},\"chris-premades.CPRMiscellaneous\":{\"folder\":\"4WTQEwfGitooNTdF\"},\"chris-premades.CPRActions\":{\"folder\":\"hzQ6xkxdWppfodRK\"},\"chris-premades.CPRSpells\":{\"folder\":\"hzQ6xkxdWppfodRK\"},\"chris-premades.CPRSpellFeatures\":{\"folder\":\"hzQ6xkxdWppfodRK\"},\"chris-premades.CPRSummons\":{\"folder\":\"hzQ6xkxdWppfodRK\"},\"chris-premades.CPRSummonFeatures\":{\"folder\":\"hzQ6xkxdWppfodRK\"},\"chris-premades.CPRItems\":{\"folder\":\"hzQ6xkxdWppfodRK\"},\"chris-premades.CPRItemFeatures\":{\"folder\":\"hzQ6xkxdWppfodRK\"},\"chris-premades.CPRClassFeatures\":{\"folder\":\"hzQ6xkxdWppfodRK\"},\"chris-premades.CPRClassFeatureItems\":{\"folder\":\"hzQ6xkxdWppfodRK\"},\"chris-premades.CPRFeats\":{\"folder\":\"hzQ6xkxdWppfodRK\"},\"chris-premades.CPRFeatFeatures\":{\"folder\":\"hzQ6xkxdWppfodRK\"},\"chris-premades.CPRRaceFeatures\":{\"folder\":\"hzQ6xkxdWppfodRK\"},\"chris-premades.CPRThirdPartyClassFeatures\":{\"folder\":\"hzQ6xkxdWppfodRK\"},\"chris-premades.CPRThirdPartyItems\":{\"folder\":\"hzQ6xkxdWppfodRK\"},\"chris-premades.CPRThirdPartyFeats\":{\"folder\":\"hzQ6xkxdWppfodRK\"},\"chris-premades.CPRMonsterFeatures\":{\"folder\":\"hzQ6xkxdWppfodRK\"},\"chris-premades.CPRSpells2024\":{\"folder\":\"8ct44r4kktPLuD2d\"},\"chris-premades.CPRClassFeatures2024\":{\"folder\":\"8ct44r4kktPLuD2d\"},\"chris-premades.CPRItems2024\":{\"folder\":\"8ct44r4kktPLuD2d\"},\"chris-premades.CPRSummons2024\":{\"folder\":\"8ct44r4kktPLuD2d\"},\"chris-premades.CPRSummonFeatures2024\":{\"folder\":\"8ct44r4kktPLuD2d\"},\"fvtt-trazzm-homebrew-5e.trazzm-roll-tables-2024\":{\"folder\":\"HNEYKlXmxWKpHlkh\"},\"fvtt-trazzm-homebrew-5e.trazzm-monster-features-2024\":{\"folder\":\"HNEYKlXmxWKpHlkh\",\"locked\":false},\"dnd5e.content24\":{\"folder\":\"yFyjzbOCcfMvpvVi\"},\"dnd5e.classes24\":{\"folder\":\"yFyjzbOCcfMvpvVi\"},\"dnd5e.origins24\":{\"folder\":\"yFyjzbOCcfMvpvVi\"},\"dnd5e.feats24\":{\"folder\":\"yFyjzbOCcfMvpvVi\"},\"dnd5e.spells24\":{\"folder\":\"yFyjzbOCcfMvpvVi\"},\"dnd5e.tables24\":{\"folder\":\"yFyjzbOCcfMvpvVi\"},\"dnd5e.actors24\":{\"folder\":\"yFyjzbOCcfMvpvVi\"},\"dnd5e.equipment24\":{\"folder\":\"yFyjzbOCcfMvpvVi\"},\"baileywiki-nuts-and-bolts.scenes-prefabs-3d\":{\"folder\":\"o1gBFqsbDSp17f55\"},\"bg3-inspired-hotbar.bg3-inspired-hud\":{\"folder\":\"3dGNm7VD8UkbWKJx\",\"sort\":100037}}"
+    "value": "{\"dnd5e.rules\":{\"folder\":\"vxyCvlwRDQIsiHo1\"},\"dnd5e.tables\":{\"folder\":\"vxyCvlwRDQIsiHo1\"},\"dnd5e.heroes\":{\"folder\":\"vxyCvlwRDQIsiHo1\"},\"dnd5e.classes\":{\"folder\":\"mvCUGU8zP5rjRISY\"},\"dnd5e.subclasses\":{\"folder\":\"mvCUGU8zP5rjRISY\"},\"dnd5e.classfeatures\":{\"folder\":\"mvCUGU8zP5rjRISY\"},\"dnd5e.backgrounds\":{\"folder\":\"mvCUGU8zP5rjRISY\"},\"dnd5e.races\":{\"folder\":\"mvCUGU8zP5rjRISY\"},\"dnd5e.items\":{\"folder\":\"RzNfaOBsVeP6EkPz\"},\"dnd5e.spells\":{\"folder\":\"RzNfaOBsVeP6EkPz\"},\"dnd5e.tradegoods\":{\"folder\":\"RzNfaOBsVeP6EkPz\"},\"dnd5e.monsters\":{\"folder\":\"HgmX0BroD0ev7H5U\"},\"dnd5e.monsterfeatures\":{\"folder\":\"HgmX0BroD0ev7H5U\"},\"ActiveAuras.aa-aura-items\":{\"folder\":\"3dGNm7VD8UkbWKJx\"},\"ActiveAuras.aa-zone-actors\":{\"folder\":\"3dGNm7VD8UkbWKJx\"},\"ActiveAuras.aa-macros\":{\"folder\":\"3dGNm7VD8UkbWKJx\"},\"baileywiki-nuts-and-bolts.macros\":{\"folder\":\"NbW0JABnVxWOi9Zj\"},\"baileywiki-nuts-and-bolts.items\":{\"folder\":\"NbW0JABnVxWOi9Zj\"},\"baileywiki-nuts-and-bolts.journals\":{\"folder\":\"NbW0JABnVxWOi9Zj\"},\"baileywiki-nuts-and-bolts.journals-me-prefabs\":{\"folder\":\"NbW0JABnVxWOi9Zj\"},\"baileywiki-nuts-and-bolts.scenes\":{\"folder\":\"tLRa3nxempSBUx8j\"},\"dnd-dungeon-masters-guide.content\":{\"folder\":\"2FX4YFy8FQRpk9hk\"},\"dnd-dungeon-masters-guide.equipment\":{\"folder\":\"2FX4YFy8FQRpk9hk\"},\"dnd-dungeon-masters-guide.features\":{\"folder\":\"2FX4YFy8FQRpk9hk\"},\"dnd-dungeon-masters-guide.bastions\":{\"folder\":\"2FX4YFy8FQRpk9hk\"},\"dnd-dungeon-masters-guide.tables\":{\"folder\":\"2FX4YFy8FQRpk9hk\"},\"dnd-dungeon-masters-guide.actors\":{\"folder\":\"2FX4YFy8FQRpk9hk\"},\"dnd-dungeon-masters-guide.scenes\":{\"folder\":\"2FX4YFy8FQRpk9hk\"},\"dnd-monster-manual.content\":{\"folder\":\"VxfvrXuHfGrETxBk\"},\"dnd-monster-manual.features\":{\"folder\":\"VxfvrXuHfGrETxBk\"},\"dnd-monster-manual.actors\":{\"folder\":\"VxfvrXuHfGrETxBk\"},\"dnd-monster-manual.tables\":{\"folder\":\"VxfvrXuHfGrETxBk\"},\"dnd-players-handbook.content\":{\"folder\":\"tOChxfsbFlhrRR0J\",\"locked\":false,\"sort\":-100000},\"dnd-players-handbook.classes\":{\"folder\":\"tOChxfsbFlhrRR0J\",\"sort\":200000},\"dnd-players-handbook.origins\":{\"folder\":\"tOChxfsbFlhrRR0J\",\"locked\":false,\"sort\":300000},\"dnd-players-handbook.feats\":{\"folder\":\"tOChxfsbFlhrRR0J\",\"sort\":400000},\"dnd-players-handbook.spells\":{\"folder\":\"tOChxfsbFlhrRR0J\",\"locked\":false,\"sort\":700000},\"dnd-players-handbook.tables\":{\"folder\":\"tOChxfsbFlhrRR0J\",\"sort\":600000},\"dnd-players-handbook.actors\":{\"folder\":\"tOChxfsbFlhrRR0J\",\"sort\":0},\"dnd-players-handbook.equipment\":{\"folder\":\"tOChxfsbFlhrRR0J\",\"sort\":350000},\"dnd-tashas-cauldron.tcoe-content\":{\"folder\":\"aZBI9GZ5bwf4n4mG\"},\"dnd-tashas-cauldron.tcoe-character-options\":{\"folder\":\"aZBI9GZ5bwf4n4mG\"},\"dnd-tashas-cauldron.tcoe-tables\":{\"folder\":\"aZBI9GZ5bwf4n4mG\"},\"dnd-tashas-cauldron.tcoe-actors\":{\"folder\":\"aZBI9GZ5bwf4n4mG\"},\"dnd-tashas-cauldron.tcoe-magic-items\":{\"folder\":\"aZBI9GZ5bwf4n4mG\"},\"dnd-tashas-cauldron.tcoe-dm-tools\":{\"folder\":\"aZBI9GZ5bwf4n4mG\"},\"dnd-tashas-cauldron.tcoe-scenes\":{\"folder\":\"aZBI9GZ5bwf4n4mG\"},\"fvtt-trazzm-homebrew-5e.homebrew-macros\":{\"folder\":\"aENUIvQu1I2bnBFO\",\"locked\":false,\"sort\":-100000},\"fvtt-trazzm-homebrew-5e.homebrew-journal-entries\":{\"folder\":\"aENUIvQu1I2bnBFO\",\"locked\":false,\"sort\":-200000},\"fvtt-trazzm-homebrew-5e.trazzm-backgrounds-2024\":{\"folder\":\"vsAGWs23zrmtdEix\",\"locked\":false},\"fvtt-trazzm-homebrew-5e.trazzm-classes-2024\":{\"folder\":\"vsAGWs23zrmtdEix\",\"locked\":false,\"sort\":-700000},\"fvtt-trazzm-homebrew-5e.trazzm-feats-2024\":{\"folder\":\"vsAGWs23zrmtdEix\",\"locked\":false,\"sort\":-100000},\"fvtt-trazzm-homebrew-5e.trazzm-items-2024\":{\"folder\":\"vsAGWs23zrmtdEix\",\"locked\":false},\"fvtt-trazzm-homebrew-5e.trazzm-monsters-2024\":{\"folder\":\"vsAGWs23zrmtdEix\",\"locked\":false},\"fvtt-trazzm-homebrew-5e.trazzm-races-2024\":{\"folder\":\"vsAGWs23zrmtdEix\",\"locked\":false,\"sort\":-300000},\"fvtt-trazzm-homebrew-5e.trazzm-spells-2024\":{\"folder\":\"vsAGWs23zrmtdEix\",\"locked\":false,\"sort\":-600000},\"fvtt-trazzm-homebrew-5e.trazzm-subclasses-2024\":{\"folder\":\"vsAGWs23zrmtdEix\",\"locked\":false,\"sort\":-800000},\"fvtt-trazzm-homebrew-5e.trazzm-automation-actors-2024\":{\"folder\":\"vsAGWs23zrmtdEix\",\"locked\":false},\"fvtt-trazzm-homebrew-5e.trazzm-automation-items-2024\":{\"folder\":\"vsAGWs23zrmtdEix\",\"locked\":false},\"fvtt-trazzm-homebrew-5e.homebrew-backgrounds\":{\"folder\":\"x4xMtDfbyVqjVSjl\"},\"fvtt-trazzm-homebrew-5e.homebrew-background-features\":{\"folder\":\"x4xMtDfbyVqjVSjl\"},\"fvtt-trazzm-homebrew-5e.homebrew-classes\":{\"folder\":\"x4xMtDfbyVqjVSjl\"},\"fvtt-trazzm-homebrew-5e.homebrew-class-features\":{\"folder\":\"x4xMtDfbyVqjVSjl\",\"locked\":false},\"fvtt-trazzm-homebrew-5e.homebrew-creatures\":{\"folder\":\"x4xMtDfbyVqjVSjl\"},\"fvtt-trazzm-homebrew-5e.homebrew-creature-features\":{\"folder\":\"x4xMtDfbyVqjVSjl\"},\"fvtt-trazzm-homebrew-5e.homebrew-feats\":{\"folder\":\"x4xMtDfbyVqjVSjl\",\"locked\":true},\"fvtt-trazzm-homebrew-5e.homebrew-items\":{\"folder\":\"x4xMtDfbyVqjVSjl\"},\"fvtt-trazzm-homebrew-5e.homebrew-races\":{\"folder\":\"x4xMtDfbyVqjVSjl\",\"locked\":false},\"fvtt-trazzm-homebrew-5e.homebrew-racial-traits\":{\"folder\":\"x4xMtDfbyVqjVSjl\",\"locked\":false},\"fvtt-trazzm-homebrew-5e.homebrew-spells\":{\"folder\":\"r03a0zfius4TTolj\",\"locked\":false},\"fvtt-trazzm-homebrew-5e.homebrew-subclasses\":{\"folder\":\"x4xMtDfbyVqjVSjl\",\"locked\":false},\"fvtt-trazzm-homebrew-5e.homebrew-general-features\":{\"folder\":\"x4xMtDfbyVqjVSjl\"},\"fvtt-trazzm-homebrew-5e.homebrew-playlists\":{\"folder\":\"x4xMtDfbyVqjVSjl\"},\"fvtt-trazzm-homebrew-5e.homebrew-roll-tables\":{\"folder\":\"x4xMtDfbyVqjVSjl\"},\"fvtt-trazzm-homebrew-5e.homebrew-automation-actors\":{\"folder\":\"x4xMtDfbyVqjVSjl\"},\"fvtt-trazzm-homebrew-5e.homebrew-automation-items\":{\"folder\":\"x4xMtDfbyVqjVSjl\",\"sort\":-100000},\"fvtt-trazzm-homebrew-5e.homebrew-dungeons-drakkenheim\":{\"folder\":\"udXBzmwH17cEmM4t\",\"locked\":false},\"fvtt-trazzm-homebrew-5e.homebrew-princes-of-the-apocalypse\":{\"folder\":\"udXBzmwH17cEmM4t\"},\"fvtt-trazzm-homebrew-5e.homebrew-ravenloft\":{\"folder\":\"udXBzmwH17cEmM4t\"},\"fvtt-trazzm-homebrew-5e.homebrew-rime-of-the-frostmaiden\":{\"folder\":\"udXBzmwH17cEmM4t\"},\"fvtt-trazzm-homebrew-5e.homebrew-rise-of-the-drow\":{\"folder\":\"udXBzmwH17cEmM4t\",\"locked\":false},\"gambits-premades.gps-spells\":{\"folder\":\"7h65ZTx5IJe32pqH\"},\"gambits-premades.gps-class-features\":{\"folder\":\"7h65ZTx5IJe32pqH\"},\"gambits-premades.gps-items\":{\"folder\":\"7h65ZTx5IJe32pqH\"},\"gambits-premades.gps-monster-features\":{\"folder\":\"7h65ZTx5IJe32pqH\"},\"gambits-premades.gps-generic-features\":{\"folder\":\"7h65ZTx5IJe32pqH\"},\"gambits-premades.gps-race-features\":{\"folder\":\"7h65ZTx5IJe32pqH\"},\"gambits-premades.gps-homebrew-features\":{\"folder\":\"7h65ZTx5IJe32pqH\"},\"gambits-premades.gps-homebrew-items\":{\"folder\":\"7h65ZTx5IJe32pqH\"},\"gambits-premades.gps-homebrew-spells\":{\"folder\":\"7h65ZTx5IJe32pqH\"},\"gambits-premades.gps-3rd-party-features\":{\"folder\":\"7h65ZTx5IJe32pqH\"},\"gambits-premades.gps-3rd-party-items\":{\"folder\":\"7h65ZTx5IJe32pqH\"},\"gambits-premades.gps-3rd-party-spells\":{\"folder\":\"7h65ZTx5IJe32pqH\"},\"gambits-premades.gps-actors\":{\"folder\":\"7h65ZTx5IJe32pqH\"},\"midi-item-showcase-community.misc-actors\":{\"folder\":\"DhDG2GdyRo8NNgbn\"},\"midi-item-showcase-community.misc-actions\":{\"folder\":\"DhDG2GdyRo8NNgbn\"},\"midi-item-showcase-community.misc-class-features\":{\"folder\":\"DhDG2GdyRo8NNgbn\"},\"midi-item-showcase-community.misc-feats\":{\"folder\":\"DhDG2GdyRo8NNgbn\"},\"midi-item-showcase-community.misc-monster-features\":{\"folder\":\"DhDG2GdyRo8NNgbn\"},\"midi-item-showcase-community.misc-race-features\":{\"folder\":\"DhDG2GdyRo8NNgbn\"},\"midi-item-showcase-community.misc-spells\":{\"folder\":\"DhDG2GdyRo8NNgbn\"},\"midi-item-showcase-community.misc-items\":{\"folder\":\"DhDG2GdyRo8NNgbn\"},\"midi-item-showcase-community.misc-unearthed-arcana\":{\"folder\":\"DhDG2GdyRo8NNgbn\"},\"midi-item-showcase-community.misc-homebrew\":{\"folder\":\"DhDG2GdyRo8NNgbn\"},\"midi-item-showcase-community.misc-feats-2024\":{\"folder\":\"Mwo73a4f5vYMweCb\",\"sort\":-100000},\"midi-item-showcase-community.misc-spells-2024\":{\"folder\":\"Mwo73a4f5vYMweCb\",\"sort\":-200000},\"midi-item-showcase-community.misc-items-2024\":{\"folder\":\"Mwo73a4f5vYMweCb\"},\"midi-item-showcase-community.misc-class-features-items\":{\"folder\":\"l88rJbREMJEpbio8\"},\"midi-item-showcase-community.misc-spell-items\":{\"folder\":\"l88rJbREMJEpbio8\"},\"midi-item-showcase-community.misc-items-features\":{\"folder\":\"l88rJbREMJEpbio8\"},\"milandos-guide-to-magical-marvels.actors\":{\"folder\":\"XYYfZBtr0iGxGv9a\"},\"milandos-guide-to-magical-marvels.items\":{\"folder\":\"XYYfZBtr0iGxGv9a\"},\"milandos-guide-to-magical-marvels.journals\":{\"folder\":\"XYYfZBtr0iGxGv9a\"},\"milandos-guide-to-magical-marvels.maps\":{\"folder\":\"XYYfZBtr0iGxGv9a\"},\"milandos-guide-to-magical-marvels.rolltables\":{\"folder\":\"XYYfZBtr0iGxGv9a\"},\"rest-recovery.exhaustion\":{\"folder\":\"3dGNm7VD8UkbWKJx\"},\"wanderers-guide-2-merchants-n-magic.maps\":{\"folder\":\"JQMVDdlnKlIUx8fW\"},\"wanderers-guide-2-merchants-n-magic.actors\":{\"folder\":\"JQMVDdlnKlIUx8fW\"},\"wanderers-guide-2-merchants-n-magic.journals\":{\"folder\":\"JQMVDdlnKlIUx8fW\"},\"wanderers-guide-2-merchants-n-magic.items\":{\"folder\":\"JQMVDdlnKlIUx8fW\"},\"wanderers-guide-2-merchants-n-magic.rolltables\":{\"folder\":\"JQMVDdlnKlIUx8fW\"},\"wanderers-guide-2-merchants-n-magic.macros\":{\"folder\":\"JQMVDdlnKlIUx8fW\"},\"token-attacher.example-macros\":{\"folder\":\"b2fK1rbHKeIgMtLs\",\"sort\":100000},\"monks-active-tiles.active-tile-macros\":{\"folder\":\"b2fK1rbHKeIgMtLs\",\"sort\":200000},\"item-piles.item-piles-custom-items\":{\"folder\":\"b2fK1rbHKeIgMtLs\",\"sort\":150000},\"item-piles.item-piles-macros\":{\"folder\":\"b2fK1rbHKeIgMtLs\",\"sort\":125000},\"item-piles.item-piles-merchant-tables\":{\"folder\":\"b2fK1rbHKeIgMtLs\",\"sort\":112500},\"JB2A_DnD5e.jb2a-actors\":{\"folder\":\"b2fK1rbHKeIgMtLs\",\"sort\":106250},\"JB2A_DnD5e.jb2a-sequencer\":{\"folder\":\"3dGNm7VD8UkbWKJx\",\"sort\":103125},\"multi-token-edit.meSampleMacros\":{\"folder\":\"b2fK1rbHKeIgMtLs\",\"sort\":101563},\"midi-qol.midiqol-sample-items\":{\"folder\":\"b2fK1rbHKeIgMtLs\",\"sort\":100000,\"locked\":false},\"perceptive.perceptive\":{\"folder\":\"3dGNm7VD8UkbWKJx\",\"sort\":100391},\"Rideable.rideable\":{\"folder\":\"b2fK1rbHKeIgMtLs\",\"sort\":100196},\"ATL.premade\":{\"folder\":\"b2fK1rbHKeIgMtLs\",\"sort\":100098},\"tokenmagic.tmSampleCompendium\":{\"folder\":\"b2fK1rbHKeIgMtLs\",\"sort\":100049},\"tokenmagic.tmMacros\":{\"folder\":\"b2fK1rbHKeIgMtLs\",\"sort\":100025,\"locked\":false},\"wall-height.wall-height-macros\":{\"folder\":\"b2fK1rbHKeIgMtLs\",\"sort\":100013},\"drakkenheim-core.adventures\":{\"folder\":\"BGsd0k9wsiW9lxL5\"},\"drakkenheim-core.items\":{\"folder\":\"BGsd0k9wsiW9lxL5\"},\"drakkenheim-core.spells\":{\"folder\":\"BGsd0k9wsiW9lxL5\"},\"drakkenheim-core.tables\":{\"folder\":\"BGsd0k9wsiW9lxL5\"},\"drakkenheim-core.journals\":{\"folder\":\"BGsd0k9wsiW9lxL5\"},\"baileywiki-nuts-and-bolts.scenes-prefabs-2d\":{\"folder\":\"QymBk9IJaRvyB2Ot\"},\"midi-item-showcase-community.misc-monster-features-2024\":{\"folder\":\"Mwo73a4f5vYMweCb\"},\"chris-premades.CPRMiscellaneousItems\":{\"folder\":\"4WTQEwfGitooNTdF\"},\"chris-premades.CPRMiscellaneous\":{\"folder\":\"4WTQEwfGitooNTdF\"},\"chris-premades.CPRActions\":{\"folder\":\"hzQ6xkxdWppfodRK\"},\"chris-premades.CPRSpells\":{\"folder\":\"hzQ6xkxdWppfodRK\"},\"chris-premades.CPRSpellFeatures\":{\"folder\":\"hzQ6xkxdWppfodRK\"},\"chris-premades.CPRSummons\":{\"folder\":\"hzQ6xkxdWppfodRK\"},\"chris-premades.CPRSummonFeatures\":{\"folder\":\"hzQ6xkxdWppfodRK\"},\"chris-premades.CPRItems\":{\"folder\":\"hzQ6xkxdWppfodRK\"},\"chris-premades.CPRItemFeatures\":{\"folder\":\"hzQ6xkxdWppfodRK\"},\"chris-premades.CPRClassFeatures\":{\"folder\":\"hzQ6xkxdWppfodRK\"},\"chris-premades.CPRClassFeatureItems\":{\"folder\":\"hzQ6xkxdWppfodRK\"},\"chris-premades.CPRFeats\":{\"folder\":\"hzQ6xkxdWppfodRK\"},\"chris-premades.CPRFeatFeatures\":{\"folder\":\"hzQ6xkxdWppfodRK\"},\"chris-premades.CPRRaceFeatures\":{\"folder\":\"hzQ6xkxdWppfodRK\"},\"chris-premades.CPRThirdPartyClassFeatures\":{\"folder\":\"hzQ6xkxdWppfodRK\"},\"chris-premades.CPRThirdPartyItems\":{\"folder\":\"hzQ6xkxdWppfodRK\"},\"chris-premades.CPRThirdPartyFeats\":{\"folder\":\"hzQ6xkxdWppfodRK\"},\"chris-premades.CPRMonsterFeatures\":{\"folder\":\"hzQ6xkxdWppfodRK\"},\"chris-premades.CPRSpells2024\":{\"folder\":\"8ct44r4kktPLuD2d\"},\"chris-premades.CPRClassFeatures2024\":{\"folder\":\"8ct44r4kktPLuD2d\"},\"chris-premades.CPRItems2024\":{\"folder\":\"8ct44r4kktPLuD2d\"},\"chris-premades.CPRSummons2024\":{\"folder\":\"8ct44r4kktPLuD2d\"},\"chris-premades.CPRSummonFeatures2024\":{\"folder\":\"8ct44r4kktPLuD2d\"},\"fvtt-trazzm-homebrew-5e.trazzm-roll-tables-2024\":{\"folder\":\"vsAGWs23zrmtdEix\"},\"fvtt-trazzm-homebrew-5e.trazzm-monster-features-2024\":{\"folder\":\"vsAGWs23zrmtdEix\",\"locked\":false},\"dnd5e.content24\":{\"folder\":\"49W0sSAdL2xVX3pW\"},\"dnd5e.classes24\":{\"folder\":\"49W0sSAdL2xVX3pW\"},\"dnd5e.origins24\":{\"folder\":\"49W0sSAdL2xVX3pW\"},\"dnd5e.feats24\":{\"folder\":\"49W0sSAdL2xVX3pW\"},\"dnd5e.spells24\":{\"folder\":\"49W0sSAdL2xVX3pW\"},\"dnd5e.tables24\":{\"folder\":\"49W0sSAdL2xVX3pW\"},\"dnd5e.actors24\":{\"folder\":\"49W0sSAdL2xVX3pW\"},\"dnd5e.equipment24\":{\"folder\":\"49W0sSAdL2xVX3pW\"},\"baileywiki-nuts-and-bolts.scenes-prefabs-3d\":{\"folder\":\"QymBk9IJaRvyB2Ot\"},\"bg3-inspired-hotbar.bg3-inspired-hud\":{\"folder\":\"3dGNm7VD8UkbWKJx\",\"sort\":100037},\"world.rotd-actors\":{\"folder\":\"OZekdXyZH4akxBvC\",\"sort\":100000,\"ownership\":{\"ASSISTANT\":\"OWNER\",\"PLAYER\":\"NONE\",\"GAMEMASTER\":\"OWNER\"}},\"world.rotd-items\":{\"folder\":\"OZekdXyZH4akxBvC\",\"sort\":200000,\"ownership\":{\"ASSISTANT\":\"OWNER\",\"PLAYER\":\"NONE\",\"GAMEMASTER\":\"OWNER\"}},\"world.rotd-journal\":{\"folder\":\"OZekdXyZH4akxBvC\",\"sort\":150000,\"ownership\":{\"ASSISTANT\":\"OWNER\",\"PLAYER\":\"NONE\",\"GAMEMASTER\":\"OWNER\"}},\"world.rotd-rollables\":{\"folder\":\"OZekdXyZH4akxBvC\",\"sort\":125000,\"ownership\":{\"ASSISTANT\":\"OWNER\",\"PLAYER\":\"NONE\",\"GAMEMASTER\":\"OWNER\"}},\"world.rotd-scenes\":{\"folder\":\"OZekdXyZH4akxBvC\",\"sort\":112500,\"ownership\":{\"ASSISTANT\":\"OWNER\",\"PLAYER\":\"NONE\",\"GAMEMASTER\":\"OWNER\"}}}"
   },
   {
     "key": "core.defaultToken",
@@ -221,7 +229,7 @@
   },
   {
     "key": "core.globalAmbientVolume",
-    "value": "0.35355339059327373"
+    "value": "0.1643167672515498"
   },
   {
     "key": "core.globalInterfaceVolume",
@@ -229,7 +237,7 @@
   },
   {
     "key": "core.globalPlaylistVolume",
-    "value": "0.4078909167902615"
+    "value": "0.20706279240848655"
   },
   {
     "key": "core.gridDiagonals",
@@ -272,8 +280,16 @@
     "value": "{\"BROADCAST_AUDIO\":[2,3,4],\"BROADCAST_VIDEO\":[2,3,4],\"PING_CANVAS\":[1,2,3,4],\"TOKEN_CONFIGURE\":[1,2,3,4],\"CARDS_CREATE\":[1,2,3,4],\"JOURNAL_CREATE\":[1,2,3,4],\"NOTE_CREATE\":[1,2,3,4],\"TEMPLATE_CREATE\":[1,2,3,4],\"ACTOR_CREATE\":[1,2,3,4],\"ITEM_CREATE\":[1,2,3,4],\"TOKEN_CREATE\":[1,2,3,4],\"PLAYLIST_CREATE\":[3,4],\"TOKEN_DELETE\":[1,2,3,4],\"SHOW_CURSOR\":[],\"SHOW_RULER\":[1,2,3,4],\"MANUAL_ROLLS\":[2,3,4],\"SETTINGS_MODIFY\":[3,4],\"WALL_DOORS\":[1,2,3,4],\"FILES_UPLOAD\":[1,2,3,4],\"DRAWING_CREATE\":[1,2,3,4],\"FILES_BROWSE\":[1,2,3,4],\"MACRO_SCRIPT\":[1,2,3,4],\"MESSAGE_WHISPER\":[1,2,3,4]}"
   },
   {
+    "key": "core.pmHighlightDocumentMatches",
+    "value": "false"
+  },
+  {
     "key": "core.rtcClientSettings",
     "value": "{\"videoSrc\":\"default\",\"audioSrc\":\"default\",\"audioSink\":\"default\",\"dockPosition\":\"left\",\"hidePlayerList\":false,\"hideDock\":false,\"muteAll\":false,\"disableVideo\":false,\"borderColors\":false,\"nameplates\":1,\"voice\":{\"mode\":\"ptt\",\"pttName\":\"`\",\"pttDelay\":100,\"activityThreshold\":-45},\"users\":{}}"
+  },
+  {
+    "key": "core.sheetClasses",
+    "value": "{\"Actor\":{\"npc\":\"dnd5e.ActorSheet5eNPC2\"},\"Item\":{\"weapon\":\"dnd5e.ItemSheet5e\",\"consumable\":\"dnd5e.ItemSheet5e\",\"feat\":\"dnd5e.ItemSheet5e\",\"backpack\":\"dnd5e.ItemSheet5e\"},\"JournalEntryPage\":{\"class\":\"dnd5e.JournalClassPageSheet\",\"map\":\"dnd5e.JournalMapLocationPageSheet\",\"rule\":\"dnd5e.JournalRulePageSheet\",\"spells\":\"dnd5e.JournalSpellListPageSheet\",\"subclass\":\"dnd5e.JournalClassPageSheet\"}}"
   },
   {
     "key": "core.showToolclips",
@@ -281,7 +297,7 @@
   },
   {
     "key": "core.time",
-    "value": "1742950543"
+    "value": "1742950573"
   },
   {
     "key": "core.tourProgress",
@@ -298,6 +314,22 @@
   {
     "key": "dae.showInline",
     "value": "true"
+  },
+  {
+    "key": "dae.ZZDebug",
+    "value": "\"debug\""
+  },
+  {
+    "key": "dice-so-nice.animateInlineRoll",
+    "value": "false"
+  },
+  {
+    "key": "dice-so-nice.animateRollTable",
+    "value": "true"
+  },
+  {
+    "key": "dice-so-nice.formatVersion",
+    "value": "\"4.2\""
   },
   {
     "key": "dice-so-nice.hideNpcRolls",
@@ -350,6 +382,10 @@
   {
     "key": "dnd5e-scriptlets.autoRollUnlinkedHP",
     "value": "\"rollOnly\""
+  },
+  {
+    "key": "dnd5e-scriptlets.EnableTokenDynamicRing",
+    "value": "true"
   },
   {
     "key": "dnd5e-scriptlets.EnableTokenDynamicRingBackgroundColour",
@@ -448,16 +484,20 @@
     "value": "{\"aaw-aventyr.aaw-backgrounds\":false,\"aaw-aventyr.aaw-classes\":false,\"aaw-aventyr.aaw-classfeatures\":false,\"aaw-aventyr.aaw-subclasses\":false,\"aaw-aventyr.aaw-races\":false,\"aaw-aventyr.aaw-race-features\":false,\"aaw-aventyr.aaw-items\":false,\"aaw-aventyr.aaw-monsters\":false,\"aaw-aventyr.aaw-monsterfeatures\":false,\"aaw-aventyr.aaw-journal\":false,\"aaw-aventyr.aaw-spells\":false,\"aaw-aventyr.aaw-tables\":false,\"aaw-aventyr.aaw-automation-items\":false,\"aaw-aventyr.automation-actors-aaw\":false,\"ActiveAuras.aa-aura-items\":false,\"ActiveAuras.aa-zone-actors\":false,\"ActiveAuras.aa-macros\":false,\"ATL.premade\":false,\"baileywiki-nuts-and-bolts.journals\":false,\"baileywiki-nuts-and-bolts.journals-me-prefabs\":false,\"baileywiki-nuts-and-bolts.macros\":false,\"baileywiki-nuts-and-bolts.items\":false,\"baileywiki-nuts-and-bolts.scenes\":false,\"drider-of-the-underworld.class-features-dotu\":false,\"drider-of-the-underworld.feats-dotu\":false,\"drider-of-the-underworld.items-dotu\":false,\"drider-of-the-underworld.journal-dotu\":false,\"drider-of-the-underworld.monsters-dotu\":false,\"drider-of-the-underworld.racial-features-dotu\":false,\"drider-of-the-underworld.spells-dotu\":false,\"item-piles.item-piles-merchant-tables\":false,\"item-piles.item-piles-custom-items\":false,\"item-piles.item-piles-macros\":false,\"JB2A_DnD5e.jb2a-sequencer\":false,\"JB2A_DnD5e.jb2a-actors\":false,\"midi-item-showcase-community.misc-items\":false,\"midi-item-showcase-community.misc-items-features\":false,\"midi-item-showcase-community.misc-actors\":false,\"midi-item-showcase-community.misc-actions\":false,\"midi-item-showcase-community.misc-class-features\":false,\"midi-item-showcase-community.misc-class-features-items\":false,\"midi-item-showcase-community.misc-feats\":false,\"midi-item-showcase-community.misc-monster-features\":false,\"midi-item-showcase-community.misc-spell-items\":false,\"midi-item-showcase-community.misc-unearthed-arcana\":false,\"midi-item-showcase-community.misc-spells\":false,\"midi-item-showcase-community.misc-homebrew\":false,\"midi-item-showcase-community.misc-race-features\":false,\"midi-item-showcase-community.misc-items-2024\":false,\"midi-item-showcase-community.misc-feats-2024\":false,\"midi-item-showcase-community.misc-spells-2024\":false,\"midi-qol.midiqol-sample-items\":false,\"milandos-guide-to-magical-marvels.actors\":false,\"milandos-guide-to-magical-marvels.items\":false,\"milandos-guide-to-magical-marvels.journals\":false,\"milandos-guide-to-magical-marvels.maps\":false,\"milandos-guide-to-magical-marvels.rolltables\":false,\"dnd-tashas-cauldron.tcoe-character-options\":false,\"dnd-tashas-cauldron.tcoe-magic-items\":false,\"dnd-tashas-cauldron.tcoe-tables\":false,\"dnd-tashas-cauldron.tcoe-actors\":false,\"dnd-tashas-cauldron.tcoe-scenes\":false,\"dnd-tashas-cauldron.tcoe-dm-tools\":false,\"dnd-tashas-cauldron.tcoe-content\":false,\"dnd5e.heroes\":false,\"dnd5e.monsters\":false,\"dnd5e.items\":false,\"dnd5e.tradegoods\":false,\"dnd5e.spells\":false,\"dnd5e.backgrounds\":false,\"dnd5e.classes\":false,\"dnd5e.subclasses\":false,\"dnd5e.classfeatures\":false,\"dnd5e.races\":false,\"dnd5e.monsterfeatures\":false,\"dnd5e.rules\":false,\"dnd5e.tables\":false,\"baileywiki-nuts-and-bolts.scenes-prefabs-2d\":false,\"dnd-players-handbook.classes\":false,\"dnd-players-handbook.origins\":false,\"dnd-players-handbook.feats\":false,\"dnd-players-handbook.actors\":true,\"wanderers-guide-2-merchants-n-magic.maps\":false,\"wanderers-guide-2-merchants-n-magic.actors\":false,\"wanderers-guide-2-merchants-n-magic.journals\":false,\"wanderers-guide-2-merchants-n-magic.items\":false,\"wanderers-guide-2-merchants-n-magic.rolltables\":false,\"wanderers-guide-2-merchants-n-magic.macros\":false,\"fvtt-trazzm-homebrew-5e.homebrew-spells\":false,\"fvtt-trazzm-homebrew-5e.trazzm-automation-items-2024\":false,\"fvtt-trazzm-homebrew-5e.trazzm-automation-actors-2024\":false,\"dnd5e.content24\":false,\"dnd5e.classes24\":false,\"dnd5e.origins24\":false,\"dnd5e.feats24\":false,\"dnd5e.spells24\":false,\"dnd5e.equipment24\":false,\"dnd5e.tables24\":false,\"dnd5e.actors24\":false}"
   },
   {
+    "key": "dnd5e.primaryParty",
+    "value": "{\"actor\":\"I0gAhI6zYI8TUY6p\"}"
+  },
+  {
+    "key": "dnd5e.strictValidation",
+    "value": "false"
+  },
+  {
     "key": "dnd5e.systemMigrationVersion",
     "value": "\"4.4.0\""
   },
   {
-    "key": "drakkenheim-core.firstStartup",
-    "value": "false"
-  },
-  {
-    "key": "drakkenheim-core.migrationVersion",
-    "value": "\"1.5.1\""
+    "key": "forien-copy-environment.selected-properties",
+    "value": "{\"core.time\":true,\"pf2e.worldClock.worldCreatedOn\":false,\"core.adventureImports\":true,\"core.colorScheme\":true,\"core.combatTrackerConfig\":true,\"core.compendiumConfiguration\":true,\"core.defaultToken\":true,\"core.globalAmbientVolume\":true,\"core.globalInterfaceVolume\":true,\"core.gridDiagonals\":true,\"core.hotbarLock\":true,\"core.moduleConfiguration\":true,\"core.permissions\":true,\"core.pmHighlightDocumentMatches\":true,\"core.sheetClasses\":true,\"core.showToolclips\":true,\"core.tourProgress\":true,\"core.visionAnimation\":true}"
   },
   {
     "key": "foundryvtt-simple-calendar.app-position",
@@ -465,7 +505,11 @@
   },
   {
     "key": "foundryvtt-simple-calendar.calendar-configuration",
-    "value": "[{\"id\":\"default\",\"name\":\"Default\",\"currentDate\":{\"year\":2025,\"month\":2,\"day\":25,\"seconds\":3343},\"general\":{\"gameWorldTimeIntegration\":\"mixed\",\"showClock\":true,\"noteDefaultVisibility\":false,\"postNoteRemindersOnFoundryLoad\":true,\"pf2eSync\":true,\"dateFormat\":{\"date\":\"MMMM DD, YYYY\",\"time\":\"HH:mm:ss\",\"monthYear\":\"MMMM YAYYYYYZ\",\"chatTime\":\"MMM DD, YYYY HH:mm\"},\"compactViewOptions\":{\"controlLayout\":\"full\"}},\"leapYear\":{\"id\":\"497a7736\",\"rule\":\"gregorian\",\"customMod\":0,\"startingYear\":0},\"months\":[{\"id\":\"99a0ba60\",\"name\":\"January\",\"description\":\"\",\"abbreviation\":\"Jan\",\"numericRepresentation\":1,\"numericRepresentationOffset\":0,\"numberOfDays\":31,\"numberOfLeapYearDays\":31,\"intercalary\":false,\"intercalaryInclude\":false,\"startingWeekday\":null},{\"id\":\"2b4f2cca\",\"name\":\"February\",\"description\":\"\",\"abbreviation\":\"Feb\",\"numericRepresentation\":2,\"numericRepresentationOffset\":0,\"numberOfDays\":28,\"numberOfLeapYearDays\":29,\"intercalary\":false,\"intercalaryInclude\":false,\"startingWeekday\":null},{\"id\":\"8c3cfbd6\",\"name\":\"March\",\"description\":\"\",\"abbreviation\":\"Mar\",\"numericRepresentation\":3,\"numericRepresentationOffset\":0,\"numberOfDays\":31,\"numberOfLeapYearDays\":31,\"intercalary\":false,\"intercalaryInclude\":false,\"startingWeekday\":null},{\"id\":\"9bb88961\",\"name\":\"April\",\"description\":\"\",\"abbreviation\":\"Apr\",\"numericRepresentation\":4,\"numericRepresentationOffset\":0,\"numberOfDays\":30,\"numberOfLeapYearDays\":30,\"intercalary\":false,\"intercalaryInclude\":false,\"startingWeekday\":null},{\"id\":\"6d5f5355\",\"name\":\"May\",\"description\":\"\",\"abbreviation\":\"May\",\"numericRepresentation\":5,\"numericRepresentationOffset\":0,\"numberOfDays\":31,\"numberOfLeapYearDays\":31,\"intercalary\":false,\"intercalaryInclude\":false,\"startingWeekday\":null},{\"id\":\"5b7fcaa5\",\"name\":\"June\",\"description\":\"\",\"abbreviation\":\"Jun\",\"numericRepresentation\":6,\"numericRepresentationOffset\":0,\"numberOfDays\":30,\"numberOfLeapYearDays\":30,\"intercalary\":false,\"intercalaryInclude\":false,\"startingWeekday\":null},{\"id\":\"96451ec3\",\"name\":\"July\",\"description\":\"\",\"abbreviation\":\"Jul\",\"numericRepresentation\":7,\"numericRepresentationOffset\":0,\"numberOfDays\":31,\"numberOfLeapYearDays\":31,\"intercalary\":false,\"intercalaryInclude\":false,\"startingWeekday\":null},{\"id\":\"bf475b9f\",\"name\":\"August\",\"description\":\"\",\"abbreviation\":\"Aug\",\"numericRepresentation\":8,\"numericRepresentationOffset\":0,\"numberOfDays\":31,\"numberOfLeapYearDays\":31,\"intercalary\":false,\"intercalaryInclude\":false,\"startingWeekday\":null},{\"id\":\"eb8a17ff\",\"name\":\"September\",\"description\":\"\",\"abbreviation\":\"Sep\",\"numericRepresentation\":9,\"numericRepresentationOffset\":0,\"numberOfDays\":30,\"numberOfLeapYearDays\":30,\"intercalary\":false,\"intercalaryInclude\":false,\"startingWeekday\":null},{\"id\":\"cceb05ee\",\"name\":\"October\",\"description\":\"\",\"abbreviation\":\"Oct\",\"numericRepresentation\":10,\"numericRepresentationOffset\":0,\"numberOfDays\":31,\"numberOfLeapYearDays\":31,\"intercalary\":false,\"intercalaryInclude\":false,\"startingWeekday\":null},{\"id\":\"e77083d5\",\"name\":\"November\",\"description\":\"\",\"abbreviation\":\"Nov\",\"numericRepresentation\":11,\"numericRepresentationOffset\":0,\"numberOfDays\":30,\"numberOfLeapYearDays\":30,\"intercalary\":false,\"intercalaryInclude\":false,\"startingWeekday\":null},{\"id\":\"373fdc47\",\"name\":\"December\",\"description\":\"\",\"abbreviation\":\"Dec\",\"numericRepresentation\":12,\"numericRepresentationOffset\":0,\"numberOfDays\":31,\"numberOfLeapYearDays\":31,\"intercalary\":false,\"intercalaryInclude\":false,\"startingWeekday\":null}],\"moons\":[{\"id\":\"fa3ef93\",\"name\":\"Moon\",\"cycleLength\":29.53059,\"firstNewMoon\":{\"yearReset\":\"none\",\"yearX\":0,\"year\":2000,\"month\":1,\"day\":4},\"phases\":[{\"name\":\"New Moon\",\"length\":1,\"icon\":\"new\",\"singleDay\":true},{\"name\":\"Waxing Crescent\",\"length\":6.38265,\"icon\":\"waxing-crescent\",\"singleDay\":false},{\"name\":\"First Quarter\",\"length\":1,\"icon\":\"first-quarter\",\"singleDay\":true},{\"name\":\"Waxing Gibbous\",\"length\":6.38265,\"icon\":\"waxing-gibbous\",\"singleDay\":false},{\"name\":\"Full Moon\",\"length\":1,\"icon\":\"full\",\"singleDay\":true},{\"name\":\"Waning Gibbous\",\"length\":6.38265,\"icon\":\"waning-gibbous\",\"singleDay\":false},{\"name\":\"Last Quarter\",\"length\":1,\"icon\":\"last-quarter\",\"singleDay\":true},{\"name\":\"Waning Crescent\",\"length\":6.38265,\"icon\":\"waning-crescent\",\"singleDay\":false}],\"color\":\"#ffffff\",\"cycleDayAdjust\":0.5}],\"noteCategories\":[{\"name\":\"Holiday\",\"textColor\":\"#FFFFFF\",\"color\":\"#148e94\"}],\"seasons\":[{\"id\":\"33d1a07f\",\"name\":\"Spring\",\"description\":\"\",\"startingMonth\":2,\"startingDay\":19,\"color\":\"#46b946\",\"icon\":\"spring\",\"sunriseTime\":21600,\"sunsetTime\":64800},{\"id\":\"1100b885\",\"name\":\"Summer\",\"description\":\"\",\"startingMonth\":5,\"startingDay\":19,\"color\":\"#e0c40b\",\"icon\":\"summer\",\"sunriseTime\":21600,\"sunsetTime\":64800},{\"id\":\"adac66f6\",\"name\":\"Fall\",\"description\":\"\",\"startingMonth\":8,\"startingDay\":21,\"color\":\"#ff8e47\",\"icon\":\"fall\",\"sunriseTime\":21600,\"sunsetTime\":64800},{\"id\":\"7934aa0b\",\"name\":\"Winter\",\"description\":\"\",\"startingMonth\":11,\"startingDay\":20,\"color\":\"#479dff\",\"icon\":\"winter\",\"sunriseTime\":21600,\"sunsetTime\":64800}],\"time\":{\"id\":\"b086ec0f\",\"hoursInDay\":24,\"minutesInHour\":60,\"secondsInMinute\":60,\"gameTimeRatio\":1,\"unifyGameAndClockPause\":false,\"updateFrequency\":1},\"weekdays\":[{\"abbreviation\":\"Su\",\"id\":\"91c8bdc2\",\"name\":\"Sunday\",\"description\":\"\",\"numericRepresentation\":1,\"restday\":false},{\"abbreviation\":\"Mo\",\"id\":\"bbbfd1fe\",\"name\":\"Monday\",\"description\":\"\",\"numericRepresentation\":2,\"restday\":false},{\"abbreviation\":\"Tu\",\"id\":\"59bd295f\",\"name\":\"Tuesday\",\"description\":\"\",\"numericRepresentation\":3,\"restday\":false},{\"abbreviation\":\"We\",\"id\":\"eed3902\",\"name\":\"Wednesday\",\"description\":\"\",\"numericRepresentation\":4,\"restday\":false},{\"abbreviation\":\"Th\",\"id\":\"805b6094\",\"name\":\"Thursday\",\"description\":\"\",\"numericRepresentation\":5,\"restday\":false},{\"abbreviation\":\"Fr\",\"id\":\"38f02c60\",\"name\":\"Friday\",\"description\":\"\",\"numericRepresentation\":6,\"restday\":false},{\"abbreviation\":\"Sa\",\"id\":\"49ded776\",\"name\":\"Saturday\",\"description\":\"\",\"numericRepresentation\":7,\"restday\":false}],\"year\":{\"id\":\"cb1a5d5e\",\"numericRepresentation\":2025,\"prefix\":\"\",\"postfix\":\"\",\"showWeekdayHeadings\":true,\"firstWeekday\":4,\"yearZero\":1970,\"yearNames\":[],\"yearNamingRule\":\"default\",\"yearNamesStart\":0}}]"
+    "value": "[{\"id\":\"default\",\"name\":\"Default\",\"currentDate\":{\"year\":2025,\"month\":2,\"day\":25,\"seconds\":3373},\"general\":{\"gameWorldTimeIntegration\":\"mixed\",\"showClock\":true,\"noteDefaultVisibility\":false,\"postNoteRemindersOnFoundryLoad\":true,\"pf2eSync\":true,\"dateFormat\":{\"date\":\"MMMM DD, YYYY\",\"time\":\"HH:mm:ss\",\"monthYear\":\"MMMM YAYYYYYZ\",\"chatTime\":\"MMM DD, YYYY HH:mm\"},\"compactViewOptions\":{\"controlLayout\":\"full\"}},\"leapYear\":{\"id\":\"497a7736\",\"rule\":\"gregorian\",\"customMod\":0,\"startingYear\":0},\"months\":[{\"id\":\"99a0ba60\",\"name\":\"January\",\"description\":\"\",\"abbreviation\":\"Jan\",\"numericRepresentation\":1,\"numericRepresentationOffset\":0,\"numberOfDays\":31,\"numberOfLeapYearDays\":31,\"intercalary\":false,\"intercalaryInclude\":false,\"startingWeekday\":null},{\"id\":\"2b4f2cca\",\"name\":\"February\",\"description\":\"\",\"abbreviation\":\"Feb\",\"numericRepresentation\":2,\"numericRepresentationOffset\":0,\"numberOfDays\":28,\"numberOfLeapYearDays\":29,\"intercalary\":false,\"intercalaryInclude\":false,\"startingWeekday\":null},{\"id\":\"8c3cfbd6\",\"name\":\"March\",\"description\":\"\",\"abbreviation\":\"Mar\",\"numericRepresentation\":3,\"numericRepresentationOffset\":0,\"numberOfDays\":31,\"numberOfLeapYearDays\":31,\"intercalary\":false,\"intercalaryInclude\":false,\"startingWeekday\":null},{\"id\":\"9bb88961\",\"name\":\"April\",\"description\":\"\",\"abbreviation\":\"Apr\",\"numericRepresentation\":4,\"numericRepresentationOffset\":0,\"numberOfDays\":30,\"numberOfLeapYearDays\":30,\"intercalary\":false,\"intercalaryInclude\":false,\"startingWeekday\":null},{\"id\":\"6d5f5355\",\"name\":\"May\",\"description\":\"\",\"abbreviation\":\"May\",\"numericRepresentation\":5,\"numericRepresentationOffset\":0,\"numberOfDays\":31,\"numberOfLeapYearDays\":31,\"intercalary\":false,\"intercalaryInclude\":false,\"startingWeekday\":null},{\"id\":\"5b7fcaa5\",\"name\":\"June\",\"description\":\"\",\"abbreviation\":\"Jun\",\"numericRepresentation\":6,\"numericRepresentationOffset\":0,\"numberOfDays\":30,\"numberOfLeapYearDays\":30,\"intercalary\":false,\"intercalaryInclude\":false,\"startingWeekday\":null},{\"id\":\"96451ec3\",\"name\":\"July\",\"description\":\"\",\"abbreviation\":\"Jul\",\"numericRepresentation\":7,\"numericRepresentationOffset\":0,\"numberOfDays\":31,\"numberOfLeapYearDays\":31,\"intercalary\":false,\"intercalaryInclude\":false,\"startingWeekday\":null},{\"id\":\"bf475b9f\",\"name\":\"August\",\"description\":\"\",\"abbreviation\":\"Aug\",\"numericRepresentation\":8,\"numericRepresentationOffset\":0,\"numberOfDays\":31,\"numberOfLeapYearDays\":31,\"intercalary\":false,\"intercalaryInclude\":false,\"startingWeekday\":null},{\"id\":\"eb8a17ff\",\"name\":\"September\",\"description\":\"\",\"abbreviation\":\"Sep\",\"numericRepresentation\":9,\"numericRepresentationOffset\":0,\"numberOfDays\":30,\"numberOfLeapYearDays\":30,\"intercalary\":false,\"intercalaryInclude\":false,\"startingWeekday\":null},{\"id\":\"cceb05ee\",\"name\":\"October\",\"description\":\"\",\"abbreviation\":\"Oct\",\"numericRepresentation\":10,\"numericRepresentationOffset\":0,\"numberOfDays\":31,\"numberOfLeapYearDays\":31,\"intercalary\":false,\"intercalaryInclude\":false,\"startingWeekday\":null},{\"id\":\"e77083d5\",\"name\":\"November\",\"description\":\"\",\"abbreviation\":\"Nov\",\"numericRepresentation\":11,\"numericRepresentationOffset\":0,\"numberOfDays\":30,\"numberOfLeapYearDays\":30,\"intercalary\":false,\"intercalaryInclude\":false,\"startingWeekday\":null},{\"id\":\"373fdc47\",\"name\":\"December\",\"description\":\"\",\"abbreviation\":\"Dec\",\"numericRepresentation\":12,\"numericRepresentationOffset\":0,\"numberOfDays\":31,\"numberOfLeapYearDays\":31,\"intercalary\":false,\"intercalaryInclude\":false,\"startingWeekday\":null}],\"moons\":[{\"id\":\"fa3ef93\",\"name\":\"Moon\",\"cycleLength\":29.53059,\"firstNewMoon\":{\"yearReset\":\"none\",\"yearX\":0,\"year\":2000,\"month\":1,\"day\":4},\"phases\":[{\"name\":\"New Moon\",\"length\":1,\"icon\":\"new\",\"singleDay\":true},{\"name\":\"Waxing Crescent\",\"length\":6.38265,\"icon\":\"waxing-crescent\",\"singleDay\":false},{\"name\":\"First Quarter\",\"length\":1,\"icon\":\"first-quarter\",\"singleDay\":true},{\"name\":\"Waxing Gibbous\",\"length\":6.38265,\"icon\":\"waxing-gibbous\",\"singleDay\":false},{\"name\":\"Full Moon\",\"length\":1,\"icon\":\"full\",\"singleDay\":true},{\"name\":\"Waning Gibbous\",\"length\":6.38265,\"icon\":\"waning-gibbous\",\"singleDay\":false},{\"name\":\"Last Quarter\",\"length\":1,\"icon\":\"last-quarter\",\"singleDay\":true},{\"name\":\"Waning Crescent\",\"length\":6.38265,\"icon\":\"waning-crescent\",\"singleDay\":false}],\"color\":\"#ffffff\",\"cycleDayAdjust\":0.5}],\"noteCategories\":[{\"name\":\"Holiday\",\"textColor\":\"#FFFFFF\",\"color\":\"#148e94\"}],\"seasons\":[{\"id\":\"33d1a07f\",\"name\":\"Spring\",\"description\":\"\",\"startingMonth\":2,\"startingDay\":19,\"color\":\"#46b946\",\"icon\":\"spring\",\"sunriseTime\":21600,\"sunsetTime\":64800},{\"id\":\"1100b885\",\"name\":\"Summer\",\"description\":\"\",\"startingMonth\":5,\"startingDay\":19,\"color\":\"#e0c40b\",\"icon\":\"summer\",\"sunriseTime\":21600,\"sunsetTime\":64800},{\"id\":\"adac66f6\",\"name\":\"Fall\",\"description\":\"\",\"startingMonth\":8,\"startingDay\":21,\"color\":\"#ff8e47\",\"icon\":\"fall\",\"sunriseTime\":21600,\"sunsetTime\":64800},{\"id\":\"7934aa0b\",\"name\":\"Winter\",\"description\":\"\",\"startingMonth\":11,\"startingDay\":20,\"color\":\"#479dff\",\"icon\":\"winter\",\"sunriseTime\":21600,\"sunsetTime\":64800}],\"time\":{\"id\":\"b086ec0f\",\"hoursInDay\":24,\"minutesInHour\":60,\"secondsInMinute\":60,\"gameTimeRatio\":1,\"unifyGameAndClockPause\":false,\"updateFrequency\":1},\"weekdays\":[{\"abbreviation\":\"Su\",\"id\":\"91c8bdc2\",\"name\":\"Sunday\",\"description\":\"\",\"numericRepresentation\":1,\"restday\":false},{\"abbreviation\":\"Mo\",\"id\":\"bbbfd1fe\",\"name\":\"Monday\",\"description\":\"\",\"numericRepresentation\":2,\"restday\":false},{\"abbreviation\":\"Tu\",\"id\":\"59bd295f\",\"name\":\"Tuesday\",\"description\":\"\",\"numericRepresentation\":3,\"restday\":false},{\"abbreviation\":\"We\",\"id\":\"eed3902\",\"name\":\"Wednesday\",\"description\":\"\",\"numericRepresentation\":4,\"restday\":false},{\"abbreviation\":\"Th\",\"id\":\"805b6094\",\"name\":\"Thursday\",\"description\":\"\",\"numericRepresentation\":5,\"restday\":false},{\"abbreviation\":\"Fr\",\"id\":\"38f02c60\",\"name\":\"Friday\",\"description\":\"\",\"numericRepresentation\":6,\"restday\":false},{\"abbreviation\":\"Sa\",\"id\":\"49ded776\",\"name\":\"Saturday\",\"description\":\"\",\"numericRepresentation\":7,\"restday\":false}],\"year\":{\"id\":\"cb1a5d5e\",\"numericRepresentation\":2025,\"prefix\":\"\",\"postfix\":\"\",\"showWeekdayHeadings\":true,\"firstWeekday\":4,\"yearZero\":1970,\"yearNames\":[],\"yearNamingRule\":\"default\",\"yearNamesStart\":0}}]"
+  },
+  {
+    "key": "foundryvtt-simple-calendar.global-configuration",
+    "value": "{\"id\":\"\",\"version\":\"2.0.30\",\"permissions\":{\"id\":\"9b28d75d\",\"name\":\"\",\"numericRepresentation\":null,\"viewCalendar\":{\"player\":true,\"trustedPlayer\":true,\"assistantGameMaster\":true},\"addNotes\":{\"player\":false,\"trustedPlayer\":false,\"assistantGameMaster\":false},\"reorderNotes\":{\"player\":false,\"trustedPlayer\":false,\"assistantGameMaster\":false},\"changeDateTime\":{\"player\":false,\"trustedPlayer\":false,\"assistantGameMaster\":false},\"changeActiveCalendar\":{\"player\":false,\"trustedPlayer\":false,\"assistantGameMaster\":false}},\"secondsInCombatRound\":6,\"calendarsSameTimestamp\":false,\"syncCalendars\":false,\"showNotesFolder\":false,\"combatPauseRule\":\"active\"}"
   },
   {
     "key": "foundryvtt-simple-calendar.open-compact",
@@ -480,12 +524,12 @@
     "value": "true"
   },
   {
-    "key": "foundryvtt-simple-calendar.test-5e-v12dnd4x.theme",
+    "key": "foundryvtt-simple-calendar.rise-of-the-drow-v12.theme",
     "value": "\"dark\""
   },
   {
     "key": "fvtt-trazzm-homebrew-5e.lastVersion",
-    "value": "\"12.4.14\""
+    "value": "\"12.4.17\""
   },
   {
     "key": "item-piles.actorClassType",
@@ -494,6 +538,10 @@
   {
     "key": "item-piles.currencies",
     "value": "[{\"type\":\"attribute\",\"name\":\"DND5E.CurrencyPP\",\"img\":\"icons/commodities/currency/coin-inset-snail-silver.webp\",\"abbreviation\":\"{#}PP\",\"data\":{\"path\":\"system.currency.pp\"},\"primary\":false,\"exchangeRate\":10,\"index\":0,\"id\":\"system.currency.pp\"},{\"type\":\"attribute\",\"name\":\"DND5E.CurrencyGP\",\"img\":\"icons/commodities/currency/coin-embossed-crown-gold.webp\",\"abbreviation\":\"{#}GP\",\"data\":{\"path\":\"system.currency.gp\"},\"primary\":true,\"exchangeRate\":1,\"index\":1,\"id\":\"system.currency.gp\"},{\"type\":\"attribute\",\"name\":\"DND5E.CurrencyEP\",\"img\":\"icons/commodities/currency/coin-inset-copper-axe.webp\",\"abbreviation\":\"{#}EP\",\"data\":{\"path\":\"system.currency.ep\"},\"primary\":false,\"exchangeRate\":0.5,\"index\":2,\"id\":\"system.currency.ep\"},{\"type\":\"attribute\",\"name\":\"DND5E.CurrencySP\",\"img\":\"icons/commodities/currency/coin-engraved-moon-silver.webp\",\"abbreviation\":\"{#}SP\",\"data\":{\"path\":\"system.currency.sp\"},\"primary\":false,\"exchangeRate\":0.1,\"index\":3,\"id\":\"system.currency.sp\"},{\"type\":\"attribute\",\"name\":\"DND5E.CurrencyCP\",\"img\":\"icons/commodities/currency/coin-engraved-waves-copper.webp\",\"abbreviation\":\"{#}CP\",\"data\":{\"path\":\"system.currency.cp\"},\"primary\":false,\"exchangeRate\":0.01,\"index\":4,\"id\":\"system.currency.cp\"}]"
+  },
+  {
+    "key": "item-piles.defaultItemPileActorID",
+    "value": "\"H1NFXNFsz5LXSxPV\""
   },
   {
     "key": "item-piles.deleteEmptyPiles",
@@ -572,6 +620,14 @@
     "value": "true"
   },
   {
+    "key": "lib-wrapper.notify-issues-player",
+    "value": "true"
+  },
+  {
+    "key": "midi-qol.AddChatDamageButtons",
+    "value": "\"gm\""
+  },
+  {
     "key": "midi-qol.AutoFastForwardAbilityRolls",
     "value": "true"
   },
@@ -605,11 +661,19 @@
   },
   {
     "key": "midi-qol.last-run-version",
-    "value": "\"12.4.61\""
+    "value": "\"12.4.63\""
+  },
+  {
+    "key": "midi-qol.MidiSoundSettings",
+    "value": "{\"any\":{},\"version\":\"0.9.48\"}"
   },
   {
     "key": "midi-qol.PreferredGM",
     "value": "\"\""
+  },
+  {
+    "key": "midi-qol.RollStats",
+    "value": "{\"6lPfoP3zqxhq85fM\":{\"session\":{\"numAttacks\":21,\"numAttack20\":0,\"numAttackFumble\":0,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":218,\"attackRollTotal\":291,\"numD20Rolls\":0,\"numDamageRolls\":4,\"damageApplied\":30,\"damageTotal\":30},\"lifetime\":{\"numAttacks\":21,\"numAttack20\":0,\"numAttackFumble\":0,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":218,\"attackRollTotal\":291,\"numD20Rolls\":0,\"numDamageRolls\":4,\"damageApplied\":30,\"damageTotal\":30},\"itemStats\":{\"Quarterstaff +1\":{\"name\":\"Quarterstaff +1\",\"session\":{\"numAttacks\":19,\"numAttack20\":0,\"numAttackFumble\":0,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":194,\"attackRollTotal\":253,\"numD20Rolls\":0,\"numDamageRolls\":3,\"damageApplied\":22,\"damageTotal\":22}},\"Unarmed Strike (Monk)\":{\"name\":\"Unarmed Strike (Monk)\",\"session\":{\"numAttacks\":2,\"numAttack20\":0,\"numAttackFumble\":0,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":24,\"attackRollTotal\":38,\"numD20Rolls\":0,\"numDamageRolls\":1,\"damageApplied\":8,\"damageTotal\":8}}},\"name\":\"Test Halfling\"},\"RhvDvGi4QpwVmp6u\":{\"session\":{\"numAttacks\":47,\"numAttack20\":2,\"numAttackFumble\":1,\"numAttackCritical\":2,\"numAttackMisses\":0,\"attackRollsDiceTotal\":568,\"attackRollTotal\":813,\"numD20Rolls\":0,\"numDamageRolls\":23,\"damageApplied\":238,\"damageTotal\":238},\"lifetime\":{\"numAttacks\":47,\"numAttack20\":2,\"numAttackFumble\":1,\"numAttackCritical\":2,\"numAttackMisses\":0,\"attackRollsDiceTotal\":568,\"attackRollTotal\":813,\"numD20Rolls\":0,\"numDamageRolls\":23,\"damageApplied\":238,\"damageTotal\":238},\"itemStats\":{\"Quarterstaff +1\":{\"name\":\"Quarterstaff +1\",\"session\":{\"numAttacks\":19,\"numAttack20\":0,\"numAttackFumble\":0,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":194,\"attackRollTotal\":253,\"numD20Rolls\":0,\"numDamageRolls\":3,\"damageApplied\":22,\"damageTotal\":22}},\"Unarmed Strike (Monk)\":{\"name\":\"Unarmed Strike (Monk)\",\"session\":{\"numAttacks\":2,\"numAttack20\":0,\"numAttackFumble\":0,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":24,\"attackRollTotal\":38,\"numD20Rolls\":0,\"numDamageRolls\":1,\"damageApplied\":8,\"damageTotal\":8}},\"Warhammer +1\":{\"name\":\"Warhammer +1\",\"session\":{\"numAttacks\":4,\"numAttack20\":0,\"numAttackFumble\":1,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":31,\"attackRollTotal\":51,\"numD20Rolls\":0,\"numDamageRolls\":1,\"damageApplied\":9,\"damageTotal\":9}},\"Longsword\":{\"name\":\"Longsword\",\"session\":{\"numAttacks\":2,\"numAttack20\":0,\"numAttackFumble\":0,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":25,\"attackRollTotal\":37,\"numD20Rolls\":0,\"numDamageRolls\":1,\"damageApplied\":5,\"damageTotal\":5}},\"Rapier\":{\"name\":\"Rapier\",\"session\":{\"numAttacks\":20,\"numAttack20\":2,\"numAttackFumble\":0,\"numAttackCritical\":2,\"numAttackMisses\":0,\"attackRollsDiceTotal\":294,\"attackRollTotal\":434,\"numD20Rolls\":0,\"numDamageRolls\":17,\"damageApplied\":194,\"damageTotal\":194}}},\"name\":\"Greg\"},\"JVu99HyroiXvwUdC\":{\"session\":{\"numAttacks\":4,\"numAttack20\":0,\"numAttackFumble\":1,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":31,\"attackRollTotal\":51,\"numD20Rolls\":0,\"numDamageRolls\":1,\"damageApplied\":9,\"damageTotal\":9},\"lifetime\":{\"numAttacks\":4,\"numAttack20\":0,\"numAttackFumble\":1,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":31,\"attackRollTotal\":51,\"numD20Rolls\":0,\"numDamageRolls\":1,\"damageApplied\":9,\"damageTotal\":9},\"itemStats\":{\"Warhammer +1\":{\"name\":\"Warhammer +1\",\"session\":{\"numAttacks\":4,\"numAttack20\":0,\"numAttackFumble\":1,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":31,\"attackRollTotal\":51,\"numD20Rolls\":0,\"numDamageRolls\":1,\"damageApplied\":9,\"damageTotal\":9}}},\"name\":\"Test Goliath\"},\"B12akQ2Rwq6KhRDf\":{\"session\":{\"numAttacks\":44,\"numAttack20\":4,\"numAttackFumble\":0,\"numAttackCritical\":5,\"numAttackMisses\":0,\"attackRollsDiceTotal\":541,\"attackRollTotal\":859,\"numD20Rolls\":0,\"numDamageRolls\":38,\"damageApplied\":350,\"damageTotal\":392},\"lifetime\":{\"numAttacks\":44,\"numAttack20\":4,\"numAttackFumble\":0,\"numAttackCritical\":5,\"numAttackMisses\":0,\"attackRollsDiceTotal\":541,\"attackRollTotal\":859,\"numD20Rolls\":0,\"numDamageRolls\":38,\"damageApplied\":350,\"damageTotal\":392},\"itemStats\":{\"Lay on Hands\":{\"name\":\"Lay on Hands\",\"session\":{\"numAttacks\":1,\"numAttack20\":0,\"numAttackFumble\":0,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":0,\"attackRollTotal\":0,\"numD20Rolls\":0,\"numDamageRolls\":1,\"damageApplied\":-18,\"damageTotal\":18}},\"Divine Smite - no macro - mq 0.9.23\":{\"name\":\"Divine Smite - no macro - mq 0.9.23\",\"session\":{\"numAttacks\":1,\"numAttack20\":0,\"numAttackFumble\":0,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":0,\"attackRollTotal\":0,\"numD20Rolls\":0,\"numDamageRolls\":1,\"damageApplied\":4,\"damageTotal\":4}},\"Holy Avenger Longsword\":{\"name\":\"Holy Avenger Longsword\",\"session\":{\"numAttacks\":9,\"numAttack20\":1,\"numAttackFumble\":0,\"numAttackCritical\":1,\"numAttackMisses\":0,\"attackRollsDiceTotal\":111,\"attackRollTotal\":165,\"numD20Rolls\":0,\"numDamageRolls\":8,\"damageApplied\":138,\"damageTotal\":138}},\"Warhammer\":{\"name\":\"Warhammer\",\"session\":{\"numAttacks\":33,\"numAttack20\":3,\"numAttackFumble\":0,\"numAttackCritical\":4,\"numAttackMisses\":0,\"attackRollsDiceTotal\":430,\"attackRollTotal\":694,\"numD20Rolls\":0,\"numDamageRolls\":28,\"damageApplied\":226,\"damageTotal\":232}}},\"name\":\"Sarteras Tinuviel\"},\"gRi3hSmhgZdCUTpJ\":{\"session\":{\"numAttacks\":48,\"numAttack20\":5,\"numAttackFumble\":1,\"numAttackCritical\":24,\"numAttackMisses\":0,\"attackRollsDiceTotal\":627,\"attackRollTotal\":803,\"numD20Rolls\":0,\"numDamageRolls\":37,\"damageApplied\":504,\"damageTotal\":504},\"lifetime\":{\"numAttacks\":48,\"numAttack20\":5,\"numAttackFumble\":1,\"numAttackCritical\":24,\"numAttackMisses\":0,\"attackRollsDiceTotal\":627,\"attackRollTotal\":803,\"numD20Rolls\":0,\"numDamageRolls\":37,\"damageApplied\":504,\"damageTotal\":504},\"itemStats\":{\"Warhammer\":{\"name\":\"Warhammer\",\"session\":{\"numAttacks\":48,\"numAttack20\":5,\"numAttackFumble\":1,\"numAttackCritical\":24,\"numAttackMisses\":0,\"attackRollsDiceTotal\":627,\"attackRollTotal\":803,\"numD20Rolls\":0,\"numDamageRolls\":37,\"damageApplied\":504,\"damageTotal\":504}}},\"name\":\"Test Lizard Folk\"},\"av95xNx19kfZIuvR\":{\"session\":{\"numAttacks\":33,\"numAttack20\":0,\"numAttackFumble\":2,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":321,\"attackRollTotal\":575,\"numD20Rolls\":0,\"numDamageRolls\":24,\"damageApplied\":270,\"damageTotal\":270},\"lifetime\":{\"numAttacks\":33,\"numAttack20\":0,\"numAttackFumble\":2,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":321,\"attackRollTotal\":575,\"numD20Rolls\":0,\"numDamageRolls\":24,\"damageApplied\":270,\"damageTotal\":270},\"itemStats\":{\"Longbow\":{\"name\":\"Longbow\",\"session\":{\"numAttacks\":28,\"numAttack20\":0,\"numAttackFumble\":2,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":282,\"attackRollTotal\":506,\"numD20Rolls\":0,\"numDamageRolls\":21,\"damageApplied\":220,\"damageTotal\":220}},\"Longbow, +1\":{\"name\":\"Longbow, +1\",\"session\":{\"numAttacks\":5,\"numAttack20\":0,\"numAttackFumble\":0,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":39,\"attackRollTotal\":69,\"numD20Rolls\":0,\"numDamageRolls\":3,\"damageApplied\":50,\"damageTotal\":50}}},\"name\":\"Test Wood Elf Ranger\"},\"X3naKlVAChFAnINz\":{\"session\":{\"numAttacks\":15,\"numAttack20\":0,\"numAttackFumble\":1,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":115,\"attackRollTotal\":157,\"numD20Rolls\":0,\"numDamageRolls\":5,\"damageApplied\":38,\"damageTotal\":38},\"lifetime\":{\"numAttacks\":15,\"numAttack20\":0,\"numAttackFumble\":1,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":115,\"attackRollTotal\":157,\"numD20Rolls\":0,\"numDamageRolls\":5,\"damageApplied\":38,\"damageTotal\":38},\"itemStats\":{\"Rapier [Green Flame Blade]\":{\"name\":\"Rapier [Green Flame Blade]\",\"session\":{\"numAttacks\":10,\"numAttack20\":0,\"numAttackFumble\":1,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":90,\"attackRollTotal\":120,\"numD20Rolls\":0,\"numDamageRolls\":2,\"damageApplied\":23,\"damageTotal\":23}},\"Green Flame Blade: Secondary Damage\":{\"name\":\"Green Flame Blade: Secondary Damage\",\"session\":{\"numAttacks\":2,\"numAttack20\":0,\"numAttackFumble\":0,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":0,\"attackRollTotal\":0,\"numD20Rolls\":0,\"numDamageRolls\":2,\"damageApplied\":9,\"damageTotal\":9}},\"Rapier\":{\"name\":\"Rapier\",\"session\":{\"numAttacks\":3,\"numAttack20\":0,\"numAttackFumble\":0,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":25,\"attackRollTotal\":37,\"numD20Rolls\":0,\"numDamageRolls\":1,\"damageApplied\":6,\"damageTotal\":6}}},\"name\":\"Test Bard\"},\"hDRMAglgOVIKPRQc\":{\"session\":{\"numAttacks\":58,\"numAttack20\":5,\"numAttackFumble\":2,\"numAttackCritical\":5,\"numAttackMisses\":0,\"attackRollsDiceTotal\":527,\"attackRollTotal\":824,\"numD20Rolls\":0,\"numDamageRolls\":53,\"damageApplied\":506,\"damageTotal\":573},\"lifetime\":{\"numAttacks\":58,\"numAttack20\":5,\"numAttackFumble\":2,\"numAttackCritical\":5,\"numAttackMisses\":0,\"attackRollsDiceTotal\":527,\"attackRollTotal\":824,\"numD20Rolls\":0,\"numDamageRolls\":53,\"damageApplied\":506,\"damageTotal\":573},\"itemStats\":{\"Fire Bolt\":{\"name\":\"Fire Bolt\",\"session\":{\"numAttacks\":13,\"numAttack20\":2,\"numAttackFumble\":0,\"numAttackCritical\":2,\"numAttackMisses\":0,\"attackRollsDiceTotal\":161,\"attackRollTotal\":250,\"numD20Rolls\":0,\"numDamageRolls\":11,\"damageApplied\":152,\"damageTotal\":152}},\"Ray of Frost\":{\"name\":\"Ray of Frost\",\"session\":{\"numAttacks\":7,\"numAttack20\":1,\"numAttackFumble\":0,\"numAttackCritical\":1,\"numAttackMisses\":0,\"attackRollsDiceTotal\":110,\"attackRollTotal\":166,\"numD20Rolls\":0,\"numDamageRolls\":7,\"damageApplied\":69,\"damageTotal\":69}},\"Acid Splash\":{\"name\":\"Acid Splash\",\"session\":{\"numAttacks\":2,\"numAttack20\":0,\"numAttackFumble\":0,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":0,\"attackRollTotal\":0,\"numD20Rolls\":0,\"numDamageRolls\":2,\"damageApplied\":13,\"damageTotal\":13}},\"Storm Boomerang\":{\"name\":\"Storm Boomerang\",\"session\":{\"numAttacks\":6,\"numAttack20\":1,\"numAttackFumble\":2,\"numAttackCritical\":1,\"numAttackMisses\":0,\"attackRollsDiceTotal\":51,\"attackRollTotal\":81,\"numD20Rolls\":0,\"numDamageRolls\":4,\"damageApplied\":43,\"damageTotal\":78}},\"Seeker Dart\":{\"name\":\"Seeker Dart\",\"session\":{\"numAttacks\":5,\"numAttack20\":0,\"numAttackFumble\":0,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":0,\"attackRollTotal\":0,\"numD20Rolls\":0,\"numDamageRolls\":5,\"damageApplied\":62,\"damageTotal\":80}},\"Goodberry\":{\"name\":\"Goodberry\",\"session\":{\"numAttacks\":5,\"numAttack20\":0,\"numAttackFumble\":0,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":0,\"attackRollTotal\":0,\"numD20Rolls\":0,\"numDamageRolls\":5,\"damageApplied\":-5,\"damageTotal\":5}},\"Ice Knife\":{\"name\":\"Ice Knife\",\"session\":{\"numAttacks\":9,\"numAttack20\":0,\"numAttackFumble\":0,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":87,\"attackRollTotal\":159,\"numD20Rolls\":0,\"numDamageRolls\":10,\"damageApplied\":63,\"damageTotal\":63}},\"Ice Knife: Explosion\":{\"name\":\"Ice Knife: Explosion\",\"session\":{\"numAttacks\":1,\"numAttack20\":0,\"numAttackFumble\":0,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":0,\"attackRollTotal\":0,\"numD20Rolls\":0,\"numDamageRolls\":1,\"damageApplied\":7,\"damageTotal\":7}},\"Melf's Acid Arrow\":{\"name\":\"Melf's Acid Arrow\",\"session\":{\"numAttacks\":10,\"numAttack20\":1,\"numAttackFumble\":0,\"numAttackCritical\":1,\"numAttackMisses\":0,\"attackRollsDiceTotal\":118,\"attackRollTotal\":168,\"numD20Rolls\":0,\"numDamageRolls\":8,\"damageApplied\":102,\"damageTotal\":106}}},\"name\":\"Sinvaran Stormseer\"},\"ZuadWaC9nTBlO1hm\":{\"session\":{\"numAttacks\":1,\"numAttack20\":0,\"numAttackFumble\":0,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":17,\"attackRollTotal\":24,\"numD20Rolls\":0,\"numDamageRolls\":1,\"damageApplied\":11,\"damageTotal\":11},\"lifetime\":{\"numAttacks\":1,\"numAttack20\":0,\"numAttackFumble\":0,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":17,\"attackRollTotal\":24,\"numD20Rolls\":0,\"numDamageRolls\":1,\"damageApplied\":11,\"damageTotal\":11},\"itemStats\":{\"Rapier\":{\"name\":\"Rapier\",\"session\":{\"numAttacks\":1,\"numAttack20\":0,\"numAttackFumble\":0,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":17,\"attackRollTotal\":24,\"numD20Rolls\":0,\"numDamageRolls\":1,\"damageApplied\":11,\"damageTotal\":11}}},\"name\":\"Grayson\"},\"wQGMg7DhdfPP2coZ\":{\"session\":{\"numAttacks\":80,\"numAttack20\":2,\"numAttackFumble\":1,\"numAttackCritical\":2,\"numAttackMisses\":0,\"attackRollsDiceTotal\":458,\"attackRollTotal\":811,\"numD20Rolls\":0,\"numDamageRolls\":65,\"damageApplied\":399,\"damageTotal\":487},\"lifetime\":{\"numAttacks\":80,\"numAttack20\":2,\"numAttackFumble\":1,\"numAttackCritical\":2,\"numAttackMisses\":0,\"attackRollsDiceTotal\":458,\"attackRollTotal\":811,\"numD20Rolls\":0,\"numDamageRolls\":65,\"damageApplied\":399,\"damageTotal\":487},\"itemStats\":{\"Healing Word\":{\"name\":\"Healing Word\",\"session\":{\"numAttacks\":1,\"numAttack20\":0,\"numAttackFumble\":0,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":0,\"attackRollTotal\":0,\"numD20Rolls\":0,\"numDamageRolls\":1,\"damageApplied\":-11,\"damageTotal\":11}},\"Quarterstaff\":{\"name\":\"Quarterstaff\",\"session\":{\"numAttacks\":9,\"numAttack20\":1,\"numAttackFumble\":0,\"numAttackCritical\":1,\"numAttackMisses\":0,\"attackRollsDiceTotal\":124,\"attackRollTotal\":151,\"numD20Rolls\":0,\"numDamageRolls\":8,\"damageApplied\":49,\"damageTotal\":49}},\"Booming Blade\":{\"name\":\"Booming Blade\",\"session\":{\"numAttacks\":2,\"numAttack20\":0,\"numAttackFumble\":0,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":0,\"attackRollTotal\":0,\"numD20Rolls\":0,\"numDamageRolls\":2,\"damageApplied\":14,\"damageTotal\":14}},\"Infestation\":{\"name\":\"Infestation\",\"session\":{\"numAttacks\":30,\"numAttack20\":0,\"numAttackFumble\":0,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":0,\"attackRollTotal\":0,\"numD20Rolls\":0,\"numDamageRolls\":30,\"damageApplied\":169,\"damageTotal\":201}},\"Magical Stone\":{\"name\":\"Magical Stone\",\"session\":{\"numAttacks\":11,\"numAttack20\":0,\"numAttackFumble\":1,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":100,\"attackRollTotal\":218,\"numD20Rolls\":0,\"numDamageRolls\":9,\"damageApplied\":65,\"damageTotal\":65}},\"Lathander's Holy Dart\":{\"name\":\"Lathander's Holy Dart\",\"session\":{\"numAttacks\":26,\"numAttack20\":1,\"numAttackFumble\":0,\"numAttackCritical\":1,\"numAttackMisses\":0,\"attackRollsDiceTotal\":234,\"attackRollTotal\":442,\"numD20Rolls\":0,\"numDamageRolls\":14,\"damageApplied\":79,\"damageTotal\":79}},\"Bounding Boulder\":{\"name\":\"Bounding Boulder\",\"session\":{\"numAttacks\":1,\"numAttack20\":0,\"numAttackFumble\":0,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":0,\"attackRollTotal\":0,\"numD20Rolls\":0,\"numDamageRolls\":1,\"damageApplied\":34,\"damageTotal\":68}}},\"name\":\"Billikin Bramblehart\"},\"raY1I0hoJDVEF1KY\":{\"session\":{\"numAttacks\":17,\"numAttack20\":0,\"numAttackFumble\":1,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":97,\"attackRollTotal\":160,\"numD20Rolls\":0,\"numDamageRolls\":11,\"damageApplied\":107,\"damageTotal\":137},\"lifetime\":{\"numAttacks\":17,\"numAttack20\":0,\"numAttackFumble\":1,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":97,\"attackRollTotal\":160,\"numD20Rolls\":0,\"numDamageRolls\":11,\"damageApplied\":107,\"damageTotal\":137},\"itemStats\":{\"Armor of Agathys\":{\"name\":\"Armor of Agathys\",\"session\":{\"numAttacks\":8,\"numAttack20\":0,\"numAttackFumble\":0,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":0,\"attackRollTotal\":0,\"numD20Rolls\":0,\"numDamageRolls\":8,\"damageApplied\":45,\"damageTotal\":75}},\"Chaos Bolt\":{\"name\":\"Chaos Bolt\",\"session\":{\"numAttacks\":9,\"numAttack20\":0,\"numAttackFumble\":1,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":97,\"attackRollTotal\":160,\"numD20Rolls\":0,\"numDamageRolls\":3,\"damageApplied\":62,\"damageTotal\":62}}},\"name\":\"Warlock\"},\"mVjqkMJaBMyxiVR8\":{\"session\":{\"numAttacks\":58,\"numAttack20\":2,\"numAttackFumble\":2,\"numAttackCritical\":2,\"numAttackMisses\":0,\"attackRollsDiceTotal\":320,\"attackRollTotal\":544,\"numD20Rolls\":0,\"numDamageRolls\":38,\"damageApplied\":10950259,\"damageTotal\":14530198},\"lifetime\":{\"numAttacks\":58,\"numAttack20\":2,\"numAttackFumble\":2,\"numAttackCritical\":2,\"numAttackMisses\":0,\"attackRollsDiceTotal\":320,\"attackRollTotal\":544,\"numD20Rolls\":0,\"numDamageRolls\":38,\"damageApplied\":10950259,\"damageTotal\":14530198},\"itemStats\":{\"Frostbite\":{\"name\":\"Frostbite\",\"session\":{\"numAttacks\":6,\"numAttack20\":0,\"numAttackFumble\":0,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":0,\"attackRollTotal\":0,\"numD20Rolls\":0,\"numDamageRolls\":6,\"damageApplied\":15,\"damageTotal\":45}},\"Chill Touch\":{\"name\":\"Chill Touch\",\"session\":{\"numAttacks\":12,\"numAttack20\":1,\"numAttackFumble\":0,\"numAttackCritical\":1,\"numAttackMisses\":0,\"attackRollsDiceTotal\":164,\"attackRollTotal\":248,\"numD20Rolls\":0,\"numDamageRolls\":12,\"damageApplied\":109,\"damageTotal\":109}},\"Burning Hands\":{\"name\":\"Burning Hands\",\"session\":{\"numAttacks\":16,\"numAttack20\":0,\"numAttackFumble\":0,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":0,\"attackRollTotal\":0,\"numD20Rolls\":0,\"numDamageRolls\":16,\"damageApplied\":10950127,\"damageTotal\":14530036}},\"Flames of Phlegethos\":{\"name\":\"Flames of Phlegethos\",\"session\":{\"numAttacks\":4,\"numAttack20\":0,\"numAttackFumble\":0,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":0,\"attackRollTotal\":0,\"numD20Rolls\":0,\"numDamageRolls\":4,\"damageApplied\":8,\"damageTotal\":8}},\"Ray of Enfeeblement\":{\"name\":\"Ray of Enfeeblement\",\"session\":{\"numAttacks\":20,\"numAttack20\":1,\"numAttackFumble\":2,\"numAttackCritical\":1,\"numAttackMisses\":0,\"attackRollsDiceTotal\":156,\"attackRollTotal\":296,\"numD20Rolls\":0,\"numDamageRolls\":0,\"damageApplied\":0,\"damageTotal\":0}}},\"name\":\"Wizard\"},\"nx9zyo54ZNuStiK8\":{\"session\":{\"numAttacks\":5,\"numAttack20\":0,\"numAttackFumble\":0,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":71,\"attackRollTotal\":116,\"numD20Rolls\":0,\"numDamageRolls\":5,\"damageApplied\":115,\"damageTotal\":115},\"lifetime\":{\"numAttacks\":5,\"numAttack20\":0,\"numAttackFumble\":0,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":71,\"attackRollTotal\":116,\"numD20Rolls\":0,\"numDamageRolls\":5,\"damageApplied\":115,\"damageTotal\":115},\"itemStats\":{\"Greatsword, +1\":{\"name\":\"Greatsword, +1\",\"session\":{\"numAttacks\":5,\"numAttack20\":0,\"numAttackFumble\":0,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":71,\"attackRollTotal\":116,\"numD20Rolls\":0,\"numDamageRolls\":5,\"damageApplied\":115,\"damageTotal\":115}}},\"name\":\"Xenn\"},\"AxbYYkISZeDAPhMe\":{\"session\":{\"numAttacks\":5,\"numAttack20\":0,\"numAttackFumble\":0,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":58,\"attackRollTotal\":93,\"numD20Rolls\":0,\"numDamageRolls\":4,\"damageApplied\":37,\"damageTotal\":37},\"lifetime\":{\"numAttacks\":5,\"numAttack20\":0,\"numAttackFumble\":0,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":58,\"attackRollTotal\":93,\"numD20Rolls\":0,\"numDamageRolls\":4,\"damageApplied\":37,\"damageTotal\":37},\"itemStats\":{\"Maul\":{\"name\":\"Maul\",\"session\":{\"numAttacks\":5,\"numAttack20\":0,\"numAttackFumble\":0,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":58,\"attackRollTotal\":93,\"numD20Rolls\":0,\"numDamageRolls\":4,\"damageApplied\":37,\"damageTotal\":37}}},\"name\":\"Barbarian\"},\"MVNv5zTCThy0s5Qm\":{\"session\":{\"numAttacks\":1,\"numAttack20\":0,\"numAttackFumble\":0,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":16,\"attackRollTotal\":24,\"numD20Rolls\":0,\"numDamageRolls\":0,\"damageApplied\":0,\"damageTotal\":0},\"lifetime\":{\"numAttacks\":1,\"numAttack20\":0,\"numAttackFumble\":0,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":16,\"attackRollTotal\":24,\"numD20Rolls\":0,\"numDamageRolls\":0,\"damageApplied\":0,\"damageTotal\":0},\"itemStats\":{\"Rapier, +1\":{\"name\":\"Rapier, +1\",\"session\":{\"numAttacks\":1,\"numAttack20\":0,\"numAttackFumble\":0,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":16,\"attackRollTotal\":24,\"numD20Rolls\":0,\"numDamageRolls\":0,\"damageApplied\":0,\"damageTotal\":0}}},\"name\":\"Ranger\"},\"EbFxcRWDhQML5pEd\":{\"session\":{\"numAttacks\":19,\"numAttack20\":1,\"numAttackFumble\":0,\"numAttackCritical\":1,\"numAttackMisses\":0,\"attackRollsDiceTotal\":230,\"attackRollTotal\":365,\"numD20Rolls\":0,\"numDamageRolls\":18,\"damageApplied\":188,\"damageTotal\":188},\"lifetime\":{\"numAttacks\":19,\"numAttack20\":1,\"numAttackFumble\":0,\"numAttackCritical\":1,\"numAttackMisses\":0,\"attackRollsDiceTotal\":230,\"attackRollTotal\":365,\"numD20Rolls\":0,\"numDamageRolls\":18,\"damageApplied\":188,\"damageTotal\":188},\"itemStats\":{\"Goring Charge\":{\"name\":\"Goring Charge\",\"session\":{\"numAttacks\":16,\"numAttack20\":1,\"numAttackFumble\":0,\"numAttackCritical\":1,\"numAttackMisses\":0,\"attackRollsDiceTotal\":199,\"attackRollTotal\":311,\"numD20Rolls\":0,\"numDamageRolls\":15,\"damageApplied\":163,\"damageTotal\":163}},\"Handaxe, +1\":{\"name\":\"Handaxe, +1\",\"session\":{\"numAttacks\":2,\"numAttack20\":0,\"numAttackFumble\":0,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":22,\"attackRollTotal\":38,\"numD20Rolls\":0,\"numDamageRolls\":2,\"damageApplied\":18,\"damageTotal\":18}},\"Antler Attack\":{\"name\":\"Antler Attack\",\"session\":{\"numAttacks\":1,\"numAttack20\":0,\"numAttackFumble\":0,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":9,\"attackRollTotal\":16,\"numD20Rolls\":0,\"numDamageRolls\":1,\"damageApplied\":7,\"damageTotal\":7}}},\"name\":\"Courtney\"},\"hY9r9Qz2zhgcMba1\":{\"session\":{\"numAttacks\":7,\"numAttack20\":0,\"numAttackFumble\":0,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":66,\"attackRollTotal\":108,\"numD20Rolls\":0,\"numDamageRolls\":6,\"damageApplied\":84,\"damageTotal\":118},\"lifetime\":{\"numAttacks\":7,\"numAttack20\":0,\"numAttackFumble\":0,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":66,\"attackRollTotal\":108,\"numD20Rolls\":0,\"numDamageRolls\":6,\"damageApplied\":84,\"damageTotal\":118},\"itemStats\":{\"Goring Charge\":{\"name\":\"Goring Charge\",\"session\":{\"numAttacks\":5,\"numAttack20\":0,\"numAttackFumble\":0,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":57,\"attackRollTotal\":92,\"numD20Rolls\":0,\"numDamageRolls\":4,\"damageApplied\":43,\"damageTotal\":43}},\"Bounding Boulder\":{\"name\":\"Bounding Boulder\",\"session\":{\"numAttacks\":1,\"numAttack20\":0,\"numAttackFumble\":0,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":0,\"attackRollTotal\":0,\"numD20Rolls\":0,\"numDamageRolls\":1,\"damageApplied\":34,\"damageTotal\":68}},\"Antler Attack\":{\"name\":\"Antler Attack\",\"session\":{\"numAttacks\":1,\"numAttack20\":0,\"numAttackFumble\":0,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":9,\"attackRollTotal\":16,\"numD20Rolls\":0,\"numDamageRolls\":1,\"damageApplied\":7,\"damageTotal\":7}}},\"name\":\"Test\"},\"7mX2aR1o1itOdU8K\":{\"session\":{\"numAttacks\":2,\"numAttack20\":0,\"numAttackFumble\":0,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":25,\"attackRollTotal\":37,\"numD20Rolls\":0,\"numDamageRolls\":1,\"damageApplied\":5,\"damageTotal\":5},\"lifetime\":{\"numAttacks\":2,\"numAttack20\":0,\"numAttackFumble\":0,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":25,\"attackRollTotal\":37,\"numD20Rolls\":0,\"numDamageRolls\":1,\"damageApplied\":5,\"damageTotal\":5},\"itemStats\":{\"Longsword\":{\"name\":\"Longsword\",\"session\":{\"numAttacks\":2,\"numAttack20\":0,\"numAttackFumble\":0,\"numAttackCritical\":0,\"numAttackMisses\":0,\"attackRollsDiceTotal\":25,\"attackRollTotal\":37,\"numD20Rolls\":0,\"numDamageRolls\":1,\"damageApplied\":5,\"damageTotal\":5}}},\"name\":\"Paladin\"},\"w5djFJE7BrHcmzpA\":{\"session\":{\"numAttacks\":20,\"numAttack20\":2,\"numAttackFumble\":0,\"numAttackCritical\":2,\"numAttackMisses\":0,\"attackRollsDiceTotal\":294,\"attackRollTotal\":434,\"numD20Rolls\":0,\"numDamageRolls\":17,\"damageApplied\":194,\"damageTotal\":194},\"lifetime\":{\"numAttacks\":20,\"numAttack20\":2,\"numAttackFumble\":0,\"numAttackCritical\":2,\"numAttackMisses\":0,\"attackRollsDiceTotal\":294,\"attackRollTotal\":434,\"numD20Rolls\":0,\"numDamageRolls\":17,\"damageApplied\":194,\"damageTotal\":194},\"itemStats\":{\"Rapier\":{\"name\":\"Rapier\",\"session\":{\"numAttacks\":20,\"numAttack20\":2,\"numAttackFumble\":0,\"numAttackCritical\":2,\"numAttackMisses\":0,\"attackRollsDiceTotal\":294,\"attackRollTotal\":434,\"numD20Rolls\":0,\"numDamageRolls\":17,\"damageApplied\":194,\"damageTotal\":194}}},\"name\":\"Swashbuckler\"}}"
   },
   {
     "key": "midi-qol.showGM",
@@ -656,6 +720,10 @@
     "value": "true"
   },
   {
+    "key": "monks-active-tiles.tile-templates",
+    "value": "[{\"texture\":{\"src\":\"modules/jb2a_patreon/Library/Generic/Portals/Portal_Bright_Blue_H_400x400.webm\",\"scaleX\":1,\"scaleY\":1,\"tint\":null,\"offsetX\":0,\"offsetY\":0,\"rotation\":0},\"x\":3300,\"y\":3000,\"z\":100,\"width\":300,\"height\":300,\"rotation\":0,\"alpha\":1,\"overhead\":false,\"roof\":false,\"occlusion\":{\"mode\":1,\"alpha\":0,\"radius\":null},\"flags\":{\"betterroofs\":{\"brMode\":false,\"occlusionLinkId\":\"\",\"occlusionLinkSource\":false},\"monks-active-tiles\":{\"active\":true,\"record\":false,\"restriction\":\"player\",\"controlled\":\"all\",\"trigger\":[\"enter\"],\"allowpaused\":false,\"usealpha\":false,\"pointer\":false,\"pertoken\":false,\"minrequired\":0,\"chance\":100,\"fileindex\":0,\"actions\":[{\"action\":\"rolltable\",\"data\":{\"rolltableid\":\"RollTable.FaUCSYQbd0WTZ3jb\",\"quantity\":1,\"rollmode\":\"gmroll\",\"chatmessage\":true,\"reset\":false,\"roll\":true},\"id\":\"BiH4kdYaEX6Qjn0d\"},{\"action\":\"scene\",\"data\":{\"sceneid\":\"_previous\",\"activate\":true},\"id\":\"DnZflafZuKu8eRBp\"},{\"action\":\"delay\",\"data\":{\"delay\":\"5\"},\"id\":\"6VbaslJFNEj43Vbw\"},{\"action\":\"teleport\",\"data\":{\"entity\":{\"id\":\"players\",\"name\":\"Player Tokens\"},\"location\":{\"id\":\"tagger:portal-destination\",\"match\":\"exact\",\"scene\":\"_active\",\"name\":\"<i class=\\\"fas fa-tag fa-sm\\\"></i> portal-destination\"},\"position\":\"random\",\"remotesnap\":true,\"animatepan\":false,\"deletesource\":true,\"preservesettings\":true,\"avoidtokens\":true,\"colour\":\"\"},\"id\":\"0jrukHuMt3wX1bLc\"},{\"action\":\"delay\",\"data\":{\"delay\":\"1\"},\"id\":\"Xu3uZZ2uNs8cj6zg\"},{\"action\":\"addtocombat\",\"data\":{\"entity\":{\"id\":\"previous\",\"name\":\"Current tokens\"},\"addto\":\"add\",\"start\":false},\"id\":\"5gpqHraRzMsAqFO7\"},{\"action\":\"delay\",\"data\":{\"delay\":\"1\"},\"id\":\"OdpLjcRatyfINh70\"},{\"action\":\"rolltable\",\"data\":{\"rolltableid\":\"RollTable.iz6kpObQIO95XN2v\",\"quantity\":1,\"rollmode\":\"gmroll\",\"chatmessage\":true,\"reset\":false,\"roll\":false},\"id\":\"eKybLG6pyx8RQ7lU\"},{\"action\":\"delay\",\"data\":{\"delay\":\"1\"},\"id\":\"ec3ciuur9u1Jxra5\"},{\"action\":\"monks-enhanced-journal.startencounter\",\"data\":{\"entity\":{\"id\":\"previous\",\"name\":\"Current journal\"},\"location\":{\"id\":\"tagger:encounter-location\",\"match\":\"all\",\"scene\":\"_active\",\"name\":\"<i class=\\\"fas fa-tag fa-sm\\\"></i> encounter-location\"},\"startcombat\":true},\"id\":\"t44UovqxeOlyvvx3\"}],\"files\":[]},\"tagger\":{\"tags\":[\"portal\"]}},\"video\":{\"loop\":true,\"autoplay\":true,\"volume\":0},\"_id\":\"mF2D9kHiMm5VT1uQ\",\"hidden\":false,\"locked\":false,\"id\":\"mF2D9kHiMm5VT1uQ\",\"name\":\"Bretts Portal\",\"visible\":true,\"img\":\"modules/jb2a_patreon/Library/Generic/Portals/Portal_Bright_Blue_H_400x400.webm\",\"thumbnail\":\"data:image/png;base64,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\"}]"
+  },
+  {
     "key": "monks-bloodsplats.bloodsplat-opacity",
     "value": "0.3"
   },
@@ -682,6 +750,14 @@
   {
     "key": "monks-combat-details.auto-scroll",
     "value": "false"
+  },
+  {
+    "key": "monks-combat-details.close-combat-when-done",
+    "value": "false"
+  },
+  {
+    "key": "monks-combat-details.combat-bar-opacity",
+    "value": "0.15"
   },
   {
     "key": "monks-combat-details.combat-position",
@@ -732,6 +808,10 @@
     "value": "false"
   },
   {
+    "key": "monks-combat-details.transfer-settings",
+    "value": "true"
+  },
+  {
     "key": "monks-combat-details.transfer-settings-client",
     "value": "true"
   },
@@ -740,8 +820,24 @@
     "value": "80"
   },
   {
+    "key": "monks-combat-marker.token-highlight-animate",
+    "value": "120"
+  },
+  {
     "key": "monks-combat-marker.token-highlight-scale",
     "value": "2"
+  },
+  {
+    "key": "monks-combat-marker.transfer-settings",
+    "value": "true"
+  },
+  {
+    "key": "monks-tokenbar.allow-after-movement",
+    "value": "true"
+  },
+  {
+    "key": "monks-tokenbar.allow-player",
+    "value": "true"
   },
   {
     "key": "monks-tokenbar.allow-roll",
@@ -764,15 +860,15 @@
     "value": "\"item-piles\""
   },
   {
-    "key": "monks-tokenbar.movement",
-    "value": "\"combat\""
-  },
-  {
     "key": "monks-tokenbar.open-loot",
     "value": "\"everyone\""
   },
   {
     "key": "monks-tokenbar.send-levelup-whisper",
+    "value": "false"
+  },
+  {
+    "key": "monks-tokenbar.show-lootable-menu",
     "value": "false"
   },
   {
@@ -794,6 +890,14 @@
   {
     "key": "multi-token-edit.preSelectAutoApply",
     "value": "true"
+  },
+  {
+    "key": "multi-token-edit.singleDocDefaultConfig",
+    "value": "true"
+  },
+  {
+    "key": "multiple-document-selection.long-press",
+    "value": "2"
   },
   {
     "key": "polyglot.Alphabets",
@@ -836,11 +940,23 @@
     "value": "false"
   },
   {
+    "key": "rest-recovery.recovery-hitdice",
+    "value": "\"half\""
+  },
+  {
+    "key": "rest-recovery.recovery-rounding",
+    "value": "\"up\""
+  },
+  {
     "key": "rest-recovery.simple-calendar-notes-only-prompted",
     "value": "true"
   },
   {
     "key": "Rideable.CPREffectsIntegration",
+    "value": "true"
+  },
+  {
+    "key": "Rideable.DFredsEffectsIntegration",
     "value": "true"
   },
   {
@@ -876,6 +992,10 @@
     "value": "true"
   },
   {
+    "key": "sequencer.debug",
+    "value": "true"
+  },
+  {
     "key": "sequencer.enable-above-ui-screenspace",
     "value": "false"
   },
@@ -884,8 +1004,12 @@
     "value": "0"
   },
   {
-    "key": "sequencer.welcome-shown",
-    "value": "true"
+    "key": "sequencer.welcome-shown-version",
+    "value": "\"12.331\""
+  },
+  {
+    "key": "stealthy.activeSpot",
+    "value": "false"
   },
   {
     "key": "stealthy.allowedDetectionModesV2",
@@ -904,8 +1028,20 @@
     "value": "0.4"
   },
   {
+    "key": "stealthy.ignorePassiveFloor",
+    "value": "true"
+  },
+  {
     "key": "stealthy.logLevel",
     "value": "\"log\""
+  },
+  {
+    "key": "stealthy.perceptionDisadvantage",
+    "value": "false"
+  },
+  {
+    "key": "stealthy.perceptionToActor",
+    "value": "true"
   },
   {
     "key": "stealthy.playerHud",
@@ -913,7 +1049,7 @@
   },
   {
     "key": "stealthy.schema",
-    "value": "\"13.0.0\""
+    "value": "\"13.0.1\""
   },
   {
     "key": "stealthy.spotSource",
@@ -929,7 +1065,7 @@
   },
   {
     "key": "theripper-premium-hub.lastGitCheck",
-    "value": "1751815136152"
+    "value": "1753037701304"
   },
   {
     "key": "theripper-premium-hub.viewedAnnouncements",
@@ -937,7 +1073,7 @@
   },
   {
     "key": "theripper-premium-hub.viewedUpdates",
-    "value": "{\"portal-lib\":\"3.0.3\",\"enhancedcombathud\":\"4.0.3\",\"enhancedcombathud-dnd5e\":\"5.0.0\",\"betterroofs\":\"3.0.0\",\"combat-tracker-dock\":\"4.0.1\",\"theripper-premium-hub\":\"5.0.5\",\"wall-height\":\"7.0.8\",\"autoanimations\":\"6.0.3\"}"
+    "value": "{\"portal-lib\":\"3.0.3\",\"enhancedcombathud\":\"4.0.3\",\"enhancedcombathud-dnd5e\":\"5.0.0\",\"betterroofs\":\"3.0.0\",\"combat-tracker-dock\":\"4.0.1\",\"theripper-premium-hub\":\"5.0.5\",\"wall-height\":\"7.0.8\",\"autoanimations\":\"6.2.0\"}"
   },
   {
     "key": "times-up.Debug",
@@ -945,7 +1081,15 @@
   },
   {
     "key": "times-up.store",
-    "value": "{\"entries\":[\"Actor.HjTMCwkW6HwwH14J.ActiveEffect.fbFk9tBUNKccudWm\",\"Actor.fD1OJmxyjFLFS1y7.ActiveEffect.KvpiV529wvrVB81k\"]}"
+    "value": "{\"entries\":[\"Actor.kCNkG583QDAHG3u0.ActiveEffect.GGvVZZb6PtYtjOIH\",\"Actor.UO7xBOrGFWGEl9tg.ActiveEffect.xoqHTsHinTJ3OdYJ\",\"Actor.UO7xBOrGFWGEl9tg.ActiveEffect.od5mDK57Kompea0W\",\"Actor.M2x9dTfeF2u9mmQd.ActiveEffect.3Oznwutp2s7z3jHN\"]}"
+  },
+  {
+    "key": "tokenmagic.autohideTemplateElements",
+    "value": "false"
+  },
+  {
+    "key": "tokenmagic.autoTemplateSettings",
+    "value": "{\"categories\":{\"acid\":{\"opacity\":0.6,\"tint\":\"#2d8000\",\"circle\":{\"preset\":\"Watery Surface 2\",\"texture\":\"\"},\"cone\":{\"preset\":\"Watery Surface 2\",\"texture\":\"\"},\"rect\":{\"preset\":\"Watery Surface 2\",\"texture\":\"\"},\"ray\":{\"preset\":\"Watery Surface 2\",\"texture\":\"\"}},\"bludgeoning\":{\"opacity\":0.5,\"tint\":\"\",\"circle\":{\"preset\":\"NOFX\",\"texture\":\"\"},\"cone\":{\"preset\":\"NOFX\",\"texture\":\"\"},\"rect\":{\"preset\":\"NOFX\",\"texture\":\"\"},\"ray\":{\"preset\":\"NOFX\",\"texture\":\"\"}},\"cold\":{\"opacity\":0.5,\"tint\":\"#47b3ff\",\"circle\":{\"preset\":\"Thick Fog\",\"texture\":\"\"},\"cone\":{\"preset\":\"Thick Fog\",\"texture\":\"\"},\"rect\":{\"preset\":\"Thick Fog\",\"texture\":\"\"},\"ray\":{\"preset\":\"Thick Fog\",\"texture\":\"\"}},\"fire\":{\"opacity\":0.5,\"tint\":\"\",\"circle\":{\"preset\":\"Flames\",\"texture\":\"\"},\"cone\":{\"preset\":\"Flames\",\"texture\":\"\"},\"rect\":{\"preset\":\"Flames\",\"texture\":\"\"},\"ray\":{\"preset\":\"Flames\",\"texture\":\"\"}},\"force\":{\"opacity\":0.5,\"tint\":\"\",\"circle\":{\"preset\":\"Waves 3\",\"texture\":\"\"},\"cone\":{\"preset\":\"Waves 3\",\"texture\":\"\"},\"rect\":{\"preset\":\"Waves 3\",\"texture\":\"\"},\"ray\":{\"preset\":\"Waves 3\",\"texture\":\"\"}},\"lightning\":{\"opacity\":0.5,\"tint\":\"\",\"circle\":{\"preset\":\"Shock\",\"texture\":\"\"},\"cone\":{\"preset\":\"Shock\",\"texture\":\"\"},\"rect\":{\"preset\":\"Shock\",\"texture\":\"\"},\"ray\":{\"preset\":\"Shock\",\"texture\":\"\"}},\"necrotic\":{\"opacity\":0.5,\"tint\":\"#502673\",\"circle\":{\"preset\":\"Smoke Filaments\",\"texture\":\"\"},\"cone\":{\"preset\":\"Smoke Filaments\",\"texture\":\"\"},\"rect\":{\"preset\":\"Smoke Filaments\",\"texture\":\"\"},\"ray\":{\"preset\":\"Smoke Filaments\",\"texture\":\"\"}},\"piercing\":{\"opacity\":0.5,\"tint\":\"\",\"circle\":{\"preset\":\"NOFX\",\"texture\":\"\"},\"cone\":{\"preset\":\"NOFX\",\"texture\":\"\"},\"rect\":{\"preset\":\"NOFX\",\"texture\":\"\"},\"ray\":{\"preset\":\"NOFX\",\"texture\":\"\"}},\"poison\":{\"opacity\":0.5,\"tint\":\"#00a80b\",\"circle\":{\"preset\":\"Smoky Area\",\"texture\":\"\"},\"cone\":{\"preset\":\"Smoky Area\",\"texture\":\"\"},\"rect\":{\"preset\":\"Smoky Area\",\"texture\":\"\"},\"ray\":{\"preset\":\"Smoky Area\",\"texture\":\"\"}},\"psychic\":{\"opacity\":0.5,\"tint\":\"#8000ff\",\"circle\":{\"preset\":\"Classic Rays\",\"texture\":\"\"},\"cone\":{\"preset\":\"Classic Rays\",\"texture\":\"\"},\"rect\":{\"preset\":\"Classic Rays\",\"texture\":\"\"},\"ray\":{\"preset\":\"Classic Rays\",\"texture\":\"\"}},\"radiant\":{\"opacity\":0.5,\"tint\":\"\",\"circle\":{\"preset\":\"Annihilating Rays\",\"texture\":\"\"},\"cone\":{\"preset\":\"Annihilating Rays\",\"texture\":\"\"},\"rect\":{\"preset\":\"Annihilating Rays\",\"texture\":\"\"},\"ray\":{\"preset\":\"Annihilating Rays\",\"texture\":\"\"}},\"slashing\":{\"opacity\":0.5,\"tint\":\"\",\"circle\":{\"preset\":\"NOFX\",\"texture\":\"\"},\"cone\":{\"preset\":\"NOFX\",\"texture\":\"\"},\"rect\":{\"preset\":\"NOFX\",\"texture\":\"\"},\"ray\":{\"preset\":\"NOFX\",\"texture\":\"\"}},\"thunder\":{\"opacity\":0.5,\"tint\":\"#0060ff\",\"circle\":{\"preset\":\"Waves\",\"texture\":\"\"},\"cone\":{\"preset\":\"Waves\",\"texture\":\"\"},\"rect\":{\"preset\":\"Waves\",\"texture\":\"\"},\"ray\":{\"preset\":\"Waves\",\"texture\":\"\"}},\"midi-none\":{\"opacity\":0.5,\"tint\":\"\",\"circle\":{\"preset\":\"NOFX\",\"texture\":\"\"},\"cone\":{\"preset\":\"NOFX\",\"texture\":\"\"},\"rect\":{\"preset\":\"NOFX\",\"texture\":\"\"},\"ray\":{\"preset\":\"NOFX\",\"texture\":\"\"}}},\"overrides\":{\"0\":{\"target\":\"Stinking Cloud\",\"opacity\":0.5,\"tint\":\"#00a80b\",\"preset\":\"Smoky Area\",\"texture\":\"\"},\"1\":{\"target\":\"Web\",\"opacity\":0.5,\"tint\":\"#808080\",\"preset\":\"Spider Web 2\",\"texture\":\"\"},\"2\":{\"target\":\"OldCloudkill\",\"opacity\":0.5,\"tint\":\"#00A80B\",\"preset\":\"Smoky Area\",\"texture\":\"modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png\"}}}"
   },
   {
     "key": "tokenmagic.importOverwrite",
@@ -992,657 +1136,9 @@
     "value": "0.85"
   },
   {
-    "name": "Gamemaster",
-    "core": {
-      "avatar": "icons/svg/mystery-man.svg",
-      "color": "#67cc28",
-      "permissions": {},
-      "role": 4
-    },
-    "flags": {
-      "dfreds-effects-panel": {
-        "topPosition": 5
-      },
-      "monks-combat-details": {
-        "remember-previous": true,
-        "targets": [
-          "bnhMRuhkrDOQNAIA"
-        ]
-      },
-      "dice-so-nice": {
-        "welcomeMessageShown": true
-      },
-      "monks-tokenbar": {
-        "position": {
-          "left": 834,
-          "right": "",
-          "top": "",
-          "bottom": 10
-        },
-        "lastmodeST": "roll",
-        "lastmodeHideNPCName": false
-      },
-      "dnd5e": {
-        "sheetPrefs": {
-          "character": {
-            "width": 1019,
-            "height": 916,
-            "tabs": {
-              "features": {
-                "sort": "a",
-                "collapseSidebar": false,
-                "group": true
-              }
-            }
-          },
-          "npc": {
-            "width": 940,
-            "height": 796,
-            "tabs": {
-              "features": {
-                "sort": "a",
-                "collapseSidebar": false,
-                "group": true
-              },
-              "spells": {
-                "sort": "a",
-                "collapseSidebar": false,
-                "group": true
-              }
-            }
-          }
-        },
-        "awardDestinations": [],
-        "creation": {
-          "scrollExplanation": "reference"
-        }
-      },
-      "token-attacher": {
-        "copyPrototypeMap": {
-          "map": {
-            "Token": {}
-          },
-          "grid": {
-            "size": 100,
-            "sizeX": 100,
-            "sizeY": 100
-          }
-        }
-      }
-    }
-  },
-  {
-    "name": "Greg",
-    "core": {
-      "avatar": "artwork/portraits/billikin-portrait.jpg",
-      "color": "#6128cc",
-      "permissions": {},
-      "role": 1
-    },
-    "flags": {
-      "monks-combat-details": {
-        "remember-previous": true,
-        "targets": []
-      },
-      "dice-so-nice": {
-        "welcomeMessageShown": true
-      }
-    }
-  },
-  {
     "type": "_supportingDataType",
     "value": {
       "compendiumFolders": [
-        {
-          "_id": "x4xMtDfbyVqjVSjl",
-          "name": "2014",
-          "type": "Compendium",
-          "sorting": "a",
-          "sort": 300000,
-          "color": "#eeb5a0",
-          "folder": "UTM9Mk5tiVC45jBR",
-          "description": "",
-          "flags": {},
-          "_stats": {
-            "coreVersion": "12.331",
-            "systemId": "dnd5e",
-            "systemVersion": "4.3.6",
-            "createdTime": null,
-            "modifiedTime": 1742942974930,
-            "lastModifiedBy": "1cBqnIOdEDUMw3j9",
-            "compendiumSource": null,
-            "duplicateSource": null
-          }
-        },
-        {
-          "_id": "HNEYKlXmxWKpHlkh",
-          "name": "2024",
-          "type": "Compendium",
-          "sorting": "a",
-          "sort": 200000,
-          "color": "#d26841",
-          "folder": "UTM9Mk5tiVC45jBR",
-          "description": "",
-          "flags": {},
-          "_stats": {
-            "coreVersion": "12.331",
-            "systemId": "dnd5e",
-            "systemVersion": "4.3.6",
-            "createdTime": null,
-            "modifiedTime": 1745896492405,
-            "lastModifiedBy": "1cBqnIOdEDUMw3j9",
-            "compendiumSource": null,
-            "duplicateSource": null
-          }
-        },
-        {
-          "_id": "ayn3Yzwvflv1fQnQ",
-          "name": "AAW Aventyr Compendium",
-          "type": "Compendium",
-          "sorting": "a",
-          "sort": 300000,
-          "color": "#7746cc",
-          "folder": null,
-          "description": "",
-          "flags": {},
-          "_stats": {
-            "coreVersion": "12.343",
-            "systemId": "dnd5e",
-            "systemVersion": "4.3.6",
-            "createdTime": 1742739967090,
-            "modifiedTime": 1751479910795,
-            "lastModifiedBy": "1cBqnIOdEDUMw3j9",
-            "compendiumSource": null,
-            "duplicateSource": null
-          }
-        },
-        {
-          "_id": "YW3d7bk5JjfMx6UM",
-          "name": "Active Auras",
-          "type": "Compendium",
-          "sorting": "m",
-          "sort": 400000,
-          "color": null,
-          "folder": null,
-          "description": "",
-          "flags": {},
-          "_stats": {
-            "coreVersion": "12.343",
-            "systemId": "dnd5e",
-            "systemVersion": "4.3.6",
-            "createdTime": 1742685914567,
-            "modifiedTime": 1751479910795,
-            "lastModifiedBy": "1cBqnIOdEDUMw3j9",
-            "compendiumSource": null,
-            "duplicateSource": null
-          }
-        },
-        {
-          "_id": "aonTF9RYxwQj7B37",
-          "name": "Baileywiki Content",
-          "type": "Compendium",
-          "sorting": "m",
-          "sort": 900000,
-          "color": null,
-          "folder": null,
-          "description": "",
-          "flags": {},
-          "_stats": {
-            "coreVersion": "12.343",
-            "systemId": "dnd5e",
-            "systemVersion": "4.3.6",
-            "createdTime": 1742685914567,
-            "modifiedTime": 1751479910795,
-            "lastModifiedBy": "1cBqnIOdEDUMw3j9",
-            "compendiumSource": null,
-            "duplicateSource": null
-          }
-        },
-        {
-          "_id": "OOtBkN3PFKpj7gyz",
-          "name": "Campaigns",
-          "type": "Compendium",
-          "sorting": "a",
-          "sort": 100000,
-          "color": "#ca866d",
-          "folder": "UTM9Mk5tiVC45jBR",
-          "description": "",
-          "flags": {},
-          "_stats": {
-            "coreVersion": "12.331",
-            "systemId": "dnd5e",
-            "systemVersion": "4.3.6",
-            "createdTime": null,
-            "modifiedTime": 1745896492405,
-            "lastModifiedBy": "1cBqnIOdEDUMw3j9",
-            "compendiumSource": null,
-            "duplicateSource": null
-          }
-        },
-        {
-          "_id": "aB47fI6VcsVWCG5n",
-          "name": "Character Features",
-          "type": "Compendium",
-          "sorting": "m",
-          "sort": 200000,
-          "color": "#b72c1f",
-          "folder": "uMh1LAcENXQr5cz2",
-          "description": "",
-          "flags": {},
-          "_stats": {
-            "coreVersion": "12.331",
-            "systemId": "dnd5e",
-            "systemVersion": "4.3.6",
-            "createdTime": null,
-            "modifiedTime": null,
-            "lastModifiedBy": null,
-            "compendiumSource": null,
-            "duplicateSource": null
-          }
-        },
-        {
-          "_id": "uMh1LAcENXQr5cz2",
-          "name": "D&D Legacy Content",
-          "type": "Compendium",
-          "sorting": "m",
-          "sort": 500000,
-          "color": "#cd2c1e",
-          "folder": null,
-          "description": "",
-          "flags": {},
-          "_stats": {
-            "coreVersion": "12.343",
-            "systemId": "dnd5e",
-            "systemVersion": "4.3.6",
-            "createdTime": 1742685058978,
-            "modifiedTime": 1751479910795,
-            "lastModifiedBy": "1cBqnIOdEDUMw3j9",
-            "compendiumSource": null,
-            "duplicateSource": null
-          }
-        },
-        {
-          "_id": "yFyjzbOCcfMvpvVi",
-          "name": "D&D Modern Content",
-          "type": "Compendium",
-          "sorting": "m",
-          "sort": 100000,
-          "color": "#cd2c1e",
-          "folder": null,
-          "description": "",
-          "flags": {},
-          "_stats": {
-            "coreVersion": "12.343",
-            "systemId": "dnd5e",
-            "systemVersion": "4.4.0",
-            "createdTime": 1746032196513,
-            "modifiedTime": 1751479910795,
-            "lastModifiedBy": "1cBqnIOdEDUMw3j9",
-            "compendiumSource": null,
-            "duplicateSource": null
-          }
-        },
-        {
-          "_id": "36LNgXDmyLCDW8wJ",
-          "name": "Drakkenheim",
-          "type": "Compendium",
-          "sorting": "m",
-          "sort": 600000,
-          "color": "#311432",
-          "folder": null,
-          "description": "",
-          "flags": {},
-          "_stats": {
-            "coreVersion": "12.343",
-            "systemId": "dnd5e",
-            "systemVersion": "4.3.6",
-            "createdTime": 1742856823286,
-            "modifiedTime": 1751479910795,
-            "lastModifiedBy": "1cBqnIOdEDUMw3j9",
-            "compendiumSource": null,
-            "duplicateSource": null
-          }
-        },
-        {
-          "name": "Driders of the Underworld",
-          "sorting": "a",
-          "folder": "ayn3Yzwvflv1fQnQ",
-          "type": "Compendium",
-          "_id": "izDwqSQs2ouURWcg",
-          "description": "",
-          "sort": 100000,
-          "color": "#9172a1",
-          "flags": {},
-          "_stats": {
-            "compendiumSource": null,
-            "duplicateSource": null,
-            "coreVersion": "12.331",
-            "systemId": "dnd5e",
-            "systemVersion": "4.3.6",
-            "createdTime": 1742740003162,
-            "modifiedTime": 1742740186069,
-            "lastModifiedBy": "1cBqnIOdEDUMw3j9"
-          }
-        },
-        {
-          "_id": "ktRVGLpRdU7vxj3A",
-          "name": "Dungeon Master's Guide",
-          "type": "Compendium",
-          "sorting": "m",
-          "sort": 1000000,
-          "color": "#1e72cc",
-          "folder": null,
-          "description": "",
-          "flags": {},
-          "_stats": {
-            "coreVersion": "12.343",
-            "systemId": "dnd5e",
-            "systemVersion": "4.3.6",
-            "createdTime": 1742685914567,
-            "modifiedTime": 1751479910795,
-            "lastModifiedBy": "1cBqnIOdEDUMw3j9",
-            "compendiumSource": null,
-            "duplicateSource": null
-          }
-        },
-        {
-          "_id": "BGsd0k9wsiW9lxL5",
-          "name": "Dungeons of Drakkenheim",
-          "type": "Compendium",
-          "sorting": "m",
-          "sort": 200000,
-          "color": "#311432",
-          "folder": "36LNgXDmyLCDW8wJ",
-          "description": "",
-          "flags": {},
-          "_stats": {
-            "coreVersion": "12.331",
-            "systemId": "dnd5e",
-            "systemVersion": "4.3.6",
-            "createdTime": null,
-            "modifiedTime": null,
-            "lastModifiedBy": null,
-            "compendiumSource": null,
-            "duplicateSource": null
-          }
-        },
-        {
-          "_id": "9DxoSVDSo5AGdnrr",
-          "name": "Items & Spells",
-          "type": "Compendium",
-          "sorting": "m",
-          "sort": 300000,
-          "color": "#941919",
-          "folder": "uMh1LAcENXQr5cz2",
-          "description": "",
-          "flags": {},
-          "_stats": {
-            "coreVersion": "12.331",
-            "systemId": "dnd5e",
-            "systemVersion": "4.3.6",
-            "createdTime": null,
-            "modifiedTime": null,
-            "lastModifiedBy": null,
-            "compendiumSource": null,
-            "duplicateSource": null
-          }
-        },
-        {
-          "_id": "XYYfZBtr0iGxGv9a",
-          "name": "Milando's Guide to Magical Marvels",
-          "type": "Compendium",
-          "sorting": "a",
-          "sort": 1200000,
-          "color": null,
-          "folder": null,
-          "description": "",
-          "flags": {},
-          "_stats": {
-            "coreVersion": "12.343",
-            "systemId": "dnd5e",
-            "systemVersion": "4.3.6",
-            "createdTime": 1742685914567,
-            "modifiedTime": 1751479910795,
-            "lastModifiedBy": "1cBqnIOdEDUMw3j9",
-            "compendiumSource": null,
-            "duplicateSource": null
-          }
-        },
-        {
-          "_id": "EAHoWKR5wFfFVM6M",
-          "name": "Monster Manual",
-          "type": "Compendium",
-          "sorting": "m",
-          "sort": 1400000,
-          "color": "#1e72cc",
-          "folder": null,
-          "description": "",
-          "flags": {},
-          "_stats": {
-            "coreVersion": "12.343",
-            "systemId": "dnd5e",
-            "systemVersion": "4.3.6",
-            "createdTime": 1742739610076,
-            "modifiedTime": 1751479910795,
-            "lastModifiedBy": "1cBqnIOdEDUMw3j9",
-            "compendiumSource": null,
-            "duplicateSource": null
-          }
-        },
-        {
-          "_id": "FYObCb2kwFgokwoy",
-          "name": "Monsters",
-          "type": "Compendium",
-          "sorting": "m",
-          "sort": 400000,
-          "color": "#7d160c",
-          "folder": "uMh1LAcENXQr5cz2",
-          "description": "",
-          "flags": {},
-          "_stats": {
-            "coreVersion": "12.331",
-            "systemId": "dnd5e",
-            "systemVersion": "4.3.6",
-            "createdTime": null,
-            "modifiedTime": null,
-            "lastModifiedBy": null,
-            "compendiumSource": null,
-            "duplicateSource": null
-          }
-        },
-        {
-          "_id": "iXyLfMIPg6AoNYHr",
-          "name": "Player's Handbook",
-          "type": "Compendium",
-          "sorting": "m",
-          "sort": 1300000,
-          "color": "#1e72cc",
-          "folder": null,
-          "description": "",
-          "flags": {},
-          "_stats": {
-            "coreVersion": "12.343",
-            "systemId": "dnd5e",
-            "systemVersion": "4.3.6",
-            "createdTime": 1742685914567,
-            "modifiedTime": 1751479910795,
-            "lastModifiedBy": "1cBqnIOdEDUMw3j9",
-            "compendiumSource": null,
-            "duplicateSource": null
-          }
-        },
-        {
-          "_id": "URerb01lekTRUZrK",
-          "name": "Rest Recovery 5e",
-          "type": "Compendium",
-          "sorting": "a",
-          "sort": 1500000,
-          "color": "#200da6",
-          "folder": null,
-          "description": "",
-          "flags": {},
-          "_stats": {
-            "coreVersion": "12.343",
-            "systemId": "dnd5e",
-            "systemVersion": "4.3.6",
-            "createdTime": 1742685914567,
-            "modifiedTime": 1751479910795,
-            "lastModifiedBy": "1cBqnIOdEDUMw3j9",
-            "compendiumSource": null,
-            "duplicateSource": null
-          }
-        },
-        {
-          "_id": "o1gBFqsbDSp17f55",
-          "name": "Scenes",
-          "type": "Compendium",
-          "sorting": "a",
-          "sort": 100000,
-          "color": null,
-          "folder": "aonTF9RYxwQj7B37",
-          "description": "",
-          "flags": {},
-          "_stats": {
-            "coreVersion": "12.331",
-            "systemId": "dnd5e",
-            "systemVersion": "4.3.8",
-            "createdTime": 1744117884638,
-            "modifiedTime": 1744117884638,
-            "lastModifiedBy": null,
-            "compendiumSource": null,
-            "duplicateSource": null
-          }
-        },
-        {
-          "_id": "ygMbn4tjKalrh4ge",
-          "name": "Scenes - Free",
-          "type": "Compendium",
-          "sorting": "a",
-          "sort": 400000,
-          "color": null,
-          "folder": "aonTF9RYxwQj7B37",
-          "description": "",
-          "flags": {},
-          "_stats": {
-            "coreVersion": "12.331",
-            "systemId": "dnd5e",
-            "systemVersion": "4.3.6",
-            "createdTime": null,
-            "modifiedTime": null,
-            "lastModifiedBy": null,
-            "compendiumSource": null,
-            "duplicateSource": null
-          }
-        },
-        {
-          "_id": "aZBI9GZ5bwf4n4mG",
-          "name": "Tasha's Cauldron of Everything",
-          "type": "Compendium",
-          "sorting": "m",
-          "sort": 1100000,
-          "color": "#344358",
-          "folder": null,
-          "description": "",
-          "flags": {},
-          "_stats": {
-            "coreVersion": "12.343",
-            "systemId": "dnd5e",
-            "systemVersion": "4.3.6",
-            "createdTime": 1742685914567,
-            "modifiedTime": 1751479910795,
-            "lastModifiedBy": "1cBqnIOdEDUMw3j9",
-            "compendiumSource": null,
-            "duplicateSource": null
-          }
-        },
-        {
-          "_id": "UTM9Mk5tiVC45jBR",
-          "name": "Trazzm Homebrew",
-          "type": "Compendium",
-          "sorting": "a",
-          "sort": 700000,
-          "color": "#fd5a1e",
-          "folder": null,
-          "description": "",
-          "flags": {},
-          "_stats": {
-            "coreVersion": "12.343",
-            "systemId": "dnd5e",
-            "systemVersion": "4.3.6",
-            "createdTime": 1742921362868,
-            "modifiedTime": 1751479910795,
-            "lastModifiedBy": "1cBqnIOdEDUMw3j9",
-            "compendiumSource": null,
-            "duplicateSource": null
-          }
-        },
-        {
-          "_id": "rC08WavkdjciQsSN",
-          "name": "Utility Pieces",
-          "type": "Compendium",
-          "sorting": "a",
-          "sort": 300000,
-          "color": null,
-          "folder": "aonTF9RYxwQj7B37",
-          "description": "",
-          "flags": {},
-          "_stats": {
-            "coreVersion": "12.331",
-            "systemId": "dnd5e",
-            "systemVersion": "4.3.6",
-            "createdTime": null,
-            "modifiedTime": null,
-            "lastModifiedBy": null,
-            "compendiumSource": null,
-            "duplicateSource": null
-          }
-        },
-        {
-          "_id": "Bez9DE45GTeKPURB",
-          "name": "Wanderer's Guide to Merchants & Magic",
-          "type": "Compendium",
-          "sorting": "a",
-          "sort": 800000,
-          "color": null,
-          "folder": null,
-          "description": "",
-          "flags": {},
-          "_stats": {
-            "coreVersion": "12.343",
-            "systemId": "dnd5e",
-            "systemVersion": "4.3.6",
-            "createdTime": 1742856823286,
-            "modifiedTime": 1751479910795,
-            "lastModifiedBy": "1cBqnIOdEDUMw3j9",
-            "compendiumSource": null,
-            "duplicateSource": null
-          }
-        },
-        {
-          "name": "Zothers",
-          "sorting": "a",
-          "folder": null,
-          "type": "Compendium",
-          "_id": "3dGNm7VD8UkbWKJx",
-          "description": "",
-          "sort": 200000,
-          "color": null,
-          "flags": {
-            "scene-packer": {
-              "hash": "eff2eec816c2c7fec55a959b06928c89d2d483b2"
-            }
-          },
-          "_stats": {
-            "compendiumSource": null,
-            "duplicateSource": null,
-            "coreVersion": "12.343",
-            "systemId": "dnd5e",
-            "systemVersion": "4.3.6",
-            "createdTime": 1742688299620,
-            "modifiedTime": 1751479910795,
-            "lastModifiedBy": "1cBqnIOdEDUMw3j9"
-          }
-        }
       ]
     }
   }
