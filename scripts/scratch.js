@@ -107,3 +107,8 @@ flags.automated-conditions-5e.save.advantage | Custom | riderStatuses.charmed ||
 			// options = { maxSize: undefined, includeIncapacitated: false, canSee: false }
 		let secondTarget = await MidiQOL.findNearby(CONST.TOKEN_DISPOSITIONS.FRIENDLY, ttoken, 5, {canSee: true});
 
+
+<section class="secret">
+    <p><strong>Foundry Note</strong></p>
+    <p>This feature includes an Active Effect which automatically increases your walking Speed but does not automate the Advantage.</p>
+</section>

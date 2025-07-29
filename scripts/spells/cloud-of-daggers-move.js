@@ -32,11 +32,9 @@ try {
                             limitMaxRange: 30
                         },
                         snap: {
-                            position: CONST.GRID_SNAPPING_MODES.SIDE_MIDPOINT
+                            position: CONST.GRID_SNAPPING_MODES.CENTER | CONST.GRID_SNAPPING_MODES.VERTEX
                         }
                     });
-
-                    // LEFT_SIDE_MIDPOINT
 
                     if (position) {
                         await game.trazzm.socket.executeAsGM("updateTemplate", template.uuid, {x: position.x, y: position.y});

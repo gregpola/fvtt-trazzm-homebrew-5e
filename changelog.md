@@ -170,3 +170,9 @@
 * Updated Sneak Attack to support critical hits and not be allowed by nearby neutral tokens like spiritual weapon
 * Updated Spike Growth to trigger concentration checks on damage
 * Updated Rage and Fanatical Focus to work better together
+
+# 12.4.19
+* Updated the Goliath
+* Updated Cloud of Daggers, Moonbeam to not persist the animation for performance reasons
+* Updated Spike Growth to better handle animation
+* Updated Marge's Maul

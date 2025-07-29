@@ -12,28 +12,25 @@
     Using a Higher-Level Spell Slot.The damage increases by 1d10 for each spell slot level above 2.
  */
 const optionName = "Moonbeam";
-const version = "12.4.1";
+const version = "12.4.2";
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
 const flagName = "moonbeam-flag";
 
 try {
-    if (rolledActivity?.name === "Cast") {
-        if (args[0].macroPass === "preItemRoll") {
-            Hooks.once("createMeasuredTemplate", async (template) => {
-                await actor.setFlag(_flagGroup, flagName, {templateUuid: template.uuid});
+    if (args[0].macroPass === "preItemRoll") {
+        Hooks.once("createMeasuredTemplate", async (template) => {
+            await actor.setFlag(_flagGroup, flagName, {templateUuid: template.uuid});
 
-                await template.update({
-                    fillColor: 0,
-                    fillAlpha: 0,
-                    alpha: 0,
-                    opacity: 0.1
-                });
+            await template.update({
+                fillAlpha: 0,
+                alpha: 0,
+                opacity: 0.1
             });
+        });
 
-            Hooks.once("createRegion", async (region) => {
-                await region.update({'visibility': 0});
-            });
-        }
+        Hooks.once("createRegion", async (region) => {
+            await region.update({'visibility': 0});
+        });
     }
 
 } catch (err) {
