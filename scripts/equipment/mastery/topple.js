@@ -4,7 +4,7 @@
     the Prone condition.
 */
 const optionName = "Weapon Mastery: Topple";
-const version = "12.4.0";
+const version = "12.4.1";
 
 try {
     if (args[0].tag === "OnUse" && args[0].macroPass === "postAttackRoll") {

@@ -176,3 +176,16 @@
 * Updated Cloud of Daggers, Moonbeam to not persist the animation for performance reasons
 * Updated Spike Growth to better handle animation
 * Updated Marge's Maul
+* Updated the global settings export
+
+# 12.4.20
+* Complete refactoring of Weapon Mastery. You no longer need a feature for each weapon mastery, just the core 'Weapon Mastery' feature in the backgrounds compendium. Also, you need to delete any mastery features you have on your character.
+* Added Tactical Master fighter feature
+* Added Armor of Agathys, Arms of Hadar, Chill Touch, Chromatic Orb, and Hellish Rebuke spells
+* Updated Barbarian, Fighter, Paladin, Ranger, Rogue to get the Weapon Mastery feature
+* Updated Human to allow selection of fighting style feats as their bonus feat
+* Updated all backgrounds to allow selecting fighting style feats
+* Updated Magic Initiate feat to be three separate feats
+* Updated High Elf, Wood Elf, Air Genasi, Chthonic Tiefling, Infernal Tiefling races to reference homebrew spells
+* Updated Extended Spell, and Subtle Spell metamagic to be fully automated
+* Fixed error condition in the Crusher feat

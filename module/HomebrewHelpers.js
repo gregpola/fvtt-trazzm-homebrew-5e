@@ -238,6 +238,10 @@ class HomebrewHelpers {
         return false;
     }
 
+    static isLargeOrSmaller(target) {
+        return ["tiny", "sm", "med", "lg"].includes(target.actor.system.traits.size);
+    }
+
     static isAvailableThisTurn(actor, flagName) {
         if (game.combat) {
             const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn / 100}`;
@@ -928,20 +932,6 @@ class HomebrewHelpers {
             const originStart = `Actor.${sourceActor.id}.`;
             let hexedEffect = targetActor.getRollData().effects.find(e => e.name === "Hexblade's Curse" && e.origin.startsWith(originStart) && e.statuses.has("cursed"));
             if (hexedEffect) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    static hasMastery(actor, item) {
-        if (actor && item) {
-            if (actor.system.traits.weaponProf.mastery.value.has(item.system.type.baseItem)) {
-                return true;
-            }
-            else if (item.name === 'Psychic Blade') {
-                // special handling for the Soulknife's Psychic Blade
                 return true;
             }
         }

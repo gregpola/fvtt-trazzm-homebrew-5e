@@ -6,6 +6,7 @@ import {BarbarianFeatures} from "./BarbarianFeatures.js";
 import {WarlockFeatures} from "./WarlockFeatures.js";
 import {WizardFeatures} from "./WizardFeatures.js";
 import {SummonHelper} from "./SummonHelper.js";
+import {WeaponMastery} from "./WeaponMastery.js";
 import {macros} from './macros.js';
 import {registerSettings} from './settings.js';
 import {doTurnStartOptions} from "./utils.js";
@@ -20,7 +21,8 @@ const SUB_MODULES = {
     BarbarianFeatures,
     WarlockFeatures,
     WizardFeatures,
-    SummonHelper
+    SummonHelper,
+    WeaponMastery
 };
 
 Hooks.once('init', async function () {
@@ -57,6 +59,7 @@ Hooks.once('socketlib.ready', async function() {
  */
 function initialize_module() {
     Object.values(SUB_MODULES).forEach(cl => cl.register());
+    globalThis.TrazzmHomebrew.weaponMastery = WeaponMastery;
 }
 
 globalThis.TrazzmHomebrew = {
