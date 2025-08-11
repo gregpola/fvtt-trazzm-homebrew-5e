@@ -10,7 +10,7 @@ try {
         // trigger save
         let effect = HomebrewHelpers.findEffect(actor, "Uncontrollable Laughter");
         if (effect) {
-            const config = { undefined, ability: "wis", target: macroItem.parent.system.attributes.spelldc, advantage: true };
+            const config = { undefined, ability: "wis", target: macroItem.parent.system.attributes.spell.dc, advantage: true };
             const dialog = {};
             const message = { data: { speaker: ChatMessage.implementation.getSpeaker({ actor: actor }) } };
             let saveResult = await actor.rollSavingThrow(config, dialog, message);

@@ -14,12 +14,12 @@ try {
         const spellLevel = actor.flags["fvtt-trazzm-homebrew-5e"].StaggeringSmite?.level ?? 4;
         const diceCount = Math.max(spellLevel, 4);
 
-        const config = { undefined, ability: "wis", target: actor.system.attributes.spelldc };
+        const config = { undefined, ability: "wis", target: actor.system.attributes.spell.dc };
         const dialog = {};
         const message = { data: { speaker: ChatMessage.implementation.getSpeaker({ actor: targetToken.actor }) } };
         let saveResult = await targetToken.actor.rollSavingThrow(config, dialog, message);
         if (!saveResult[0].isSuccess) {
-            await applyEffects(targetToken, macroItem, actor.system.attributes.spelldc);
+            await applyEffects(targetToken, macroItem, actor.system.attributes.spell.dc);
         }
 
         return new game.system.dice.DamageRoll(`${diceCount}d6`, {}, {

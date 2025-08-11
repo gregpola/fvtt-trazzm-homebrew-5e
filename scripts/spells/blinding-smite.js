@@ -5,7 +5,7 @@
 
     Using a Higher-Level Spell Slot. The extra damage increases by 1d8 for each spell slot level above 3.
 */
-const version = "12.4.1";
+const version = "12.4.2";
 const optionName = "Blinding Smite";
 const damageType = "radiant";
 const effectName = "Blinded";
@@ -16,7 +16,7 @@ try {
         const spellLevel = actor.flags["fvtt-trazzm-homebrew-5e"].BlindingSmite?.level ?? 3;
         const diceCount = spellLevel;
 
-        await applyEffects(targetToken, macroItem, actor.system.attributes.spelldc);
+        await applyEffects(targetToken, macroItem, actor.system.attributes.spell.dc);
 
         return new game.system.dice.DamageRoll(`${diceCount}d8`, {}, {
             isCritical: workflow.isCritical,

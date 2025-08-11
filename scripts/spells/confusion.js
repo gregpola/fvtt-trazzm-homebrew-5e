@@ -10,7 +10,7 @@
 
     At the end of each of its turns, an affected target repeats the save, ending the spell on itself on a success.
 
-    turn=end, saveAbility=wis, saveDC=@attributes.spelldc, label=Confusion
+    turn=end, saveAbility=wis, saveDC=@attributes.spell.dc, label=Confusion
 */
 const optionName = "Confusion";
 const version = "12.4.0";

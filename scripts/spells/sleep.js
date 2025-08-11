@@ -8,14 +8,20 @@
     on saves against this spell.
 */
 const optionName = "Sleep";
-const version = "12.4.0";
+const version = "12.4.1";
 
 try {
-    if (args[0].macroPass === "postSave") {
-        for (let target of workflow.failedSaves) {
-            if (target.actor.system.traits.ci.custom.includes("Magical Sleep") || target.actor.system.traits.ci.value.has("exhaustion")) {
-                workflow.failedSaves.delete(target);
-                workflow.saves.add(target);
+    if (args[0] === "each" && lastArgValue.turn === 'endTurn') {
+        if (!(actor.system.traits.ci.custom.includes("Magical Sleep") || actor.system.traits.ci.value.has("exhaustion"))) {
+            const dc = macroItem.parent.system.attributes.spell.dc;
+            const config = { undefined, ability: "wis", target: dc };
+            const dialog = {};
+            const message = { data: { speaker: ChatMessage.implementation.getSpeaker({ actor: actor }) } };
+            let saveResult = await actor.rollSavingThrow(config, dialog, message);
+            if (!saveResult[0].isSuccess) {
+                // get duration in seconds
+                const duration = HomebrewHelpers.itemDurationSeconds(macroItem);
+                await HomebrewEffects.applySleepingEffect2024(actor, macroItem, ['isDamaged', 'endCombat'], duration);
             }
         }
     }

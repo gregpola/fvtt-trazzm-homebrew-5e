@@ -102,7 +102,7 @@ async function drawCircleRegion(template) {
             'fvtt-trazzm-homebrew-5e': {
                 castData: {
                     castLevel: castLevel,
-                    saveDC: actor.system.attributes.spelldc
+                    saveDC: actor.system.attributes.spell.dc
                 },
                 region: {
                     visibility: {
@@ -170,7 +170,7 @@ async function drawLineRegion(template) {
             'fvtt-trazzm-homebrew-5e': {
                 castData: {
                     castLevel: castLevel,
-                    saveDC: actor.system.attributes.spelldc
+                    saveDC: actor.system.attributes.spell.dc
                 },
                 region: {
                     visibility: {

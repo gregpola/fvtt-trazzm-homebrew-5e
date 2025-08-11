@@ -5,7 +5,7 @@
 
     Using a Higher-Level Spell Slot. The damage increases by 1d6 for each spell slot level above 1.
 */
-const version = "12.4.1";
+const version = "12.4.2";
 const optionName = "Wrathful Smite";
 const damageType = "necrotic";
 const effectName = "Wrathful Smite Frightened";
@@ -16,12 +16,12 @@ try {
         const spellLevel = actor.flags["fvtt-trazzm-homebrew-5e"].WrathfulSmite.level ?? 1;
         const diceCount = spellLevel;
 
-        const config = { undefined, ability: "wis", target: actor.system.attributes.spelldc };
+        const config = { undefined, ability: "wis", target: actor.system.attributes.spell.dc };
         const dialog = {};
         const message = { data: { speaker: ChatMessage.implementation.getSpeaker({ actor: targetToken.actor }) } };
         let saveResult = await targetToken.actor.rollSavingThrow(config, dialog, message);
         if (!saveResult[0].isSuccess) {
-            await applyEffects(targetToken, macroItem, actor.system.attributes.spelldc);
+            await applyEffects(targetToken, macroItem, actor.system.attributes.spell.dc);
         }
 
         return new game.system.dice.DamageRoll(`${diceCount}d6`, {}, {
