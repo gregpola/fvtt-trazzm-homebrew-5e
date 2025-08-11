@@ -11,7 +11,7 @@
      projectiles launched at targets behind the wall are deflected upward and miss automatically. Boulders hurled by
      Giants or siege engines, and similar projectiles, are unaffected. Creatures in gaseous form can’t pass through it.
 */
-const version = "12.4.0";
+const version = "12.4.1";
 const optionName = "Wind Wall";
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
 const templateFlag = "wall-template-uuid";
@@ -79,7 +79,7 @@ async function drawLineRegion(template) {
             'fvtt-trazzm-homebrew-5e': {
                 castData: {
                     castLevel: castLevel,
-                    saveDC: actor.system.attributes.spelldc
+                    saveDC: actor.system.attributes.spell.dc
                 },
                 region: {
                     visibility: {

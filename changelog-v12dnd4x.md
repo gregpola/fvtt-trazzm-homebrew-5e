@@ -189,3 +189,10 @@
 * Updated High Elf, Wood Elf, Air Genasi, Chthonic Tiefling, Infernal Tiefling races to reference homebrew spells
 * Updated Extended Spell, and Subtle Spell metamagic to be fully automated
 * Fixed error condition in the Crusher feat
+
+# 12.4.21
+* Added Conjure Minor Elementals, Healing Spirit
+* Updated Booming Blade, Green-Flame Blade, Melf's Acid Arrow, Sleep
+* Updated Xenn's swords
+* Fixed Fighter to grant the homebrew Tactical Master
+* Fixed Ensnaring Strike, Hold Monster, Hold Person, and Immolation spells

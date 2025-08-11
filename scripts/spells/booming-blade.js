@@ -10,11 +10,84 @@
 */
 const optionName = "Booming Blade";
 const version = "12.4.0";
+const moveDamageEffectName = "Booming Blade Movement Damage";
+const sequencerFile = "jb2a.thunderwave.center.blue";
+const sequencerScale = 1.5;
 
 try {
-    if (args[0].macroPass === "postActiveEffects") {
+    if (args[0].tag === "OnUse" && args[0].macroPass === "postActiveEffects") {
+        const targetToken = workflow.hitTargets.first();
+        if (targetToken !== undefined) {
+            let movementEffect = HomebrewHelpers.findEffect(targetToken.actor, moveDamageEffectName, macroItem.uuid);
+            if (!movementEffect) {
+                await applyMoveEffect(targetToken, macroItem);
+            }
+        }
+    }
+    else if (lastArgValue["expiry-reason"]?.includes("midi-qol:isMoved")) {
+        sequencerEffect(token, sequencerFile, sequencerScale);
+
+        let activity = macroItem.system.activities.getName("Move Damage");
+        if (activity) {
+            const options = {
+                midiOptions: {
+                    targetsToUse: new Set([token]),
+                    noOnUseMacro: false,
+                    configureDialog: false,
+                    showFullCard: false,
+                    ignoreUserTargets: true,
+                    checkGMStatus: true,
+                    autoRollAttack: true,
+                    autoRollDamage: "always",
+                    fastForwardAttack: true,
+                    fastForwardDamage: true,
+                    workflowData: false
+                }
+            };
+
+            await MidiQOL.completeActivityUse(activity, options, {}, {});
+        }
     }
 
 } catch (err) {
     console.error(`${optionName}: ${version}`, err);
+}
+
+// sequencer caller for effects on target
+function sequencerEffect(target, file, scale) {
+    if (game.modules.get("sequencer")?.active && hasProperty(Sequencer.Database.entries, "jb2a")) {
+        new Sequence().effect().file(file).atLocation(target).scaleToObject(scale).play();
+    }
+}
+
+async function applyMoveEffect(targetToken, macroItem) {
+    let effectData = {
+        name: moveDamageEffectName,
+        icon: macroItem.img,
+        origin: macroItem.uuid,
+        type: "base",
+        transfer: false,
+        statuses: [],
+        changes: [
+            {
+                key: 'macro.itemMacro',
+                mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
+                value: `ItemMacro.${macroItem.name}`,
+                priority: 20
+            },
+            {
+                'key': 'macro.tokenMagic',
+                'mode': CONST.ACTIVE_EFFECT_MODES.CUSTOM,
+                'value': 'electric',
+                'priority': 21
+            }
+        ],
+        flags: {
+            dae: {
+                specialDuration: ['turnStartSource', 'isMoved', 'combatEnd']
+            }
+        }
+    };
+
+    await MidiQOL.socket().executeAsGM("createEffects", { actorUuid: targetToken.actor.uuid, effects: [effectData] });
 }

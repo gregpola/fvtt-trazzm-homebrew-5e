@@ -14,7 +14,7 @@ try {
         const spellLevel = actor.flags["fvtt-trazzm-homebrew-5e"].ThunderousSmite.level ?? 1;
         const diceCount = 1 + spellLevel;
 
-        const saveDC = actor.system.attributes.spelldc;
+        const saveDC = actor.system.attributes.spell.dc;
         const saveFlavor = `${CONFIG.DND5E.abilities["str"].label} DC${saveDC} ${optionName}`;
         let saveRoll = await targetToken.actor.rollAbilitySave("str", {flavor: saveFlavor, damageType: "thunder"});
         if (saveRoll.total < saveDC) {

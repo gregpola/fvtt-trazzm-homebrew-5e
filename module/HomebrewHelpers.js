@@ -361,7 +361,7 @@ class HomebrewHelpers {
         let spellDC;
         let scaling = item.system.save.scaling;
         if (scaling === 'spell') {
-            spellDC = item.actor.system.attributes.spelldc;
+            spellDC = item.actor.system.attributes.spell.dc;
         } else {
             spellDC = item.actor.system.abilities[scaling].dc;
         }
@@ -855,7 +855,7 @@ class HomebrewHelpers {
                 const templateRegion = canvas.scene?.regions?.get(templateRegionId.substring(templateRegionId.lastIndexOf(".") + 1));
                 if (templateRegion) {
                     // store the spell data in the region
-                    const spelldc = casterToken.actor.system.attributes.spelldc ?? 12;
+                    const spelldc = casterToken.actor.system.attributes.spell.dc ?? 12;
 
                     await templateRegion.setFlag('world', regionFlag, {
                         castLevel: castLevel,
@@ -1106,5 +1106,46 @@ class HomebrewHelpers {
         });
 
         await canvas.scene.createEmbeddedDocuments("Wall", wallsData);
+    }
+
+    static async pickTarget(possibleTargets, pickDescription) {
+        const targetContent = possibleTargets
+            .map((t) => {
+                return `<option value='${t.id}'>${t.name}</option>`;
+            })
+            .join("");
+
+        const content = `
+		  <form>
+			<div class="flexcol">
+				<div class="flexrow" style="margin-bottom: 10px;"><label>${pickDescription}</label></div>
+				<div class="flexrow"><select name="secondaryTargetId">${targetContent}</select></div>
+			</div>
+		  </form>`;
+
+        //const content = `<div class="form-group"><p>${pickDescription}</p><br /><p><select name="secondaryTargetId">${targetContent}</select></p></div>`;
+
+        const targetId = await foundry.applications.api.DialogV2.confirm({
+            window: {
+                title: 'Pick a Target',
+            },
+            content: content,
+            yes: {
+                callback: (event, button, dialog) => {
+                    return button.form.elements.secondaryTargetId.value;
+                }
+            },
+            rejectClose: false,
+            modal: true,
+            position: {
+                width: 400
+            }
+        });
+
+        if (targetId) {
+            return canvas.tokens.get(targetId);
+        }
+
+        return null;
     }
 }

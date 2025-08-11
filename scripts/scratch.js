@@ -26,7 +26,7 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType))
 		const characterLevel = actor.type === "character" ? actor.system.details.level : actor.system.details.cr;
 		const rogueLevels = actor.getRollData().classes?.rogue?.levels;
 		const pb = actor.system.attributes.prof;
-		const actorDC = actor.system.attributes.spelldc ?? 12;
+		const actorDC = actor.system.attributes.spell.dc ?? 12;
 		const spellcastingAbility = actor.system.attributes.spellcasting;
 		const abilityBonus = actor.system.attributes.spellmod;
 		const spellLevel = workflow.castData.castLevel;
@@ -52,6 +52,9 @@ flags.dae.rest-recovery.force.maximiseHitDieRoll
 foundry.utils.getProperty(actor, CONSTANTS.FLAGS.DAE.MAXIMISE_HIT_DIE_ROLL);
 
 flags.automated-conditions-5e.save.advantage | Custom | riderStatuses.charmed || riderStatuses.frightened
+radius=30; allies; bonus=1d4; radiant; !isSpell
+['mwak', 'rwak'].some(type => actionType[type])
+
 
 
 		const _flagGroup = "fvtt-trazzm-homebrew-5e";
@@ -85,12 +88,12 @@ flags.automated-conditions-5e.save.advantage | Custom | riderStatuses.charmed ||
 		const sourceToken = await MidiQOL.tokenForActor(sourceActor);
 		const userID = MidiQOL.playerForActor(target.actor)?.active?.id ?? game.users.activeGM?.id;
 
-		const config = { undefined, ability: "wis", target: actor.system.attributes.spelldc };
+		const config = { undefined, ability: "wis", target: actor.system.attributes.spell.dc };
 		const dialog = {};
 		const message = { data: { speaker: ChatMessage.implementation.getSpeaker({ actor: targetToken.actor }) } };
 		let saveResult = await targetToken.actor.rollSavingThrow(config, dialog, message);
 		if (!saveResult[0].isSuccess) {
-			await applyEffects(targetToken, actor.system.attributes.spelldc, spellLevel);
+			await applyEffects(targetToken, actor.system.attributes.spell.dc, spellLevel);
 		}
 
 		let targetToken = macroActivity.targets.first();
@@ -99,8 +102,8 @@ flags.automated-conditions-5e.save.advantage | Custom | riderStatuses.charmed ||
 		}
 
 		// Overtime setup to remove a condition on save
-		turn=end, saveAbility=wis, saveDC=@attributes.spelldc, label=Wrathful Smite
-		turn = start, rollType = save, saveAbility = con, saveDamage = halfdamage, saveRemove = false, saveMagic = true, damageType = radiant, damageRoll = (@spellLevel)d10, saveDC = @attributes.spelldc
+		turn=end, saveAbility=wis, saveDC=@attributes.spell.dc, label=Wrathful Smite
+		turn = start, rollType = save, saveAbility = con, saveDamage = halfdamage, saveRemove = false, saveMagic = true, damageType = radiant, damageRoll = (@spellLevel)d10, saveDC = @attributes.spell.dc
 		turn = end, saveAbility = wis, saveDC = 19, label = Frightened
 		label=Watery Grapple, turn = start, damageType = bludgeoning, damageRoll = 2d8
 

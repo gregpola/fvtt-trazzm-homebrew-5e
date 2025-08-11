@@ -11,20 +11,20 @@
     As a Bonus Action on your later turns, you can change the direction in which the Line blasts from you.
 */
 const optionName = "Gust of Wind";
-const version = "12.4.0";
+const version = "12.4.2";
 
 let targetToken = event.data.token;
 if (targetToken) {
     const originActor = await fromUuid(region.flags['region-attacher'].actorUuid);
-    //const sourceItem = await fromUuid(region.flags['region-attacher'].itemUuid);
 
     let targetCombatant = game.combat.getCombatantByToken(targetToken);
     if (targetCombatant) {
-        const saveDC = originActor.system.attributes.spelldc;
-        const saveFlavor = `${CONFIG.DND5E.abilities["con"].label} DC${saveDC} ${optionName}`;
-
-        let saveRoll = await targetToken.actor.rollAbilitySave("con", {flavor: saveFlavor});
-        if (saveRoll.total < saveDC) {
+        const saveDC = originActor.system.attributes.spell.dc;
+        const config = { undefined, ability: "str", target: saveDC };
+        const dialog = {};
+        const message = { data: { speaker: ChatMessage.implementation.getSpeaker({ actor: targetToken.actor }) } };
+        let saveResult = await targetToken.actor.rollSavingThrow(config, dialog, message);
+        if (!saveResult[0].isSuccess) {
             const attackerToken = MidiQOL.tokenForActor(originActor);
             const pushedToken = MidiQOL.tokenForActor(targetCombatant.actor);
             await HomebrewMacros.pushTarget(attackerToken, pushedToken, 3);

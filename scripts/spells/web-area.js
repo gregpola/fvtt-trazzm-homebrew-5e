@@ -16,7 +16,7 @@
     any creature that starts its turn in the fire.
  */
 const optionName = "Web";
-const version = "12.4.1";
+const version = "12.4.2";
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
 const _flagName = "webEscapeDC";
 const escapeItemId = "Compendium.fvtt-trazzm-homebrew-5e.trazzm-automation-items-2024.Item.Imsl1sUXsDadBB4a";
@@ -40,7 +40,7 @@ if (targetToken) {
             const flagName = `web-${originActor.id}`;
             if (HomebrewHelpers.perTurnCheck(targetCombatant, flagName, event.name)) {
                 // roll saving throw
-                const saveDC = originActor.system.attributes.spelldc ?? 12;
+                const saveDC = originActor.system.attributes.spell.dc ?? 12;
                 const config = { undefined, ability: "dex", target: saveDC };
                 const dialog = {};
                 const message = { data: { speaker: ChatMessage.implementation.getSpeaker({ actor: targetToken.actor }) } };

@@ -15,7 +15,7 @@ try {
         const spellLevel = actor.flags["fvtt-trazzm-homebrew-5e"].SearingSmite.level ?? 1;
         const diceCount = spellLevel;
 
-        await applySearing(targetToken, actor.system.attributes.spelldc, spellLevel);
+        await applySearing(targetToken, actor.system.attributes.spell.dc, spellLevel);
 
         return new game.system.dice.DamageRoll(`${diceCount}d6`, {}, {
             isCritical: workflow.isCritical,
