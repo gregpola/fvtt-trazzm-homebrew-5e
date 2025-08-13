@@ -1,15 +1,15 @@
 {
   "configSettings": {
     "addChatDamageButtons": "gm",
-    "addDead": "none",
+    "addDead": "overlay",
     "addFakeDice": false,
     "addWounded": 0,
     "addWoundedStyle": "none",
     "activityNamePrefix": true,
-    "activationAutomation": "chat",
+    "activationAutomation": "auto",
     "midiWoundedCondition": "none",
-    "midiDeadCondition": "none",
-    "midiUnconsciousCondition": "none",
+    "midiDeadCondition": "dead",
+    "midiUnconsciousCondition": "unconscious",
     "allowUseMacro": true,
     "allowActorUseMacro": true,
     "attackPerTarget": true,
@@ -92,8 +92,8 @@
     "confirmAttackDamage": "none",
     "highlightSuccess": false,
     "highLightCriticalAttackOnly": false,
-    "markPlayerDefeated": false,
-    "markNonPlayerDefeated": false,
+    "markPlayerDefeated": true,
+    "markNonPlayerDefeated": true,
     "optionalRulesEnabled": true,
     "paranoidGM": false,
     "playerRollSaves": "chat",
@@ -116,7 +116,14 @@
     "rollNPCSaves": "auto",
     "rollChecksBlind": [],
     "rollSavesBlind": [],
-    "rollSkillsBlind": [],
+    "rollSkillsBlind": [
+      "dec",
+      "ins",
+      "inv",
+      "prc",
+      "slt",
+      "ste"
+    ],
     "saveStatsEvery": 20,
     "showDSN": true,
     "showFastForward": false,
@@ -134,9 +141,9 @@
     "useCustomSounds": true,
     "usePlayerPortrait": false,
     "useTokenNames": false,
-    "undoChatColor": "Delete",
+    "undoChatColor": "Beige",
     "undoWorkflow": false,
-    "useDamageDetail": false,
+    "useDamageDetail": true,
     "weaponHitSound": "",
     "weaponUseSound": "",
     "weaponUseSoundRanged": "",
@@ -229,8 +236,8 @@
     "exportSource": {
       "system": "dnd5e",
       "coreVersion": "13.347",
-      "systemVersion": "5.0.4",
-      "midiVersion": "13.0.12"
+      "systemVersion": "5.1.0",
+      "midiVersion": "13.0.13"
     }
   }
 }

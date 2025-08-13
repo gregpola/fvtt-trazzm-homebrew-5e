@@ -318,17 +318,7 @@
         "compatibility": {}
       },
       {
-        "id": "stealthy",
-        "type": "module",
-        "compatibility": {}
-      },
-      {
         "id": "tokenmagic",
-        "type": "module",
-        "compatibility": {}
-      },
-      {
-        "id": "vision-5e",
         "type": "module",
         "compatibility": {}
       },
@@ -370,6 +360,16 @@
       },
       {
         "id": "rest-recovery",
+        "type": "module",
+        "compatibility": {}
+      },
+      {
+        "id": "stealthy",
+        "type": "module",
+        "compatibility": {}
+      },
+      {
+        "id": "vision-5e",
         "type": "module",
         "compatibility": {}
       },

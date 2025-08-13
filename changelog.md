@@ -4,3 +4,6 @@
 # 13.5.1
 * Updates for 12.4.21
 * Work on getting the settings properly configured
+
+# 13.5.2
+* 
