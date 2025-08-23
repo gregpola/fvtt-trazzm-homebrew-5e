@@ -1,10 +1,10 @@
 const optionName = "Separate Sword";
-const version = "12.4.1";
+const version = "12.4.2";
 const bahamutId = "Compendium.fvtt-trazzm-homebrew-5e.homebrew-princes-of-the-apocalypse.Item.9xUXlw88DPI5NUrU";
 const tiamatId = "Compendium.fvtt-trazzm-homebrew-5e.homebrew-princes-of-the-apocalypse.Item.8VtQoSRWJoqLcSoO";
 
 try {
-    if (args[0].macroPass === "postActiveEffects") {
+    if (args[0].macroPass === "postActiveEffects" && rolledActivity.name === optionName) {
         const actorItem = actor.items.find(i => i.name === item.name);
         if (actorItem) {
             await actor.deleteEmbeddedDocuments('Item', [actorItem.id]);

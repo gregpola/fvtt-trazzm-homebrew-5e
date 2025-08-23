@@ -10,7 +10,7 @@
 
     Using a Higher-Level Spell Slot. The damage increases by 1d8 for each spell slot level above 3.
 */
-const version = "12.4.2";
+const version = "12.4.3";
 const optionName = "Spirit Guardians";
 
 try {
@@ -48,7 +48,7 @@ try {
 
         // ignore friendlies
         let sourceDisposition = CONST.TOKEN_DISPOSITIONS.FRIENDLY;
-        const sourceToken = canvas.scene.tokens.find(t => t.actor.id === originActor.id);
+        const sourceToken = canvas.scene.tokens.find(t => t.actor.id === sourceItem.parent.id);
         if (sourceToken) {
             sourceDisposition = sourceToken.disposition;
         }

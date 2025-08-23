@@ -196,3 +196,12 @@
 * Updated Xenn's swords
 * Fixed Fighter to grant the homebrew Tactical Master
 * Fixed Ensnaring Strike, Hold Monster, Hold Person, and Immolation spells
+
+# 12.4.22
+* Added Dungeons of Drakkenheim subclass Malfeasant
+* Added Font of Inspiration to fix the broken link to Bardic Inspiration
+* Added Cutting Words to fix the broken link to Bardic Inspiration
+* Added Conjure Woodland Beings, Evard's Black Tentacles, Fireball, Flaming Sphere, Fount of Moonlight, Maximilian's Earthen Grasp, Shatter, and Snilloc's Snowball Swarm spells
+* Updated Acid Splash, Create Bonfire, Erupting Earth, Ice Knife, and Spirit Guardians spells
+* Fixed Weapon Mastery not working for Topple and Push. No actor update needed.
+* Fixed Xenn's swords
