@@ -139,8 +139,7 @@ class HomebrewMacros {
 
         const squares = maxSquares ? maxSquares : 1;
         const distance = 5 * squares;
-        let ray = new Ray(pusherToken.center, targetToken.center);
-        await HomebrewMacros.moveTokenAlongRay(targetToken, ray, distance);
+        await MidiQOL.moveTokenAwayFromPoint(targetToken, distance, pusherToken.center);
     }
 
     static async moveTokenAlongRay(targetToken, origRay, distance) {
@@ -169,6 +168,7 @@ class HomebrewMacros {
         newCenter = canvas.grid.getSnappedPoint({x: newCenter.x - targetToken.w / 2, y: newCenter.y - targetToken.h / 2}, {mode: 0xFF0});
         await targetToken.document.update({ x: newCenter?.x ?? 0, y: newCenter?.y ?? 0 }, { animate: true });
     }
+
 
     /**
      * Flings the target maxSquares number of squares away from where it is in a random direction

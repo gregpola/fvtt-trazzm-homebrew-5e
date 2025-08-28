@@ -1,17 +1,15 @@
 /*
-    Protective spirits flit around you in a 15-foot Emanation for the duration. If you are good or neutral, their
-    spectral form appears angelic or fey (your choice). If you are evil, they appear fiendish.
+    You conjure nature spirits that flit around you in a 10-foot Emanation for the duration. Whenever the Emanation
+    enters the space of a creature you can see and whenever a creature you can see enters the Emanation or ends its turn
+    there, you can force that creature to make a Wisdom saving throw. The creature takes 5d8 Force damage on a failed
+    save or half as much damage on a successful one. A creature makes this save only once per turn.
 
-    When you cast this spell, you can designate creatures to be unaffected by it. Any other creature’s Speed is halved
-    in the Emanation, and whenever the Emanation enters a creature’s space and whenever a creature enters the Emanation
-    or ends its turn there, the creature must make a Wisdom saving throw. On a failed save, the creature takes 3d8
-    Radiant damage (if you are good or neutral) or 3d8 Necrotic damage (if you are evil). On a successful save, the
-    creature takes half as much damage. A creature makes this save only once per turn.
+    In addition, you can take the Disengage action as a Bonus Action for the spell’s duration.
 
-    Using a Higher-Level Spell Slot. The damage increases by 1d8 for each spell slot level above 3.
+    Using a Higher-Level Spell Slot. The damage increases by 1d8 for each spell slot level above 4.
 */
-const version = "12.4.3";
-const optionName = "Spirit Guardians";
+const optionName = "Conjure Woodland Beings";
+const version = "12.4.0";
 
 try {
     let targetToken;
@@ -20,6 +18,7 @@ try {
     let eventName = 'tokenEnter';
 
     if (args[0] === "on") {
+
         if ((typeof midiData !== 'undefined') && midiData.workflowOptions && midiData.workflowOptions.isOverTime) {
             targetToken = workflow.effectTargets.first().document;
             originActor = actor;
@@ -67,10 +66,10 @@ async function applySpellDamage(targetToken, originActor, sourceItem, eventName)
     if (targetToken) {
         let targetCombatant = game.combat.getCombatantByToken(targetToken);
         if (targetCombatant) {
-            const flagName = `spirit-guardians-${originActor.id}`;
+            const flagName = `woodland-beings-${originActor.id}`;
             if (HomebrewHelpers.perTurnCheck(targetCombatant, flagName, eventName)) {
                 // synthetic activity use
-                const activity = sourceItem.system.activities.find(a => a.identifier === 'apply-damage');
+                const activity = sourceItem.system.activities.find(a => a.identifier === 'woodland-beings-damage');
                 if (activity) {
                     await HomebrewHelpers.setTurnCheck(targetCombatant, flagName);
                     let targetUuids = [targetToken.uuid];
@@ -90,7 +89,8 @@ async function applySpellDamage(targetToken, originActor, sourceItem, eventName)
                             workflowData: true
                         }
                     };
-                    let activityUse = await MidiQOL.completeActivityUse(activity.uuid, options, {}, {});
+
+                    await MidiQOL.completeActivityUse(activity.uuid, options, {}, {});
                 }
             }
         }

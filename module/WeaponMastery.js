@@ -269,7 +269,8 @@ export class WeaponMastery {
                             const saveFlavor = `${CONFIG.DND5E.abilities["con"].label} DC${saveDC} Topple`;
                             let saveRoll = await targetToken.actor.rollAbilitySave("con", {flavor: saveFlavor});
                             if (saveRoll.total < saveDC) {
-                                await targetToken.actor.toggleStatusEffect('prone', {active: true});
+                                MidiQOL.socket().executeAsGM('toggleStatusEffect',
+                                    {actorUuid: targetToken.actor.uuid, statusId: 'prone', options: {active:true}});
                             }
                         }
                     }
