@@ -1,7 +1,3 @@
-2025/08/13-16:11:56.905 8230 Recovering log #814
-2025/08/13-16:11:56.940 8230 Delete type=0 #814
-2025/08/13-16:11:56.942 8230 Delete type=3 #812
-2025/08/13-16:12:21.057 8cd4 Level-0 table #819: started
-2025/08/13-16:12:21.058 8cd4 Level-0 table #819: 0 bytes OK
-2025/08/13-16:12:21.067 8cd4 Delete type=0 #817
-2025/08/13-16:12:21.089 8cd4 Manual compaction at level-0 from 'undefined' @ 72057594037927935 : 1 .. 'undefined' @ 0 : 0; will stop at (end)
+2025/08/13-16:12:57.835 804c Recovering log #818
+2025/08/13-16:12:57.866 804c Delete type=0 #818
+2025/08/13-16:12:57.868 804c Delete type=3 #816

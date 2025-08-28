@@ -1,3 +1,14 @@
-2025/08/13-16:12:57.164 89e0 Recovering log #1116
-2025/08/13-16:12:57.182 89e0 Delete type=0 #1116
-2025/08/13-16:12:57.183 89e0 Delete type=3 #1114
+2025/08/28-12:00:46.163 abe4 Recovering log #1119
+2025/08/28-12:00:46.178 abe4 Delete type=0 #1119
+2025/08/28-12:00:46.178 abe4 Delete type=3 #1118
+2025/08/28-13:38:13.876 1012c Level-0 table #1123: started
+2025/08/28-13:38:13.879 1012c Level-0 table #1123: 5549 bytes OK
+2025/08/28-13:38:13.888 1012c Delete type=0 #1121
+2025/08/28-13:38:13.890 1012c Manual compaction at level-0 from '!folders!7zo2bljGLQY3uwXI' @ 72057594037927935 : 1 .. '!items.effects!zu5VrJV1XHd20wol.wsWtrfg3dhPNok1C' @ 0 : 0; will stop at '!items.effects!phbfstGreatWeapo.szkqXl0Um05R3Y5L' @ 1674 : 1
+2025/08/28-13:38:13.890 1012c Compacting 1@0 + 1@1 files
+2025/08/28-13:38:13.929 1012c Generated table #1124@0: 182 keys, 202146 bytes
+2025/08/28-13:38:13.929 1012c Compacted 1@0 + 1@1 files => 202146 bytes
+2025/08/28-13:38:13.936 1012c compacted to: files[ 0 1 0 0 0 0 0 ]
+2025/08/28-13:38:13.937 1012c Delete type=2 #1045
+2025/08/28-13:38:13.937 1012c Delete type=2 #1123
+2025/08/28-13:38:13.986 1012c Manual compaction at level-0 from '!items.effects!phbfstGreatWeapo.szkqXl0Um05R3Y5L' @ 1674 : 1 .. '!items.effects!zu5VrJV1XHd20wol.wsWtrfg3dhPNok1C' @ 0 : 0; will stop at (end)

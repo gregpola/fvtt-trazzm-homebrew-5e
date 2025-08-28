@@ -39,7 +39,9 @@ Hooks.once("ready", async () => {
     if (foundry.utils.isNewerVersion(currentVersion, lastVersion)) {
         const journal = await fromUuid("Compendium.fvtt-trazzm-homebrew-5e.homebrew-journal-entries.JournalEntry.L9YHsoeODbdhqdKU");
         const page = journal.pages.contents.find(p => p.name === currentVersion);
-        journal.sheet.render(true, {pageId: page.id});
+        if (page) {
+            journal.sheet.render(true, {pageId: page.id});
+        }
         game.settings.set("fvtt-trazzm-homebrew-5e", "lastVersion", currentVersion)
     }
 });
