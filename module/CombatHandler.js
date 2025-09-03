@@ -39,75 +39,14 @@ export class CombatHandler {
             }
 
             // no use cases for backwards change
-            if (context.direction < 1) {
-                console.log("updateCombat - skipped - backwards")
-                return;
-            }
+            const isBackwards = (context.direction < 1);
 
             // store the prior combatant id
             const lastCombatantId = combat.previous?.combatantId;
 
-            // first handle legendary actions, since they happen at the end of the prior combatant's turn
-            let legendaryCombatants = CombatHandler.filterForLegendaryActions(combat);
-            if (legendaryCombatants && legendaryCombatants.length > 0) {
-                let legendaryActionData = new Map();
-
-                for (let legendaryData of legendaryCombatants) {
-                    if (legendaryData.combatant.id !== lastCombatantId) {
-                        let usesLeft = legendaryData.legendaryResource.value ?? 0;
-
-                        if (usesLeft > 0) {
-                            // get the available legendary actions with a cost the actor can pay
-                            let legendaryOptions = legendaryData.combatant.actor.items.filter(i => i.system.activation.type === 'legendary' && i.system.activation.cost <= usesLeft);
-                            if (legendaryOptions && legendaryOptions.length > 0) {
-                                let legendaryParams = {
-                                    "combatant": legendaryData.combatant,
-                                    "actionPoints": usesLeft,
-                                    "actions": legendaryOptions
-                                }
-
-                                // get the player to prompt
-                                let playerId;
-                                let player = MidiQOL.playerForActor(legendaryData.combatant.actor);
-                                if (player && player.active) {
-                                    playerId = player.id;
-                                }
-                                else {
-                                    playerId = game.users.activeGM.id;
-                                }
-
-                                if (playerId) {
-                                    if (legendaryActionData.has(playerId)) {
-                                        let data = legendaryActionData.get(playerId);
-                                        data.push(legendaryParams);
-                                        legendaryActionData.set(playerId, data);
-                                    }
-                                    else {
-                                        legendaryActionData.set(playerId, [legendaryParams]);
-                                    }
-                                }
-                            }
-                            else {
-                                console.log("Legendary actions skipped for: " + legendaryData.combatant.name + " -- no options available this turn");
-                            }
-                        }
-                        else {
-                            console.log("Legendary actions skipped for: " + legendaryData.combatant.name + " -- no uses left");
-                        }
-                    }
-                }
-
-                legendaryActionData.forEach(async function(value, key) {
-                    await game.trazzm.socket.executeAsUser("doLegendaryAction", key, value);
-                });
-
-                // After notifying of all legendary actions available, check for recharge of the current combatant
-                await HomebrewHelpers.rechargeLegendaryActions(combat?.combatant?.actor);
-            }
-
             // check for any turn start options
             let turnStartOptions = await CombatHandler.hasTurnStartOption(combat?.combatant);
-            if (turnStartOptions) {
+            if (turnStartOptions && !isBackwards) {
                 // get the player to prompt
                 let player = MidiQOL.playerForActor(combat.combatant.actor);
                 if (player && player.active) {
@@ -119,7 +58,7 @@ export class CombatHandler {
             }
 
             let actor = combat?.combatant?.actor;
-            if (actor) {
+            if (actor && !isBackwards) {
                 // check for regeneration
                 await checkForRegeneration(actor);
                 await handleRegeneration(combat, update, context);
@@ -151,6 +90,19 @@ export class CombatHandler {
                     });
                 }
             }
+
+            // select the token
+            if (combat && combat.started && combat?.combatant?.token?.isOwner){ // && setting('select-combatant')) {
+                combat?.combatant?.token?._object?.control();
+            }
+
+            // pan to combatant
+            if (combat && combat.started && combat?.combatant?.token && game.settings.get(_flagGroup, "pan-to-combatant")) {
+                if (canvas.dimensions.rect.contains(combat?.combatant?.token.x, combat?.combatant?.token.y)) {
+                    canvas.animatePan({ x: combat?.combatant?.token.x, y: combat?.combatant?.token.y });
+                }
+            }
+
         });
 
         Hooks.on("preUpdateActor", async (actor, change, options, user) => {

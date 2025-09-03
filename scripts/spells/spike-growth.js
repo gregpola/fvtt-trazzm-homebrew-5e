@@ -15,30 +15,27 @@
 	is cast must take a Search action and succeed on a Wisdom (Perception) or Wisdom (Survival) check against your spell
 	save DC to recognize the terrain as hazardous before entering it.
 */
-const version = "12.4.1";
+const version = "13.5.0";
 const optionName = "Spike Growth";
 
-// Move within
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+try {
+    if (args[0].macroPass === "preItemRoll") {
+        Hooks.once("createMeasuredTemplate", async (template) => {
+            // look for visibility and region
+            await template.update({
+                fillColor: 0,
+                fillAlpha: 0,
+                alpha: 0,
+                opacity: 0.1
+            });
+        });
 
-console.log("Spike Growth -- " + event.user.name);
-if (!event.data.teleport) {
-	const startPoint = {x: event.data.segments[0].from.x, y: event.data.segments[0].from.y};
-	const endPoint = {x: event.data.segments[0].to.x, y: event.data.segments[0].to.y};
-	const distanceMoved = canvas.grid.measureDistance(startPoint, endPoint, {gridSpaces: true});
-	const squaresMoved = distanceMoved / 5;
+        Hooks.once("createRegion", async (region) => {
+            // look for visibility and region
+            await region.update({'visibility': 0});
+        });
+    }
 
-	if (squaresMoved > 0) {
-		const originActor = await fromUuid(region.flags['region-attacher'].actorUuid);
-		const originToken = await MidiQOL.tokenForActor(originActor);
-
-		const sourceToken = event.data.token;
-		//const sourceActor = event.data.token.actor;
-		const diceCount = squaresMoved * 2;
-		const itemUuid = region.getFlag('region-attacher', 'itemUuid');
-		const sourceItem = await fromUuid(itemUuid);
-		const damageRoll = await new CONFIG.Dice.DamageRoll(`${diceCount}d4`, {}, {type: 'piercing'}).evaluate();
-		await new MidiQOL.DamageOnlyWorkflow(originActor, originToken, null, null, [sourceToken], damageRoll, {flavor: 'Pierced by spikes', itemCardId: "new", itemData: sourceItem?.toObject()});
-		await new Sequence().effect().file("jb2a.swirling_leaves.loop.01.green").atLocation(sourceToken).scaleToObject(1.5).play();
-	}
+} catch (err) {
+    console.error(`${optionName}: ${version}`, err);
 }

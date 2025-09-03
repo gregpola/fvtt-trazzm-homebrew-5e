@@ -12,6 +12,8 @@ import {registerSettings} from './settings.js';
 import {doTurnStartOptions} from "./utils.js";
 import {doLegendaryAction} from "./utils.js";
 import {doUpdateTemplate} from "./utils.js";
+import {drawAmbientLight} from "./utils.js";
+import {removeAmbientLight} from "./utils.js";
 
 const SUB_MODULES = {
     CombatHandler,
@@ -54,6 +56,8 @@ Hooks.once('socketlib.ready', async function() {
     game.trazzm.socket.register('doTurnStartOptions', doTurnStartOptions);
     game.trazzm.socket.register('doLegendaryAction', doLegendaryAction);
     game.trazzm.socket.register('updateTemplate', doUpdateTemplate);
+    game.trazzm.socket.register('drawAmbientLight', drawAmbientLight);
+    game.trazzm.socket.register('removeAmbientLight', removeAmbientLight);
 });
 
 /**

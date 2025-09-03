@@ -4,8 +4,6 @@
 */
 const version = "12.4.1";
 const optionName = "Darkness";
-const _flagGroup = "fvtt-trazzm-homebrew-5e";
-const templateFLag = "darkness-template-uuid";
 
 const TEMPLATE_DARK_LIGHT = {
     "negative": true,
@@ -36,67 +34,61 @@ const TEMPLATE_DARK_LIGHT = {
 try {
     if (args[0].macroPass === "preItemRoll") {
         Hooks.once("createMeasuredTemplate", async (template) => {
-            let radius = canvas.grid.size * (template.distance / canvas.grid.distance);
-            await actor.setFlag(_flagGroup, templateFLag, {templateUuid: template.uuid, radius: radius, x: template.x, y: template.y});
+            // look for visibility and region
+            await template.update({
+                fillColor: 0,
+                fillAlpha: 0,
+                alpha: 0,
+                opacity: 0.1
+            });
+
+            await drawAmbientLight(template, actor);
         });
-    }
-    else if (args[0] === "on") {
-        let flag = actor.getFlag(_flagGroup, templateFLag);
-        if (flag) {
-            const template = await fromUuidSync(flag.templateUuid);
-            if (template) {
-                const config = TEMPLATE_DARK_LIGHT;
-                config.radius = flag.radius;
 
-                const lightTemplate = {
-                    x: flag.x,
-                    y: flag.y,
-                    rotation: 0,
-                    walls: false,
-                    vision: false,
-                    config,
-                    hidden: false,
-                    flags: {
-                        spellEffects: {
-                            Darkness: {
-                                ActorId: actor.uuid,
-                            },
-                        },
-                        "perfect-vision": {
-                            resolution: 1,
-                            visionLimitation: {
-                                enabled: true,
-                                sight: 0,
-                                detection: {
-                                    feelTremor: null,
-                                    seeAll: null,
-                                    seeInvisibility: 0,
-                                    senseAll: null,
-                                    senseInvisibility: null,
-                                },
-                            },
-                        },
-                    },
-                };
-                await canvas.scene.createEmbeddedDocuments("AmbientLight", [lightTemplate]);
-                await canvas.scene.deleteEmbeddedDocuments("MeasuredTemplate", [template.id]);
-            }
-        }
-    }
-    else if (args[0] === "off") {
-        const darkLights = canvas.lighting.placeables.filter((w) => w.document.flags?.spellEffects?.Darkness?.ActorId === actor.uuid);
-        const lightArray = darkLights.map((w) => w.id);
-
-        if (lightArray.length > 0) {
-            await canvas.scene.deleteEmbeddedDocuments("AmbientLight", lightArray);
-        }
-
-        let flag = actor.getFlag(_flagGroup, templateFLag);
-        if (flag) {
-            await actor.unsetFlag(_flagGroup, templateFLag);
-        }
+        Hooks.once("createRegion", async (region) => {
+            // look for visibility and region
+            await region.update({'visibility': 0});
+        });
     }
 
 } catch (err) {
-    console.error(`${optionName} : ${version}`, err);
+    console.error(`${optionName}: ${version}`, err);
+}
+
+async function drawAmbientLight(template, actor) {
+    const config = TEMPLATE_DARK_LIGHT;
+    config.bright = template.distance - 2;
+
+    const lightTemplate = {
+        x: template.x,
+        y: template.y,
+        rotation: 0,
+        walls: false,
+        vision: false,
+        config,
+        hidden: false,
+        flags: {
+            spellEffects: {
+                Darkness: {
+                    ActorId: actor.uuid,
+                },
+            },
+            "perfect-vision": {
+                resolution: 1,
+                visionLimitation: {
+                    enabled: true,
+                    sight: 0,
+                    detection: {
+                        feelTremor: null,
+                        seeAll: null,
+                        seeInvisibility: 0,
+                        senseAll: null,
+                        senseInvisibility: null,
+                    },
+                },
+            },
+        },
+    };
+
+    await game.trazzm.socket.executeAsGM("drawAmbientLight", lightTemplate);
 }

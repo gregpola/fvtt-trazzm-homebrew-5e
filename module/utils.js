@@ -32,6 +32,19 @@ export async function doUpdateTemplate(templateUuid, updates = {}) {
     }
 }
 
+export async function drawAmbientLight(lightTemplate) {
+    await canvas.scene.createEmbeddedDocuments("AmbientLight", [lightTemplate]);
+}
+
+export async function removeAmbientLight(name, actor) {
+    const ambientLights = canvas.lighting.placeables.filter((w) => w.document.flags?.spellEffects?.[name]?.ActorId === actor.uuid);
+    const lightArray = ambientLights.map((w) => w.id);
+
+    if (lightArray.length > 0) {
+        await canvas.scene.deleteEmbeddedDocuments("AmbientLight", lightArray);
+    }
+}
+
 /**
  * A dialog to show options at the start of a combatants turn.
  *

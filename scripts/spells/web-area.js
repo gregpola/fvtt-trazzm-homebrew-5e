@@ -16,12 +16,11 @@
     any creature that starts its turn in the fire.
  */
 const optionName = "Web";
-const version = "12.4.2";
+const version = "13.5.0";
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
 const _flagName = "webEscapeDC";
 const escapeItemId = "Compendium.fvtt-trazzm-homebrew-5e.trazzm-automation-items-2024.Item.Imsl1sUXsDadBB4a";
 
-const combatTime = game.combat ? `${game.combat.id}-${game.combat.round + game.combat.turn / 100}` : 1;
 let targetToken = event.data.token;
 if (targetToken) {
     if (event.name === 'tokenExit') {
@@ -33,36 +32,39 @@ if (targetToken) {
         }
     }
     else {
-        const originActor = await fromUuid(region.flags['region-attacher'].actorUuid);
-        const targetCombatant = game.combat.getCombatantByToken(targetToken);
+        const sourceActorUuid = region.flags['region-attacher']?.actorUuid ?? undefined;
+        if (sourceActorUuid) {
+            const originActor = await fromUuid(sourceActorUuid);
+            const targetCombatant = game.combat.getCombatantByToken(targetToken);
 
-        if (targetCombatant) {
-            const flagName = `web-${originActor.id}`;
-            if (HomebrewHelpers.perTurnCheck(targetCombatant, flagName, event.name)) {
-                // roll saving throw
-                const saveDC = originActor.system.attributes.spell.dc ?? 12;
-                const config = { undefined, ability: "dex", target: saveDC };
-                const dialog = {};
-                const message = { data: { speaker: ChatMessage.implementation.getSpeaker({ actor: targetToken.actor }) } };
-                let saveResult = await targetToken.actor.rollSavingThrow(config, dialog, message);
-                await HomebrewHelpers.setTurnCheck(targetCombatant, flagName);
+            if (targetCombatant) {
+                const flagName = `web-${originActor.id}`;
+                if (HomebrewHelpers.perTurnCheck(targetCombatant, flagName, event.name)) {
+                    // roll saving throw
+                    const saveDC = originActor.system.attributes.spell.dc ?? 12;
+                    const config = { undefined, ability: "dex", target: saveDC };
+                    const dialog = {};
+                    const message = { data: { speaker: ChatMessage.implementation.getSpeaker({ actor: targetToken.actor }) } };
+                    let saveResult = await targetToken.actor.rollSavingThrow(config, dialog, message);
+                    await HomebrewHelpers.setTurnCheck(targetCombatant, flagName);
 
-                if (!saveResult[0].isSuccess) {
-                    await targetToken.actor.toggleStatusEffect('restrained', {active: true});
-                    ChatMessage.create({
-                        content: `${targetToken.name} is stuck in the webs`,
-                        speaker: ChatMessage.getSpeaker({actor: originActor})
-                    });
+                    if (!saveResult[0].isSuccess) {
+                        await targetToken.actor.toggleStatusEffect('restrained', {active: true});
+                        ChatMessage.create({
+                            content: `${targetToken.name} is stuck in the webs`,
+                            speaker: ChatMessage.getSpeaker({actor: originActor})
+                        });
 
-                    await targetToken.actor.setFlag(_flagGroup, _flagName, saveDC);
-                    let escapeItem = await fromUuid(escapeItemId);
-                    let tempItem = escapeItem.toObject();
-                    await actor.createEmbeddedDocuments('Item',[tempItem]);
-                }
-                else {
-                    const escapeItem = actor.items.find(i => i.name === 'Escape Webs');
-                    if (escapeItem) {
-                        await actor.deleteEmbeddedDocuments('Item', [escapeItem.id]);
+                        await targetToken.actor.setFlag(_flagGroup, _flagName, saveDC);
+                        let escapeItem = await fromUuid(escapeItemId);
+                        let tempItem = escapeItem.toObject();
+                        await actor.createEmbeddedDocuments('Item',[tempItem]);
+                    }
+                    else {
+                        const escapeItem = actor.items.find(i => i.name === 'Escape Webs');
+                        if (escapeItem) {
+                            await actor.deleteEmbeddedDocuments('Item', [escapeItem.id]);
+                        }
                     }
                 }
             }

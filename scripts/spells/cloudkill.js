@@ -9,7 +9,7 @@
 
     The Sphere moves 10 feet away from you at the start of each of your turns.
  */
-const version = "12.4.1";
+const version = "12.5.0";
 const optionName = "Cloudkill";
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
 const templateFLag = "cloudkill-template-uuid";
@@ -19,7 +19,7 @@ const TEMPLATE_DARK_LIGHT = {
     "priority": 0,
     "alpha": 0.1,
     "angle": 360,
-    "bright": 16,
+    "bright": 19,
     "color": null,
     "coloration": 1,
     "dim": 0,
@@ -43,7 +43,6 @@ const TEMPLATE_DARK_LIGHT = {
 try {
     if (args[0].macroPass === "preItemRoll") {
         Hooks.once("createMeasuredTemplate", async (template) => {
-            // look for visibility and region
             await template.update({
                 fillColor: 0,
                 fillAlpha: 0,
@@ -51,67 +50,30 @@ try {
                 opacity: 0.1
             });
 
-            let radius = canvas.grid.size * (template.distance / canvas.grid.distance);
-            await actor.setFlag(_flagGroup, templateFLag, {templateUuid: template.uuid, radius: radius, x: template.x, y: template.y});
+            await actor.setFlag(_flagGroup, templateFLag, {templateUuid: template.uuid});
+            await drawAmbientLight(template, actor);
         });
 
         Hooks.once("createRegion", async (region) => {
-            // look for visibility and region
-            await region.update({'visibility': 0});
+            await region.update({
+                visibility: 0,
+                flags: {
+                    spellEffects: {
+                        sourceItemUuid: item.uuid
+                    }
+                }
+            });
         });
-    }
-    else if (args[0] === "on") {
-        let flag = actor.getFlag(_flagGroup, templateFLag);
-        if (flag) {
-            const template = await fromUuidSync(flag.templateUuid);
+
+        const hookId = Hooks.on("deleteMeasuredTemplate", async (template) => {
             if (template) {
-                const config = TEMPLATE_DARK_LIGHT;
-                config.radius = flag.radius;
-
-                const lightTemplate = {
-                    x: flag.x,
-                    y: flag.y,
-                    rotation: 0,
-                    walls: false,
-                    vision: false,
-                    config,
-                    hidden: false,
-                    flags: {
-                        spellEffects: {
-                            Cloudkill: {
-                                ActorId: actor.uuid,
-                            },
-                        },
-                        "perfect-vision": {
-                            resolution: 1,
-                            visionLimitation: {
-                                enabled: true,
-                                sight: 0,
-                                detection: {
-                                    feelTremor: null,
-                                    seeAll: null,
-                                    seeInvisibility: 0,
-                                    senseAll: null,
-                                    senseInvisibility: null,
-                                },
-                            },
-                        },
-                    },
-                };
-                await canvas.scene.createEmbeddedDocuments("AmbientLight", [lightTemplate]);
+                const origin = fromUuidSync(template.flags.dnd5e.origin);
+                if (origin && (origin.actor === actor) && (origin.item.name === optionName)) {
+                    await game.trazzm.socket.executeAsGM("removeAmbientLight", 'Cloudkill', actor);
+                    Hooks.off("deleteMeasuredTemplate", hookId);
+                }
             }
-        }
-    }
-    else if (args[0] === "off") {
-        const lightArray = getAmbientLight(actor);
-        if (lightArray.length > 0) {
-            await canvas.scene.deleteEmbeddedDocuments("AmbientLight", lightArray);
-        }
-
-        let flag = actor.getFlag(_flagGroup, templateFLag);
-        if (flag) {
-            await actor.unsetFlag(_flagGroup, templateFLag);
-        }
+        });
     }
     else if (args[0] === "each") {
         // move the cloud
@@ -126,6 +88,7 @@ try {
                 } else {
                     newCenter = canvas.grid.getSnappedPoint(newCenter, {mode: CONST.GRID_SNAPPING_MODES.TOP_LEFT_CORNER});
                     await template.update({x: newCenter.x, y: newCenter.y});
+                    await game.trazzm.socket.executeAsGM("updateTemplate", template.uuid, {x: newCenter.x, y: newCenter.y});
 
                     const lightArray = getAmbientLight(actor);
                     for (let lightTemplate of lightArray) {
@@ -140,7 +103,45 @@ try {
     }
 
 } catch (err) {
-    console.error(`${optionName} : ${version}`, err);
+    console.error(`${optionName}: ${version}`, err);
+}
+
+async function drawAmbientLight(template, actor) {
+    const config = TEMPLATE_DARK_LIGHT;
+    config.bright = template.distance - 2;
+
+    const lightTemplate = {
+        x: template.x,
+        y: template.y,
+        rotation: 0,
+        walls: false,
+        vision: false,
+        config,
+        hidden: false,
+        flags: {
+            spellEffects: {
+                Cloudkill: {
+                    ActorId: actor.uuid,
+                },
+            },
+            "perfect-vision": {
+                resolution: 1,
+                visionLimitation: {
+                    enabled: true,
+                    sight: 0,
+                    detection: {
+                        feelTremor: null,
+                        seeAll: null,
+                        seeInvisibility: 0,
+                        senseAll: null,
+                        senseInvisibility: null,
+                    },
+                },
+            },
+        },
+    };
+
+    await game.trazzm.socket.executeAsGM("drawAmbientLight", lightTemplate);
 }
 
 function getAllowedMoveLocation(casterToken, template, maxSquares) {
@@ -158,6 +159,5 @@ function getAllowedMoveLocation(casterToken, template, maxSquares) {
 
 function getAmbientLight(actor) {
     const darkLights = canvas.lighting.placeables.filter((w) => w.document.flags?.spellEffects?.Cloudkill?.ActorId === actor.uuid);
-    const lightArray = darkLights.map((w) => w.id);
-    return lightArray;
+    return darkLights.map((w) => w.id);
 }

@@ -10,6 +10,15 @@ export function registerSettings() {
         default: "1.0.0"
     })
 
+    game.settings.register("fvtt-trazzm-homebrew-5e", "pan-to-combatant", {
+        name: "Pan to Combatant",
+        hint: "When your turn starts pan to the token you control",
+        scope: "client",
+        config: true,
+        default: true,
+        type: Boolean
+    });
+
     game.settings.register("fvtt-trazzm-homebrew-5e", "dead-walk", {
         name: "The Dead Walk (RotD)",
         hint: "All creatures that die have a 25% chance to immediately rise as a zombie",

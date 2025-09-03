@@ -2,7 +2,7 @@
 	
 */
 const optionName = "Precision";
-const version = "12.4.0";
+const version = "13.5.0";
 
 try {
 	if (args[0].macroPass === "postActiveEffects") {

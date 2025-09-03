@@ -6,9 +6,33 @@
     starts its turn there, it must succeed on a Dexterity saving throw or have the Prone condition and lose Concentration.
 */
 const optionName = "Sleet Storm";
-const version = "12.4.0";
-const _flagGroup = "fvtt-trazzm-homebrew-5e";
-const templateFLag = "sleet-storm-template-uuid";
+const version = "13.5.0";
+
+const TEMPLATE_DARK_LIGHT = {
+    "negative": true,
+    "priority": 0,
+    "alpha": 0.1,
+    "angle": 360,
+    "bright": 18,
+    "color": null,
+    "coloration": 1,
+    "dim": 0,
+    "attenuation": 0.75,
+    "luminosity": 0.75,
+    "saturation": 0,
+    "contrast": 0,
+    "shadows": 0,
+    "animation": {
+        "type": null,
+        "speed": 5,
+        "intensity": 5,
+        "reverse": false
+    },
+    "darkness": {
+        "min": 0,
+        "max": 1
+    }
+};
 
 try {
     if (args[0].macroPass === "preItemRoll") {
@@ -20,96 +44,64 @@ try {
                 alpha: 0,
                 opacity: 0.1
             });
-            let radius = canvas.grid.size * (template.distance / canvas.grid.distance);
-            await actor.setFlag(_flagGroup, templateFLag, {templateUuid: template.uuid, radius: radius, x: template.x, y: template.y});
+
+            await drawAmbientLight(template, actor);
         });
-    }
-    else if (args[0] === "on") {
-        let flag = actor.getFlag(_flagGroup, templateFLag);
-        if (flag) {
-            const template = await fromUuidSync(flag.templateUuid);
+
+        Hooks.once("createRegion", async (region) => {
+            // look for visibility and region
+            await region.update({'visibility': 0});
+        });
+
+        const hookId = Hooks.on("deleteMeasuredTemplate", async (template) => {
             if (template) {
-                const effectRadius = flag.radius * canvas.grid.distance / canvas.grid.size;
-
-                const config = {
-                    "negative": true,
-                    "priority": 0,
-                    "alpha": 0.1,
-                    "angle": 360,
-                    "bright": effectRadius - 2,
-                    "color": null,
-                    "coloration": 1,
-                    "dim": 0,
-                    "attenuation": 0.75,
-                    "luminosity": 0.75,
-                    "saturation": 0,
-                    "contrast": 0,
-                    "shadows": 0,
-                    "animation": {
-                        "type": null,
-                        "speed": 5,
-                        "intensity": 5,
-                        "reverse": false
-                    },
-                    "darkness": {
-                        "min": 0,
-                        "max": 1
-                    }
-                };
-                config.radius = flag.radius;
-
-                const lightTemplate = {
-                    x: flag.x,
-                    y: flag.y,
-                    rotation: 0,
-                    walls: false,
-                    vision: false,
-                    config,
-                    hidden: false,
-                    flags: {
-                        spellEffects: {
-                            SleetStorm: {
-                                ActorId: actor.uuid,
-                            },
-                        },
-                        "perfect-vision": {
-                            resolution: 1,
-                            visionLimitation: {
-                                enabled: true,
-                                sight: 0,
-                                detection: {
-                                    feelTremor: null,
-                                    seeAll: null,
-                                    seeInvisibility: 0,
-                                    senseAll: null,
-                                    senseInvisibility: null,
-                                },
-                            },
-                        },
-                    },
-                };
-                await canvas.scene.createEmbeddedDocuments("AmbientLight", [lightTemplate]);
+                const origin = fromUuidSync(template.flags.dnd5e.origin);
+                if (origin && (origin.actor === actor) && (origin.item.name === optionName)) {
+                    await game.trazzm.socket.executeAsGM("removeAmbientLight", 'SleetStorm', actor);
+                    Hooks.off("deleteMeasuredTemplate", hookId);
+                }
             }
-        }
-    }
-    else if (args[0] === "off") {
-        const lightArray = getAmbientLight(actor);
-        if (lightArray.length > 0) {
-            await canvas.scene.deleteEmbeddedDocuments("AmbientLight", lightArray);
-        }
-
-        let flag = actor.getFlag(_flagGroup, templateFLag);
-        if (flag) {
-            await actor.unsetFlag(_flagGroup, templateFLag);
-        }
+        });
     }
 
 } catch (err) {
-    console.error(`${optionName} : ${version}`, err);
+    console.error(`${optionName}: ${version}`, err);
 }
 
-function getAmbientLight(actor) {
-    const darkLights = canvas.lighting.placeables.filter((w) => w.document.flags?.spellEffects?.SleetStorm?.ActorId === actor.uuid);
-    const lightArray = darkLights.map((w) => w.id);
-    return lightArray;
+async function drawAmbientLight(template, actor) {
+    const config = TEMPLATE_DARK_LIGHT;
+    config.bright = template.distance - 2;
+
+    const lightTemplate = {
+        x: template.x,
+        y: template.y,
+        rotation: 0,
+        walls: false,
+        vision: false,
+        config,
+        hidden: false,
+        flags: {
+            spellEffects: {
+                SleetStorm: {
+                    ActorId: actor.uuid,
+                },
+            },
+            "perfect-vision": {
+                resolution: 1,
+                visionLimitation: {
+                    enabled: true,
+                    sight: 0,
+                    detection: {
+                        feelTremor: null,
+                        seeAll: null,
+                        seeInvisibility: 0,
+                        senseAll: null,
+                        senseInvisibility: null,
+                    },
+                },
+            },
+        },
+    };
+
+    await game.trazzm.socket.executeAsGM("drawAmbientLight", lightTemplate);
 }

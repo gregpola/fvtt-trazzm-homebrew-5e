@@ -16,31 +16,23 @@
     any creature that starts its turn in the fire.
  */
 const optionName = "Web";
-const version = "12.4.2";
-const _flagGroup = "fvtt-trazzm-homebrew-5e";
-const textureFile = "modules/JB2A_DnD5e/Library/2nd_Level/Web/Web_01_White_Thumb.webp";
+const version = "13.5.0";
+const escapeItemId = "Compendium.fvtt-trazzm-homebrew-5e.trazzm-automation-items-2024.Item.Imsl1sUXsDadBB4a";
 
 try {
-    if (rolledActivity?.name === "Cast") {
-        if (args[0].macroPass === "preItemRoll") {
-            Hooks.once("createMeasuredTemplate", async (template) => {
-                console.log(template);
-                await template.update({
-                    fillColor: 0,
-                    fillAlpha: 0,
-                    alpha: 0,
-                    opacity: 0.1,
-                    texture: textureFile
-                });
-
-                // await template.update({'fillColor': template.borderColor});
-                // await template.update({'texture': textureFile});
+    if (args[0].macroPass === "preItemRoll") {
+        Hooks.once("createMeasuredTemplate", async (template) => {
+            await template.update({
+                fillColor: 0,
+                fillAlpha: 0,
+                alpha: 0,
+                opacity: 0.1
             });
+        });
 
-            Hooks.once("createRegion", async (region) => {
-                await region.update({'visibility': 0});
-            });
-        }
+        Hooks.once("createRegion", async (region) => {
+            await region.update({'visibility': 0});
+        });
     }
 
 } catch (err) {
