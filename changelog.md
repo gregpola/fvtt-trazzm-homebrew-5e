@@ -13,7 +13,7 @@
 * Updated settings and module list exports
 
 # 13.5.3
-* Added Hunger of Hadar spells
+* Added Hunger of Hadar spell
 * Added auto token select on combat turn change
 * Added Pan to Combatant module setting
 * Added Blood Frenzy, Bloodied Frenzy, Magic Resistance, and Pack Tactics monster features
