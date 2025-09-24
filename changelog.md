@@ -205,3 +205,5 @@
 * Updated Acid Splash, Create Bonfire, Erupting Earth, Ice Knife, and Spirit Guardians spells
 * Fixed Weapon Mastery not working for Topple and Push. No actor update needed.
 * Fixed Xenn's swords
+
+FInal v12dnd4x release
