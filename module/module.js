@@ -7,6 +7,7 @@ import {WarlockFeatures} from "./WarlockFeatures.js";
 import {WizardFeatures} from "./WizardFeatures.js";
 import {SummonHelper} from "./SummonHelper.js";
 import {WeaponMastery} from "./WeaponMastery.js";
+import {MonsterMacros} from './MonsterMacros.js';
 import {macros} from './macros.js';
 import {registerSettings} from './settings.js';
 import {doTurnStartOptions} from "./utils.js";
@@ -14,6 +15,8 @@ import {doLegendaryAction} from "./utils.js";
 import {doUpdateTemplate} from "./utils.js";
 import {drawAmbientLight} from "./utils.js";
 import {removeAmbientLight} from "./utils.js";
+import {drawWalls} from "./utils.js";
+import {removeWalls} from "./utils.js";
 
 const SUB_MODULES = {
     CombatHandler,
@@ -58,6 +61,8 @@ Hooks.once('socketlib.ready', async function() {
     game.trazzm.socket.register('updateTemplate', doUpdateTemplate);
     game.trazzm.socket.register('drawAmbientLight', drawAmbientLight);
     game.trazzm.socket.register('removeAmbientLight', removeAmbientLight);
+    game.trazzm.socket.register('drawWalls', drawWalls);
+    game.trazzm.socket.register('removeWalls', removeWalls);
 });
 
 /**
@@ -66,6 +71,7 @@ Hooks.once('socketlib.ready', async function() {
 function initialize_module() {
     Object.values(SUB_MODULES).forEach(cl => cl.register());
     globalThis.TrazzmHomebrew.weaponMastery = WeaponMastery;
+    globalThis.TrazzmHomebrew.MonsterMacros = MonsterMacros;
 }
 
 globalThis.TrazzmHomebrew = {

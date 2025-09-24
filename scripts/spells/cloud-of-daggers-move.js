@@ -8,12 +8,12 @@
     Using a Higher-Level Spell Slot. The damage increases by 2d4 for each spell slot level above 2.
  */
 const optionName = "Cloud of Daggers Move";
-const version = "12.4.1";
+const version = "13.5.0";
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
 const flagName = "cloud-of-daggers-flag";
 
 try {
-    if (args[0].macroPass === "postActiveEffects" && rolledActivity?.name === "Move Cloud") {
+    if (args[0].macroPass === "postActiveEffects") {
         const flag = actor.getFlag(_flagGroup, flagName);
         if (flag) {
             const template = await fromUuid(flag.templateUuid);

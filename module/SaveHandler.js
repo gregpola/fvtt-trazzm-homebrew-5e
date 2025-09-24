@@ -119,16 +119,6 @@ export class SaveHandler {
             // look for options that allow save modifiers
             const targetIterator = workflow.targets.values();
             for (const tokenDoc of targetIterator) {
-                // check for Keening Mist and a Necromancy spell
-                let keeningMist = game.settings.get("fvtt-trazzm-homebrew-5e", "keening-mist");
-                if (keeningMist && workflow.item.system.school === "nec") {
-                    await MidiQOL.socket().executeAsGM('createEffects', {
-                        'actorUuid': tokenDoc.document.actor.uuid,
-                        'effects': [conditionSensitivity]
-                    });
-                    await SaveHandler.wait(100);
-                }
-
                 // Check for Corona of Light
                 let coronaOfLight = HomebrewHelpers.findEffect(tokenDoc.document.actor, 'Corona of Light - Disadvantage (In Aura)');
                 if (coronaOfLight && appliesToCoronaOfLight) {
@@ -141,19 +131,8 @@ export class SaveHandler {
             }
         });
 
-        /**
-         * Handle macro enforced save, the rollData must include the damageType for support
-         */
-        Hooks.on("dnd5e.preRollSavingThrowV2", async (config, dialog, message) => {
-            logger.info("dnd5e.preRollSavingThrowV2");
-        });
-
-        Hooks.on("midi-qol.postCheckSaves", async workflow => {
-            console.log("postCheckSaves");
-        });
-
-        Hooks.on("dnd5e.rollDeathSaveV2", async (rolls, details) => {
-            console.log("rollDeathSaveV2");
+        Hooks.on("dnd5e.rollDeathSave", async (rolls, details) => {
+            console.log("rollDeathSave");
             const theRoll = Number(rolls[0].result);
             const survivor = details.subject.items.getName("Survivor");
             if (survivor && rolls[0].total >= 18) {

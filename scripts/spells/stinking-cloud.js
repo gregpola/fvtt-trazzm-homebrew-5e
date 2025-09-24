@@ -7,7 +7,7 @@
     condition until the end of the current turn. While Poisoned in this way, the creature can’t take an action or a
     Bonus Action.
  */
-const version = "13.5.0";
+const version = "13.5.1";
 const optionName = "Stinking Cloud";
 
 const TEMPLATE_DARK_LIGHT = {
@@ -15,7 +15,7 @@ const TEMPLATE_DARK_LIGHT = {
     "priority": 0,
     "alpha": 0.1,
     "angle": 360,
-    "bright": 18,
+    "bright": 20,
     "color": null,
     "coloration": 1,
     "dim": 0,
@@ -37,33 +37,13 @@ const TEMPLATE_DARK_LIGHT = {
 };
 
 try {
-    if (args[0].macroPass === "preItemRoll") {
-        Hooks.once("createMeasuredTemplate", async (template) => {
-            // look for visibility and region
-            await template.update({
-                fillColor: 0,
-                fillAlpha: 0,
-                alpha: 0,
-                opacity: 0.1
-            });
-
-            await drawAmbientLight(template, actor);
-        });
-
-        Hooks.once("createRegion", async (region) => {
-            // look for visibility and region
-            await region.update({'visibility': 0});
-        });
-
-        const hookId = Hooks.on("deleteMeasuredTemplate", async (template) => {
-            if (template) {
-                const origin = fromUuidSync(template.flags.dnd5e.origin);
-                if (origin && (origin.actor === actor) && (origin.item.name === optionName)) {
-                    await game.trazzm.socket.executeAsGM("removeAmbientLight", 'StinkingCloud', actor);
-                    Hooks.off("deleteMeasuredTemplate", hookId);
-                }
-            }
-        });
+    if (args[0].macroPass === "postActiveEffects") {
+        if (workflow.template) {
+            await drawAmbientLight(workflow.template, actor);
+        }
+    }
+    else if (args[0] === "off") {
+        await game.trazzm.socket.executeAsGM("removeAmbientLight", 'StinkingCloud', actor);
     }
 
 } catch (err) {

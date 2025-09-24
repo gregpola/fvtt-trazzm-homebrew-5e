@@ -2,7 +2,7 @@
     For the duration, magical Darkness spreads from a point within range and fills a 15-foot-radius Sphere. Darkvision
     can’t see through it, and non-magical light can’t illuminate it.
 */
-const version = "12.4.1";
+const version = "13.5.0";
 const optionName = "Darkness";
 
 const TEMPLATE_DARK_LIGHT = {
@@ -10,7 +10,7 @@ const TEMPLATE_DARK_LIGHT = {
     "priority": 0,
     "alpha": 0.1,
     "angle": 360,
-    "bright": 13,
+    "bright": 15,
     "color": null,
     "coloration": 1,
     "dim": 0,
@@ -32,23 +32,13 @@ const TEMPLATE_DARK_LIGHT = {
 };
 
 try {
-    if (args[0].macroPass === "preItemRoll") {
-        Hooks.once("createMeasuredTemplate", async (template) => {
-            // look for visibility and region
-            await template.update({
-                fillColor: 0,
-                fillAlpha: 0,
-                alpha: 0,
-                opacity: 0.1
-            });
-
-            await drawAmbientLight(template, actor);
-        });
-
-        Hooks.once("createRegion", async (region) => {
-            // look for visibility and region
-            await region.update({'visibility': 0});
-        });
+    if (args[0].macroPass === "postActiveEffects") {
+        if (workflow.template) {
+            await drawAmbientLight(workflow.template, actor);
+        }
+    }
+    else if (args[0] === "off") {
+        await game.trazzm.socket.executeAsGM("removeAmbientLight", 'Darkness', actor);
     }
 
 } catch (err) {

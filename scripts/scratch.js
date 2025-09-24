@@ -28,7 +28,7 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType))
 		const pb = actor.system.attributes.prof;
 		const actorDC = actor.system.attributes.spell.dc ?? 12;
 		const spellcastingAbility = actor.system.attributes.spellcasting;
-		const abilityBonus = actor.system.attributes.spellmod;
+		const abilityBonus = actor.system.attributes.spell.mod;
 		const spellLevel = workflow.castData.castLevel;
 		const abilityBonus = Math.max(rollingActor.system.abilities.str.mod, rollingActor.system.abilities.dex.mod);
 		max(1, @abilities.wis.mod)
@@ -41,6 +41,7 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType))
 		const isSurprised = actor.statuses.has("surprised");
 		acBonusEffect.update({'disabled': false});
 		
+		flags.midi-qol.canFlank
 		
 raceOrType.includes('undead')
 ['fiend', 'undead'].includes(typeOrRace)

@@ -17,45 +17,38 @@ const _flagGroup = "fvtt-trazzm-homebrew-5e";
 let targetToken = event.data.token;
 if (targetToken) {
     const tflags = region.flags['region-attacher'];
-    const regionSourceUuid = region.flags.spellEffects.sourceItemUuid;
 
-    let sourceItem;
     if (tflags && tflags.itemUuid) {
-        sourceItem = await fromUuid(tflags.itemUuid);
-    }
-    else if (regionSourceUuid) {
-        sourceItem = await fromUuid(regionSourceUuid);
-    }
+        const sourceItem = await fromUuid(tflags.itemUuid);
+        if (sourceItem) {
+            let targetCombatant = game.combat.getCombatantByToken(targetToken);
+            if (targetCombatant) {
+                const originActor = sourceItem.parent;
+                const flagName = `cloudkill-${originActor.id}`;
+                if (HomebrewHelpers.perTurnCheck(targetCombatant, flagName, event.name)) {
+                    // synthetic activity use
+                    const activity = sourceItem.system.activities.find(a => a.identifier === 'cloudkill-damage');
+                    if (activity) {
+                        await HomebrewHelpers.setTurnCheck(targetCombatant, flagName);
 
-    if (sourceItem) {
-        let targetCombatant = game.combat.getCombatantByToken(targetToken);
-        if (targetCombatant) {
-            const originActor = sourceItem.parent;
-            const flagName = `cloudkill-${originActor.id}`;
-            if (HomebrewHelpers.perTurnCheck(targetCombatant, flagName, event.name)) {
-                // synthetic activity use
-                const activity = sourceItem.system.activities.find(a => a.identifier === 'cloudkill-damage');
-                if (activity) {
-                    await HomebrewHelpers.setTurnCheck(targetCombatant, flagName);
-                    let targetUuids = [targetToken.uuid];
+                        const options = {
+                            midiOptions: {
+                                targetsToUse: new Set([targetToken]),
+                                noOnUseMacro: false,
+                                configureDialog: false,
+                                showFullCard: false,
+                                ignoreUserTargets: true,
+                                checkGMStatus: true,
+                                autoRollAttack: true,
+                                autoRollDamage: "always",
+                                fastForwardAttack: true,
+                                fastForwardDamage: true,
+                                workflowData: false
+                            }
+                        };
 
-                    const options = {
-                        midiOptions: {
-                            targetUuids: targetUuids,
-                            noOnUseMacro: true,
-                            configureDialog: false,
-                            showFullCard: false,
-                            ignoreUserTargets: true,
-                            checkGMStatus: true,
-                            autoRollAttack: true,
-                            autoRollDamage: "always",
-                            fastForwardAttack: true,
-                            fastForwardDamage: true,
-                            workflowData: true
-                        }
-                    };
-
-                    await MidiQOL.completeActivityUse(activity.uuid, options, {}, {});
+                        await MidiQOL.completeActivityUse(activity.uuid, options, {}, {});
+                    }
                 }
             }
         }

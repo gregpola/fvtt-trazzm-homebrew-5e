@@ -6,7 +6,7 @@
     starts its turn there, it must succeed on a Dexterity saving throw or have the Prone condition and lose Concentration.
 */
 const optionName = "Sleet Storm";
-const version = "13.5.0";
+const version = "13.5.1";
 
 const TEMPLATE_DARK_LIGHT = {
     "negative": true,
@@ -35,33 +35,13 @@ const TEMPLATE_DARK_LIGHT = {
 };
 
 try {
-    if (args[0].macroPass === "preItemRoll") {
-        Hooks.once("createMeasuredTemplate", async (template) => {
-            // look for visibility and region
-            await template.update({
-                fillColor: 0,
-                fillAlpha: 0,
-                alpha: 0,
-                opacity: 0.1
-            });
-
-            await drawAmbientLight(template, actor);
-        });
-
-        Hooks.once("createRegion", async (region) => {
-            // look for visibility and region
-            await region.update({'visibility': 0});
-        });
-
-        const hookId = Hooks.on("deleteMeasuredTemplate", async (template) => {
-            if (template) {
-                const origin = fromUuidSync(template.flags.dnd5e.origin);
-                if (origin && (origin.actor === actor) && (origin.item.name === optionName)) {
-                    await game.trazzm.socket.executeAsGM("removeAmbientLight", 'SleetStorm', actor);
-                    Hooks.off("deleteMeasuredTemplate", hookId);
-                }
-            }
-        });
+    if (args[0].macroPass === "postActiveEffects") {
+        if (workflow.template) {
+            await drawAmbientLight(workflow.template, actor);
+        }
+    }
+    else if (args[0] === "off") {
+        await game.trazzm.socket.executeAsGM("removeAmbientLight", 'SleetStorm', actor);
     }
 
 } catch (err) {

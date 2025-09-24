@@ -23,3 +23,18 @@
 * Updated Aura of Life, Cloudkill, Crusader's Mantle, Darkness, Fog Cloud, Magic Missile, Protection from Evil and Good, Scorching Ray, Silence, Sleet Storm, Spike Growth, Stinking Cloud and Web spells
 * Updated to core version 13.348
 * Fix duplication bug with Sap
+
+# 13.5.4
+* Migrated to BLFX (Boss Loot) module for automation, in place of Automated Animations
+* Migrated off V2 hooks
+* Added Troll Regeneration monster feature. It can be easily adapted to other creatures by editing the ItemMacro to match the other creature.
+* Added Troll monster
+* Added Shillelagh spell with separate enchantments for each spellcasting ability and one to keep the default ability score.
+* Added Daylight, Misty Step, and Storm Sphere spells
+* Updated Legendary Resistance and Undead Fortitude monster features
+* Updated Legendary Action prompt logic 
+* Updated Empowered Cantrips feat
+* Updated Arms of Hadar, Blur, Cloud of Daggers, and Wall of Fire spells
+* Updated Generic Actions and Cunning Action to drop hiding effect after casting an attack spell. Player must manually drop hiding if they cast a spell with a verbal component.
+* Updated animations for Aganazzar's Scorcher, Call Lightning, Cloudkill, Conjure Barrage, Crusader's Mantle, Darkness, Faerie Fire, Fireball, Fog Cloud, Grease, Hunger of Hadar, Hypnotic Pattern, Immolation, Insect Plague, Mass Cure Wounds, Moonbeam, Shatter, Silence, Sleet Storm, Snilloc's Snowball Swarm, Spike Growth, Spirit Guardians, Steel Wind Strike, Stinking Cloud, Tasha's Mind Whip, and Web spells for migration to BLFX
+* Updated Dash through the Shadows, Shadow Dance, and Shadow Step to use the new animation module
