@@ -9,11 +9,6 @@ export class SpellHandler {
 
     static hooks() {
         Hooks.on("midi-qol.preAttackRoll", async workflow => {
-            // check for Keening Mist and a Necromancy spell
-            let keeningMist = game.settings.get("fvtt-trazzm-homebrew-5e", "keening-mist");
-            if (keeningMist && workflow.item.system.school === "nec") {
-                workflow.advantage = true;
-            }
         });
 
         Hooks.on("midi-qol.AttackRollComplete", async workflow => {

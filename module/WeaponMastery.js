@@ -212,6 +212,7 @@ export class WeaponMastery {
                             flags: {
                                 dae: {
                                     showIcon: true,
+                                    stackable: 'noneName',
                                     specialDuration: [
                                         'turnStartSource', '1Attack'
                                     ]

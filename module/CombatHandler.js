@@ -1,8 +1,7 @@
-import {handleRegeneration, checkForRegeneration, applyDamageTypes} from "./regeneration.js";
+import {combat} from './combat.js';
 
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
 const _zombieId = "UBlzKwy8bHtN42NQ";
-const _theDeadWalkFlag = "the-dead-walk";
 
 export class CombatHandler {
 
@@ -12,25 +11,8 @@ export class CombatHandler {
     }
 
     static hooks() {
-        Hooks.on("dnd5e.preRollInitiative", (actor, roll) => {
-            console.log('dnd5e.preRollInitiative');
-        });
 
-        Hooks.on("dnd5e.rollInitiative", async (actor, combatants) => {
-            // TODO for some reason this is only called when initiative is rolled from the sheet
-            // handle Bard's Superior Inspiration
-            //const relentless = actor.items.getName("Relentless");
-
-            // handle Monk's Perfect Focus
-            // const monksFocus = actor.items.getName("Monk's Focus");
-            // const perfectFocus = actor.items.getName("Perfect Focus");
-            // if (monksFocus && perfectFocus) {
-            //     console.log('Monk');
-            // }
-        });
-
-        Hooks.on("deleteCombat", async (combat) => {
-        });
+        Hooks.on('preUpdateCombat', combat.legendaryActionsPrompt);
 
         Hooks.on("updateCombat", async (combat, update, context, userId) => {
             if (!combat?.combatant?.isOwner) {
@@ -39,75 +21,11 @@ export class CombatHandler {
             }
 
             // no use cases for backwards change
-            if (context.direction < 1) {
-                console.log("updateCombat - skipped - backwards")
-                return;
-            }
-
-            // store the prior combatant id
-            const lastCombatantId = combat.previous?.combatantId;
-
-            // first handle legendary actions, since they happen at the end of the prior combatant's turn
-            let legendaryCombatants = CombatHandler.filterForLegendaryActions(combat);
-            if (legendaryCombatants && legendaryCombatants.length > 0) {
-                let legendaryActionData = new Map();
-
-                for (let legendaryData of legendaryCombatants) {
-                    if (legendaryData.combatant.id !== lastCombatantId) {
-                        let usesLeft = legendaryData.legendaryResource.value ?? 0;
-
-                        if (usesLeft > 0) {
-                            // get the available legendary actions with a cost the actor can pay
-                            let legendaryOptions = legendaryData.combatant.actor.items.filter(i => i.system.activation.type === 'legendary' && i.system.activation.cost <= usesLeft);
-                            if (legendaryOptions && legendaryOptions.length > 0) {
-                                let legendaryParams = {
-                                    "combatant": legendaryData.combatant,
-                                    "actionPoints": usesLeft,
-                                    "actions": legendaryOptions
-                                }
-
-                                // get the player to prompt
-                                let playerId;
-                                let player = MidiQOL.playerForActor(legendaryData.combatant.actor);
-                                if (player && player.active) {
-                                    playerId = player.id;
-                                }
-                                else {
-                                    playerId = game.users.activeGM.id;
-                                }
-
-                                if (playerId) {
-                                    if (legendaryActionData.has(playerId)) {
-                                        let data = legendaryActionData.get(playerId);
-                                        data.push(legendaryParams);
-                                        legendaryActionData.set(playerId, data);
-                                    }
-                                    else {
-                                        legendaryActionData.set(playerId, [legendaryParams]);
-                                    }
-                                }
-                            }
-                            else {
-                                console.log("Legendary actions skipped for: " + legendaryData.combatant.name + " -- no options available this turn");
-                            }
-                        }
-                        else {
-                            console.log("Legendary actions skipped for: " + legendaryData.combatant.name + " -- no uses left");
-                        }
-                    }
-                }
-
-                legendaryActionData.forEach(async function(value, key) {
-                    await game.trazzm.socket.executeAsUser("doLegendaryAction", key, value);
-                });
-
-                // After notifying of all legendary actions available, check for recharge of the current combatant
-                await HomebrewHelpers.rechargeLegendaryActions(combat?.combatant?.actor);
-            }
+            const isBackwards = (context.direction < 1);
 
             // check for any turn start options
             let turnStartOptions = await CombatHandler.hasTurnStartOption(combat?.combatant);
-            if (turnStartOptions) {
+            if (turnStartOptions && !isBackwards) {
                 // get the player to prompt
                 let player = MidiQOL.playerForActor(combat.combatant.actor);
                 if (player && player.active) {
@@ -119,18 +37,7 @@ export class CombatHandler {
             }
 
             let actor = combat?.combatant?.actor;
-            if (actor) {
-                // check for regeneration
-                await checkForRegeneration(actor);
-                await handleRegeneration(combat, update, context);
-
-                // check for The Dead Walk
-                let theDeadWalkFlag = actor.getFlag(_flagGroup, _theDeadWalkFlag);
-                if (theDeadWalkFlag) {
-                    await actor.unsetFlag(_flagGroup, _theDeadWalkFlag);
-                    await CombatHandler.transformToZombie(combat.combatant);
-                }
-
+            if (actor && !isBackwards) {
                 // check for heroic warrior
                 const heroicWarrior = actor.items.getName("Heroic Warrior");
                 if (heroicWarrior) {
@@ -151,6 +58,19 @@ export class CombatHandler {
                     });
                 }
             }
+
+            // select the token
+            if (combat && combat.started && combat?.combatant?.token?.isOwner){ // && setting('select-combatant')) {
+                combat?.combatant?.token?._object?.control();
+            }
+
+            // pan to combatant
+            if (combat && combat.started && combat?.combatant?.token && game.settings.get(_flagGroup, "pan-to-combatant")) {
+                if (canvas.dimensions.rect.contains(combat?.combatant?.token.x, combat?.combatant?.token.y)) {
+                    canvas.animatePan({ x: combat?.combatant?.token.x, y: combat?.combatant?.token.y });
+                }
+            }
+
         });
 
         Hooks.on("preUpdateActor", async (actor, change, options, user) => {
@@ -197,99 +117,7 @@ export class CombatHandler {
                         });
                     }
                 }
-
-                // Check for Orc Relentless Endurance
-                const relentlessEndurance = actor.items.getName("Relentless Endurance");
-                if (relentlessEndurance && appliedDamage && relentlessEndurance.system.uses?.value) {
-                    if (hpValue <= 0) {
-                        foundry.utils.setProperty(change, "system.attributes.hp.value", 1);
-                        const newUses = relentlessEndurance.system.uses?.value - 1;
-                        await relentlessEndurance.update({"system.uses.value": newUses});
-
-                        ChatMessage.create({
-                            speaker: {alias: actor.name},
-                            content: actor.name + " shrugs off death!"
-                        });
-                    }
-                }
             }
-        });
-
-        Hooks.on("updateActor", async (actor, change, options, user) => {
-            if (!actor.isOwner) {
-                console.log("updateActor - not owner")
-                return;
-            }
-
-            // special death handling
-            const hpUpdate = foundry.utils.getProperty(change, "system.attributes.hp.value");
-            if (hpUpdate !== undefined) {
-                if (hpUpdate <= 0) {
-                    // look for the death of an actor that is grappling and/or restraining an actor
-                    let tokens = canvas.scene.tokens;
-                    for (let token of tokens) {
-                        let existingGrappled = token.actor.getRollData().effects.find(eff => eff.name === 'Grappled' && eff.origin === actor.uuid);
-                        if (existingGrappled) {
-                            await MidiQOL.socket().executeAsGM('removeEffects', {
-                                actorUuid: token.actor.uuid,
-                                effects: [existingGrappled.id]
-                            });
-
-                            const escapeGrapple = token.actor.items.find(i => i.name === "Escape Grapple");
-                            if (escapeGrapple) {
-                                escapeGrapple.delete();
-                            }
-                        }
-
-                        let existingRestrained = token.actor.getRollData().effects.find(eff => eff.name === 'Restrained' && eff.origin === actor.uuid);
-                        if (existingRestrained) {
-                            await MidiQOL.socket().executeAsGM('removeEffects', {
-                                actorUuid: token.actor.uuid,
-                                effects: [existingRestrained.id]
-                            });
-
-                            const breakFree = token.actor.items.find(i => i.name === "Break Free");
-                            if (breakFree) {
-                                breakFree.delete();
-                            }
-                        }
-                    }
-
-                    // check for The Dead Walk handling
-                    let theDeadWalk = game.settings.get(_flagGroup, "dead-walk");
-                    if (theDeadWalk) {
-                        const actorType = actor.system.details.type;
-
-                        if (actorType && actorType.value.toLowerCase() === "humanoid") {
-                            let riseAsZombieRoll = await new Roll('1d100').evaluate({async: false});
-                            //await game.dice3d?.showForRoll(riseAsZombieRoll, game.user, true);
-                            if (riseAsZombieRoll.total < 26) {
-                                console.info(`${actor.name} will rise as a zombie next round`);
-                                // add flag to the actor, so that is rises as a Zombie next turn
-                                await actor.setFlag(_flagGroup, _theDeadWalkFlag, actor.uuid);
-                            }
-                            else {
-                                console.info("%c fvtt-trazzm-homebrew-5e", "color: #DE7554", " | The Dead Walk - failed roll");
-                            }
-                        }
-                    }
-                }
-
-                // Check for regeneration impact
-                await applyDamageTypes(actor, change, options);
-            }
-        });
-
-        Hooks.on("combatStart", async (combat, delta) => {
-            let tokens = combat.combatants.map(c => c.token);
-
-            // look for supported features in the combatants
-            for (let token of tokens) {
-                //let actor = token.actor;
-            }
-        });
-
-        Hooks.on("updateItem", async(item, updates, options, userId) => {
         });
     }
 
@@ -342,25 +170,6 @@ export class CombatHandler {
         }
 
         return undefined;
-    }
-
-    static filterForLegendaryActions(combat) {
-        let result = [];
-
-        if (combat) {
-            for (let combatant of combat.combatants) {
-                // skip dead combatants
-                const hpValue = foundry.utils.getProperty(combatant.actor, 'system.attributes.hp.value');
-                if (!hpValue || hpValue < 1) continue;
-
-                let legendaryResource = foundry.utils.getProperty(combatant.actor, 'system.resources.legact');
-                if (legendaryResource && legendaryResource.max > 0) {
-                    result.push({combatant: combatant, legendaryResource: legendaryResource});
-                }
-            }
-        }
-
-        return result;
     }
 
     static async transformToZombie(combatant) {

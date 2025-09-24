@@ -3,7 +3,7 @@
     each turn that you cast a damaging cantrip, you can add your ability modifier to the damage you deal.
 */
 const optionName = "Empowered Cantrips";
-const version = "12.4.0";
+const version = "13.5.0";
 const timeFlag = "last-empowered-cantrip";
 
 try {
@@ -14,7 +14,7 @@ try {
                 await HomebrewHelpers.setUsedThisTurn(actor, timeFlag);
 
                 // return the damage
-                const abilityBonus = actor.system.attributes.spellmod;
+                const abilityBonus = actor.system.attributes.spell.mod;
                 return new CONFIG.Dice.DamageRoll(`${abilityBonus}[${optionName}]`, {}, {type:workflow.defaultDamageType, properties: [...rolledItem.system.properties]});
             }
         }

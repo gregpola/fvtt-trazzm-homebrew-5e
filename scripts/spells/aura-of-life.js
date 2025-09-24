@@ -4,13 +4,10 @@
     turn in the aura, that ally regains 1 Hit Point.
 */
 const optionName = "Aura of Life";
-const version = "12.4.0";
+const version = "13.5.0";
 
 try {
-    if (args[0] === "each" || args[0] === "on") {
-        // check for hp max reduction -- handled with effect
-        // 'system.attributes.hp.tempmax'
-
+    if (args[0] === "each" && lastArgValue.turn === 'startTurn') {
         // check for 0 hp
         if (token.actor?.system.attributes.hp.value === 0) {
             const damageRoll = await new CONFIG.Dice.DamageRoll('1', {}, {type: "healing", properties: ["mgc"]}).evaluate();

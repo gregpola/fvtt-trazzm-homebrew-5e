@@ -6,11 +6,9 @@
     starts its turn there, it must succeed on a Dexterity saving throw or have the Prone condition and lose Concentration.
 */
 const optionName = "Sleet Storm";
-const version = "12.4.0";
-const _flagGroup = "fvtt-trazzm-homebrew-5e";
+const version = "12.5.0";
 
 // the enter or turn start macro
-const combatTime = game.combat ? `${game.combat.id}-${game.combat.round + game.combat.turn / 100}` : 1;
 let targetToken = event.data.token;
 if (targetToken) {
     const originActor = await fromUuid(region.flags['region-attacher'].actorUuid);
@@ -49,7 +47,6 @@ if (targetToken) {
                         await tt.actor.toggleStatusEffect('prone', {active: true});
                         let concentrationEffect = MidiQOL.getConcentrationEffect(tt.actor);
                         if (concentrationEffect) {
-                            //await concentrationEffect.delete();
                             await MidiQOL.socket().executeAsGM("removeEffects", { actorUuid: tt.actor.uuid, effects: [concentrationEffect.id] });
                         }
                     }

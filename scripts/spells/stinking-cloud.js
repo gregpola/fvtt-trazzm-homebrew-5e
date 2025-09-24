@@ -7,17 +7,15 @@
     condition until the end of the current turn. While Poisoned in this way, the creature can’t take an action or a
     Bonus Action.
  */
-const version = "12.4.1";
-const optionName = "Cloudkill";
-const _flagGroup = "fvtt-trazzm-homebrew-5e";
-const templateFLag = "stinking-cloud-template-uuid";
+const version = "13.5.1";
+const optionName = "Stinking Cloud";
 
 const TEMPLATE_DARK_LIGHT = {
     "negative": true,
     "priority": 0,
     "alpha": 0.1,
     "angle": 360,
-    "bright": 16,
+    "bright": 20,
     "color": null,
     "coloration": 1,
     "dim": 0,
@@ -39,83 +37,53 @@ const TEMPLATE_DARK_LIGHT = {
 };
 
 try {
-    if (args[0].macroPass === "preItemRoll") {
-        Hooks.once("createMeasuredTemplate", async (template) => {
-            // look for visibility and region
-            await template.update({
-                fillColor: 0,
-                fillAlpha: 0,
-                alpha: 0,
-                opacity: 0.1
-            });
-            let radius = canvas.grid.size * (template.distance / canvas.grid.distance);
-            await actor.setFlag(_flagGroup, templateFLag, {templateUuid: template.uuid, radius: radius, x: template.x, y: template.y});
-        });
-
-        Hooks.once("createRegion", async (region) => {
-            // look for visibility and region
-            await region.update({'visibility': 0});
-        });
-    }
-    else if (args[0] === "on") {
-        let flag = actor.getFlag(_flagGroup, templateFLag);
-        if (flag) {
-            const template = await fromUuidSync(flag.templateUuid);
-            if (template) {
-                const config = TEMPLATE_DARK_LIGHT;
-                config.radius = flag.radius;
-
-                const lightTemplate = {
-                    x: flag.x,
-                    y: flag.y,
-                    rotation: 0,
-                    walls: false,
-                    vision: false,
-                    config,
-                    hidden: false,
-                    flags: {
-                        spellEffects: {
-                            StinkingCloud: {
-                                ActorId: actor.uuid,
-                            },
-                        },
-                        "perfect-vision": {
-                            resolution: 1,
-                            visionLimitation: {
-                                enabled: true,
-                                sight: 0,
-                                detection: {
-                                    feelTremor: null,
-                                    seeAll: null,
-                                    seeInvisibility: 0,
-                                    senseAll: null,
-                                    senseInvisibility: null,
-                                },
-                            },
-                        },
-                    },
-                };
-                await canvas.scene.createEmbeddedDocuments("AmbientLight", [lightTemplate]);
-            }
+    if (args[0].macroPass === "postActiveEffects") {
+        if (workflow.template) {
+            await drawAmbientLight(workflow.template, actor);
         }
     }
     else if (args[0] === "off") {
-        const lightArray = getAmbientLight(actor);
-        if (lightArray.length > 0) {
-            await canvas.scene.deleteEmbeddedDocuments("AmbientLight", lightArray);
-        }
-
-        let flag = actor.getFlag(_flagGroup, templateFLag);
-        if (flag) {
-            await actor.unsetFlag(_flagGroup, templateFLag);
-        }
+        await game.trazzm.socket.executeAsGM("removeAmbientLight", 'StinkingCloud', actor);
     }
 
 } catch (err) {
-    console.error(`${optionName} : ${version}`, err);
+    console.error(`${optionName}: ${version}`, err);
 }
 
-function getAmbientLight(actor) {
-    const darkLights = canvas.lighting.placeables.filter((w) => w.document.flags?.spellEffects?.StinkingCloud?.ActorId === actor.uuid);
-    return darkLights.map((w) => w.id);
+async function drawAmbientLight(template, actor) {
+    const config = TEMPLATE_DARK_LIGHT;
+    config.bright = template.distance - 2;
+
+    const lightTemplate = {
+        x: template.x,
+        y: template.y,
+        rotation: 0,
+        walls: false,
+        vision: false,
+        config,
+        hidden: false,
+        flags: {
+            spellEffects: {
+                StinkingCloud: {
+                    ActorId: actor.uuid,
+                },
+            },
+            "perfect-vision": {
+                resolution: 1,
+                visionLimitation: {
+                    enabled: true,
+                    sight: 0,
+                    detection: {
+                        feelTremor: null,
+                        seeAll: null,
+                        seeInvisibility: 0,
+                        senseAll: null,
+                        senseInvisibility: null,
+                    },
+                },
+            },
+        },
+    };
+
+    await game.trazzm.socket.executeAsGM("drawAmbientLight", lightTemplate);
 }

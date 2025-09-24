@@ -32,6 +32,36 @@ export async function doUpdateTemplate(templateUuid, updates = {}) {
     }
 }
 
+export async function drawAmbientLight(lightTemplate) {
+    await canvas.scene.createEmbeddedDocuments("AmbientLight", [lightTemplate]);
+}
+
+export async function removeAmbientLight(name, actor) {
+    const ambientLights = canvas.lighting.placeables.filter((w) => w.document.flags?.spellEffects?.[name]?.ActorId === actor.uuid);
+    const lightArray = ambientLights.map((w) => w.id);
+
+    if (lightArray.length > 0) {
+        await canvas.scene.deleteEmbeddedDocuments("AmbientLight", lightArray);
+    }
+}
+
+export async function drawWalls(wallData) {
+    await canvas.scene.createEmbeddedDocuments("Wall", wallData);
+}
+
+export async function removeWalls(name, actor) {
+    const walls = canvas.scene.walls.filter(w => w.flags?.spellEffects?.[name]?.ActorId === actor.uuid);
+    if (walls) {
+        let wallArray = walls.map(function (w) {
+            return w._id;
+        })
+
+        if (wallArray.length > 0) {
+            await canvas.scene.deleteEmbeddedDocuments("Wall", wallArray);
+        }
+    }
+}
+
 /**
  * A dialog to show options at the start of a combatants turn.
  *
@@ -197,25 +227,31 @@ class LegendaryActionDialog extends Application {
 
     async getData(options) {
         // build the content
-        let content = `
-		  <form>
-			<div class="flexcol">
-		`;
+        let content = '';
         for (let actorData of this.data.legendaryData) {
-            content += '<div class="flexcol">';
-            content += `<div className="flexrow" style="margin-bottom: 10px;"><img src=${actorData.combatant.token.texture.src} width="50" height="50" /><label style="margin-left: 15px;">${actorData.combatant.name} [${actorData.actionPoints} legendary action points remaining]</label></div>`;
+            let actionsData = '';
             for (let actorAction of actorData.actions) {
-                content += `<div className="flexrow" style="margin-bottom: 5px;margin-left: 25px;"><img src=${actorAction.img} width="25" height="25" /><label style="margin-left: 15px;">${actorAction.name} [${actorAction.system.activation.cost} points]</label></div>`
+                // for now this only handles a single activity per item
+                let activity = actorAction.system.activities.find(k => {
+                    return (k?.consumption?.targets[0]?.target === 'resources.legact.value' || k?.activation.type === 'legendary') &&
+                        actorData.actionPoints >= k.activation?.value;
+                });
+                actionsData += `<option value="${activity}">${actorAction.name} [${activity.activation?.value}]</option>`;
             }
-            content += '</div>';
+
+            content += `<tr>
+                <td><img src="${actorData.combatant.token.texture.src}" width="50" height="50"></td>
+                <td>${actorData.combatant.name}</td>
+                <td>[${actorData.actionPoints} AP]</td>
+                <td><select id="${actorData.combatant}">${actionsData}</select></td>
+            </tr>`;
         }
-        content += '</div></form>';
 
         this.data.content = `
 			<div class="form-group">
-			  <p><label>All of the following actors have Legendary Actions they can take this turn:</label></p>
+			  <p>Each of the following actors have Legendary Actions they can take this turn:</p>
 			  <br />
-				${content}
+			    <table style="width:100%"><tbody>${content}</tbody></table>
 			  <br />
 			</div>`;
 

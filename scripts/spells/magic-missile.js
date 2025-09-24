@@ -6,7 +6,7 @@
     Using a Higher-Level Spell Slot. The spell creates one more dart for each spell slot level above 1.
 */
 const optionName = "Magic Missile";
-const version = "12.4.0";
+const version = "12.5.0";
 const damageType = "force";
 
 try {
@@ -17,7 +17,8 @@ try {
         // check for need to select targets
         if (workflow.targets.size === 1) {
             let target = workflow.targets.first();
-            await launchMissiles(target, missileCount);
+            await launchMissiles(target, missileCount, macroItem);
+            //await launchMissilesActivity(target, missileCount, macroItem);
         }
         else {
             // ask how many missiles per target
@@ -84,9 +85,20 @@ try {
 
 async function launchMissiles(targetToken, missileCount, sourceItem){
     for (let i = 0; i < missileCount; i++) {
-        const damageRoll = await new CONFIG.Dice.DamageRoll('1d4+1', {}, {type: damageType}).evaluate();
         await anime(token, targetToken);
-        await new MidiQOL.DamageOnlyWorkflow(actor, token, null, null, [targetToken], damageRoll, {flavor: optionName, itemCardId: args[0].itemCardId, itemData: sourceItem?.toObject()});
+        let damageRoll = await new CONFIG.Dice.DamageRoll('1d4+1', {}, {type: damageType}).evaluate();
+        //await new MidiQOL.DamageOnlyWorkflow(actor, token, null, null, [targetToken], damageRoll, {flavor: optionName, itemCardId: args[0].itemCardId, itemData: sourceItem?.toObject()});
+        //let damageRoll = await new Roll('1d4+1').evaluate();
+        await MidiQOL.displayDSNForRoll([damageRoll], "damageRoll");
+        await MidiQOL.applyTokenDamage(
+            [{ damage: damageRoll.total, type: damageType }],
+            damageRoll.total,
+            new Set([targetToken]),
+            sourceItem,
+            new Set(),
+            {flavor: optionName}
+        );
+        await new Promise(resolve => setTimeout(resolve, 100));
     }
 }
 
@@ -97,4 +109,35 @@ async function anime(token, target) {
         .atLocation(token)
         .stretchTo(target)
         .play()
+}
+
+async function launchMissilesActivity(targetToken, missileCount, sourceItem) {
+    const activity = sourceItem.system.activities.find(a => a.identifier === 'single-missile');
+    if (activity) {
+        let targetUuids = [targetToken.document.uuid];
+
+        const options = {
+            midiOptions: {
+                targetUuids: targetUuids,
+                noOnUseMacro: true,
+                configureDialog: false,
+                showFullCard: false,
+                ignoreUserTargets: true,
+                checkGMStatus: true,
+                autoRollAttack: true,
+                autoRollDamage: "always",
+                fastForwardAttack: true,
+                fastForwardDamage: true,
+                workflowData: true
+            }
+        };
+
+        for (let i = 0; i < missileCount; i++) {
+            await anime(token, targetToken);
+            await MidiQOL.completeActivityUse(activity.uuid, options, {}, {});
+        }
+    }
+    else {
+        ui.notifications.error(`${optionName}: ${version} - missing Single Missile activity`);
+    }
 }

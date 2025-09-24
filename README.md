@@ -3,7 +3,7 @@
     A collection of homebrew content for dnd5e in FoundryVTT
 
 ### Compatibility:
-  - Tested with FVTT v12 and the DND5E system 4.x
+  - Tested with FVTT v13 and the DND5E system 5.x
 
 ### Installation Instructions
 
@@ -17,12 +17,3 @@ To install a module, follow these instructions:
   * The config folder contains a midi config file; screenshots showing important settings; and a list of modules I recommend.
   * I recommend you also import the fvtt-AutomatedAnimations-GlobalMenu-dnd5e.json into the Automated Animations module. Follow the steps found in: config/AA-Setup.txt
 
-### Module Dependencies
-  * active-auras
-  * autoanimations
-  * dae
-  * effectmacro
-  * item-macro
-  * midi-qol
-    * Use the import file found in the config folder to ensure you have the settings required to support automation
-  * sequencer
