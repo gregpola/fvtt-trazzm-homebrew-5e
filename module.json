@@ -383,7 +383,7 @@
         "type": "module",
         "compatibility": {}
       }
-    ],
+    ]
   },
   "esmodules": [
     "module/module.js"
