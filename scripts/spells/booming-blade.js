@@ -9,10 +9,8 @@
     rolls increase by 1d8 at 11th level (2d8 and 3d8) and again at 17th level (3d8 and 4d8).
 */
 const optionName = "Booming Blade";
-const version = "12.4.0";
+const version = "13.5.0";
 const moveDamageEffectName = "Booming Blade Movement Damage";
-const sequencerFile = "jb2a.thunderwave.center.blue";
-const sequencerScale = 1.5;
 
 try {
     if (args[0].tag === "OnUse" && args[0].macroPass === "postActiveEffects") {
@@ -24,40 +22,31 @@ try {
             }
         }
     }
-    else if (lastArgValue["expiry-reason"]?.includes("midi-qol:isMoved")) {
-        sequencerEffect(token, sequencerFile, sequencerScale);
-
-        let activity = macroItem.system.activities.getName("Move Damage");
-        if (activity) {
-            const options = {
-                midiOptions: {
-                    targetsToUse: new Set([token]),
-                    noOnUseMacro: false,
-                    configureDialog: false,
-                    showFullCard: false,
-                    ignoreUserTargets: true,
-                    checkGMStatus: true,
-                    autoRollAttack: true,
-                    autoRollDamage: "always",
-                    fastForwardAttack: true,
-                    fastForwardDamage: true,
-                    workflowData: false
-                }
-            };
-
-            await MidiQOL.completeActivityUse(activity, options, {}, {});
-        }
-    }
+    // else if (lastArgValue["expiry-reason"]?.includes("midi-qol:isMoved")) {
+    //     let activity = macroItem.system.activities.getName("Move Damage");
+    //     if (activity) {
+    //         const options = {
+    //             midiOptions: {
+    //                 targetsToUse: new Set([token]),
+    //                 noOnUseMacro: false,
+    //                 configureDialog: false,
+    //                 showFullCard: false,
+    //                 ignoreUserTargets: true,
+    //                 checkGMStatus: true,
+    //                 autoRollAttack: true,
+    //                 autoRollDamage: "always",
+    //                 fastForwardAttack: true,
+    //                 fastForwardDamage: true,
+    //                 workflowData: false
+    //             }
+    //         };
+    //
+    //         await MidiQOL.completeActivityUse(activity, options, {}, {});
+    //     }
+    // }
 
 } catch (err) {
     console.error(`${optionName}: ${version}`, err);
-}
-
-// sequencer caller for effects on target
-function sequencerEffect(target, file, scale) {
-    if (game.modules.get("sequencer")?.active && hasProperty(Sequencer.Database.entries, "jb2a")) {
-        new Sequence().effect().file(file).atLocation(target).scaleToObject(scale).play();
-    }
 }
 
 async function applyMoveEffect(targetToken, macroItem) {
@@ -70,12 +59,6 @@ async function applyMoveEffect(targetToken, macroItem) {
         statuses: [],
         changes: [
             {
-                key: 'macro.itemMacro',
-                mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-                value: `ItemMacro.${macroItem.name}`,
-                priority: 20
-            },
-            {
                 'key': 'macro.tokenMagic',
                 'mode': CONST.ACTIVE_EFFECT_MODES.CUSTOM,
                 'value': 'electric',
@@ -84,6 +67,7 @@ async function applyMoveEffect(targetToken, macroItem) {
         ],
         flags: {
             dae: {
+                stackable: 'noneName',
                 specialDuration: ['turnStartSource', 'isMoved', 'combatEnd']
             }
         }

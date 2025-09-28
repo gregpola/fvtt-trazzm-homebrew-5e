@@ -38,3 +38,9 @@
 * Updated Generic Actions and Cunning Action to drop hiding effect after casting an attack spell. Player must manually drop hiding if they cast a spell with a verbal component.
 * Updated animations for Aganazzar's Scorcher, Call Lightning, Cloudkill, Conjure Barrage, Crusader's Mantle, Darkness, Faerie Fire, Fireball, Fog Cloud, Grease, Hunger of Hadar, Hypnotic Pattern, Immolation, Insect Plague, Mass Cure Wounds, Moonbeam, Shatter, Silence, Sleet Storm, Snilloc's Snowball Swarm, Spike Growth, Spirit Guardians, Steel Wind Strike, Stinking Cloud, Tasha's Mind Whip, and Web spells for migration to BLFX
 * Updated Dash through the Shadows, Shadow Dance, and Shadow Step to use the new animation module
+
+# 13.5.5
+* Added Melf's Minute Meteors spell
+* Updated Booming Blade spell
+* Updated Alert feat to implement the Initiative Swap activity
+* Updated Blessed Warrior, Chef, Crafter, Druidic Warrior, Eldritch Adept, Elemental Adept, Fey Teleportation, Fey-Touched, Heavily Armored, Keen Mind, Lightly Armored, Magic Initiate, Martial Weapon Training, Medium Armor Master, Metamagic Adept, Moderately Armored, Musician, Observant, Piercer, Poisoner, Resilient, Ritual Caster, Shadow-Touched, Skill Expert, Skilled, Speedy, Squat Nimbleness, Telekinetic, Telepathic, and Weapon Master to take advantage of the new advancement options for feats

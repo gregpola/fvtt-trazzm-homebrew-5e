@@ -5,35 +5,16 @@
 
     To apply to other damage type, just copy this script and replace the damageType string in the feature
 */
-const version = "12.4.0";
-const damageType = "acid";
+const version = "13.5.0";
+const damageType = "lightning";
 const optionName = `Elemental Adept (${damageType})`;
-
-const ignoreResistanceEffectData = {
-    name: `${optionName} - ignore resistance`,
-    icon: 'icons/magic/symbols/elements-air-earth-fire-water.webp',
-    changes:[{
-        key: 'system.traits.dr.value',
-        mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-        value: `-${damageType}`
-    }],
-    flags: {dae: { specialDuration: ['isDamaged']} }
-};
 
 try {
     // we only care about spells of this damage type
-    if (rolledItem.type === "spell" && rolledItem.system.damage.parts.map(i=>i[1]).includes(damageType)) {
-        if (args[0].tag === "OnUse" && args[0].macroPass === "preDamageRoll") {
-            // apply ignore resistance
-            for (let target of workflow.targets) {
-                let resistant = target.actor.system.traits.dr.value.has(damageType);
-                if (resistant) {
-                    await MidiQOL.socket().executeAsGM("createEffects", {actorUuid: target.actor.uuid, effects: [ignoreResistanceEffectData]});
-                }
-            }
-
+    if (args[0].tag === "OnUse" && args[0].macroPass === "preDamageRoll") {
+        if (rolledItem.type === "spell" && rolledActivity.damage.parts.map(i=>i.types.has(damageType)).includes(true)) {
             // update damage rolls to min2
-            Hooks.once('dnd5e.preRollDamageV2', (rollConfig, dialogConfig, messageConfig) => {
+            Hooks.once('dnd5e.preRollDamage', (rollConfig, dialogConfig, messageConfig) => {
                 if (rollConfig?.workflow?.id !== workflow.id) {
                     // Different activity workflow, remove hook
                     if (debug) {

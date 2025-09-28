@@ -1,308 +1,292 @@
-[
-  {
-    "name": "Active Token Effects",
-    "id": "ATL",
-    "version": "v0.8.1",
-    "description": "Active Token Effects"
-  },
-  {
-    "name": "Aura Effects",
-    "id": "auraeffects",
-    "version": "1.2.6",
-    "description": ""
-  },
-  {
-    "name": "Automated Animations",
-    "id": "autoanimations",
-    "version": "6.2.5",
-    "description": "This will automatically run most JB2A Animations such as Melee/Ranged Attacks, Spell Attacks, and Instant Spells"
-  },
-  {
-    "name": "Automated Conditions 5e",
-    "id": "automated-conditions-5e",
-    "version": "13.512.1.2",
-    "description": "A small module for Foundry VTT that tries to automate some rolling aspects of the common 5e Conditions."
-  },
-  {
-    "name": "Better Roofs",
-    "id": "betterroofs",
-    "version": "3.0.0",
-    "description": "Vision enhancements for roofs"
-  },
-  {
-    "name": "BG3 Inspired HUD",
-    "id": "bg3-inspired-hotbar",
-    "version": "3.4.4",
-    "description": "A custom, persistent, token-specific HUD inspired by Baldur's Gate 3's interface. Provides an intuitive and modern way to manage abilities, spells, and effects for your tokens."
-  },
-  {
-    "name": "lib - Color Settings",
-    "id": "colorsettings",
-    "version": "3.0.4",
-    "description": "Library that allows modules to add color settings and forms."
-  },
-  {
-    "name": "Carousel Combat Tracker",
-    "id": "combat-tracker-dock",
-    "version": "4.0.2",
-    "description": "Carousel style combat tracker. Spiritual successor of Combat Carousel"
-  },
-  {
-    "name": "Dynamic effects using Active Effects (DAE)",
-    "id": "dae",
-    "version": "13.0.12",
-    "description": "Replacement for dynamic effects"
-  },
-  {
-    "name": "Dice Tray",
-    "id": "dice-calculator",
-    "version": "3.4.6",
-    "description": "Adds a dice tray below chat, and turns the d20 near chat into a dice calculator."
-  },
-  {
-    "name": "Dice So Nice!",
-    "id": "dice-so-nice",
-    "version": "5.2.1",
-    "description": "Adds customizable 3D dice to Foundry VTT with lots of options to fit your playstyle."
-  },
-  {
-    "name": "Dungeons & Dragons Dungeon Master's Guide",
-    "id": "dnd-dungeon-masters-guide",
-    "version": "1.2.1",
-    "description": "Create thrilling adventures with this revised and expanded Dungeon Master's Guide. Inside this essential guide is everything new and experienced Dungeon Masters need to weave epic tales, build fantastical worlds, and inspire memorable moments for your party."
-  },
-  {
-    "name": "Dungeons & Dragons Monster Manual",
-    "id": "dnd-monster-manual",
-    "version": "1.1.0",
-    "description": "Populate your worlds and adventures with the hundreds of monsters provided, and let their stories, illustrations, and easy-to-use stat blocks fuel your D&amp;D® adventures for years to come. Encounter a monstrous menagerie of familiar favorites like dragons, giants, and mind flayers, plus a host of new monsters like the arch-hag, the blob of annihilation, and the vampire nightbringer."
-  },
-  {
-    "name": "Dungeons & Dragons Player's Handbook",
-    "id": "dnd-players-handbook",
-    "version": "1.4.0",
-    "description": "Embark on an epic adventure 10 years in the making. This new and improved Player's Handbook® is the ultimate guide for fifth edition D&amp;D players. Play your way with optimized rules for character creation and advancement, exploration, combat, equipment, spells, and much more. Create fantastic heroes from an expanded selection of character origins, classes, and subclasses, revised and balanced for maximum fun."
-  },
-  {
-    "name": "Tasha's Cauldron of Everything",
-    "id": "dnd-tashas-cauldron",
-    "version": "2.0.0",
-    "description": "<p>Natasha the Dark, Iggwilv the Witch Queen, daughter of Baba Yaga or simply the witch named Tasha, well-known for her spells such as Tasha’s hideous laughter, has compiled all the precious lore she has gathered during her illustrious career as an adventurer for the enrichment of all. Her book offers a taste of the great power that awaits D&amp;D players and dungeon masters everywhere! It contains new player subclasses, sidekicks, and rules and tools for Dungeon Masters.</p>"
-  },
-  {
-    "name": "DND5E Scriplets - 5E QOL bits and pieces",
-    "id": "dnd5e-scriptlets",
-    "version": "13.0.1",
-    "description": "QOL bits and pieces with nowhere else to live"
-  },
-  {
-    "name": "Easy Regions",
-    "id": "easy-regions",
-    "version": "1.0.2",
-    "description": "Provides some quality-of-life improvements for managing Regions"
-  },
-  {
-    "name": "Effect Macro",
-    "id": "effectmacro",
-    "version": "13.0.0",
-    "description": ""
-  },
-  {
-    "name": "Enhanced Region Behavior",
-    "id": "enhanced-region-behavior",
-    "version": "1.4.2",
-    "description": "Adds new region options to scene regions"
-  },
-  {
-    "name": "Forien's Copy Environment",
-    "id": "forien-copy-environment",
-    "version": "v3.0.0",
-    "description": "Allows for copying list of system/modules and versions, and gives ability to export/import game and player settings"
-  },
-  {
-    "name": "Trazzm 5e Homebrew",
-    "id": "fvtt-trazzm-homebrew-5e",
-    "version": "13.5.1",
-    "description": "<p>A collection of homebrew for dnd5e</p>"
-  },
-  {
-    "name": "Item Piles",
-    "id": "item-piles",
-    "version": "3.2.21",
-    "description": "This module adds the ability for items to be dropped onto the ground, and then picked up."
-  },
-  {
-    "name": "Item Piles: D&D 5e",
-    "id": "itempilesdnd5e",
-    "version": "1.0.4",
-    "description": "This module adds support for the D&amp;D5e system within the Item Piles module"
-  },
-  {
-    "name": "JB2A - Jules and Ben's Animated Assets - Free Content",
-    "id": "JB2A_DnD5e",
-    "version": "0.8.1",
-    "description": "<p>Animated Assets for spells, tiles, tokens, melee and ranged attacks</p><p>Troubleshooting and FAQ section on our <a href=\"https://jb2a.com\">website</a> </p><p>Join our <a href=\"https://discord.gg/gmd8MAPX4m\">Discord server</a> for any further questions</p><p> <a href=\"https://www.jb2a.com/Library_Preview/\">Preview</a> our assets<br /></p><p>Consider supporting us on <a href=\"https://www.patreon.com/JB2A\">Patreon</a> for more ! </p>"
-  },
-  {
-    "name": "libWrapper",
-    "id": "lib-wrapper",
-    "version": "1.13.3.0",
-    "description": "Library for wrapping core Foundry VTT methods, meant to improve compatibility between packages that wrap the same methods."
-  },
-  {
-    "name": "Midi QOL",
-    "id": "midi-qol",
-    "version": "13.0.18",
-    "description": "Automates rolling weapon/spell attacks and applying damage amongst other things"
-  },
-  {
-    "name": "Module List Export",
-    "id": "module-list-export",
-    "version": "1.0.3",
-    "description": "A simple module created to export the list of installed modules for record-keeping."
-  },
-  {
-    "name": "Monk's Active Tile Triggers",
-    "id": "monks-active-tiles",
-    "version": "13.05",
-    "description": "Want to teleport, or open doors, or hide characters, or display a message, or play a sound, or change a token's elevation when a token walks over a tile... now you can"
-  },
-  {
-    "name": "Monk's Bloodsplats",
-    "id": "monks-bloodsplats",
-    "version": "13.01",
-    "description": "Display dead creatures as bloodsplats to keep the battlefield clear of tokens. Bloodsplats are generated randomly per creature and show when the creature has a dead or defeated status. With options to change the colour and transparency of the blood splat, either individually or per world."
-  },
-  {
-    "name": "Monk's TokenBar",
-    "id": "monks-tokenbar",
-    "version": "13.01",
-    "description": "Add a bar with all the current player tokens.  Limit movement, roll saving throws, assign XP."
-  },
-  {
-    "name": "Monk's Wall Enhancement",
-    "id": "monks-wall-enhancement",
-    "version": "13.02",
-    "description": "Enhancements to the Wall Tool.  Drag points together, freehand draw a wall, plus more."
-  },
-  {
-    "name": "Baileywiki Mass Edit",
-    "id": "multi-token-edit",
-    "version": "2.1.2",
-    "description": "Search and edit multiple placeables at the same time."
-  },
-  {
-    "name": "PnP - Pointer and Pings! (BETA)",
-    "id": "pointer",
-    "version": "13.1.0",
-    "description": "Gives all players the option to show a customizable cursor on demand, as well as ping any location with a custom ping!<br />Hotkeys, pings, pointer, everything customizable!<br />As GM you can also move your players view to your pin on demand."
-  },
-  {
-    "name": "Polyglot",
-    "id": "polyglot",
-    "version": "2.6.6",
-    "description": "Talk to others using a language you can speak and scrambles text you can't understand, in several fantasy scripts."
-  },
-  {
-    "name": "Portal",
-    "id": "portal-lib",
-    "version": "3.0.3",
-    "description": "A library module for spawning creatures, teleporting tokens, and picking locations. Check the wiki for the scripting API."
-  },
-  {
-    "name": "Region Active Effects",
-    "id": "region-active-effects",
-    "version": "1.2.0",
-    "description": "Region Active Effects lets you attach active effects to regions."
-  },
-  {
-    "name": "Region Attacher",
-    "id": "region-attacher",
-    "version": "1.10.0",
-    "description": "Allows attaching Scene Regions to templates on template creation"
-  },
-  {
-    "name": "Rest Recovery for 5E",
-    "id": "rest-recovery",
-    "version": "5.0.1",
-    "description": "Adds 5e long and short rest mechanics and variant rules, such as feats, class features, and hit-dice healing."
-  },
-  {
-    "name": "Rideable",
-    "id": "Rideable",
-    "version": "4.0.17",
-    "description": "A small module to handle riding and mounting"
-  },
-  {
-    "name": "routinglib",
-    "id": "routinglib",
-    "version": "1.1.0",
-    "description": "A library module to calculate a path between two points"
-  },
-  {
-    "name": "Sequencer",
-    "id": "sequencer",
-    "version": "3.6.10",
-    "description": "This module allows you to play effects on the canvas, and create complex sequences of actions"
-  },
-  {
-    "name": "socketlib",
-    "id": "socketlib",
-    "version": "v1.1.3",
-    "description": "A library for easier handling of foundry sockets"
-  },
-  {
-    "name": "Stealthy",
-    "id": "stealthy",
-    "version": "13.0.1",
-    "description": "Adds perception vs stealth checks to vision tests for tokens with the Hidden condition"
-  },
-  {
-    "name": "TheRipper93's Module Hub",
-    "id": "theripper-premium-hub",
-    "version": "5.0.6",
-    "description": "Utility for updates and troubleshooting of modules. Includes small tweaks such as Custom CSS, Compact Sidebar, Dice Tray, Auto rotation and more."
-  },
-  {
-    "name": "Times Up",
-    "id": "times-up",
-    "version": "13.1.0",
-    "description": "Active expiry expiration"
-  },
-  {
-    "name": "Token Attacher",
-    "id": "token-attacher",
-    "version": "v4.6.12",
-    "description": "Attach anything(even tokens) to tokens, so that they move when the token moves and rotate/move when the token rotates. Create prefabs and many more features, see the github readme for more details."
-  },
-  {
-    "name": "Token Magic FX",
-    "id": "tokenmagic",
-    "version": "0.7.0",
-    "description": "<p>Add special effects and animations on your tokens, tiles, drawings and templates.</p>"
-  },
-  {
-    "name": "Token Warp",
-    "id": "tokenwarp",
-    "version": "13.347.2",
-    "description": "A small module for Foundry VTT, helping GMs to avoid revealing their maps by automatically removing tokens movement animation when going through walls."
-  },
-  {
-    "name": "Vision 5e",
-    "id": "vision-5e",
-    "version": "3.0.6",
-    "description": "Vision Automation for D&amp;D 5e"
-  },
-  {
-    "name": "Visual Active Effects",
-    "id": "visual-active-effects",
-    "version": "13.0.4",
-    "description": ""
-  },
-  {
-    "name": "Wall Height",
-    "id": "wall-height",
-    "version": "7.0.8",
-    "description": "Adds the ability to set wall height for walls so that tokens can look and move over them."
-  }
+[{
+        "name": "Active Token Effects",
+        "id": "ATL",
+        "version": "v0.8.1",
+        "description": "Active Token Effects"
+    }, {
+        "name": "Aura Effects",
+        "id": "auraeffects",
+        "version": "1.3.0",
+        "description": ""
+    }, {
+        "name": "Automated Conditions 5e",
+        "id": "automated-conditions-5e",
+        "version": "13.518.2",
+        "description": "A small module for Foundry VTT that tries to automate some rolling aspects of the common 5e Conditions."
+    }, {
+        "name": "Better Roofs",
+        "id": "betterroofs",
+        "version": "3.0.0",
+        "description": "Vision enhancements for roofs"
+    }, {
+        "name": "BG3 Inspired HUD",
+        "id": "bg3-inspired-hotbar",
+        "version": "3.4.4",
+        "description": "A custom, persistent, token-specific HUD inspired by Baldur's Gate 3's interface. Provides an intuitive and modern way to manage abilities, spells, and effects for your tokens."
+    }, {
+        "name": "BLFX Assets & Animation Editor Premium",
+        "id": "boss-loot-assets-premium",
+        "version": "2.8.0",
+        "description": "<p>A Boss Loot module with animated assets like: Weapon Attacks, Creatures abilities, Spells, animated Tokens and much more. Assign unique animations to any item, spell and ability with the Animation Editor.</p><p>Thank you for supporting us on <a href=\"https://www.patreon.com/BossLoot\">Patreon!</a></p><p>Join our <a href=\"https://discord.gg/Cg8WEDbCua\">Discord server</a> for any further questions.</p>"
+    }, {
+        "name": "lib - Color Settings",
+        "id": "colorsettings",
+        "version": "3.0.4",
+        "description": "Library that allows modules to add color settings and forms."
+    }, {
+        "name": "Carousel Combat Tracker",
+        "id": "combat-tracker-dock",
+        "version": "4.0.3",
+        "description": "Carousel style combat tracker. Spiritual successor of Combat Carousel"
+    }, {
+        "name": "Dynamic effects using Active Effects (DAE)",
+        "id": "dae",
+        "version": "13.0.14",
+        "description": "Replacement for dynamic effects"
+    }, {
+        "name": "DELVE",
+        "id": "delve",
+        "version": "1.0.0",
+        "description": "Delve into unforgettable dungeons with the quintessential guide to dungeons. Grab your dice. Pick your dungeon. Delve!"
+    }, {
+        "name": "Dice Tray",
+        "id": "dice-calculator",
+        "version": "3.5.1",
+        "description": "Adds a dice tray below chat, and turns the d20 near chat into a dice calculator."
+    }, {
+        "name": "Dice So Nice!",
+        "id": "dice-so-nice",
+        "version": "5.2.3",
+        "description": "Adds customizable 3D dice to Foundry VTT with lots of options to fit your playstyle."
+    }, {
+        "name": "Dungeons & Dragons Dungeon Master's Guide",
+        "id": "dnd-dungeon-masters-guide",
+        "version": "2.0.0",
+        "description": "Create thrilling adventures with this revised and expanded Dungeon Master's Guide. Inside this essential guide is everything new and experienced Dungeon Masters need to weave epic tales, build fantastical worlds, and inspire memorable moments for your party."
+    }, {
+        "name": "Dungeons & Dragons Monster Manual",
+        "id": "dnd-monster-manual",
+        "version": "1.2.0",
+        "description": "Populate your worlds and adventures with the hundreds of monsters provided, and let their stories, illustrations, and easy-to-use stat blocks fuel your D&amp;D® adventures for years to come. Encounter a monstrous menagerie of familiar favorites like dragons, giants, and mind flayers, plus a host of new monsters like the arch-hag, the blob of annihilation, and the vampire nightbringer."
+    }, {
+        "name": "Dungeons & Dragons Player's Handbook",
+        "id": "dnd-players-handbook",
+        "version": "2.0.0",
+        "description": "Embark on an epic adventure 10 years in the making. This new and improved Player's Handbook® is the ultimate guide for fifth edition D&amp;D players. Play your way with optimized rules for character creation and advancement, exploration, combat, equipment, spells, and much more. Create fantastic heroes from an expanded selection of character origins, classes, and subclasses, revised and balanced for maximum fun."
+    }, {
+        "name": "Tasha's Cauldron of Everything",
+        "id": "dnd-tashas-cauldron",
+        "version": "3.0.0",
+        "description": "<p>Natasha the Dark, Iggwilv the Witch Queen, daughter of Baba Yaga or simply the witch named Tasha, well-known for her spells such as Tasha’s hideous laughter, has compiled all the precious lore she has gathered during her illustrious career as an adventurer for the enrichment of all. Her book offers a taste of the great power that awaits D&amp;D players and dungeon masters everywhere! It contains new player subclasses, sidekicks, and rules and tools for Dungeon Masters.</p>"
+    }, {
+        "name": "DND5E Scriplets - 5E QOL bits and pieces",
+        "id": "dnd5e-scriptlets",
+        "version": "13.0.3.1",
+        "description": "QOL bits and pieces with nowhere else to live"
+    }, {
+        "name": "Dungeons of Drakkenheim",
+        "id": "drakkenheim-core",
+        "version": "1.7.3",
+        "description": "A 5e adventure where malevolent monsters and rival factions clash in a dark city devastated by a mysterious meteor shower!"
+    }, {
+        "name": "Easy Regions",
+        "id": "easy-regions",
+        "version": "1.0.2",
+        "description": "Provides some quality-of-life improvements for managing Regions"
+    }, {
+        "name": "Effect Macro",
+        "id": "effectmacro",
+        "version": "13.0.1",
+        "description": ""
+    }, {
+        "name": "Enhanced Region Behavior",
+        "id": "enhanced-region-behavior",
+        "version": "1.4.4",
+        "description": "Adds new region options to scene regions"
+    }, {
+        "name": "Forien's Copy Environment",
+        "id": "forien-copy-environment",
+        "version": "v3.0.0",
+        "description": "Allows for copying list of system/modules and versions, and gives ability to export/import game and player settings"
+    }, {
+        "name": "Trazzm 5e Homebrew",
+        "id": "fvtt-trazzm-homebrew-5e",
+        "version": "13.5.4.1",
+        "description": "A collection of homebrew for dnd5e"
+    }, {
+        "name": "Heretic's Guide to Devotion & Divinity",
+        "id": "heretics-guide-to-devotion-and-divinity",
+        "version": "1.1.1",
+        "description": "From zealous cults and relic hunts to divine player options and celestial horrors, Heretic's Guide to Devotion &amp; Divinity has everything you need to make the divine matter."
+    }, {
+        "name": "Item Piles",
+        "id": "item-piles",
+        "version": "3.2.27",
+        "description": "This module adds the ability for items to be dropped onto the ground, and then picked up."
+    }, {
+        "name": "Item Piles: D&D 5e",
+        "id": "itempilesdnd5e",
+        "version": "1.0.5",
+        "description": "This module adds support for the D&amp;D5e system within the Item Piles module"
+    }, {
+        "name": "JB2A - Jules and Ben's Animated Assets - Free Content",
+        "id": "JB2A_DnD5e",
+        "version": "0.8.2",
+        "description": "<p>Animated Assets for spells, tiles, tokens, melee and ranged attacks</p><p>Troubleshooting and FAQ section on our <a href=\"https://jb2a.com\">website</a> </p><p>Join our <a href=\"https://discord.gg/gmd8MAPX4m\">Discord server</a> for any further questions</p><p> <a href=\"https://www.jb2a.com/Library_Preview/\">Preview</a> our assets<br /></p><p>Consider supporting us on <a href=\"https://www.patreon.com/JB2A\">Patreon</a> for more ! </p>"
+    }, {
+        "name": "libWrapper",
+        "id": "lib-wrapper",
+        "version": "1.13.4.0",
+        "description": "Library for wrapping core Foundry VTT methods, meant to improve compatibility between packages that wrap the same methods."
+    }, {
+        "name": "Midi QOL",
+        "id": "midi-qol",
+        "version": "13.0.25",
+        "description": "Automates rolling weapon/spell attacks and applying damage amongst other things"
+    }, {
+        "name": "Milando's Guide to Magical Marvels",
+        "id": "milandos-guide-to-magical-marvels",
+        "version": "1.1.1",
+        "description": "Milando’s Guide to Magical Marvels presents new and original magical content, ranging from arcane artisan NPCs and their magical services to unique magic items and dynamic creatures empowered by dark magic, runic enchantments, and wild magic – as well as three ready-to-play 5E adventures 3rd- to 13th-level characters!"
+    }, {
+        "name": "Module List Export",
+        "id": "module-list-export",
+        "version": "1.0.3",
+        "description": "A simple module created to export the list of installed modules for record-keeping."
+    }, {
+        "name": "Monk's Active Tile Triggers",
+        "id": "monks-active-tiles",
+        "version": "13.05",
+        "description": "Want to teleport, or open doors, or hide characters, or display a message, or play a sound, or change a token's elevation when a token walks over a tile... now you can"
+    }, {
+        "name": "Monk's Bloodsplats",
+        "id": "monks-bloodsplats",
+        "version": "13.01",
+        "description": "Display dead creatures as bloodsplats to keep the battlefield clear of tokens. Bloodsplats are generated randomly per creature and show when the creature has a dead or defeated status. With options to change the colour and transparency of the blood splat, either individually or per world."
+    }, {
+        "name": "Monk's TokenBar",
+        "id": "monks-tokenbar",
+        "version": "13.01",
+        "description": "Add a bar with all the current player tokens.  Limit movement, roll saving throws, assign XP."
+    }, {
+        "name": "Monk's Wall Enhancement",
+        "id": "monks-wall-enhancement",
+        "version": "13.02",
+        "description": "Enhancements to the Wall Tool.  Drag points together, freehand draw a wall, plus more."
+    }, {
+        "name": "Baileywiki Mass Edit",
+        "id": "multi-token-edit",
+        "version": "2.4.1",
+        "description": "Search and edit multiple placeables at the same time."
+    }, {
+        "name": "PnP - Pointer and Pings! (BETA)",
+        "id": "pointer",
+        "version": "13.1.0",
+        "description": "Gives all players the option to show a customizable cursor on demand, as well as ping any location with a custom ping!<br />Hotkeys, pings, pointer, everything customizable!<br />As GM you can also move your players view to your pin on demand."
+    }, {
+        "name": "Polyglot",
+        "id": "polyglot",
+        "version": "2.7.2",
+        "description": "Talk to others using a language you can speak and scrambles text you can't understand, in several fantasy scripts."
+    }, {
+        "name": "Portal",
+        "id": "portal-lib",
+        "version": "3.0.3",
+        "description": "A library module for spawning creatures, teleporting tokens, and picking locations. Check the wiki for the scripting API."
+    }, {
+        "name": "Region Active Effects",
+        "id": "region-active-effects",
+        "version": "1.2.0",
+        "description": "Region Active Effects lets you attach active effects to regions."
+    }, {
+        "name": "Region Attacher",
+        "id": "region-attacher",
+        "version": "1.10.0",
+        "description": "Allows attaching Scene Regions to templates on template creation"
+    }, {
+        "name": "Rest Recovery for 5E",
+        "id": "rest-recovery",
+        "version": "5.0.3",
+        "description": "Adds 5e long and short rest mechanics and variant rules, such as feats, class features, and hit-dice healing."
+    }, {
+        "name": "Rideable",
+        "id": "Rideable",
+        "version": "4.0.20",
+        "description": "A small module to handle riding and mounting"
+    }, {
+        "name": "Rise of the Drow",
+        "id": "rise-of-the-drow",
+        "version": "2.0.3",
+        "description": "<p>Tonight, a ceremony of light is taking place on the surfeace. Meanwhile, a world away in the city of spiders, a drow matron solidifies a pact with soul-consuming entities who require great sacrifices in the trade for unimaginable power. Drow eyes turn to the surface.</p>\n<p>This Foundry World contatins a mega-adventure and setting taking characters across the surface and into the depths of the world. Adventures will meet unique denizens, battle horrors of the Underworld, explore epic locations, and fight to stop the rise of the drow.</p>\n<hr />\n<p>Compatible with the world's most popular roleplaying game, this 5th Edition adventure takes 4-6 heroes from 1st to 15th level.</p>\n<hr />\n<p>The following books are recommended but not required to play: <em>Underworld Races &amp; Classes, Occult Secrets of the Underworld, and Survivalist Guide to Spelunking (available on Foundry).</em></p>"
+    }, {
+        "name": "routinglib",
+        "id": "routinglib",
+        "version": "1.1.0",
+        "description": "A library module to calculate a path between two points"
+    }, {
+        "name": "Sequencer",
+        "id": "sequencer",
+        "version": "3.6.10",
+        "description": "This module allows you to play effects on the canvas, and create complex sequences of actions"
+    }, {
+        "name": "socketlib",
+        "id": "socketlib",
+        "version": "v1.1.3",
+        "description": "A library for easier handling of foundry sockets"
+    }, {
+        "name": "Stealthy",
+        "id": "stealthy",
+        "version": "13.0.1",
+        "description": "Adds perception vs stealth checks to vision tests for tokens with the Hidden condition"
+    }, {
+        "name": "TheRipper93's Module Hub",
+        "id": "theripper-premium-hub",
+        "version": "5.0.6",
+        "description": "Utility for updates and troubleshooting of modules. Includes small tweaks such as Custom CSS, Compact Sidebar, Dice Tray, Auto rotation and more."
+    }, {
+        "name": "Times Up",
+        "id": "times-up",
+        "version": "13.1.0",
+        "description": "Active expiry expiration"
+    }, {
+        "name": "Token Attacher",
+        "id": "token-attacher",
+        "version": "v4.6.12",
+        "description": "Attach anything(even tokens) to tokens, so that they move when the token moves and rotate/move when the token rotates. Create prefabs and many more features, see the github readme for more details."
+    }, {
+        "name": "Token Magic FX",
+        "id": "tokenmagic",
+        "version": "0.7.2",
+        "description": "<p>Add special effects and animations on your tokens, tiles, drawings and templates.</p>"
+    }, {
+        "name": "Token Warp",
+        "id": "tokenwarp",
+        "version": "13.348.2",
+        "description": "A small module for Foundry VTT, helping GMs to avoid revealing their maps by automatically removing tokens movement animation when going through walls."
+    }, {
+        "name": "Vision 5e",
+        "id": "vision-5e",
+        "version": "3.0.7",
+        "description": "Vision Automation for D&amp;D 5e"
+    }, {
+        "name": "Visual Active Effects",
+        "id": "visual-active-effects",
+        "version": "13.0.5",
+        "description": ""
+    }, {
+        "name": "Wall Height",
+        "id": "wall-height",
+        "version": "7.0.8",
+        "description": "Adds the ability to set wall height for walls so that tokens can look and move over them."
+    }, {
+        "name": "Wanderer's Guide to Merchants & Magic",
+        "id": "wanderers-guide-2-merchants-n-magic",
+        "version": "1.1.1",
+        "description": "Get everything you need to make dealing with magic items in 5E easy and fun with 23 Unique Magic Shops; 120 New Magic Items; including Price Lists; 4 Magical Adventures; Rules &amp; Rolling Tables for trading magic items!"
+    }, {
+        "name": "Wanderer's Guide to Enchanted Emporiums",
+        "id": "wanderers-guide-to-enchanted-emporiums",
+        "version": "1.2.4",
+        "description": "Explore rich marketplaces teeming with arcane wonders, trade the spoils of battle for new magical treasures, and create your own enchanted relics with Wanderer's Guide to Enchanted Emporiums"
+    }
 ]

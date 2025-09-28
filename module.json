@@ -377,8 +377,13 @@
         "id": "visual-active-effects",
         "type": "module",
         "compatibility": {}
+      },
+      {
+        "id": "boss-loot-assets-premium",
+        "type": "module",
+        "compatibility": {}
       }
-    ]
+    ],
   },
   "esmodules": [
     "module/module.js"

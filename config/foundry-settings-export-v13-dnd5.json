@@ -16,18 +16,6 @@
     "value": "\"1.0.0\""
   },
   {
-    "key": "autoanimations.hideTemplateGrid",
-    "value": "\"full\""
-  },
-  {
-    "key": "autoanimations.playonmiss",
-    "value": "true"
-  },
-  {
-    "key": "automated-conditions-5e.autoArmor",
-    "value": "true"
-  },
-  {
     "key": "automated-conditions-5e.autoArmorSpellUse",
     "value": "\"enforce\""
   },
@@ -116,6 +104,18 @@
     "value": "true"
   },
   {
+    "key": "boss-loot-assets-premium.blfxDeleteTemplateAutoRec",
+    "value": "2"
+  },
+  {
+    "key": "boss-loot-assets-premium.lastMigrationVersion",
+    "value": "2"
+  },
+  {
+    "key": "boss-loot-assets-premium.moduleVersion",
+    "value": "\"2.8.0\""
+  },
+  {
     "key": "combat-tracker-dock.carouselStyle",
     "value": "1"
   },
@@ -153,7 +153,7 @@
   },
   {
     "key": "core.collectionSortingModes",
-    "value": "{\"dnd5e.spells\":\"m\",\"dnd5e.spells24\":\"m\",\"dnd5e.actors24\":\"m\"}"
+    "value": "{\"dnd5e.spells\":\"m\",\"dnd5e.spells24\":\"m\",\"dnd5e.actors24\":\"m\",\"dnd-players-handbook.spells\":\"m\",\"dnd-players-handbook.actors\":\"m\",\"fvtt-trazzm-homebrew-5e.trazzm-spells-2024\":\"m\"}"
   },
   {
     "key": "core.combatTrackerConfig",
@@ -161,7 +161,7 @@
   },
   {
     "key": "core.compendiumConfiguration",
-    "value": "{\"dnd5e.content24\":{\"folder\":\"jKaZHPYE1GR5kKTl\"},\"dnd5e.classes24\":{\"folder\":\"jKaZHPYE1GR5kKTl\"},\"dnd5e.origins24\":{\"folder\":\"jKaZHPYE1GR5kKTl\"},\"dnd5e.feats24\":{\"folder\":\"jKaZHPYE1GR5kKTl\"},\"dnd5e.spells24\":{\"folder\":\"jKaZHPYE1GR5kKTl\"},\"dnd5e.tables24\":{\"folder\":\"jKaZHPYE1GR5kKTl\"},\"dnd5e.actors24\":{\"folder\":\"jKaZHPYE1GR5kKTl\"},\"dnd5e.equipment24\":{\"folder\":\"jKaZHPYE1GR5kKTl\"},\"dnd5e.rules\":{\"folder\":\"tHr54gYZIL0V6d1Q\"},\"dnd5e.tables\":{\"folder\":\"tHr54gYZIL0V6d1Q\"},\"dnd5e.heroes\":{\"folder\":\"tHr54gYZIL0V6d1Q\"},\"dnd5e.classes\":{\"folder\":\"p9xxahTa2rO78R80\"},\"dnd5e.subclasses\":{\"folder\":\"p9xxahTa2rO78R80\"},\"dnd5e.classfeatures\":{\"folder\":\"p9xxahTa2rO78R80\"},\"dnd5e.backgrounds\":{\"folder\":\"p9xxahTa2rO78R80\"},\"dnd5e.races\":{\"folder\":\"p9xxahTa2rO78R80\"},\"dnd5e.items\":{\"folder\":\"ka7Z4uAxW11BW7zH\"},\"dnd5e.spells\":{\"folder\":\"ka7Z4uAxW11BW7zH\"},\"dnd5e.tradegoods\":{\"folder\":\"ka7Z4uAxW11BW7zH\"},\"dnd5e.monsters\":{\"folder\":\"56KszkSz5Y7DOMbr\"},\"dnd5e.monsterfeatures\":{\"folder\":\"56KszkSz5Y7DOMbr\"},\"ActiveAuras.aa-aura-items\":{\"folder\":\"f7kokXaXEhItkTFo\"},\"ActiveAuras.aa-zone-actors\":{\"folder\":\"f7kokXaXEhItkTFo\"},\"ActiveAuras.aa-macros\":{\"folder\":\"f7kokXaXEhItkTFo\"},\"dnd-monster-manual.content\":{\"folder\":\"7S4Y2uicChYRd2Zr\"},\"dnd-monster-manual.features\":{\"folder\":\"7S4Y2uicChYRd2Zr\"},\"dnd-monster-manual.actors\":{\"folder\":\"7S4Y2uicChYRd2Zr\"},\"dnd-monster-manual.tables\":{\"folder\":\"7S4Y2uicChYRd2Zr\"},\"dnd-players-handbook.content\":{\"folder\":\"f3Q1IAbbk6rQJrch\"},\"dnd-players-handbook.classes\":{\"folder\":\"f3Q1IAbbk6rQJrch\"},\"dnd-players-handbook.origins\":{\"folder\":\"f3Q1IAbbk6rQJrch\"},\"dnd-players-handbook.feats\":{\"folder\":\"f3Q1IAbbk6rQJrch\"},\"dnd-players-handbook.spells\":{\"folder\":\"f3Q1IAbbk6rQJrch\"},\"dnd-players-handbook.tables\":{\"folder\":\"f3Q1IAbbk6rQJrch\"},\"dnd-players-handbook.actors\":{\"folder\":\"f3Q1IAbbk6rQJrch\"},\"dnd-players-handbook.equipment\":{\"folder\":\"f3Q1IAbbk6rQJrch\"},\"dnd-dungeon-masters-guide.content\":{\"folder\":\"nvJyk3SGMrkKaiVL\"},\"dnd-dungeon-masters-guide.equipment\":{\"folder\":\"nvJyk3SGMrkKaiVL\"},\"dnd-dungeon-masters-guide.features\":{\"folder\":\"nvJyk3SGMrkKaiVL\"},\"dnd-dungeon-masters-guide.bastions\":{\"folder\":\"nvJyk3SGMrkKaiVL\"},\"dnd-dungeon-masters-guide.tables\":{\"folder\":\"nvJyk3SGMrkKaiVL\"},\"dnd-dungeon-masters-guide.actors\":{\"folder\":\"nvJyk3SGMrkKaiVL\"},\"dnd-dungeon-masters-guide.scenes\":{\"folder\":\"nvJyk3SGMrkKaiVL\"},\"rest-recovery.exhaustion\":{\"folder\":\"gHyZ5LnJIAlgj4Tt\"},\"dnd-tashas-cauldron.tcoe-content\":{\"folder\":\"nyK727K0WDJS1ph1\"},\"dnd-tashas-cauldron.tcoe-character-options\":{\"folder\":\"nyK727K0WDJS1ph1\"},\"dnd-tashas-cauldron.tcoe-tables\":{\"folder\":\"nyK727K0WDJS1ph1\"},\"dnd-tashas-cauldron.tcoe-actors\":{\"folder\":\"nyK727K0WDJS1ph1\"},\"dnd-tashas-cauldron.tcoe-magic-items\":{\"folder\":\"nyK727K0WDJS1ph1\"},\"dnd-tashas-cauldron.tcoe-dm-tools\":{\"folder\":\"nyK727K0WDJS1ph1\"},\"dnd-tashas-cauldron.tcoe-scenes\":{\"folder\":\"nyK727K0WDJS1ph1\"},\"drakkenheim-core.adventures\":{\"folder\":\"N0AV3HiMQQKaSJh5\"},\"drakkenheim-core.items\":{\"folder\":\"N0AV3HiMQQKaSJh5\"},\"drakkenheim-core.spells\":{\"folder\":\"N0AV3HiMQQKaSJh5\"},\"drakkenheim-core.tables\":{\"folder\":\"N0AV3HiMQQKaSJh5\"},\"drakkenheim-core.journals\":{\"folder\":\"N0AV3HiMQQKaSJh5\"},\"fvtt-trazzm-homebrew-5e.trazzm-backgrounds-2024\":{\"folder\":\"KjGXmcKK6yOokzGm\"},\"fvtt-trazzm-homebrew-5e.trazzm-classes-2024\":{\"folder\":\"KjGXmcKK6yOokzGm\",\"locked\":false},\"fvtt-trazzm-homebrew-5e.trazzm-feats-2024\":{\"folder\":\"KjGXmcKK6yOokzGm\",\"locked\":false},\"fvtt-trazzm-homebrew-5e.trazzm-items-2024\":{\"folder\":\"KjGXmcKK6yOokzGm\"},\"fvtt-trazzm-homebrew-5e.trazzm-monsters-2024\":{\"folder\":\"KjGXmcKK6yOokzGm\"},\"fvtt-trazzm-homebrew-5e.trazzm-monster-features-2024\":{\"folder\":\"KjGXmcKK6yOokzGm\"},\"fvtt-trazzm-homebrew-5e.trazzm-races-2024\":{\"folder\":\"KjGXmcKK6yOokzGm\"},\"fvtt-trazzm-homebrew-5e.trazzm-roll-tables-2024\":{\"folder\":\"KjGXmcKK6yOokzGm\"},\"fvtt-trazzm-homebrew-5e.trazzm-spells-2024\":{\"folder\":\"KjGXmcKK6yOokzGm\",\"locked\":false},\"fvtt-trazzm-homebrew-5e.trazzm-subclasses-2024\":{\"folder\":\"KjGXmcKK6yOokzGm\",\"locked\":false},\"fvtt-trazzm-homebrew-5e.trazzm-automation-actors-2024\":{\"folder\":\"KjGXmcKK6yOokzGm\",\"locked\":false},\"fvtt-trazzm-homebrew-5e.trazzm-automation-items-2024\":{\"folder\":\"KjGXmcKK6yOokzGm\"},\"fvtt-trazzm-homebrew-5e.homebrew-macros\":{\"folder\":\"KjGXmcKK6yOokzGm\",\"locked\":false},\"fvtt-trazzm-homebrew-5e.homebrew-journal-entries\":{\"folder\":\"KjGXmcKK6yOokzGm\",\"locked\":false},\"fvtt-trazzm-homebrew-5e.homebrew-dungeons-drakkenheim\":{\"folder\":\"JPiH9g0yMDdpfaha\"},\"fvtt-trazzm-homebrew-5e.homebrew-princes-of-the-apocalypse\":{\"folder\":\"JPiH9g0yMDdpfaha\",\"locked\":false},\"fvtt-trazzm-homebrew-5e.homebrew-ravenloft\":{\"folder\":\"JPiH9g0yMDdpfaha\"},\"fvtt-trazzm-homebrew-5e.homebrew-rime-of-the-frostmaiden\":{\"folder\":\"JPiH9g0yMDdpfaha\"},\"fvtt-trazzm-homebrew-5e.homebrew-rise-of-the-drow\":{\"folder\":\"JPiH9g0yMDdpfaha\"},\"token-attacher.example-macros\":{\"folder\":\"JaEaDFNE0B4gN0qW\",\"sort\":100000},\"bg3-inspired-hotbar.bg3-inspired-hud\":{\"folder\":\"JaEaDFNE0B4gN0qW\",\"sort\":200000},\"JB2A_DnD5e.jb2a-actors\":{\"folder\":\"JaEaDFNE0B4gN0qW\",\"sort\":300000},\"JB2A_DnD5e.jb2a-sequencer\":{\"folder\":\"JaEaDFNE0B4gN0qW\",\"sort\":250000},\"multi-token-edit.meSampleMacros\":{\"folder\":\"JaEaDFNE0B4gN0qW\",\"sort\":400000},\"Rideable.rideable\":{\"folder\":\"JaEaDFNE0B4gN0qW\",\"sort\":350000},\"midi-qol.midiqol-sample-items\":{\"folder\":\"JaEaDFNE0B4gN0qW\",\"sort\":500000},\"rise-of-the-drow.rotd\":{\"folder\":\"JaEaDFNE0B4gN0qW\",\"sort\":600000},\"ATL.premade\":{\"folder\":\"JaEaDFNE0B4gN0qW\",\"sort\":550000},\"tokenmagic.tmSampleCompendium\":{\"folder\":\"JaEaDFNE0B4gN0qW\",\"sort\":375000},\"tokenmagic.tmMacros\":{\"folder\":\"JaEaDFNE0B4gN0qW\",\"sort\":362500},\"wall-height.wall-height-macros\":{\"folder\":\"JaEaDFNE0B4gN0qW\",\"sort\":356250},\"delve.actors\":{\"folder\":\"p2QUofewLOqB2TKG\"},\"delve.player-options\":{\"folder\":\"p2QUofewLOqB2TKG\"},\"delve.items\":{\"folder\":\"p2QUofewLOqB2TKG\"},\"delve.rules\":{\"folder\":\"p2QUofewLOqB2TKG\"},\"delve.dungeons\":{\"folder\":\"p2QUofewLOqB2TKG\"},\"heretics-guide-to-devotion-and-divinity.actors\":{\"folder\":\"KGdBAEUjHV7rhUQe\"},\"heretics-guide-to-devotion-and-divinity.items\":{\"folder\":\"KGdBAEUjHV7rhUQe\"},\"heretics-guide-to-devotion-and-divinity.journals\":{\"folder\":\"KGdBAEUjHV7rhUQe\"},\"heretics-guide-to-devotion-and-divinity.maps\":{\"folder\":\"KGdBAEUjHV7rhUQe\"},\"milandos-guide-to-magical-marvels.actors\":{\"folder\":\"fef4vrfP04EQMNhk\"},\"milandos-guide-to-magical-marvels.items\":{\"folder\":\"fef4vrfP04EQMNhk\"},\"milandos-guide-to-magical-marvels.journals\":{\"folder\":\"fef4vrfP04EQMNhk\"},\"milandos-guide-to-magical-marvels.maps\":{\"folder\":\"fef4vrfP04EQMNhk\"},\"milandos-guide-to-magical-marvels.rolltables\":{\"folder\":\"fef4vrfP04EQMNhk\"},\"wanderers-guide-2-merchants-n-magic.maps\":{\"folder\":\"P0i5bjNvE8L6DQM7\"},\"wanderers-guide-2-merchants-n-magic.actors\":{\"folder\":\"P0i5bjNvE8L6DQM7\"},\"wanderers-guide-2-merchants-n-magic.journals\":{\"folder\":\"P0i5bjNvE8L6DQM7\"},\"wanderers-guide-2-merchants-n-magic.items\":{\"folder\":\"P0i5bjNvE8L6DQM7\"},\"wanderers-guide-2-merchants-n-magic.rolltables\":{\"folder\":\"P0i5bjNvE8L6DQM7\"},\"wanderers-guide-2-merchants-n-magic.macros\":{\"folder\":\"P0i5bjNvE8L6DQM7\"},\"wanderers-guide-to-enchanted-emporiums.creatures\":{\"folder\":\"GPMR5VxFma3z1FKx\"},\"wanderers-guide-to-enchanted-emporiums.player-options\":{\"folder\":\"GPMR5VxFma3z1FKx\"},\"wanderers-guide-to-enchanted-emporiums.magic-items\":{\"folder\":\"GPMR5VxFma3z1FKx\"},\"wanderers-guide-to-enchanted-emporiums.rules\":{\"folder\":\"GPMR5VxFma3z1FKx\"},\"wanderers-guide-to-enchanted-emporiums.market-maps\":{\"folder\":\"GPMR5VxFma3z1FKx\"},\"wanderers-guide-to-enchanted-emporiums.tables\":{\"folder\":\"GPMR5VxFma3z1FKx\"},\"midi-item-showcase-community.misc-actors\":{\"folder\":\"hHyATUkln5DJwGjo\"},\"midi-item-showcase-community.misc-actions\":{\"folder\":\"hHyATUkln5DJwGjo\"},\"midi-item-showcase-community.misc-class-features\":{\"folder\":\"hHyATUkln5DJwGjo\"},\"midi-item-showcase-community.misc-feats\":{\"folder\":\"hHyATUkln5DJwGjo\"},\"midi-item-showcase-community.misc-monster-features\":{\"folder\":\"hHyATUkln5DJwGjo\"},\"midi-item-showcase-community.misc-race-features\":{\"folder\":\"hHyATUkln5DJwGjo\"},\"midi-item-showcase-community.misc-spells\":{\"folder\":\"hHyATUkln5DJwGjo\"},\"midi-item-showcase-community.misc-items\":{\"folder\":\"hHyATUkln5DJwGjo\"},\"midi-item-showcase-community.misc-unearthed-arcana\":{\"folder\":\"hHyATUkln5DJwGjo\"},\"midi-item-showcase-community.misc-homebrew\":{\"folder\":\"hHyATUkln5DJwGjo\"},\"midi-item-showcase-community.misc-third-party\":{\"folder\":\"hHyATUkln5DJwGjo\"},\"midi-item-showcase-community.misc-class-features-2024\":{\"folder\":\"fhqwg92GrDnAlHy8\"},\"midi-item-showcase-community.misc-feats-2024\":{\"folder\":\"fhqwg92GrDnAlHy8\"},\"midi-item-showcase-community.misc-monster-features-2024\":{\"folder\":\"fhqwg92GrDnAlHy8\"},\"midi-item-showcase-community.misc-spells-2024\":{\"folder\":\"fhqwg92GrDnAlHy8\"},\"midi-item-showcase-community.misc-items-2024\":{\"folder\":\"fhqwg92GrDnAlHy8\"},\"midi-item-showcase-community.misc-class-features-items\":{\"folder\":\"EmksOhWy7j52CxfA\"},\"midi-item-showcase-community.misc-spell-items\":{\"folder\":\"EmksOhWy7j52CxfA\"},\"midi-item-showcase-community.misc-items-features\":{\"folder\":\"EmksOhWy7j52CxfA\"},\"auraeffects.AuraEffectsMacros\":{\"folder\":\"FPFC8uAN6pBJuprZ\"},\"monks-active-tiles.active-tile-macros\":{\"folder\":\"JaEaDFNE0B4gN0qW\",\"sort\":150000}}"
+    "value": "{\"dnd5e.content24\":{\"folder\":\"jKaZHPYE1GR5kKTl\"},\"dnd5e.classes24\":{\"folder\":\"jKaZHPYE1GR5kKTl\"},\"dnd5e.origins24\":{\"folder\":\"jKaZHPYE1GR5kKTl\"},\"dnd5e.feats24\":{\"folder\":\"jKaZHPYE1GR5kKTl\"},\"dnd5e.spells24\":{\"folder\":\"jKaZHPYE1GR5kKTl\"},\"dnd5e.tables24\":{\"folder\":\"jKaZHPYE1GR5kKTl\"},\"dnd5e.actors24\":{\"folder\":\"jKaZHPYE1GR5kKTl\"},\"dnd5e.equipment24\":{\"folder\":\"jKaZHPYE1GR5kKTl\"},\"dnd5e.rules\":{\"folder\":\"tHr54gYZIL0V6d1Q\"},\"dnd5e.tables\":{\"folder\":\"tHr54gYZIL0V6d1Q\"},\"dnd5e.heroes\":{\"folder\":\"tHr54gYZIL0V6d1Q\"},\"dnd5e.classes\":{\"folder\":\"p9xxahTa2rO78R80\"},\"dnd5e.subclasses\":{\"folder\":\"p9xxahTa2rO78R80\"},\"dnd5e.classfeatures\":{\"folder\":\"p9xxahTa2rO78R80\"},\"dnd5e.backgrounds\":{\"folder\":\"p9xxahTa2rO78R80\"},\"dnd5e.races\":{\"folder\":\"p9xxahTa2rO78R80\"},\"dnd5e.items\":{\"folder\":\"ka7Z4uAxW11BW7zH\"},\"dnd5e.spells\":{\"folder\":\"ka7Z4uAxW11BW7zH\"},\"dnd5e.tradegoods\":{\"folder\":\"ka7Z4uAxW11BW7zH\"},\"dnd5e.monsters\":{\"folder\":\"56KszkSz5Y7DOMbr\"},\"dnd5e.monsterfeatures\":{\"folder\":\"56KszkSz5Y7DOMbr\"},\"ActiveAuras.aa-aura-items\":{\"folder\":\"f7kokXaXEhItkTFo\"},\"ActiveAuras.aa-zone-actors\":{\"folder\":\"f7kokXaXEhItkTFo\"},\"ActiveAuras.aa-macros\":{\"folder\":\"f7kokXaXEhItkTFo\"},\"dnd-monster-manual.content\":{\"folder\":\"7S4Y2uicChYRd2Zr\"},\"dnd-monster-manual.features\":{\"folder\":\"7S4Y2uicChYRd2Zr\"},\"dnd-monster-manual.actors\":{\"folder\":\"7S4Y2uicChYRd2Zr\",\"locked\":true},\"dnd-monster-manual.tables\":{\"folder\":\"7S4Y2uicChYRd2Zr\"},\"dnd-players-handbook.content\":{\"folder\":\"f3Q1IAbbk6rQJrch\",\"sort\":100000},\"dnd-players-handbook.classes\":{\"folder\":\"f3Q1IAbbk6rQJrch\",\"sort\":200000},\"dnd-players-handbook.origins\":{\"folder\":\"f3Q1IAbbk6rQJrch\",\"sort\":400000},\"dnd-players-handbook.feats\":{\"folder\":\"f3Q1IAbbk6rQJrch\",\"sort\":500000},\"dnd-players-handbook.spells\":{\"folder\":\"f3Q1IAbbk6rQJrch\",\"sort\":600000},\"dnd-players-handbook.tables\":{\"folder\":\"f3Q1IAbbk6rQJrch\",\"sort\":550000},\"dnd-players-handbook.actors\":{\"folder\":\"f3Q1IAbbk6rQJrch\",\"sort\":150000},\"dnd-players-handbook.equipment\":{\"folder\":\"f3Q1IAbbk6rQJrch\",\"sort\":450000},\"dnd-dungeon-masters-guide.content\":{\"folder\":\"nvJyk3SGMrkKaiVL\"},\"dnd-dungeon-masters-guide.equipment\":{\"folder\":\"nvJyk3SGMrkKaiVL\"},\"dnd-dungeon-masters-guide.features\":{\"folder\":\"nvJyk3SGMrkKaiVL\"},\"dnd-dungeon-masters-guide.bastions\":{\"folder\":\"nvJyk3SGMrkKaiVL\"},\"dnd-dungeon-masters-guide.tables\":{\"folder\":\"nvJyk3SGMrkKaiVL\"},\"dnd-dungeon-masters-guide.actors\":{\"folder\":\"nvJyk3SGMrkKaiVL\"},\"dnd-dungeon-masters-guide.scenes\":{\"folder\":\"nvJyk3SGMrkKaiVL\"},\"rest-recovery.exhaustion\":{\"folder\":\"gHyZ5LnJIAlgj4Tt\"},\"dnd-tashas-cauldron.tcoe-content\":{\"folder\":\"nyK727K0WDJS1ph1\"},\"dnd-tashas-cauldron.tcoe-character-options\":{\"folder\":\"nyK727K0WDJS1ph1\"},\"dnd-tashas-cauldron.tcoe-tables\":{\"folder\":\"nyK727K0WDJS1ph1\"},\"dnd-tashas-cauldron.tcoe-actors\":{\"folder\":\"nyK727K0WDJS1ph1\"},\"dnd-tashas-cauldron.tcoe-magic-items\":{\"folder\":\"nyK727K0WDJS1ph1\"},\"dnd-tashas-cauldron.tcoe-dm-tools\":{\"folder\":\"nyK727K0WDJS1ph1\"},\"dnd-tashas-cauldron.tcoe-scenes\":{\"folder\":\"nyK727K0WDJS1ph1\"},\"drakkenheim-core.adventures\":{\"folder\":\"N0AV3HiMQQKaSJh5\"},\"drakkenheim-core.items\":{\"folder\":\"N0AV3HiMQQKaSJh5\"},\"drakkenheim-core.spells\":{\"folder\":\"N0AV3HiMQQKaSJh5\"},\"drakkenheim-core.tables\":{\"folder\":\"N0AV3HiMQQKaSJh5\"},\"drakkenheim-core.journals\":{\"folder\":\"N0AV3HiMQQKaSJh5\"},\"fvtt-trazzm-homebrew-5e.trazzm-backgrounds-2024\":{\"folder\":\"KjGXmcKK6yOokzGm\",\"locked\":false},\"fvtt-trazzm-homebrew-5e.trazzm-classes-2024\":{\"folder\":\"KjGXmcKK6yOokzGm\",\"locked\":false},\"fvtt-trazzm-homebrew-5e.trazzm-feats-2024\":{\"folder\":\"KjGXmcKK6yOokzGm\",\"locked\":false},\"fvtt-trazzm-homebrew-5e.trazzm-items-2024\":{\"folder\":\"KjGXmcKK6yOokzGm\"},\"fvtt-trazzm-homebrew-5e.trazzm-monsters-2024\":{\"folder\":\"KjGXmcKK6yOokzGm\",\"locked\":false},\"fvtt-trazzm-homebrew-5e.trazzm-monster-features-2024\":{\"folder\":\"KjGXmcKK6yOokzGm\",\"locked\":false},\"fvtt-trazzm-homebrew-5e.trazzm-races-2024\":{\"folder\":\"KjGXmcKK6yOokzGm\",\"locked\":false},\"fvtt-trazzm-homebrew-5e.trazzm-roll-tables-2024\":{\"folder\":\"KjGXmcKK6yOokzGm\"},\"fvtt-trazzm-homebrew-5e.trazzm-spells-2024\":{\"folder\":\"KjGXmcKK6yOokzGm\",\"locked\":false},\"fvtt-trazzm-homebrew-5e.trazzm-subclasses-2024\":{\"folder\":\"KjGXmcKK6yOokzGm\",\"locked\":false},\"fvtt-trazzm-homebrew-5e.trazzm-automation-actors-2024\":{\"folder\":\"KjGXmcKK6yOokzGm\",\"locked\":false},\"fvtt-trazzm-homebrew-5e.trazzm-automation-items-2024\":{\"folder\":\"KjGXmcKK6yOokzGm\",\"locked\":false},\"fvtt-trazzm-homebrew-5e.homebrew-macros\":{\"folder\":\"KjGXmcKK6yOokzGm\",\"locked\":false},\"fvtt-trazzm-homebrew-5e.homebrew-journal-entries\":{\"folder\":\"KjGXmcKK6yOokzGm\",\"locked\":false},\"fvtt-trazzm-homebrew-5e.homebrew-dungeons-drakkenheim\":{\"folder\":\"JPiH9g0yMDdpfaha\"},\"fvtt-trazzm-homebrew-5e.homebrew-princes-of-the-apocalypse\":{\"folder\":\"JPiH9g0yMDdpfaha\",\"locked\":false},\"fvtt-trazzm-homebrew-5e.homebrew-ravenloft\":{\"folder\":\"JPiH9g0yMDdpfaha\"},\"fvtt-trazzm-homebrew-5e.homebrew-rime-of-the-frostmaiden\":{\"folder\":\"JPiH9g0yMDdpfaha\"},\"fvtt-trazzm-homebrew-5e.homebrew-rise-of-the-drow\":{\"folder\":\"JPiH9g0yMDdpfaha\"},\"token-attacher.example-macros\":{\"folder\":\"JaEaDFNE0B4gN0qW\",\"sort\":100000},\"bg3-inspired-hotbar.bg3-inspired-hud\":{\"folder\":\"JaEaDFNE0B4gN0qW\",\"sort\":200000},\"JB2A_DnD5e.jb2a-actors\":{\"folder\":\"JaEaDFNE0B4gN0qW\",\"sort\":300000},\"JB2A_DnD5e.jb2a-sequencer\":{\"folder\":\"JaEaDFNE0B4gN0qW\",\"sort\":250000},\"multi-token-edit.meSampleMacros\":{\"folder\":\"JaEaDFNE0B4gN0qW\",\"sort\":400000},\"Rideable.rideable\":{\"folder\":\"JaEaDFNE0B4gN0qW\",\"sort\":350000},\"midi-qol.midiqol-sample-items\":{\"folder\":\"JaEaDFNE0B4gN0qW\",\"sort\":500000},\"rise-of-the-drow.rotd\":{\"folder\":\"JaEaDFNE0B4gN0qW\",\"sort\":600000},\"ATL.premade\":{\"folder\":\"JaEaDFNE0B4gN0qW\",\"sort\":550000},\"tokenmagic.tmSampleCompendium\":{\"folder\":\"JaEaDFNE0B4gN0qW\",\"sort\":375000},\"tokenmagic.tmMacros\":{\"folder\":\"JaEaDFNE0B4gN0qW\",\"sort\":362500},\"wall-height.wall-height-macros\":{\"folder\":\"JaEaDFNE0B4gN0qW\",\"sort\":356250},\"delve.actors\":{\"folder\":\"p2QUofewLOqB2TKG\"},\"delve.player-options\":{\"folder\":\"p2QUofewLOqB2TKG\"},\"delve.items\":{\"folder\":\"p2QUofewLOqB2TKG\"},\"delve.rules\":{\"folder\":\"p2QUofewLOqB2TKG\"},\"delve.dungeons\":{\"folder\":\"p2QUofewLOqB2TKG\"},\"heretics-guide-to-devotion-and-divinity.actors\":{\"folder\":\"KGdBAEUjHV7rhUQe\"},\"heretics-guide-to-devotion-and-divinity.items\":{\"folder\":\"KGdBAEUjHV7rhUQe\"},\"heretics-guide-to-devotion-and-divinity.journals\":{\"folder\":\"KGdBAEUjHV7rhUQe\"},\"heretics-guide-to-devotion-and-divinity.maps\":{\"folder\":\"KGdBAEUjHV7rhUQe\"},\"milandos-guide-to-magical-marvels.actors\":{\"folder\":\"fef4vrfP04EQMNhk\"},\"milandos-guide-to-magical-marvels.items\":{\"folder\":\"fef4vrfP04EQMNhk\"},\"milandos-guide-to-magical-marvels.journals\":{\"folder\":\"fef4vrfP04EQMNhk\"},\"milandos-guide-to-magical-marvels.maps\":{\"folder\":\"fef4vrfP04EQMNhk\"},\"milandos-guide-to-magical-marvels.rolltables\":{\"folder\":\"fef4vrfP04EQMNhk\"},\"wanderers-guide-2-merchants-n-magic.maps\":{\"folder\":\"P0i5bjNvE8L6DQM7\"},\"wanderers-guide-2-merchants-n-magic.actors\":{\"folder\":\"P0i5bjNvE8L6DQM7\"},\"wanderers-guide-2-merchants-n-magic.journals\":{\"folder\":\"P0i5bjNvE8L6DQM7\"},\"wanderers-guide-2-merchants-n-magic.items\":{\"folder\":\"P0i5bjNvE8L6DQM7\"},\"wanderers-guide-2-merchants-n-magic.rolltables\":{\"folder\":\"P0i5bjNvE8L6DQM7\"},\"wanderers-guide-2-merchants-n-magic.macros\":{\"folder\":\"P0i5bjNvE8L6DQM7\"},\"wanderers-guide-to-enchanted-emporiums.creatures\":{\"folder\":\"GPMR5VxFma3z1FKx\"},\"wanderers-guide-to-enchanted-emporiums.player-options\":{\"folder\":\"GPMR5VxFma3z1FKx\"},\"wanderers-guide-to-enchanted-emporiums.magic-items\":{\"folder\":\"GPMR5VxFma3z1FKx\"},\"wanderers-guide-to-enchanted-emporiums.rules\":{\"folder\":\"GPMR5VxFma3z1FKx\"},\"wanderers-guide-to-enchanted-emporiums.market-maps\":{\"folder\":\"GPMR5VxFma3z1FKx\"},\"wanderers-guide-to-enchanted-emporiums.tables\":{\"folder\":\"GPMR5VxFma3z1FKx\"},\"midi-item-showcase-community.misc-actors\":{\"folder\":\"hHyATUkln5DJwGjo\"},\"midi-item-showcase-community.misc-actions\":{\"folder\":\"hHyATUkln5DJwGjo\"},\"midi-item-showcase-community.misc-class-features\":{\"folder\":\"hHyATUkln5DJwGjo\"},\"midi-item-showcase-community.misc-feats\":{\"folder\":\"hHyATUkln5DJwGjo\"},\"midi-item-showcase-community.misc-monster-features\":{\"folder\":\"hHyATUkln5DJwGjo\"},\"midi-item-showcase-community.misc-race-features\":{\"folder\":\"hHyATUkln5DJwGjo\"},\"midi-item-showcase-community.misc-spells\":{\"folder\":\"hHyATUkln5DJwGjo\"},\"midi-item-showcase-community.misc-items\":{\"folder\":\"hHyATUkln5DJwGjo\"},\"midi-item-showcase-community.misc-unearthed-arcana\":{\"folder\":\"hHyATUkln5DJwGjo\"},\"midi-item-showcase-community.misc-homebrew\":{\"folder\":\"hHyATUkln5DJwGjo\"},\"midi-item-showcase-community.misc-third-party\":{\"folder\":\"hHyATUkln5DJwGjo\"},\"midi-item-showcase-community.misc-class-features-2024\":{\"folder\":\"fhqwg92GrDnAlHy8\"},\"midi-item-showcase-community.misc-feats-2024\":{\"folder\":\"fhqwg92GrDnAlHy8\"},\"midi-item-showcase-community.misc-monster-features-2024\":{\"folder\":\"fhqwg92GrDnAlHy8\"},\"midi-item-showcase-community.misc-spells-2024\":{\"folder\":\"fhqwg92GrDnAlHy8\"},\"midi-item-showcase-community.misc-items-2024\":{\"folder\":\"fhqwg92GrDnAlHy8\"},\"midi-item-showcase-community.misc-class-features-items\":{\"folder\":\"EmksOhWy7j52CxfA\"},\"midi-item-showcase-community.misc-spell-items\":{\"folder\":\"EmksOhWy7j52CxfA\"},\"midi-item-showcase-community.misc-items-features\":{\"folder\":\"EmksOhWy7j52CxfA\"},\"auraeffects.AuraEffectsMacros\":{\"folder\":\"FPFC8uAN6pBJuprZ\"},\"monks-active-tiles.active-tile-macros\":{\"folder\":\"JaEaDFNE0B4gN0qW\",\"sort\":150000},\"boss-loot-assets-premium.blfx-macros\":{\"folder\":\"R1XlFdNcqy5LP1jy\"},\"boss-loot-assets-premium.blfx-items\":{\"folder\":\"R1XlFdNcqy5LP1jy\"},\"boss-loot-assets-premium.blfx-actors\":{\"folder\":\"R1XlFdNcqy5LP1jy\"},\"dnd5e.monsterfeatures24\":{\"folder\":\"jKaZHPYE1GR5kKTl\"}}"
   },
   {
     "key": "core.defaultDrawingConfig",
@@ -181,7 +181,7 @@
   },
   {
     "key": "core.moduleConfiguration",
-    "value": "{\"ATL\":true,\"auraeffects\":true,\"autoanimations\":true,\"automated-conditions-5e\":true,\"multi-token-edit\":true,\"betterroofs\":true,\"bg3-inspired-hotbar\":true,\"combat-tracker-dock\":true,\"delve\":true,\"dice-so-nice\":true,\"dice-calculator\":true,\"dnd5e-scriptlets\":true,\"dnd-dungeon-masters-guide\":true,\"dnd-monster-manual\":true,\"dnd-players-handbook\":true,\"drakkenheim-core\":true,\"dae\":true,\"easy-regions\":true,\"effectmacro\":true,\"enhanced-region-behavior\":true,\"forien-copy-environment\":true,\"heretics-guide-to-devotion-and-divinity\":true,\"item-piles\":true,\"itempilesdnd5e\":true,\"JB2A_DnD5e\":true,\"colorsettings\":true,\"lib-wrapper\":true,\"midi-item-showcase-community\":true,\"midi-qol\":true,\"milandos-guide-to-magical-marvels\":true,\"module-list-export\":true,\"monks-active-tiles\":true,\"monks-bloodsplats\":true,\"monks-tokenbar\":true,\"monks-wall-enhancement\":true,\"pointer\":true,\"polyglot\":true,\"portal-lib\":true,\"region-active-effects\":true,\"region-attacher\":true,\"rest-recovery\":true,\"Rideable\":true,\"rise-of-the-drow\":true,\"routinglib\":true,\"sequencer\":true,\"socketlib\":true,\"stealthy\":true,\"dnd-tashas-cauldron\":true,\"theripper-premium-hub\":true,\"times-up\":true,\"token-attacher\":true,\"tokenmagic\":true,\"tokenwarp\":true,\"fvtt-trazzm-homebrew-5e\":true,\"vision-5e\":true,\"visual-active-effects\":true,\"wall-height\":true,\"wanderers-guide-to-enchanted-emporiums\":true,\"wanderers-guide-2-merchants-n-magic\":true}"
+    "value": "{\"ATL\":true,\"auraeffects\":true,\"automated-conditions-5e\":true,\"multi-token-edit\":true,\"betterroofs\":true,\"bg3-inspired-hotbar\":true,\"boss-loot-assets-premium\":true,\"combat-tracker-dock\":true,\"delve\":true,\"dice-so-nice\":true,\"dice-calculator\":true,\"dnd5e-scriptlets\":true,\"dnd-dungeon-masters-guide\":true,\"dnd-monster-manual\":true,\"dnd-players-handbook\":true,\"drakkenheim-core\":true,\"dae\":true,\"easy-regions\":true,\"effectmacro\":true,\"enhanced-region-behavior\":true,\"forien-copy-environment\":true,\"heretics-guide-to-devotion-and-divinity\":true,\"item-piles\":true,\"itempilesdnd5e\":true,\"JB2A_DnD5e\":true,\"colorsettings\":true,\"lib-wrapper\":true,\"midi-item-showcase-community\":true,\"midi-qol\":true,\"milandos-guide-to-magical-marvels\":true,\"module-list-export\":true,\"monks-active-tiles\":true,\"monks-bloodsplats\":true,\"monks-tokenbar\":true,\"monks-wall-enhancement\":true,\"pointer\":true,\"polyglot\":true,\"portal-lib\":true,\"region-active-effects\":true,\"region-attacher\":true,\"rest-recovery\":true,\"Rideable\":true,\"rise-of-the-drow\":true,\"routinglib\":true,\"sequencer\":true,\"socketlib\":true,\"stealthy\":true,\"dnd-tashas-cauldron\":true,\"theripper-premium-hub\":true,\"times-up\":true,\"token-attacher\":true,\"tokenmagic\":true,\"tokenwarp\":true,\"fvtt-trazzm-homebrew-5e\":true,\"vision-5e\":true,\"visual-active-effects\":true,\"wall-height\":true,\"wanderers-guide-to-enchanted-emporiums\":true,\"wanderers-guide-2-merchants-n-magic\":true}"
   },
   {
     "key": "core.nue.shownTips",
@@ -205,7 +205,7 @@
   },
   {
     "key": "core.time",
-    "value": "252"
+    "value": "1122"
   },
   {
     "key": "core.tokenAutoRotate",
@@ -214,6 +214,10 @@
   {
     "key": "core.tourProgress",
     "value": "{\"core\":{\"backupsOverview\":0,\"welcome\":1}}"
+  },
+  {
+    "key": "core.visionAnimation",
+    "value": "false"
   },
   {
     "key": "dae.DAENoTitleText",
@@ -233,19 +237,19 @@
   },
   {
     "key": "dnd-dungeon-masters-guide.lastVersion",
-    "value": "\"1.2.1\""
+    "value": "\"2.0.0\""
   },
   {
     "key": "dnd-monster-manual.lastVersion",
-    "value": "\"1.1.0\""
+    "value": "\"1.2.0\""
   },
   {
     "key": "dnd-players-handbook.lastVersion",
-    "value": "\"1.4.0\""
+    "value": "\"2.0.0\""
   },
   {
-    "key": "dnd5e-scriptlets.ActorCollapsibleSection",
-    "value": "true"
+    "key": "dnd-tashas-cauldron.lastVersion",
+    "value": "\"3.0.0\""
   },
   {
     "key": "dnd5e-scriptlets.ammoRecoveryMessage",
@@ -274,6 +278,10 @@
   {
     "key": "dnd5e.attackRollVisibility",
     "value": "\"hideAC\""
+  },
+  {
+    "key": "dnd5e.autoCollapseChatTrays",
+    "value": "\"always\""
   },
   {
     "key": "dnd5e.autoCollapseItemCards",
@@ -341,7 +349,7 @@
   },
   {
     "key": "drakkenheim-core.migrationVersion",
-    "value": "\"1.7.2\""
+    "value": "\"1.7.3\""
   },
   {
     "key": "easy-regions.onlyNavigatableScenes",
@@ -353,7 +361,7 @@
   },
   {
     "key": "fvtt-trazzm-homebrew-5e.lastVersion",
-    "value": "\"13.5.1\""
+    "value": "\"13.5.4.1\""
   },
   {
     "key": "item-piles.actorClassType",
@@ -429,7 +437,7 @@
   },
   {
     "key": "midi-qol.ConfigSettings",
-    "value": "{\"addChatDamageButtons\":\"gm\",\"addDead\":\"overlay\",\"addFakeDice\":false,\"addWounded\":0,\"addWoundedStyle\":\"none\",\"activityNamePrefix\":true,\"activationAutomation\":\"auto\",\"midiWoundedCondition\":\"none\",\"midiDeadCondition\":\"dead\",\"midiUnconsciousCondition\":\"unconscious\",\"allowUseMacro\":true,\"allowActorUseMacro\":true,\"attackPerTarget\":true,\"autoApplyDamage\":\"yesCard\",\"playerDamageCard\":\"npcplayerbuttons\",\"playerCardDamageDifferent\":true,\"hidePlayerDamageCard\":true,\"autoCEEffects\":\"none\",\"autoCheckHit\":[\"all\",\"all\"],\"autoCheckSaves\":\"allShow\",\"autoFastForward\":\"all\",\"autoItemEffects\":\"applyNoButton\",\"autoRemoveSummonedCreature\":true,\"autoRemoveTemplate\":true,\"autoRemoveInstantaneousTemplate\":true,\"autoRollAttack\":true,\"autoRollDamage\":\"onHit\",\"autoCompleteWorkflow\":true,\"saveDROrder\":\"DRSaveDr\",\"autoTarget\":\"wallsBlock\",\"averageDamage\":\"none\",\"checkSaveText\":false,\"checkTwoHanded\":true,\"chooseAmmunition\":true,\"collapsibleTargets\":true,\"concentrationAutomation\":false,\"confirmAmmunition\":true,\"gmConfirmAmmunition\":true,\"consumeResource\":\"none\",\"convenientEffectsReaction\":\"Reaction\",\"criticalSound\":\"sounds/dice.wav\",\"customSoundsPlaylist\":\"none\",\"damageImmunities\":\"immunityPhysical\",\"damageImmunityMultiplier\":0,\"damageResistanceMultiplier\":0.5,\"damageVulnerabilityMultiplier\":2,\"defaultSaveMultiplier\":0.5,\"diceSound\":\"sounds/dice.wav\",\"displayHitResultNumeric\":false,\"displaySaveAdvantage\":true,\"displaySaveDC\":true,\"doConcentrationCheck\":\"chat\",\"griddedGridless\":false,\"gridlessFudge\":0,\"doReactions\":\"all\",\"effectActivation\":false,\"enableDDBGL\":false,\"enforceReactions\":\"all\",\"enforceBonusActions\":\"all\",\"enforceSingleWeaponTarget\":true,\"fixStickyKeys\":true,\"fumbleSound\":\"sounds/dice.wav\",\"ghostRolls\":false,\"gmAutoAttack\":true,\"gmAutoDamage\":\"onHit\",\"gmAutoFastForwardAttack\":true,\"gmAutoFastForwardDamage\":true,\"gmConsumeResource\":\"none\",\"gmDoReactions\":\"all\",\"gmHide3dDice\":false,\"gmLateTargeting\":\"none\",\"gmRemoveButtons\":\"off\",\"gmAttackDamageCards\":false,\"hideRollDetails\":\"none\",\"ignoreSpellReactionRestriction\":false,\"itemRollStartWorkflow\":false,\"itemUseSound\":\"\",\"keepRollStats\":false,\"keyMapping\":{\"DND5E.Advantage\":\"altKey\",\"DND5E.Disadvantage\":\"ctrlKey\",\"DND5E.Critical\":\"altKey\",\"DND5E.Versatile\":\"shiftKey\"},\"mergeCardCondensed\":true,\"mergeCardMulti\":true,\"mergeCardMultiDamage\":false,\"displayProperties\":true,\"midiPropertiesTabRole\":\"1\",\"confirmAttackDamage\":\"none\",\"highlightSuccess\":true,\"highLightCriticalAttackOnly\":false,\"markPlayerDefeated\":false,\"markNonPlayerDefeated\":false,\"optionalRulesEnabled\":true,\"paranoidGM\":false,\"playerRollSaves\":\"chat\",\"playerSaveTimeout\":30,\"playerStatsOnly\":false,\"potionUseSound\":\"\",\"quickSettings\":true,\"rangeTarget\":\"always\",\"useTemplateRangedTargeting\":false,\"reactionTimeout\":10,\"recordAOO\":\"all\",\"removeButtons\":\"all\",\"removeConcentration\":true,\"removeConcentrationEffects\":\"effectsTemplates\",\"playerRequireAmmunition\":true,\"gmRequireAmmunition\":false,\"requireMagical\":\"off\",\"requiresTargets\":\"always\",\"rollNPCLinkedSaves\":\"auto\",\"rollNPCSaves\":\"auto\",\"rollChecksBlind\":[],\"rollSavesBlind\":[],\"rollSkillsBlind\":[\"dec\",\"ins\",\"inv\",\"prc\",\"slt\",\"ste\"],\"saveStatsEvery\":20,\"showDSN\":true,\"showFastForward\":true,\"showItemDetails\":\"all\",\"showReactionAttackRoll\":\"allCrit\",\"showReactionChatMessage\":true,\"singleConcentrationRoll\":true,\"skillAbilityCheckAdvantage\":true,\"spellHitSound\":\"\",\"spellUseSound\":\"\",\"spellUseSoundRanged\":\"\",\"tempHPDamageConcentrationCheck\":true,\"concentrationIncapacitatedConditionCheck\":true,\"toggleOptionalRules\":false,\"useCustomSounds\":true,\"usePlayerPortrait\":true,\"useTokenNames\":true,\"undoChatColor\":\"Delete\",\"undoWorkflow\":true,\"useDamageDetail\":true,\"weaponHitSound\":\"\",\"weaponUseSound\":\"\",\"weaponUseSoundRanged\":\"\",\"rollAlternate\":\"formulaadv\",\"optionalRules\":{\"actionSpecialDurationImmediate\":true,\"activeDefence\":false,\"activeDefenceModifier\":12,\"activeDefenceShow\":\"selfroll\",\"ActiveDefenceDC\":true,\"challengeModeArmor\":\"none\",\"challengeModeArmorScale\":false,\"checkFlanking\":\"advonly\",\"checkRange\":\"longfail\",\"coverCalculation\":\"none\",\"displayBonusRolls\":true,\"criticalNat20\":false,\"criticalSaves\":false,\"distanceIncludesHeight\":true,\"incapacitated\":\"warn\",\"invisAdvantage\":\"vision\",\"hiddenAdvantage\":\"effect\",\"maxDRValue\":false,\"DRAllPerDamageDetail\":false,\"nearbyAllyRanged\":0,\"nearbyFoe\":5,\"optionalCritRule\":-1,\"removeHiddenInvis\":true,\"wallsBlockRange\":\"center\",\"mergeCardMulti\":false,\"mergeCardMultiDamage\":false,\"displayProperties\":true,\"autoRerollInitiative\":false,\"invisVision\":true,\"vitalityResource\":\"\",\"enableddbGL\":false,\"activeDefenceDC\":false},\"itemTypeList\":[\"base\",\"weapon\",\"equipment\",\"consumable\",\"tool\",\"loot\",\"race\",\"background\",\"class\",\"subclass\",\"spell\",\"feat\",\"container\",\"backpack\",\"facility\",\"dnd-tashas-cauldron.tattoo\"],\"defaultSaveMult\":0.5}"
+    "value": "{\"addChatDamageButtons\":\"gm\",\"addDead\":\"overlay\",\"addFakeDice\":false,\"addWounded\":0,\"addWoundedStyle\":\"none\",\"activityNamePrefix\":true,\"activationAutomation\":\"auto\",\"midiWoundedCondition\":\"none\",\"midiDeadCondition\":\"dead\",\"midiUnconsciousCondition\":\"unconscious\",\"allowUseMacro\":true,\"allowActorUseMacro\":true,\"attackPerTarget\":true,\"autoApplyDamage\":\"yesCard\",\"playerDamageCard\":\"npcplayerbuttons\",\"playerCardDamageDifferent\":true,\"hidePlayerDamageCard\":true,\"autoCEEffects\":\"none\",\"autoCheckHit\":[\"all\",\"all\"],\"autoCheckSaves\":\"allShow\",\"autoFastForward\":\"all\",\"autoItemEffects\":\"applyRemove\",\"autoRemoveSummonedCreature\":true,\"autoRemoveTemplate\":true,\"autoRemoveInstantaneousTemplate\":true,\"autoRollAttack\":true,\"autoRollDamage\":\"onHit\",\"autoCompleteWorkflow\":true,\"saveDROrder\":\"DRSaveDr\",\"autoTarget\":\"wallsBlock\",\"averageDamage\":\"none\",\"checkSaveText\":false,\"checkTwoHanded\":true,\"chooseAmmunition\":true,\"collapsibleTargets\":true,\"concentrationAutomation\":false,\"confirmAmmunition\":true,\"gmConfirmAmmunition\":true,\"consumeResource\":\"none\",\"convenientEffectsReaction\":\"Reaction\",\"criticalSound\":\"sounds/dice.wav\",\"customSoundsPlaylist\":\"none\",\"damageImmunities\":\"immunityPhysical\",\"damageImmunityMultiplier\":0,\"damageResistanceMultiplier\":0.5,\"damageVulnerabilityMultiplier\":2,\"defaultSaveMultiplier\":0.5,\"diceSound\":\"sounds/dice.wav\",\"displayHitResultNumeric\":false,\"displaySaveAdvantage\":true,\"displaySaveDC\":true,\"doConcentrationCheck\":\"chat\",\"griddedGridless\":false,\"gridlessFudge\":0,\"doReactions\":\"all\",\"effectActivation\":false,\"enableDDBGL\":false,\"enforceReactions\":\"all\",\"enforceBonusActions\":\"all\",\"enforceSingleWeaponTarget\":true,\"fixStickyKeys\":true,\"fumbleSound\":\"sounds/dice.wav\",\"ghostRolls\":false,\"gmAutoAttack\":true,\"gmAutoDamage\":\"onHit\",\"gmAutoFastForwardAttack\":true,\"gmAutoFastForwardDamage\":true,\"gmConsumeResource\":\"none\",\"gmDoReactions\":\"all\",\"gmHide3dDice\":false,\"gmLateTargeting\":\"none\",\"gmRemoveButtons\":\"off\",\"gmAttackDamageCards\":false,\"hideRollDetails\":\"none\",\"ignoreSpellReactionRestriction\":false,\"itemRollStartWorkflow\":false,\"itemUseSound\":\"\",\"keepRollStats\":false,\"keyMapping\":{\"DND5E.Advantage\":\"altKey\",\"DND5E.Disadvantage\":\"ctrlKey\",\"DND5E.Critical\":\"altKey\",\"DND5E.Versatile\":\"shiftKey\"},\"mergeCardCondensed\":true,\"mergeCardMulti\":true,\"mergeCardMultiDamage\":false,\"displayProperties\":true,\"midiPropertiesTabRole\":\"1\",\"confirmAttackDamage\":\"none\",\"highlightSuccess\":true,\"highLightCriticalAttackOnly\":false,\"markPlayerDefeated\":false,\"markNonPlayerDefeated\":false,\"optionalRulesEnabled\":true,\"paranoidGM\":false,\"playerRollSaves\":\"chat\",\"playerSaveTimeout\":30,\"playerStatsOnly\":false,\"potionUseSound\":\"\",\"quickSettings\":true,\"rangeTarget\":\"always\",\"useTemplateRangedTargeting\":false,\"reactionTimeout\":10,\"recordAOO\":\"all\",\"removeButtons\":\"all\",\"removeConcentration\":true,\"removeConcentrationEffects\":\"effectsTemplates\",\"playerRequireAmmunition\":true,\"gmRequireAmmunition\":false,\"requireMagical\":\"off\",\"requiresTargets\":\"always\",\"rollNPCLinkedSaves\":\"auto\",\"rollNPCSaves\":\"auto\",\"rollChecksBlind\":[],\"rollSavesBlind\":[],\"rollSkillsBlind\":[\"dec\",\"ins\",\"inv\",\"prc\",\"slt\",\"ste\"],\"saveStatsEvery\":20,\"showDSN\":true,\"showFastForward\":true,\"showItemDetails\":\"all\",\"showReactionAttackRoll\":\"allCrit\",\"showReactionChatMessage\":true,\"singleConcentrationRoll\":true,\"skillAbilityCheckAdvantage\":true,\"spellHitSound\":\"\",\"spellUseSound\":\"\",\"spellUseSoundRanged\":\"\",\"tempHPDamageConcentrationCheck\":true,\"concentrationIncapacitatedConditionCheck\":true,\"toggleOptionalRules\":false,\"useCustomSounds\":true,\"usePlayerPortrait\":true,\"useTokenNames\":true,\"undoChatColor\":\"Delete\",\"undoWorkflow\":false,\"useDamageDetail\":true,\"weaponHitSound\":\"\",\"weaponUseSound\":\"\",\"weaponUseSoundRanged\":\"\",\"rollAlternate\":\"formulaadv\",\"optionalRules\":{\"actionSpecialDurationImmediate\":true,\"activeDefence\":false,\"activeDefenceModifier\":12,\"activeDefenceShow\":\"selfroll\",\"ActiveDefenceDC\":true,\"challengeModeArmor\":\"none\",\"challengeModeArmorScale\":false,\"checkFlanking\":\"advonly\",\"checkRange\":\"longfail\",\"coverCalculation\":\"none\",\"displayBonusRolls\":true,\"criticalNat20\":false,\"criticalSaves\":false,\"distanceIncludesHeight\":true,\"incapacitated\":\"warn\",\"invisAdvantage\":\"vision\",\"hiddenAdvantage\":\"effect\",\"maxDRValue\":false,\"DRAllPerDamageDetail\":false,\"nearbyAllyRanged\":0,\"nearbyFoe\":5,\"optionalCritRule\":-1,\"removeHiddenInvis\":true,\"wallsBlockRange\":\"center\",\"mergeCardMulti\":false,\"mergeCardMultiDamage\":false,\"displayProperties\":true,\"autoRerollInitiative\":false,\"invisVision\":true,\"vitalityResource\":\"\",\"enableddbGL\":false,\"activeDefenceDC\":false},\"itemTypeList\":[\"base\",\"weapon\",\"equipment\",\"consumable\",\"tool\",\"loot\",\"race\",\"background\",\"class\",\"subclass\",\"spell\",\"feat\",\"container\",\"backpack\",\"facility\",\"dnd-tashas-cauldron.tattoo\"],\"defaultSaveMult\":0.5}"
   },
   {
     "key": "midi-qol.CriticalDamageGM",
@@ -449,7 +457,7 @@
   },
   {
     "key": "midi-qol.last-run-version",
-    "value": "\"13.0.18\""
+    "value": "\"13.0.25\""
   },
   {
     "key": "midi-qol.PreferredGM",
@@ -508,6 +516,18 @@
     "value": "0.7"
   },
   {
+    "key": "monks-bloodsplats.disabled-bloodsplats",
+    "value": "false"
+  },
+  {
+    "key": "monks-bloodsplats.remove-effects",
+    "value": "false"
+  },
+  {
+    "key": "monks-bloodsplats.show-bloodsplat",
+    "value": "\"both\""
+  },
+  {
     "key": "monks-tokenbar.loot-name",
     "value": "\"Loot {{#}}\""
   },
@@ -541,7 +561,7 @@
   },
   {
     "key": "rest-recovery.migration-version",
-    "value": "\"5.0.1\""
+    "value": "\"5.0.3\""
   },
   {
     "key": "rest-recovery.module-profiles",
@@ -633,7 +653,7 @@
   },
   {
     "key": "theripper-premium-hub.lastGitCheck",
-    "value": "1756403302265"
+    "value": "1758762654513"
   },
   {
     "key": "theripper-premium-hub.viewedAnnouncements",
@@ -707,6 +727,523 @@
     "type": "_supportingDataType",
     "value": {
       "compendiumFolders": [
+        {
+          "_id": "FPFC8uAN6pBJuprZ",
+          "name": "Aura Effects",
+          "type": "Compendium",
+          "sorting": "a",
+          "sort": 100000,
+          "color": "#b08e1e",
+          "folder": null,
+          "description": "",
+          "flags": {},
+          "_stats": {
+            "coreVersion": "13.347",
+            "systemId": "dnd5e",
+            "systemVersion": "5.1.2",
+            "createdTime": 1756074462306,
+            "modifiedTime": 1756074462306,
+            "lastModifiedBy": null,
+            "compendiumSource": null,
+            "duplicateSource": null,
+            "exportSource": null
+          }
+        },
+        {
+          "_id": "R1XlFdNcqy5LP1jy",
+          "name": "Boss Loot FX, Premium",
+          "type": "Compendium",
+          "sorting": "m",
+          "sort": 100000,
+          "color": "#79519c",
+          "folder": null,
+          "description": "",
+          "flags": {},
+          "_stats": {
+            "coreVersion": "13.348",
+            "systemId": "dnd5e",
+            "systemVersion": "5.1.4",
+            "createdTime": 1757092944971,
+            "modifiedTime": 1757092944971,
+            "lastModifiedBy": null,
+            "compendiumSource": null,
+            "duplicateSource": null,
+            "exportSource": null
+          }
+        },
+        {
+          "_id": "JPiH9g0yMDdpfaha",
+          "name": "Campaigns",
+          "type": "Compendium",
+          "sorting": "a",
+          "sort": 200000,
+          "color": "#ca866d",
+          "folder": "KjGXmcKK6yOokzGm",
+          "description": "",
+          "flags": {},
+          "_stats": {
+            "coreVersion": "13.344",
+            "systemId": "dnd5e",
+            "systemVersion": "5.0.4",
+            "lastModifiedBy": null,
+            "compendiumSource": null,
+            "duplicateSource": null,
+            "exportSource": null
+          }
+        },
+        {
+          "_id": "p9xxahTa2rO78R80",
+          "name": "Character Features",
+          "type": "Compendium",
+          "sorting": "m",
+          "sort": 300000,
+          "color": "#b72c1f",
+          "folder": "tHr54gYZIL0V6d1Q",
+          "description": "",
+          "flags": {},
+          "_stats": {
+            "coreVersion": "13.344",
+            "systemId": "dnd5e",
+            "systemVersion": "5.0.0",
+            "lastModifiedBy": null,
+            "compendiumSource": null,
+            "duplicateSource": null,
+            "exportSource": null
+          }
+        },
+        {
+          "_id": "tHr54gYZIL0V6d1Q",
+          "name": "D&D Legacy Content",
+          "type": "Compendium",
+          "sorting": "m",
+          "sort": 600000,
+          "color": "#cd2c1e",
+          "folder": null,
+          "description": "",
+          "flags": {},
+          "_stats": {
+            "coreVersion": "13.348",
+            "systemId": "dnd5e",
+            "systemVersion": "5.0.0",
+            "createdTime": 1745781317504,
+            "modifiedTime": 1756952816763,
+            "lastModifiedBy": "8LnrSyEdeqPyAg71",
+            "compendiumSource": null,
+            "duplicateSource": null,
+            "exportSource": null
+          }
+        },
+        {
+          "_id": "jKaZHPYE1GR5kKTl",
+          "name": "D&D Modern Content",
+          "type": "Compendium",
+          "sorting": "m",
+          "sort": 300000,
+          "color": "#cd2c1e",
+          "folder": null,
+          "description": "",
+          "flags": {},
+          "_stats": {
+            "coreVersion": "13.347",
+            "systemId": "dnd5e",
+            "systemVersion": "5.0.0",
+            "createdTime": 1745781317504,
+            "modifiedTime": 1756065839657,
+            "lastModifiedBy": "8LnrSyEdeqPyAg71",
+            "compendiumSource": null,
+            "duplicateSource": null,
+            "exportSource": null
+          }
+        },
+        {
+          "_id": "p2QUofewLOqB2TKG",
+          "name": "DELVE",
+          "type": "Compendium",
+          "sorting": "a",
+          "sort": 100000,
+          "color": null,
+          "folder": "ySqnqIO8oePIv4WI",
+          "description": "",
+          "flags": {},
+          "_stats": {
+            "coreVersion": "13.347",
+            "systemId": "dnd5e",
+            "systemVersion": "5.0.4",
+            "createdTime": 1754675465898,
+            "modifiedTime": 1756055449756,
+            "lastModifiedBy": "8LnrSyEdeqPyAg71",
+            "compendiumSource": null,
+            "duplicateSource": null,
+            "exportSource": null
+          }
+        },
+        {
+          "_id": "nvJyk3SGMrkKaiVL",
+          "name": "Dungeon Master's Guide",
+          "type": "Compendium",
+          "sorting": "m",
+          "sort": 400000,
+          "color": "#1e72cc",
+          "folder": null,
+          "description": "",
+          "flags": {},
+          "_stats": {
+            "coreVersion": "13.347",
+            "systemId": "dnd5e",
+            "systemVersion": "5.0.0",
+            "createdTime": 1745781821364,
+            "modifiedTime": 1756065839657,
+            "lastModifiedBy": "8LnrSyEdeqPyAg71",
+            "compendiumSource": null,
+            "duplicateSource": null,
+            "exportSource": null
+          }
+        },
+        {
+          "_id": "N0AV3HiMQQKaSJh5",
+          "name": "Dungeons of Drakkenheim",
+          "type": "Compendium",
+          "sorting": "m",
+          "sort": 1300000,
+          "color": "#311432",
+          "folder": null,
+          "description": "",
+          "flags": {},
+          "_stats": {
+            "coreVersion": "13.348",
+            "systemId": "dnd5e",
+            "systemVersion": "5.0.4",
+            "lastModifiedBy": "8LnrSyEdeqPyAg71",
+            "compendiumSource": null,
+            "duplicateSource": null,
+            "exportSource": null,
+            "modifiedTime": 1757093037509
+          }
+        },
+        {
+          "type": "Compendium",
+          "folder": null,
+          "name": "Eventyr",
+          "color": null,
+          "sorting": "a",
+          "_id": "ySqnqIO8oePIv4WI",
+          "description": "",
+          "sort": 200000,
+          "flags": {},
+          "_stats": {
+            "compendiumSource": null,
+            "duplicateSource": null,
+            "exportSource": null,
+            "coreVersion": "13.347",
+            "systemId": "dnd5e",
+            "systemVersion": "5.1.2",
+            "createdTime": 1756055443014,
+            "modifiedTime": 1756405868307,
+            "lastModifiedBy": "8LnrSyEdeqPyAg71"
+          }
+        },
+        {
+          "_id": "KGdBAEUjHV7rhUQe",
+          "name": "Heretic's Guide to Devotion & Divinity",
+          "type": "Compendium",
+          "sorting": "a",
+          "sort": 200000,
+          "color": null,
+          "folder": "ySqnqIO8oePIv4WI",
+          "description": "",
+          "flags": {},
+          "_stats": {
+            "coreVersion": "13.347",
+            "systemId": "dnd5e",
+            "systemVersion": "5.0.4",
+            "createdTime": 1754675465898,
+            "modifiedTime": 1756055453655,
+            "lastModifiedBy": "8LnrSyEdeqPyAg71",
+            "compendiumSource": null,
+            "duplicateSource": null,
+            "exportSource": null
+          }
+        },
+        {
+          "_id": "EmksOhWy7j52CxfA",
+          "name": "Internal",
+          "type": "Compendium",
+          "sorting": "a",
+          "sort": 600000,
+          "color": "#018e5f",
+          "folder": "SN0oVLppoxVTxKr3",
+          "description": "",
+          "flags": {},
+          "_stats": {
+            "coreVersion": "13.347",
+            "systemId": "dnd5e",
+            "systemVersion": "5.1.2",
+            "lastModifiedBy": null,
+            "compendiumSource": null,
+            "duplicateSource": null,
+            "exportSource": null
+          }
+        },
+        {
+          "_id": "ka7Z4uAxW11BW7zH",
+          "name": "Items & Spells",
+          "type": "Compendium",
+          "sorting": "m",
+          "sort": 400000,
+          "color": "#941919",
+          "folder": "tHr54gYZIL0V6d1Q",
+          "description": "",
+          "flags": {},
+          "_stats": {
+            "coreVersion": "13.344",
+            "systemId": "dnd5e",
+            "systemVersion": "5.0.0",
+            "lastModifiedBy": null,
+            "compendiumSource": null,
+            "duplicateSource": null,
+            "exportSource": null
+          }
+        },
+        {
+          "_id": "SN0oVLppoxVTxKr3",
+          "name": "Midi Item Showcase - Community",
+          "type": "Compendium",
+          "sorting": "a",
+          "sort": 1100000,
+          "color": "#018e5f",
+          "folder": null,
+          "description": "",
+          "flags": {},
+          "_stats": {
+            "coreVersion": "13.348",
+            "systemId": "dnd5e",
+            "systemVersion": "5.1.2",
+            "createdTime": 1756065816075,
+            "modifiedTime": 1756952816763,
+            "lastModifiedBy": "8LnrSyEdeqPyAg71",
+            "compendiumSource": null,
+            "duplicateSource": null,
+            "exportSource": null
+          }
+        },
+        {
+          "_id": "fef4vrfP04EQMNhk",
+          "name": "Milando's Guide to Magical Marvels",
+          "type": "Compendium",
+          "sorting": "a",
+          "sort": 300000,
+          "color": null,
+          "folder": "ySqnqIO8oePIv4WI",
+          "description": "",
+          "flags": {},
+          "_stats": {
+            "coreVersion": "13.347",
+            "systemId": "dnd5e",
+            "systemVersion": "5.0.4",
+            "createdTime": 1754675465898,
+            "modifiedTime": 1756055455713,
+            "lastModifiedBy": "8LnrSyEdeqPyAg71",
+            "compendiumSource": null,
+            "duplicateSource": null,
+            "exportSource": null
+          }
+        },
+        {
+          "_id": "7S4Y2uicChYRd2Zr",
+          "name": "Monster Manual",
+          "type": "Compendium",
+          "sorting": "m",
+          "sort": 800000,
+          "color": "#1e72cc",
+          "folder": null,
+          "description": "",
+          "flags": {},
+          "_stats": {
+            "coreVersion": "13.348",
+            "systemId": "dnd5e",
+            "systemVersion": "5.0.0",
+            "createdTime": 1745781748987,
+            "modifiedTime": 1756952816763,
+            "lastModifiedBy": "8LnrSyEdeqPyAg71",
+            "compendiumSource": null,
+            "duplicateSource": null,
+            "exportSource": null
+          }
+        },
+        {
+          "_id": "56KszkSz5Y7DOMbr",
+          "name": "Monsters",
+          "type": "Compendium",
+          "sorting": "m",
+          "sort": 500000,
+          "color": "#7d160c",
+          "folder": "tHr54gYZIL0V6d1Q",
+          "description": "",
+          "flags": {},
+          "_stats": {
+            "coreVersion": "13.344",
+            "systemId": "dnd5e",
+            "systemVersion": "5.0.0",
+            "lastModifiedBy": null,
+            "compendiumSource": null,
+            "duplicateSource": null,
+            "exportSource": null
+          }
+        },
+        {
+          "_id": "f3Q1IAbbk6rQJrch",
+          "name": "Player's Handbook",
+          "type": "Compendium",
+          "sorting": "m",
+          "sort": 1200000,
+          "color": "#1e72cc",
+          "folder": null,
+          "description": "",
+          "flags": {},
+          "_stats": {
+            "coreVersion": "13.347",
+            "systemId": "dnd5e",
+            "systemVersion": "5.0.0",
+            "createdTime": 1745781748987,
+            "modifiedTime": 1756065839657,
+            "lastModifiedBy": "8LnrSyEdeqPyAg71",
+            "compendiumSource": null,
+            "duplicateSource": null,
+            "exportSource": null
+          }
+        },
+        {
+          "_id": "gHyZ5LnJIAlgj4Tt",
+          "name": "Rest Recovery 5e",
+          "type": "Compendium",
+          "sorting": "a",
+          "sort": 100000,
+          "color": "#200da6",
+          "folder": "JaEaDFNE0B4gN0qW",
+          "description": "",
+          "flags": {},
+          "_stats": {
+            "coreVersion": "13.347",
+            "systemId": "dnd5e",
+            "systemVersion": "5.0.0",
+            "createdTime": 1745782143496,
+            "modifiedTime": 1756055471069,
+            "lastModifiedBy": "8LnrSyEdeqPyAg71",
+            "compendiumSource": null,
+            "duplicateSource": null,
+            "exportSource": null
+          }
+        },
+        {
+          "_id": "nyK727K0WDJS1ph1",
+          "name": "Tasha's Cauldron of Everything",
+          "type": "Compendium",
+          "sorting": "m",
+          "sort": 500000,
+          "color": "#344358",
+          "folder": null,
+          "description": "",
+          "flags": {},
+          "_stats": {
+            "coreVersion": "13.348",
+            "systemId": "dnd5e",
+            "systemVersion": "5.0.4",
+            "createdTime": 1754447840177,
+            "modifiedTime": 1756952816763,
+            "lastModifiedBy": "8LnrSyEdeqPyAg71",
+            "compendiumSource": null,
+            "duplicateSource": null,
+            "exportSource": null
+          }
+        },
+        {
+          "_id": "KjGXmcKK6yOokzGm",
+          "name": "Trazzm Homebrew",
+          "type": "Compendium",
+          "sorting": "a",
+          "sort": 1000000,
+          "color": "#fd5a1e",
+          "folder": null,
+          "description": "",
+          "flags": {},
+          "_stats": {
+            "coreVersion": "13.348",
+            "systemId": "dnd5e",
+            "systemVersion": "5.0.4",
+            "createdTime": 1754528196807,
+            "modifiedTime": 1756952816763,
+            "lastModifiedBy": "8LnrSyEdeqPyAg71",
+            "compendiumSource": null,
+            "duplicateSource": null,
+            "exportSource": null
+          }
+        },
+        {
+          "_id": "GPMR5VxFma3z1FKx",
+          "name": "Wanderer's Guide to Enchanted Emporiums",
+          "type": "Compendium",
+          "sorting": "a",
+          "sort": 400000,
+          "color": null,
+          "folder": "ySqnqIO8oePIv4WI",
+          "description": "",
+          "flags": {},
+          "_stats": {
+            "coreVersion": "13.347",
+            "systemId": "dnd5e",
+            "systemVersion": "5.0.4",
+            "createdTime": 1754675465898,
+            "modifiedTime": 1756055459921,
+            "lastModifiedBy": "8LnrSyEdeqPyAg71",
+            "compendiumSource": null,
+            "duplicateSource": null,
+            "exportSource": null
+          }
+        },
+        {
+          "_id": "P0i5bjNvE8L6DQM7",
+          "name": "Wanderer's Guide to Merchants & Magic",
+          "type": "Compendium",
+          "sorting": "a",
+          "sort": 500000,
+          "color": null,
+          "folder": "ySqnqIO8oePIv4WI",
+          "description": "",
+          "flags": {},
+          "_stats": {
+            "coreVersion": "13.347",
+            "systemId": "dnd5e",
+            "systemVersion": "5.0.4",
+            "createdTime": 1754675465898,
+            "modifiedTime": 1756055462082,
+            "lastModifiedBy": "8LnrSyEdeqPyAg71",
+            "compendiumSource": null,
+            "duplicateSource": null,
+            "exportSource": null
+          }
+        },
+        {
+          "type": "Compendium",
+          "folder": null,
+          "name": "Z",
+          "color": "#ba9717",
+          "sorting": "a",
+          "_id": "JaEaDFNE0B4gN0qW",
+          "description": "",
+          "sort": 900000,
+          "flags": {},
+          "_stats": {
+            "compendiumSource": null,
+            "duplicateSource": null,
+            "exportSource": null,
+            "coreVersion": "13.348",
+            "systemId": "dnd5e",
+            "systemVersion": "5.0.4",
+            "createdTime": 1754674805972,
+            "modifiedTime": 1756952816763,
+            "lastModifiedBy": "8LnrSyEdeqPyAg71"
+          }
+        }
       ]
     }
   }
