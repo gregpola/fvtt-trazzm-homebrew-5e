@@ -6,7 +6,7 @@
     Using a Higher-Level Spell Slot. The spell creates one more dart for each spell slot level above 1.
 */
 const optionName = "Magic Missile";
-const version = "12.5.0";
+const version = "13.5.0";
 const damageType = "force";
 
 try {
@@ -102,12 +102,16 @@ async function launchMissiles(targetToken, missileCount, sourceItem){
     }
 }
 
-async function anime(token, target) {
+async function anime(controlledToken, targetToken) {
+    const targetElevation = targetToken.document?.elevation ?? 0;
+
     new Sequence()
         .effect()
-        .file("jb2a.magic_missile.purple")
-        .atLocation(token)
-        .stretchTo(target)
+        .file('blfx.spell.range.ray.burst5.missile.sinusoidal.impact.intro.purple')
+        .zIndex(100)
+        .elevation(targetElevation)
+        .atLocation(controlledToken)
+        .stretchTo(targetToken)
         .play()
 }
 

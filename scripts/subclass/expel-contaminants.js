@@ -3,11 +3,11 @@
     a long rest, you can reduce your Contamination Level by an amount equal to half your proficiency bonus (rounded down).
 */
 const optionName = "Expel Contaminants";
-const version = "12.4.0";
+const version = "13.5.0";
 
 try {
     if (args[0].macroPass === "postActiveEffects") {
-        let currentContamination = actor.flags.drakkenheim.contamination;
+        let currentContamination = targetToken.actor.flags.drakkenheim?.contamination ?? 0;
         const contaminationReduction = Math.floor(actor.system.attributes.prof / 2);
 
         if (currentContamination > 0) {

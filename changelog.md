@@ -44,3 +44,15 @@
 * Updated Booming Blade spell
 * Updated Alert feat to implement the Initiative Swap activity
 * Updated Blessed Warrior, Chef, Crafter, Druidic Warrior, Eldritch Adept, Elemental Adept, Fey Teleportation, Fey-Touched, Heavily Armored, Keen Mind, Lightly Armored, Magic Initiate, Martial Weapon Training, Medium Armor Master, Metamagic Adept, Moderately Armored, Musician, Observant, Piercer, Poisoner, Resilient, Ritual Caster, Shadow-Touched, Skill Expert, Skilled, Speedy, Squat Nimbleness, Telekinetic, Telepathic, and Weapon Master to take advantage of the new advancement options for feats
+
+# 13.5.6
+* Added Acid Burn, Bacterial Barrage, Biohazard, Caustic Grip, Comet Shards, Controlled Mutation, Corrosive Blast, Corrupted Cure, Envenom, Fetid Blade, Grasping Ghost, Infect, Invigorate, Ocular Necrosis, Pestilence, Poison Needle, Purge Contamination, Stream of Consumption, Toxic Shield, Tranquilizing Toxin, Vanish to the Space Between Worlds, Venomous Aura, and Weave the Elder Sign spells from Sebastian Crowe's Guide to Drakkenheim
+* Added Silvery Barbs spell
+* Added automation to the Abjurer subclass features
+* Updated Ice Knife, Magic Missile, Wall of Sand, Wall of Water, and Wind Wall spells
+* Updated Malfeasant subclass
+* Updated Arcane Trickster to prompt for cantrip selections
+* Recovered some data lost on the migration from v12 to v13
+* Fix for the Legendary action reminder not showing
+* Fix for the standup from prone reminder dialog
+* Added the file mod-changes.txt to the config folder. It has info about modifications that can be made to modules to improve them.

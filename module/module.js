@@ -27,7 +27,8 @@ const SUB_MODULES = {
     WarlockFeatures,
     WizardFeatures,
     SummonHelper,
-    WeaponMastery
+    WeaponMastery,
+    MonsterMacros
 };
 
 Hooks.once('init', async function () {
@@ -69,7 +70,10 @@ Hooks.once('socketlib.ready', async function() {
  * Creation & delete hooks for persistent effects
  */
 function initialize_module() {
-    Object.values(SUB_MODULES).forEach(cl => cl.register());
+    Object.values(SUB_MODULES).forEach(cl => {
+        //console.log(cl);
+        cl.register();
+    });
     globalThis.TrazzmHomebrew.weaponMastery = WeaponMastery;
     globalThis.TrazzmHomebrew.MonsterMacros = MonsterMacros;
 }

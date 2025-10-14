@@ -1,0 +1,4 @@
+Visual Active Effects
+    - around line 470 of module.mjs
+    - in the method _prepareContext in the function skipping, add just before the return false at the end:
+    - if (effect.name === 'Spell Changes') return true;

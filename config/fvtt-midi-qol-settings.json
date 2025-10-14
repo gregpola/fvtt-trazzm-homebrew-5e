@@ -18,10 +18,7 @@
     "playerCardDamageDifferent": true,
     "hidePlayerDamageCard": true,
     "autoCEEffects": "none",
-    "autoCheckHit": [
-      "all",
-      "all"
-    ],
+    "autoCheckHit": "all",
     "autoCheckSaves": "allShow",
     "autoFastForward": "all",
     "autoItemEffects": "applyRemove",
@@ -96,7 +93,7 @@
     "highlightSuccess": true,
     "highLightCriticalAttackOnly": false,
     "markPlayerDefeated": false,
-    "markNonPlayerDefeated": false,
+    "markNonPlayerDefeated": true,
     "optionalRulesEnabled": true,
     "paranoidGM": false,
     "playerRollSaves": "chat",
@@ -203,7 +200,10 @@
       "facility",
       "dnd-tashas-cauldron.tattoo"
     ],
-    "defaultSaveMult": 0.5
+    "defaultSaveMult": 0.5,
+    "autoUndoTransformations": false,
+    "savesBeforeDamage": false,
+    "waitForDamageApplication": false
   },
   "midiSoundSettings": {
     "any": {},
@@ -245,9 +245,9 @@
   "flags": {
     "exportSource": {
       "system": "dnd5e",
-      "coreVersion": "13.348",
+      "coreVersion": "13.350",
       "systemVersion": "5.1.9",
-      "midiVersion": "13.0.25"
+      "midiVersion": "13.0.27"
     }
   }
 }

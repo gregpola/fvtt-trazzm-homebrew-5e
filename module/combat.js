@@ -24,7 +24,7 @@ async function legendaryActionsPrompt(combat, data, options, id) {
                         let combatantItems = legendaryData.combatant.actor.identifiedItems;
                         let legendaryOptions = [];
                         combatantItems.forEach(i => i.forEach(j => {
-                            if (j.system.activities.find(k => {
+                            if (j.system.activities?.find(k => {
                                 return (k?.consumption?.targets[0]?.target === 'resources.legact.value' || k?.activation.type === 'legendary') &&
                                     legendaryData.combatant.actor?.system.resources?.legact?.value >= k.activation?.value;
                             })) {

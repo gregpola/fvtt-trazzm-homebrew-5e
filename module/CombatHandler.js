@@ -20,6 +20,12 @@ export class CombatHandler {
                 return;
             }
 
+            // make sure we have a direction
+            if (!context.direction) {
+                console.log("updateCombat - skipping for no direction")
+                return;
+            }
+
             // no use cases for backwards change
             const isBackwards = (context.direction < 1);
 
@@ -79,7 +85,7 @@ export class CombatHandler {
                 return;
             }
 
-            const isHealth = hasProperty(change, "system.attributes.hp.value");
+            const isHealth = foundry.utils.hasProperty(change, "system.attributes.hp.value");
             if (isHealth) {
                 const hpValue = change.system.attributes.hp.value;
                 const isaBoar = actor.name === "Boar";

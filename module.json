@@ -262,7 +262,7 @@
   ],
   "compatibility": {
     "minimum": "13",
-    "verified": "13.348",
+    "verified": "13.350",
     "maximum": "13"
   },
   "relationships": {
@@ -289,11 +289,6 @@
       },
       {
         "id": "dae",
-        "type": "module",
-        "compatibility": {}
-      },
-      {
-        "id": "effectmacro",
         "type": "module",
         "compatibility": {}
       },
@@ -342,7 +337,7 @@
         "type": "system",
         "compatibility": {
           "minimum": "5.0.0",
-          "verified": "5.1.3",
+          "verified": "5.1.9",
           "maximum": "5.9.9"
         }
       }

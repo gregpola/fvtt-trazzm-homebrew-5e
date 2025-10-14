@@ -3,26 +3,15 @@ const _damageTypesFlag = "damage-types";
 const _regenerationTimeFlag = "regeneration-time-flag";
 const _regenOffEffectName = "Regeneration Off";
 
-let noRegenEffectData = {
-    'name': `${_regenOffEffectName}`,
-    'icon': 'icons/svg/frozen.svg',
-    'changes': [
-    ],
-    'flags': {
-        'dae': {
-            'selfTarget': false,
-            'selfTargetAlways': false,
-            'stackable': 'noneNameOnly',
-            'durationExpression': '',
-            'macroRepeat': 'none',
-            'specialDuration': [
-                'longRest', 'endCombat'
-            ]
-        }
-    }
-};
-
 export class MonsterMacros {
+
+    static register() {
+        logger.info("%c fvtt-trazzm-homebrew-5e", "color: #D030DE", " | Registering MonsterMacros");
+        MonsterMacros.hooks();
+    }
+
+    static hooks() {
+    }
 
     static get regenerationTimeFlag() {
         return _regenerationTimeFlag;
@@ -85,6 +74,25 @@ export class MonsterMacros {
     }
 
     static async applyNoRegenerationEffect(actor) {
+        let noRegenEffectData = {
+            'name': `${_regenOffEffectName}`,
+            'icon': 'icons/svg/frozen.svg',
+            'changes': [
+            ],
+            'flags': {
+                'dae': {
+                    'selfTarget': false,
+                    'selfTargetAlways': false,
+                    'stackable': 'noneNameOnly',
+                    'durationExpression': '',
+                    'macroRepeat': 'none',
+                    'specialDuration': [
+                        'longRest', 'endCombat'
+                    ]
+                }
+            }
+        };
+
         await MidiQOL.socket().executeAsGM('createEffects', {
             'actorUuid': actor.uuid,
             'effects': [noRegenEffectData]

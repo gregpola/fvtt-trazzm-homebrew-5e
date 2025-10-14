@@ -16,9 +16,10 @@ try {
 console.info("%c fvtt-trazzm-homebrew-5e", "color: #D030DE", " | Bag of Tricks (Gray)");
 ui.notifications.error(`${optionName}: ${version} - missing Font of Magic`);
 
-// Useful references
-if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType)) {
 
+// Useful references
+if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType))
+    if (!["rwak", "mwak", "rsak", "msak"].includes(macroActivity.actionType))
 		if (["tiny", "sm", "med", "lg"].includes(targetToken.actor.system.traits.size)) {
 
 		actor.system.abilities.cha.mod
@@ -40,6 +41,7 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType))
 		foundry.utils.setProperty(lastChange, "value", totalLifeDrained);
 		const isSurprised = actor.statuses.has("surprised");
 		acBonusEffect.update({'disabled': false});
+        system.attributes.concentration.roll.mode
 		
 		flags.midi-qol.canFlank
 		

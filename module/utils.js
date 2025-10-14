@@ -1,4 +1,7 @@
 // TODO add doTurnEndOptions, especially for handling legendary actions
+var ApplicationV2 = foundry.applications.api.ApplicationV2;
+const {HandlebarsApplicationMixin} = foundry.applications.api;
+let legendaryReminderDialog = null;
 
 export async function doTurnStartOptions(actorUuid, options = {}) {
     const name = options.combatant.name;
@@ -21,8 +24,8 @@ export async function turnStartDialog(actorUuid, options = {}) {
         petrified: options.petrified,
         stunned: options.stunned
     }, {
-        width: 500
-    }).render(true);
+    });
+    dialog.render(true);
 }
 
 export async function doUpdateTemplate(templateUuid, updates = {}) {
@@ -73,66 +76,119 @@ export async function removeWalls(name, actor) {
  *      hp          - the combatants current hp's
  *
  */
-class TurnStartDialog extends Application {
+class TurnStartDialog extends HandlebarsApplicationMixin(ApplicationV2) {
+    callback;
+    data;
+    hookId;
 
-    static DEFAULT_ID = 'trazzms-homebrew-turn-start-dialog';
-    static _lastPosition = new Map();
-
-    constructor(data, options) {
+    constructor(data, options = {}) {
         options.height = "auto";
         options.resizable = true;
         super(options);
         this.data = data;
-        mergeObject(this.position, TurnStartDialog._lastPosition.get(this.options.id) ?? {});
+        return this;
     }
 
-    static get defaultOptions() {
-        return mergeObject(super.defaultOptions, {
-            template: "modules/fvtt-trazzm-homebrew-5e/templates/dialog.html",
+    static PARTS = {
+        dialog: {
+            id: "trazzm-homebrew-turn-start-dialog",
             classes: ["dialog"],
+            template: "modules/fvtt-trazzm-homebrew-5e/templates/dialog.hbs"
+        }
+    };
+
+    static DEFAULT_OPTIONS = {
+        window: {
+            resizable: true
+        },
+        position: {
             width: 500,
-            jQuery: true,
-            close: close
-        }, { overwrite: true });
-    }
+            height: "auto"
+        },
+        resizable: true,
+        actions: {
+            cancel: this.#onCancel
+        }
+    };
 
     get title() {
         return this.data.title || "Turn Start";
     }
 
-    async getData(options) {
-        // TODO make the content conditional i.e. if (this.data.prone) {
+    async _onRender(context, options) {
+        await super._onRender(context, options);
+        for (const button of Array.from(this.element.querySelectorAll(".dialog-button"))) {
+            button.addEventListener("click", this._onClickButton.bind(this));
+        }
+
+        $(document).on('keydown.chooseDefault', this._onKeyDown.bind(this));
+    }
+
+    async _prepareContext(options) {
+        const context = await super._prepareContext(options);
+
         this.data.content = "<p>You are currently prone, would you like to stand up?<br>" +
             "<sub>(standing up costs an amount of movement equal to half your speed)</sub></p>" +
             "<div style='height: 25px;'/>";
 
         this.data.buttons = {
-            standUp: { label: "Stand Up", callback: async (html) => {
-                const actor = await fromUuid(this.data.actorUuid);
-                const effectIDs = actor.getRollData().effects.filter(e => e.name.toLowerCase() === 'prone' ).map(e=>e.id);
-                await MidiQOL.socket().executeAsGM('removeEffects', {'actorUuid': actor.uuid, 'effects': effectIDs});
-            }},
-            close: { label: "Close", callback: (html) => {
-                TurnStartDialog.storePosition(html);
-            }}
+            standUp: {
+                label: "Stand Up", callback: async (html) => {
+                    const actor = await fromUuid(this.data.actorUuid);
+                    const effectIDs = actor.getRollData().effects.filter(e => e.name.toLowerCase() === 'prone').map(e => e.id);
+                    await MidiQOL.socket().executeAsGM('removeEffects', {
+                        'actorUuid': actor.uuid,
+                        'effects': effectIDs
+                    });
+
+                    await actor.toggleStatusEffect('prone', {active: false});
+                }
+            },
+            close: {
+                label: "Close", callback: (html) => {
+                    this.close();
+                }
+            }
         };
         this.data.default = "close";
 
         return {
+            ...context,
             content: this.data.content,
             buttons: this.data.buttons
         };
     }
 
-    static storePosition(html) {
-        const id = html.id;
-        const position = html.position;
-        TurnStartDialog._lastPosition.set(id, {top: position.top, left: position.left});
+    async submit(button) {
+        try {
+            if (button.callback) {
+                this.data.completed = true;
+                await button.callback(this, button);
+                this.close();
+            }
+        } catch (err) {
+            this.data.completed = false;
+            this.close();
+        }
     }
 
-    activateListeners(html) {
-        html.find(".dialog-button").click(this._onClickButton.bind(this));
-        $(document).on('keydown.chooseDefault', this._onKeyDown.bind(this));
+    static #onCancel() {
+        this.close();
+    }
+
+    close(options = {}) {
+        Hooks.off("targetToken", this.hookId);
+        this.doCallback(false);
+        return super.close(options);
+    }
+
+    doCallback(value = false) {
+        try {
+            if (this.callback)
+                this.callback(value);
+        } catch (err) {
+            console.error(err);
+        }
     }
 
     _onClickButton(event) {
@@ -150,28 +206,6 @@ class TurnStartDialog extends Application {
             this.close();
         }
     }
-
-    async submit(button) {
-        try {
-            if (button.callback) {
-                await button.callback(this, button);
-                // await this.getData({}); Render will do a get data, doing it twice breaks the button data?
-                //this.render(true);
-            }
-            this.close();
-        }
-        catch (err) {
-            ui.notifications?.error("fvtt-trazzm-homebrew-5e | Turn start dialog error see console for details ");
-            console.error("fvtt-trazzm-homebrew-5e | ", err);
-        }
-    }
-
-    async close() {
-        if (this.data.close)
-            this.data.close();
-        $(document).off('keydown.chooseDefault');
-        return super.close({force: true});
-    }
 }
 
 export async function doLegendaryAction(legendaryData = []) {
@@ -179,12 +213,16 @@ export async function doLegendaryAction(legendaryData = []) {
 }
 
 export async function legendaryActionDialog(legendaryData = []) {
-    new LegendaryActionDialog({
+    if (legendaryReminderDialog) {
+        legendaryReminderDialog.close();
+    }
+
+    legendaryReminderDialog = new LegendaryActionDialog({
         title: 'Legendary Action Reminder',
         legendaryData: legendaryData
     }, {
-        width: 500
-    }).render(true);
+    });
+    legendaryReminderDialog.render(true);
 }
 
 /**
@@ -198,34 +236,58 @@ export async function legendaryActionDialog(legendaryData = []) {
  *      actions      - the eligible legendary actions this turn
  *
  */
-class LegendaryActionDialog extends Application {
+class LegendaryActionDialog extends HandlebarsApplicationMixin(ApplicationV2) {
+    callback;
+    data;
+    hookId;
 
-    static DEFAULT_ID = 'trazzms-homebrew-legendary-action-dialog';
-    static _lastPosition = new Map();
-
-    constructor(data, options) {
+    constructor(data, options = {}) {
         options.height = "auto";
         options.resizable = true;
         super(options);
         this.data = data;
-        mergeObject(this.position, LegendaryActionDialog._lastPosition.get(this.options.id) ?? {});
-    }
-
-    static get defaultOptions() {
-        return mergeObject(super.defaultOptions, {
-            template: "modules/fvtt-trazzm-homebrew-5e/templates/dialog.html",
-            classes: ["dialog"],
-            width: 500,
-            jQuery: true,
-            close: close
-        }, { overwrite: true });
+        return this;
     }
 
     get title() {
         return this.data.title || "Legendary Action";
     }
 
-    async getData(options) {
+    static PARTS = {
+        dialog: {
+            id: "trazzm-homebrew-legendary-action-dialog",
+            classes: ["dialog"],
+            template: "modules/fvtt-trazzm-homebrew-5e/templates/dialog.hbs"
+        }
+    };
+
+    static DEFAULT_OPTIONS = {
+        window: {
+            resizable: true
+        },
+        position: {
+            width: 600,
+            height: "auto"
+            //top: 200
+        },
+        resizable: true,
+        actions: {
+            cancel: this.#onCancel
+        }
+    };
+
+    async _onRender(context, options) {
+        await super._onRender(context, options);
+        for (const button of Array.from(this.element.querySelectorAll(".dialog-button"))) {
+            button.addEventListener("click", this._onClickButton.bind(this));
+        }
+
+        $(document).on('keydown.chooseDefault', this._onKeyDown.bind(this));
+    }
+
+    async _prepareContext(options) {
+        const context = await super._prepareContext(options);
+
         // build the content
         let content = '';
         for (let actorData of this.data.legendaryData) {
@@ -240,10 +302,10 @@ class LegendaryActionDialog extends Application {
             }
 
             content += `<tr>
-                <td><img src="${actorData.combatant.token.texture.src}" width="50" height="50"></td>
-                <td>${actorData.combatant.name}</td>
-                <td>[${actorData.actionPoints} AP]</td>
-                <td><select id="${actorData.combatant}">${actionsData}</select></td>
+                <td style="width: 15%"><img src="${actorData.combatant.token.texture.src}" width="50" height="50"></td>
+                <td style="width: 35%">${actorData.combatant.name}</td>
+                <td style="width: 15%">[${actorData.actionPoints} AP]</td>
+                <td style="width: 35%"><select id="${actorData.combatant}">${actionsData}</select></td>
             </tr>`;
         }
 
@@ -264,27 +326,52 @@ class LegendaryActionDialog extends Application {
             //         const selectedAction = html.data.actions[selectedIndex];
             //         console.log(selectedAction);
             //     }},
-            close: { label: "OK", callback: (html) => {
-                    LegendaryActionDialog.storePosition(html);
-                }}
+            close: {
+                label: "OK", callback: (html) => {
+                    this.close();
+                }
+            }
         };
         this.data.default = "close";
 
+
         return {
+            ...context,
             content: this.data.content,
             buttons: this.data.buttons
         };
     }
 
-    static storePosition(html) {
-        const id = html.id;
-        const position = html.position;
-        LegendaryActionDialog._lastPosition.set(id, {top: position.top, left: position.left});
+    async submit(button) {
+        try {
+            if (button.callback) {
+                this.data.completed = true;
+                await button.callback(this, button);
+                this.close();
+            }
+        } catch (err) {
+            this.data.completed = false;
+            this.close();
+        }
     }
 
-    activateListeners(html) {
-        html.find(".dialog-button").click(this._onClickButton.bind(this));
-        $(document).on('keydown.chooseDefault', this._onKeyDown.bind(this));
+    static #onCancel() {
+        this.close();
+    }
+
+    close(options = {}) {
+        Hooks.off("targetToken", this.hookId);
+        this.doCallback(false);
+        return super.close(options);
+    }
+
+    doCallback(value = false) {
+        try {
+            if (this.callback)
+                this.callback(value);
+        } catch (err) {
+            console.error(err);
+        }
     }
 
     _onClickButton(event) {
@@ -301,25 +388,5 @@ class LegendaryActionDialog extends Application {
             event.stopPropagation();
             this.close();
         }
-    }
-
-    async submit(button) {
-        try {
-            if (button.callback) {
-                await button.callback(this, button);
-            }
-            this.close();
-        }
-        catch (err) {
-            ui.notifications?.error("fvtt-trazzm-homebrew-5e | Legendary Action dialog error see console for details ");
-            console.error("fvtt-trazzm-homebrew-5e | ", err);
-        }
-    }
-
-    async close() {
-        if (this.data.close)
-            this.data.close();
-        $(document).off('keydown.chooseDefault');
-        return super.close({force: true});
     }
 }

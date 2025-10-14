@@ -23,6 +23,7 @@ try {
                 const options = {
                     midiOptions: {
                         targetsToUse: workflow.targets,
+                        asUser: browserUser,
                         noOnUseMacro: false,
                         configureDialog: true,
                         showFullCard: false,
