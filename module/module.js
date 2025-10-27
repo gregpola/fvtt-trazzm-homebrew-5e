@@ -66,6 +66,25 @@ Hooks.once('socketlib.ready', async function() {
     game.trazzm.socket.register('removeWalls', removeWalls);
 });
 
+// Hooks.on("renderApplicationV1", (application, html, data) => {
+//     console.log(application);
+// });
+
+Hooks.on("renderApplicationV2", (application, element, context, options) => {
+    //options.window.resizable = true;
+    if (application instanceof Compendium) {
+        const heightMod = game.settings.get("fvtt-trazzm-homebrew-5e", "shrink-compendium-windows");
+        if (heightMod) {
+            const screenHeight = canvas.screenDimensions[1];
+            const betterHeight = screenHeight - 100 - heightMod;
+            if (application.position.height > betterHeight) {
+                application.position.height = betterHeight;
+            }
+        }
+    }
+});
+
+
 /**
  * Creation & delete hooks for persistent effects
  */

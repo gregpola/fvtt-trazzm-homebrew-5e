@@ -23,10 +23,6 @@ try {
                 opacity: 0.1
             });
         });
-
-        Hooks.once("createRegion", async (region) => {
-            await region.update({'visibility': 0});
-        });
     }
 
 } catch (err) {

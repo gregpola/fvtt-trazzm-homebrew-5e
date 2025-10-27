@@ -18,7 +18,7 @@ ui.notifications.error(`${optionName}: ${version} - missing Font of Magic`);
 
 
 // Useful references
-if (!["mwak", "rwak", "msak", "rsak"].includes(workflow.item.system.actionType))
+if (!["mwak", "rwak", "msak", "rsak"].includes(rolledActivity.actionType))
     if (!["rwak", "mwak", "rsak", "msak"].includes(macroActivity.actionType))
 		if (["tiny", "sm", "med", "lg"].includes(targetToken.actor.system.traits.size)) {
 
@@ -51,6 +51,8 @@ raceOrType.includes('undead')
 @scale.bard.inspiration
 @scale.paladin.aura
 
+workflow.hitTargets.size
+
 flags.dae.rest-recovery.force.maximiseHitDieRoll
 foundry.utils.getProperty(actor, CONSTANTS.FLAGS.DAE.MAXIMISE_HIT_DIE_ROLL);
 
@@ -58,6 +60,8 @@ flags.automated-conditions-5e.save.advantage | Custom | riderStatuses.charmed ||
 radius=30; allies; bonus=1d4; radiant; !isSpell
 ['mwak', 'rwak'].some(type => actionType[type])
 
+const distance = canvas.grid.measurePath([template, token.document]).distance;
+const cost = canvas.grid.measurePath([template, token.document]).cost;
 
 
 		const _flagGroup = "fvtt-trazzm-homebrew-5e";

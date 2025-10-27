@@ -12,7 +12,7 @@
     Using a Higher-Level Spell Slot.The damage increases by 1d10 for each spell slot level above 2.
  */
 const optionName = "Moonbeam";
-const version = "12.4.2";
+const version = "13.5";
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
 const flagName = "moonbeam-flag";
 
@@ -26,10 +26,6 @@ try {
                 alpha: 0,
                 opacity: 0.1
             });
-        });
-
-        Hooks.once("createRegion", async (region) => {
-            await region.update({'visibility': 0});
         });
     }
 

@@ -4,12 +4,12 @@
     Cylinder up to 60 feet.
  */
 const optionName = "Moonbeam Move";
-const version = "12.4.1";
+const version = "13.5";
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
 const flagName = "moonbeam-flag";
 
 try {
-    if (args[0].macroPass === "postActiveEffects" && rolledActivity?.name === "Move Moonbeam") {
+    if (args[0].macroPass === "postActiveEffects") {
         const flag = actor.getFlag(_flagGroup, flagName);
         if (flag) {
             const template = await fromUuid(flag.templateUuid);

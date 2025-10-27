@@ -56,3 +56,11 @@
 * Fix for the Legendary action reminder not showing
 * Fix for the standup from prone reminder dialog
 * Added the file mod-changes.txt to the config folder. It has info about modifications that can be made to modules to improve them.
+
+# 13.5.7
+* Added an option to the module settings to shrink compendium windows
+* Added Conjure Animals, Conjure Minor Elementals spells
+* Updated Cloud of Daggers, Moonbeam, and Cloudkill spells
+* Updated drow weapons
+* Updated Assassinate monster feature
+* Updated most of the drow monsters

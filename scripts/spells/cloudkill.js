@@ -41,7 +41,16 @@ const TEMPLATE_DARK_LIGHT = {
 };
 
 try {
-    if (args[0].macroPass === "postActiveEffects") {
+    if (args[0].macroPass === "preItemRoll") {
+        Hooks.once("createMeasuredTemplate", async (template) => {
+            await template.update({
+                fillAlpha: 0,
+                alpha: 0,
+                opacity: 0.1
+            });
+        });
+    }
+    else if (args[0].macroPass === "postActiveEffects") {
         if (workflow.template) {
             await actor.setFlag(_flagGroup, templateFLag, {templateUuid: workflow.template.uuid});
             await drawAmbientLight(workflow.template, actor);

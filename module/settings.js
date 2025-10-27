@@ -19,4 +19,13 @@ export function registerSettings() {
         type: Boolean
     });
 
+    game.settings.register("fvtt-trazzm-homebrew-5e", "shrink-compendium-windows", {
+        name: "Shrink Compendium Windows",
+        hint: "Reduce the default height of compendium windows. Set to 0 for no adjustments.",
+        scope: "client",
+        config: true,
+        default: 150,
+        type: Number
+    });
+
 }

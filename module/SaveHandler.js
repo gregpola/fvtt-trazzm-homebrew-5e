@@ -1,34 +1,6 @@
 const _elementalResistanceTypes = new Set(["acid", "cold", "fire", "lightning", "thunder"]);
 const _coronaOfLightTypes = new Set(["fire", "radiant"]);
 
-let conditionResilience = {
-    'name': 'Condition Resilience',
-    'icon': 'icons/magic/defensive/shield-barrier-glowing-triangle-teal.webp',
-    'duration': {
-        'seconds': 6
-    },
-    'changes': [
-        {
-            'key': 'flags.midi-qol.advantage.ability.save.all',
-            'value': '1',
-            'mode': CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-            'priority': 9
-        }
-    ],
-    'flags': {
-        'dae': {
-            'selfTarget': false,
-            'selfTargetAlways': false,
-            'stackable': 'none',
-            'durationExpression': '',
-            'macroRepeat': 'none',
-            'specialDuration': [
-                'isSave'
-            ]
-        }
-    }
-};
-
 let conditionSensitivity = {
     'name': 'Condition Sensitivity',
     'icon': 'icons/skills/toxins/symbol-poison-drop-skull-green.webp',
@@ -41,52 +13,6 @@ let conditionSensitivity = {
             'value': '1',
             'mode': CONST.ACTIVE_EFFECT_MODES.CUSTOM,
             'priority': 9
-        }
-    ],
-    'flags': {
-        'dae': {
-            'selfTarget': false,
-            'selfTargetAlways': false,
-            'stackable': 'none',
-            'durationExpression': '',
-            'macroRepeat': 'none',
-            'specialDuration': [
-                'isSave'
-            ]
-        }
-    }
-};
-
-const protectionFromEvilImmunity = {
-    name: 'Protection from Evil Immunity',
-    icon: 'icons/magic/defensive/shield-barrier-blue.webp',
-    changes: [
-        {
-            key: 'flags.midi-qol.min.ability.save.all',
-            value: 99,
-            mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-            priority: 120
-        }
-    ],
-    flags: {
-        dae: {
-            specialDuration: ['isSave']
-        }
-    }
-};
-
-let starryFormDragonConcentration = {
-    'name': 'Starry Form - Dragon concentration',
-    'icon': 'icons/creatures/reptiles/dragon-horned-blue.webp',
-    'duration': {
-        'seconds': 6
-    },
-    'changes': [
-        {
-            'key': 'flags.midi-qol.min.ability.save.con',
-            'value': '10',
-            'mode': CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
-            'priority': 1
         }
     ],
     'flags': {
