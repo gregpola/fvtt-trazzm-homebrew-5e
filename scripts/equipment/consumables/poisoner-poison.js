@@ -5,12 +5,13 @@
     the ability increased by this feat and your Proficiency Bonus) or take 2d8 Poison damage and have the Poisoned
     condition until the end of your next turn.
  */
-const version = "12.4.0";
+const version = "13.5.0";
 const optionName = "Poisoner Poison";
-const coatedName = "Poisoner poisoned";
+const coatedName = "Poisoner Poisoned";
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
 const _usesFlag = "coating-uses";
 const maxUses = 3; // for ammunition
+const activityId = "poison-save";
 
 try {
     if (args[0].tag === "OnUse" && args[0].macroPass === "postDamageRoll") {
@@ -40,20 +41,27 @@ try {
             // request the saving throw
             let targetToken = workflow.hitTargets.first();
             if (targetToken) {
-                const saveDC = 8 + actor.system.abilities.dex.mod + actor.system.attributes.prof;
-                const hasResilience = HomebrewHelpers.hasResilience(targetToken.actor, "poison");
-                let saveRoll = await targetToken.actor.rollAbilitySave("con", {
-                    flavor: `${CONFIG.DND5E.abilities["con"].label} DC${saveDC} ${optionName}`,
-                    advantage : hasResilience
-                });
+                if (macroItem) {
+                    let activity = await macroItem.system.activities.find(a => a.identifier === activityId);
+                    if (activity) {
+                        const options = {
+                            midiOptions: {
+                                targetUuids: [targetToken.actor.uuid],
+                                noOnUseMacro: false,
+                                configureDialog: false,
+                                showFullCard: false,
+                                ignoreUserTargets: true,
+                                checkGMStatus: false,
+                                autoRollAttack: true,
+                                autoRollDamage: "always",
+                                fastForwardAttack: true,
+                                fastForwardDamage: true,
+                                workflowData: true
+                            }
+                        };
 
-                if (saveRoll.total < saveDC) {
-                    await HomebrewEffects.applyPoisonedEffect2024(targetToken.actor, macroItem, ['turnEndSource']);
-
-                    let newDamageRolls = workflow.damageRolls;
-                    let poisonRoll = await new CONFIG.Dice.DamageRoll('2d8', workflow.item.getRollData(), {type: 'poison'}).evaluate();
-                    newDamageRolls.push(poisonRoll);
-                    await workflow.setDamageRolls(newDamageRolls);
+                        await MidiQOL.completeActivityUse(activity, options, {}, {});
+                    }
                 }
             }
         }

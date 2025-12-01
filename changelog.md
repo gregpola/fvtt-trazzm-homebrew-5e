@@ -64,3 +64,11 @@
 * Updated drow weapons
 * Updated Assassinate monster feature
 * Updated most of the drow monsters
+
+# 13.5.8
+* Updated Spirit Guardians to not target inanimate actors
+* Updated Rise of the Drow character growth items
+* Updated Poisoner feat for v13 and dnd5
+* Updated Dispel Magic for v13 and dnd5
+* Fixes for Graze and Topple weapon mastery
+* Fixed poisons to work in v13 and dnd5

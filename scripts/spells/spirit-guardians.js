@@ -10,7 +10,7 @@
 
     Using a Higher-Level Spell Slot. The damage increases by 1d8 for each spell slot level above 3.
 */
-const version = "12.4.3";
+const version = "12.5.0";
 const optionName = "Spirit Guardians";
 
 try {
@@ -65,6 +65,13 @@ try {
 // target token must be a document
 async function applySpellDamage(targetToken, originActor, sourceItem, eventName) {
     if (targetToken) {
+        // make sure the target is not flagged as never target
+        const neverTargetFlag = targetToken.actor.getFlag("midi-qol", "neverTarget");
+        if (neverTargetFlag) {
+            console.log(`${optionName} - skipping target ${targetToken.name} - flagged as neverTarget`);
+            return;
+        }
+
         let targetCombatant = game.combat.getCombatantByToken(targetToken);
         if (targetCombatant) {
             const flagName = `spirit-guardians-${originActor.id}`;
@@ -90,7 +97,8 @@ async function applySpellDamage(targetToken, originActor, sourceItem, eventName)
                             workflowData: true
                         }
                     };
-                    let activityUse = await MidiQOL.completeActivityUse(activity.uuid, options, {}, {});
+
+                    await MidiQOL.completeActivityUse(activity.uuid, options, {}, {});
                 }
             }
         }

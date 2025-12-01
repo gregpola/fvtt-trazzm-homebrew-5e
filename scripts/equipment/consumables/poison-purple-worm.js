@@ -2,13 +2,13 @@
     A creature subjected to Purple Worm Poison makes a DC 21 Constitution saving throw, taking 35 (10d6) Poison damage
     on a failed save or half as much damage on a successful one.
 */
-const version = "12.4.0";
+const version = "13.5.0";
 const optionName = "Poison, Purple Worm";
 const coatedName = "Purple Worm Poisoned";
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
 const _usesFlag = "coating-uses";
 const maxUses = 3; // for ammunition
-const saveDC = 21;
+const activityId = "poison-save";
 
 try {
     if (args[0].tag === "OnUse" && args[0].macroPass === "postDamageRoll") {
@@ -38,24 +38,28 @@ try {
             // request the saving throw
             let targetToken = workflow.hitTargets.first();
             if (targetToken) {
-                const hasResilience = HomebrewHelpers.hasResilience(targetToken.actor, "poison");
-                let saveRoll = await targetToken.actor.rollAbilitySave("con", {
-                    flavor: `${CONFIG.DND5E.abilities["con"].label} DC${saveDC} ${optionName}`,
-                    advantage : hasResilience
-                });
+                if (macroItem) {
+                    let activity = await macroItem.system.activities.find(a => a.identifier === activityId);
+                    if (activity) {
+                        const options = {
+                            midiOptions: {
+                                targetUuids: [targetToken.actor.uuid],
+                                noOnUseMacro: false,
+                                configureDialog: false,
+                                showFullCard: false,
+                                ignoreUserTargets: true,
+                                checkGMStatus: false,
+                                autoRollAttack: true,
+                                autoRollDamage: "always",
+                                fastForwardAttack: true,
+                                fastForwardDamage: true,
+                                workflowData: true
+                            }
+                        };
 
-                const saved = saveRoll.total >= saveDC;
-
-                let newDamageRolls = workflow.damageRolls;
-                let poisonRoll = undefined;
-                if (saved) {
-                    poisonRoll = await new CONFIG.Dice.DamageRoll('10d6 / 2', workflow.item.getRollData(), {type: 'poison'}).evaluate();
+                        await MidiQOL.completeActivityUse(activity, options, {}, {});
+                    }
                 }
-                else {
-                    poisonRoll = await new CONFIG.Dice.DamageRoll('10d6', workflow.item.getRollData(), {type: 'poison'}).evaluate();
-                }
-                newDamageRolls.push(poisonRoll);
-                await workflow.setDamageRolls(newDamageRolls);
             }
         }
     }

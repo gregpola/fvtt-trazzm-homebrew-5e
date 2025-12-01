@@ -52,6 +52,7 @@ raceOrType.includes('undead')
 @scale.paladin.aura
 
 workflow.hitTargets.size
+token.actor.system.attributes.hp.value > 0
 
 flags.dae.rest-recovery.force.maximiseHitDieRoll
 foundry.utils.getProperty(actor, CONSTANTS.FLAGS.DAE.MAXIMISE_HIT_DIE_ROLL);

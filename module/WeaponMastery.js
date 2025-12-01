@@ -59,7 +59,8 @@ export class WeaponMastery {
         console.info(`Trazzm-homebrew WeaponMastery - mastery for: ${workflow.item.name}, is: ${mastery}`);
 
         if (mastery) {
-            const abilityMod = (workflow.item.system.ability) ? workflow.actor.system.abilities[workflow.item.system.ability].mod : 0;
+            const ability = workflow.activity.ability;
+            const abilityMod = ability ? workflow.actor.system.abilities[ability].mod : 0;
             let targetToken = workflow.hitTargets.first();
 
             switch (mastery) {
@@ -267,9 +268,12 @@ export class WeaponMastery {
 
                         if (proceed) {
                             const saveDC = 8 + abilityMod + workflow.actor.system.attributes.prof;
-                            const saveFlavor = `${CONFIG.DND5E.abilities["con"].label} DC${saveDC} Topple`;
-                            let saveRoll = await targetToken.actor.rollAbilitySave("con", {flavor: saveFlavor});
-                            if (saveRoll.total < saveDC) {
+                            const config = { undefined, ability: "con", target: saveDC };
+                            const dialog = {};
+                            const message = { data: { speaker: ChatMessage.implementation.getSpeaker({ actor: targetToken.actor }) } };
+                            let saveResult = await targetToken.actor.rollSavingThrow(config, dialog, message);
+
+                            if (!saveResult[0].isSuccess) {
                                 MidiQOL.socket().executeAsGM('toggleStatusEffect',
                                     {actorUuid: targetToken.actor.uuid, statusId: 'prone', options: {active:true}});
                             }

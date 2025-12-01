@@ -47,7 +47,8 @@ if (targetToken) {
                         workflowData: true
                     }
                 };
-                let activityUse = await MidiQOL.completeActivityUse(activity.uuid, options, {}, {});
+
+                await MidiQOL.completeActivityUse(activity.uuid, options, {}, {});
             }
         }
     }

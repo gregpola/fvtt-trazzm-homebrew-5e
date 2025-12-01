@@ -6,7 +6,7 @@
     Using a Higher-Level Spell Slot. You automatically end a spell on the target if the spell’s level is equal to or
     less than the level of the spell slot you use.
  */
-const version = "12.4.0";
+const version = "13.5.0";
 const optionName = "Dispel Magic";
 
 try {
@@ -67,8 +67,14 @@ try {
                     }
                     else {
                         let dc = 10 + effectData.level;
-                        let roll = await actor.rollAbilityTest(spellcastingAbility, {targetValue: dc});
-                        if (roll.total >= dc) {
+                        const flavor = `${actor.name}'s Dispel Magic check (DC ${dc})`;
+                        const config = { ability: spellcastingAbility, target: dc };
+                        const dialog = { configure: true };
+                        const message = { data: {
+                                speaker: ChatMessage.implementation.getSpeaker({ actor: actor }),
+                                flavor: flavor}};
+                        let checkResult = await actor.rollAbilityCheck(config, dialog, message);
+                        if (checkResult[0].isSuccess) {
                             await MidiQOL.socket().executeAsGM("removeEffects", { actorUuid: targetToken.actor.uuid, effects: [effect.id] });
                             await HomebrewMacros.wait(200);
                             removed = true;

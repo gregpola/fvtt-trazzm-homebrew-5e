@@ -4,13 +4,14 @@
     fails by 5 or more, the creature is also unconscious while poisoned in this way. The creature wakes up if it takes
     damage or if another creature takes an action to shake it awake.
 */
-const version = "12.4.0";
+const version = "13.5.0";
 const optionName = "Poison, Drow";
 const coatedName = "Drow Poisoned";
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
 const _usesFlag = "coating-uses";
 const maxUses = 3; // for ammunition
 const saveDC = 13;
+const activityId = "poison-save";
 
 try {
     if (args[0].tag === "OnUse" && args[0].macroPass === "postDamageRoll") {
@@ -40,17 +41,30 @@ try {
             // request the saving throw
             let targetToken = workflow.hitTargets.first();
             if (targetToken) {
-                const hasResilience = HomebrewHelpers.hasResilience(targetToken.actor, "poison");
-                let saveRoll = await targetToken.actor.rollAbilitySave("con", {
-                    flavor: `${CONFIG.DND5E.abilities["con"].label} DC${saveDC} ${optionName}`,
-                    advantage : hasResilience
-                });
+                if (macroItem) {
+                    let activity = await macroItem.system.activities.find(a => a.identifier === activityId);
+                    if (activity) {
+                        const options = {
+                            midiOptions: {
+                                targetUuids: [targetToken.actor.uuid],
+                                noOnUseMacro: false,
+                                configureDialog: false,
+                                showFullCard: false,
+                                ignoreUserTargets: true,
+                                checkGMStatus: false,
+                                autoRollAttack: true,
+                                autoRollDamage: "always",
+                                fastForwardAttack: true,
+                                fastForwardDamage: true,
+                                workflowData: true
+                            }
+                        };
 
-                if (saveRoll.total < saveDC) {
-                    await HomebrewEffects.applyPoisonedEffect2024(targetToken.actor, macroItem, ['shortRest', 'longRest'], 3600);
 
-                    if (saveRoll.total <= (saveDC - 5)) {
-                        await HomebrewEffects.applySleepingEffect2024(targetToken.actor, macroItem, undefined, 3600);
+                        let result = await MidiQOL.completeActivityUse(activity, options, {}, {});
+                        // if (result && (result.saveResults[0].total <= (result.saveDC - 5))) {
+                        //     await HomebrewEffects.applySleepingEffect2024(targetToken.actor, macroItem, ['isDamaged', 'endCombat', 'longRest'], 3600);
+                        // }
                     }
                 }
             }

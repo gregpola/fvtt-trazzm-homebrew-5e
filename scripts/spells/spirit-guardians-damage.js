@@ -8,7 +8,7 @@
     Using a Higher-Level Spell Slot. The damage increases by 1d8 for each spell slot level above 3.
  */
 const optionName = "Spirit Guardians";
-const version = "12.4.0";
+const version = "13.5.0";
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
 
 // NO LONGER USED!
@@ -62,7 +62,8 @@ if (args[0] !== 'off') {
                             workflowData: true
                         }
                     };
-                    let activityUse = await MidiQOL.completeActivityUse(activity.uuid, options, {}, {});
+
+                    await MidiQOL.completeActivityUse(activity.uuid, options, {}, {});
                 }
             }
         }

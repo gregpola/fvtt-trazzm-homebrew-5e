@@ -16,6 +16,9 @@ try {
     if (args[0].tag === "OnUse" && args[0].macroPass === "postActiveEffects") {
         const targetToken = workflow.hitTargets.first();
         if (targetToken !== undefined) {
+            // TODO make sure the weapon has Booming Blade on it
+            const bbEnchantment = item.effects.find(e => e.type === 'enchantment' && e.name.startsWith('Booming Blade'));
+
             let movementEffect = HomebrewHelpers.findEffect(targetToken.actor, moveDamageEffectName, macroItem.uuid);
             if (!movementEffect) {
                 await applyMoveEffect(targetToken, macroItem);
@@ -23,6 +26,7 @@ try {
         }
     }
     // else if (lastArgValue["expiry-reason"]?.includes("midi-qol:isMoved")) {
+    //     // delete the effect off the target
     //     let activity = macroItem.system.activities.getName("Move Damage");
     //     if (activity) {
     //         const options = {
@@ -58,6 +62,12 @@ async function applyMoveEffect(targetToken, macroItem) {
         transfer: false,
         statuses: [],
         changes: [
+            {
+                key: 'macro.execute',
+                mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
+                value: 'Compendium.fvtt-trazzm-homebrew-5e.homebrew-macros.Macro.FX7aVbPcildC8ena',
+                priority: 20
+            },
             {
                 'key': 'macro.tokenMagic',
                 'mode': CONST.ACTIVE_EFFECT_MODES.CUSTOM,
