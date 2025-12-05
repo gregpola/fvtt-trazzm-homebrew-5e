@@ -9,79 +9,45 @@
     rolls increase by 1d8 at 11th level (2d8 and 3d8) and again at 17th level (3d8 and 4d8).
 */
 const optionName = "Booming Blade";
-const version = "13.5.0";
-const moveDamageEffectName = "Booming Blade Movement Damage";
+const version = "13.5.1";
+const _flagGroup = "fvtt-trazzm-homebrew-5e";
+const _flagName = "booming-sheathed";
 
 try {
     if (args[0].tag === "OnUse" && args[0].macroPass === "postActiveEffects") {
         const targetToken = workflow.hitTargets.first();
         if (targetToken !== undefined) {
-            // TODO make sure the weapon has Booming Blade on it
+            // make sure the weapon has Booming Blade on it
             const bbEnchantment = item.effects.find(e => e.type === 'enchantment' && e.name.startsWith('Booming Blade'));
-
-            let movementEffect = HomebrewHelpers.findEffect(targetToken.actor, moveDamageEffectName, macroItem.uuid);
-            if (!movementEffect) {
+            if (bbEnchantment) {
                 await applyMoveEffect(targetToken, macroItem);
             }
         }
     }
-    // else if (lastArgValue["expiry-reason"]?.includes("midi-qol:isMoved")) {
-    //     // delete the effect off the target
-    //     let activity = macroItem.system.activities.getName("Move Damage");
-    //     if (activity) {
-    //         const options = {
-    //             midiOptions: {
-    //                 targetsToUse: new Set([token]),
-    //                 noOnUseMacro: false,
-    //                 configureDialog: false,
-    //                 showFullCard: false,
-    //                 ignoreUserTargets: true,
-    //                 checkGMStatus: true,
-    //                 autoRollAttack: true,
-    //                 autoRollDamage: "always",
-    //                 fastForwardAttack: true,
-    //                 fastForwardDamage: true,
-    //                 workflowData: false
-    //             }
-    //         };
-    //
-    //         await MidiQOL.completeActivityUse(activity, options, {}, {});
-    //     }
-    // }
 
 } catch (err) {
     console.error(`${optionName}: ${version}`, err);
 }
 
 async function applyMoveEffect(targetToken, macroItem) {
-    let effectData = {
-        name: moveDamageEffectName,
-        icon: macroItem.img,
-        origin: macroItem.uuid,
-        type: "base",
-        transfer: false,
-        statuses: [],
-        changes: [
-            {
-                key: 'macro.execute',
-                mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-                value: 'Compendium.fvtt-trazzm-homebrew-5e.homebrew-macros.Macro.FX7aVbPcildC8ena',
-                priority: 20
-            },
-            {
-                'key': 'macro.tokenMagic',
-                'mode': CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-                'value': 'electric',
-                'priority': 21
+    let activity = await macroItem.system.activities.find(a => a.identifier === 'sheath-in-booming-energy');
+    if (activity) {
+        const options = {
+            midiOptions: {
+                targetUuids: [targetToken.actor.uuid],
+                noOnUseMacro: false,
+                configureDialog: false,
+                showFullCard: false,
+                ignoreUserTargets: true,
+                checkGMStatus: false,
+                autoRollAttack: true,
+                autoRollDamage: "always",
+                fastForwardAttack: true,
+                fastForwardDamage: true,
+                workflowData: true
             }
-        ],
-        flags: {
-            dae: {
-                stackable: 'noneName',
-                specialDuration: ['turnStartSource', 'isMoved', 'combatEnd']
-            }
-        }
-    };
+        };
 
-    await MidiQOL.socket().executeAsGM("createEffects", { actorUuid: targetToken.actor.uuid, effects: [effectData] });
+        await MidiQOL.completeActivityUse(activity, options, {}, {});
+    }
 }

@@ -125,3 +125,25 @@ await TrazzmHomebrew.weaponMastery.workflow(workflow, macroItem);
     <p><strong>Foundry Note</strong></p>
     <p>This feature includes an Active Effect which automatically increases your walking Speed but does not automate the Advantage.</p>
 </section>
+
+let activity = await macroItem.system.activities.find(a => a.identifier === 'sheath-in-booming-energy');
+let activity = macroItem.system.activities.getName("Protect Target");
+if (activity) {
+    const options = {
+        midiOptions: {
+            targetsToUse: new Set(targets),
+            noOnUseMacro: false,
+            configureDialog: true,
+            showFullCard: false,
+            ignoreUserTargets: false,
+            checkGMStatus: true,
+            autoRollAttack: false,
+            autoRollDamage: "always",
+            fastForwardAttack: false,
+            fastForwardDamage: true,
+            workflowData: false
+        }
+    };
+
+    await MidiQOL.completeActivityUse(activity, options, {}, {});
+}

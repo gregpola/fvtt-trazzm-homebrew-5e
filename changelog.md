@@ -72,3 +72,7 @@
 * Updated Dispel Magic for v13 and dnd5
 * Fixes for Graze and Topple weapon mastery
 * Fixed poisons to work in v13 and dnd5
+
+# 13.5.9
+* Updated Booming Blade to automatically apply move damage
+* Updated Chromatic Orb, and Comet Shards spells

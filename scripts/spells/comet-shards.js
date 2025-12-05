@@ -8,7 +8,7 @@
     comet for each slot level above 1st.
 */
 const optionName = "Comet Shards";
-const version = "13.5.0";
+const version = "13.5.1";
 const damageType = "force";
 
 try {
@@ -19,7 +19,9 @@ try {
         // check for need to select targets
         if (workflow.targets.size === 1) {
             let target = workflow.targets.first();
-            await launchMissiles(target, missileCount, macroItem, actor.system.attributes.spell.mod);
+            for (let i = 0; i < missileCount; i++) {
+                await fireComet(target, macroItem);
+            }
         }
         else {
             // ask how many missiles per target
@@ -74,7 +76,9 @@ try {
 
             if (targetData) {
                 for (let td of targetData) {
-                    await launchMissiles(td.target, td.count, macroItem, actor.system.attributes.spell.mod);
+                    for (let i = 0; i < td.count; i++) {
+                        await fireComet(td.target, macroItem);
+                    }
                 }
             }
         }
@@ -84,32 +88,25 @@ try {
     console.error(`${optionName}: ${version}`, err);
 }
 
-async function launchMissiles(targetToken, missileCount, sourceItem, modifier){
-    for (let i = 0; i < missileCount; i++) {
-        await anime(token, targetToken);
-        let damageRoll = await new CONFIG.Dice.DamageRoll(`2d4 + ${modifier}`, {}, {type: damageType}).evaluate();
-        await MidiQOL.displayDSNForRoll([damageRoll], "damageRoll");
-        await MidiQOL.applyTokenDamage(
-            [{ damage: damageRoll.total, type: damageType }],
-            damageRoll.total,
-            new Set([targetToken]),
-            sourceItem,
-            new Set(),
-            {flavor: optionName}
-        );
-        await new Promise(resolve => setTimeout(resolve, 100));
+async function fireComet(targetToken, macroItem) {
+    let activity = await macroItem.system.activities.find(a => a.identifier === 'fire-comet');
+    if (activity) {
+        const options = {
+            midiOptions: {
+                targetsToUse: new Set([targetToken]),
+                noOnUseMacro: false,
+                configureDialog: false,
+                showFullCard: false,
+                ignoreUserTargets: true,
+                checkGMStatus: false,
+                autoRollAttack: true,
+                autoRollDamage: "always",
+                fastForwardAttack: true,
+                fastForwardDamage: true,
+                workflowData: true // false???
+            }
+        };
+
+        await MidiQOL.completeActivityUse(activity, options, {}, {});
     }
-}
-
-async function anime(controlledToken, targetToken) {
-    const targetElevation = targetToken.document?.elevation ?? 0;
-
-    new Sequence()
-        .effect()
-        .file('blfx.spell.range.snipe.burst1.dust.impact1.intro.white')
-        .zIndex(100)
-        .elevation(targetElevation)
-        .atLocation(controlledToken)
-        .stretchTo(targetToken)
-        .play()
 }
