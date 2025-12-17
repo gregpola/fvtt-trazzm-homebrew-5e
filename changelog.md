@@ -76,3 +76,9 @@
 # 13.5.9
 * Updated Booming Blade to automatically apply move damage
 * Updated Chromatic Orb, and Comet Shards spells
+
+# 13.5.10
+* Fixed Sneak Attack monster feature
+* Updated all drow that have the Sneak Attack feature
+* Updated Lay on Hands to automatically remove poison effects
+* Updated animation for Spike Growth spell

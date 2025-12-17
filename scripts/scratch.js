@@ -16,6 +16,8 @@ try {
 console.info("%c fvtt-trazzm-homebrew-5e", "color: #D030DE", " | Bag of Tricks (Gray)");
 ui.notifications.error(`${optionName}: ${version} - missing Font of Magic`);
 
+// Macro breakpoints:
+// foundry.mjs line 45533
 
 // Useful references
 if (!["mwak", "rwak", "msak", "rsak"].includes(rolledActivity.actionType))

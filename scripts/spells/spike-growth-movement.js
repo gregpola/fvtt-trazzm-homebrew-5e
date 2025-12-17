@@ -15,7 +15,7 @@
 	is cast must take a Search action and succeed on a Wisdom (Perception) or Wisdom (Survival) check against your spell
 	save DC to recognize the terrain as hazardous before entering it.
 */
-const version = "13.5.0";
+const version = "13.5.1";
 const optionName = "Spike Growth";
 
 // Move within
@@ -28,7 +28,6 @@ if (!event.data.teleport) {
 
 	if (squaresMoved > 0) {
 		const originActor = await fromUuid(region.flags['region-attacher'].actorUuid);
-		const originToken = await MidiQOL.tokenForActor(originActor);
 
         let targetToken = event.data.token;
         if (targetToken) {
@@ -62,9 +61,6 @@ if (!event.data.teleport) {
                     ui.notifications.error(`${optionName}: ${version} - missing Movement Damage activity`);
                 }
 
-            }
-            else {
-                ui.notifications.error(`${optionName}: ${version} - missing source item`);
             }
         }
 	}

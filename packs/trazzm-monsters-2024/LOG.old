@@ -1,3 +1,17 @@
-2025/12/04-12:13:13.976 4c3c Recovering log #1551
-2025/12/04-12:13:13.991 4c3c Delete type=0 #1551
-2025/12/04-12:13:13.991 4c3c Delete type=3 #1550
+2025/12/17-08:56:50.376 1c4c Recovering log #1589
+2025/12/17-08:56:50.378 1c4c Level-0 table #1591: started
+2025/12/17-08:56:50.379 1c4c Level-0 table #1591: 68046 bytes OK
+2025/12/17-08:56:50.384 1c4c Delete type=0 #1589
+2025/12/17-08:56:50.384 1c4c Delete type=3 #1588
+2025/12/17-08:56:52.518 8130 Moved #1591 to level-1 68046 bytes OK: files[ 0 1 1 0 0 0 0 ]
+2025/12/17-08:56:52.521 8130 Compacting 1@1 + 1@2 files
+2025/12/17-08:56:52.543 8130 Generated table #1593@1: 938 keys, 1561784 bytes
+2025/12/17-08:56:52.543 8130 Compacted 1@1 + 1@2 files => 1561784 bytes
+2025/12/17-08:56:52.543 8130 compacted to: files[ 0 0 1 0 0 0 0 ]
+2025/12/17-08:56:52.543 8130 Delete type=2 #1561
+2025/12/17-08:56:52.544 8130 Delete type=2 #1591
+2025/12/17-08:57:11.889 8130 Level-0 table #1595: started
+2025/12/17-08:57:11.889 8130 Level-0 table #1595: 0 bytes OK
+2025/12/17-08:57:11.889 8130 Delete type=0 #1592
+2025/12/17-08:57:11.892 8130 Manual compaction at level-0 from '!actors!0jJv5jbdhVdgAOcF' @ 72057594037927935 : 1 .. '!folders!ncZ5pnVPuzoPtgSz' @ 0 : 0; will stop at (end)
+2025/12/17-08:57:11.892 8130 Manual compaction at level-1 from '!actors!0jJv5jbdhVdgAOcF' @ 72057594037927935 : 1 .. '!folders!ncZ5pnVPuzoPtgSz' @ 0 : 0; will stop at (end)

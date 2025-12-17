@@ -6,7 +6,7 @@
     You don’t need Advantage on the attack roll if at least one of your allies is within 5 feet of the target, the ally
     doesn’t have the Incapacitated condition, and you don’t have Disadvantage on the attack roll.
 */
-const version = "12.4.0";
+const version = "13.5.0";
 const optionName = "Sneak Attack";
 const timeFlag = "last-sneak-attack";
 
