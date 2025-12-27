@@ -82,3 +82,12 @@
 * Updated all drow that have the Sneak Attack feature
 * Updated Lay on Hands to automatically remove poison effects
 * Updated animation for Spike Growth spell
+
+# 13.5.11
+* Added all Heroes of Faerûn backgrounds
+* Added all Heroes of Faerûn origin feats
+* Added all Heroes of Faerûn general feats
+* Added Dagger of Venom
+* Added Oath of Glory subclass
+* Moved Weapon Mastery feature to the Class > Generic Features compendium 
+* Updated Faerie Fire animation

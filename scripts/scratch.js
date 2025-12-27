@@ -27,6 +27,7 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(rolledActivity.actionType))
 		actor.system.abilities.cha.mod
 
 		const characterLevel = actor.type === "character" ? actor.system.details.level : actor.system.details.cr;
+		const wizardLevel = actor.classes?.wizard?.system?.levels ?? 0;
 		const rogueLevels = actor.getRollData().classes?.rogue?.levels;
 		const pb = actor.system.attributes.prof;
 		const actorDC = actor.system.attributes.spell.dc ?? 12;
