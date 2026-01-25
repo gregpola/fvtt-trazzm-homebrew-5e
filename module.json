@@ -376,6 +376,11 @@
         "id": "boss-loot-assets-premium",
         "type": "module",
         "compatibility": {}
+      },
+      {
+        "id": "blfx-assets-pack01",
+        "type": "module",
+        "compatibility": {}
       }
     ]
   },

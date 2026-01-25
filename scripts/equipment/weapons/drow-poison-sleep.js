@@ -3,7 +3,7 @@
     the saving throw fails by 5 or more, the creature is also unconscious while poisoned in this way.
 */
 const optionName = "Drow Poison Sleep";
-const version = "13.5.0";
+const version = "13.5.1";
 
 try {
     if (args[0].macroPass === "postActiveEffects") {
@@ -11,8 +11,9 @@ try {
         if (targetToken) {
             const saveDC = macroActivity.save.dc.value;
             const saveRoll = workflow.tokenSaves[targetToken.document.uuid];
+            const hasPoisonImmunity = targetToken.actor.system.traits.ci.value.has('poisoned');
 
-            if (saveDC && saveRoll && (saveRoll.total < (saveDC - 5))) {
+            if (saveDC && saveRoll && !hasPoisonImmunity && (saveRoll.total < (saveDC - 5))) {
                 await HomebrewEffects.applySleepingEffect2024(targetToken.actor, macroItem, ['isDamaged', 'shortRest', 'longRest'], 3600);
             }
         }

@@ -4,9 +4,9 @@
     fails by 5 or more, the creature is also unconscious while poisoned in this way. The creature wakes up if it takes
     damage or if another creature takes an action to shake it awake.
 */
-const version = "13.5.0";
+const version = "13.5.1";
 const optionName = "Poison, Drow";
-const coatedName = "Drow Poisoned";
+const coatedName = "Drow Poison Applied";
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
 const _usesFlag = "coating-uses";
 const maxUses = 3; // for ammunition
@@ -41,7 +41,9 @@ try {
             // request the saving throw
             let targetToken = workflow.hitTargets.first();
             if (targetToken) {
-                if (macroItem) {
+                const hasPoisonImmunity = targetToken.actor.system.traits.ci.value.has('poisoned');
+
+                if (macroItem && !hasPoisonImmunity) {
                     let activity = await macroItem.system.activities.find(a => a.identifier === activityId);
                     if (activity) {
                         const options = {
@@ -61,10 +63,8 @@ try {
                         };
 
 
-                        let result = await MidiQOL.completeActivityUse(activity, options, {}, {});
-                        // if (result && (result.saveResults[0].total <= (result.saveDC - 5))) {
-                        //     await HomebrewEffects.applySleepingEffect2024(targetToken.actor, macroItem, ['isDamaged', 'endCombat', 'longRest'], 3600);
-                        // }
+                        const result = await MidiQOL.completeActivityUse(activity, options, {}, {});
+                        console.log(result);
                     }
                 }
             }

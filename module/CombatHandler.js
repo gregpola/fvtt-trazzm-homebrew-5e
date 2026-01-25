@@ -12,6 +12,35 @@ export class CombatHandler {
 
     static hooks() {
 
+        Hooks.on("midi-qol.preAttackRoll", async (workflow) => {
+            // Check if this is a self-targeting action that deals damage
+            const shouldPrompt = await CombatHandler.checkSelfTargeting(workflow);
+            if (shouldPrompt) {
+                let dialogContent = `<p><strong>${workflow.actor.name}</strong> is attacking themselves with ${workflow.item.name}</p>`;
+                dialogContent += "<p>Are you sure you want to proceed?</p>";
+
+                const confirmed = await foundry.applications.api.DialogV2.confirm({
+                    window: {
+                        title: 'Weapon Mastery: Push',
+                    },
+                    content: dialogContent,
+                    rejectClose: false,
+                    modal: true
+                });
+
+                if (!confirmed) {
+                    console.info('Action cancelled - you stopped hitting yourself!');
+
+                    // Abort the workflow completely
+                    workflow.aborted = true;
+                    return false;
+                }
+            }
+
+            return true;
+        });
+
+
         Hooks.on('preUpdateCombat', combat.legendaryActionsPrompt);
 
         Hooks.on("updateCombat", async (combat, update, context, userId) => {
@@ -152,6 +181,7 @@ export class CombatHandler {
                 const isParalyzed = MidiQOL.hasCondition(actor, "Paralyzed");
                 const isPetrified = MidiQOL.hasCondition(actor, "Petrified");
                 const isStunned = MidiQOL.hasCondition(actor, "Stunned");
+                const isSleeping =  actor.statuses.has("sleeping");
 
                 // prone conditionals
                 let laughterEffect =  actor.getRollData().effects.find(eff => eff.name.toLowerCase().includes('hideous laughter'));
@@ -159,7 +189,7 @@ export class CombatHandler {
                     isProne = false;
                 }
 
-                if ((hp > 0) && isProne && !isDead && !isUnconscious && !isIncapacitated && !isParalyzed && !isPetrified && !isStunned) {
+                if ((hp > 0) && isProne && !isDead && !isUnconscious && !isIncapacitated && !isParalyzed && !isPetrified && !isStunned && !isSleeping) {
                     return {
                         "combatant": combatant,
                         "hp": hp,
@@ -232,5 +262,52 @@ export class CombatHandler {
                 content: combatant.actor.name + " rises as a zombie"
             });
         }
+    }
+
+    /**
+     * Check if the workflow involves self-targeting with damage
+     * @param {MidiQOL.Workflow} workflow - The midi-qol workflow object
+     * @returns {Promise<boolean>} - True if should show prompt
+     */
+    static async checkSelfTargeting(workflow) {
+        // Make sure we have necessary data
+        if (!workflow?.actor || !workflow?.targets || !workflow?.item) {
+            return false;
+        }
+
+        // Check if any target is the actor themselves
+        const targets = Array.from(workflow.targets);
+        const isSelfTargeted = targets.some(target => {
+            return target.actor?.id === workflow.actor.id;
+        });
+
+        if (!isSelfTargeted) {
+            return false;
+        }
+
+        // Check if the item deals damage or healing
+        const itemData = workflow.item;
+
+        // Check multiple possible locations for damage/healing info
+        const actionType = itemData.system?.actionType;
+
+        // D&D 5e v4 uses activities
+        const hasActivities = itemData.system?.activities?.size > 0;
+        const firstActivity = hasActivities ? Array.from(itemData.system.activities.values())[0] : null;
+
+        // Check for damage in various places
+        const damageParts = itemData.system?.damage?.parts || firstActivity?.damage?.parts;
+        const hasDamageParts = damageParts && damageParts.length > 0;
+
+        // Check for healing
+        const healingFormula = itemData.system?.healing?.formula || firstActivity?.healing?.formula;
+        const hasHealing = !!healingFormula || actionType === 'heal';
+
+        if (hasHealing) {
+            return false;
+        }
+
+        // Prompt if there's damage or (healing and includeHealing is true)
+        return hasDamageParts;
     }
 }

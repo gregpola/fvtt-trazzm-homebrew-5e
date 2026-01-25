@@ -1,14 +1,7 @@
-2025/12/27-10:30:38.180 8360 Recovering log #1708
-2025/12/27-10:30:38.183 8360 Delete type=0 #1708
-2025/12/27-10:30:38.183 8360 Delete type=3 #1705
-2025/12/27-15:42:20.341 4b64 Level-0 table #1714: started
-2025/12/27-15:42:20.363 4b64 Level-0 table #1714: 1044348 bytes OK
-2025/12/27-15:42:20.365 4b64 Delete type=0 #1712
-2025/12/27-15:42:20.368 4b64 Manual compaction at level-0 from '!folders!7zo2bljGLQY3uwXI' @ 72057594037927935 : 1 .. '!items.effects!zu5VrJV1XHd20wol.wsWtrfg3dhPNok1C' @ 0 : 0; will stop at '!items.effects!nGILsVrAVFu3USW9.sk02gF4afxHOgox5' @ 2773 : 1
-2025/12/27-15:42:20.368 4b64 Compacting 1@0 + 1@1 files
-2025/12/27-15:42:20.377 4b64 Generated table #1715@0: 223 keys, 283643 bytes
-2025/12/27-15:42:20.377 4b64 Compacted 1@0 + 1@1 files => 283643 bytes
-2025/12/27-15:42:20.379 4b64 compacted to: files[ 0 1 0 0 0 0 0 ]
-2025/12/27-15:42:20.379 4b64 Delete type=2 #1710
-2025/12/27-15:42:20.379 4b64 Delete type=2 #1714
-2025/12/27-15:42:20.379 4b64 Manual compaction at level-0 from '!items.effects!nGILsVrAVFu3USW9.sk02gF4afxHOgox5' @ 2773 : 1 .. '!items.effects!zu5VrJV1XHd20wol.wsWtrfg3dhPNok1C' @ 0 : 0; will stop at (end)
+2026/01/24-13:51:19.289 cdbc Recovering log #1795
+2026/01/24-13:51:19.292 cdbc Delete type=0 #1795
+2026/01/24-13:51:19.293 cdbc Delete type=3 #1794
+2026/01/24-18:00:03.401 d628 Level-0 table #1799: started
+2026/01/24-18:00:03.401 d628 Level-0 table #1799: 0 bytes OK
+2026/01/24-18:00:03.401 d628 Delete type=0 #1797
+2026/01/24-18:00:03.402 d628 Manual compaction at level-0 from '!folders!7zo2bljGLQY3uwXI' @ 72057594037927935 : 1 .. '!items.effects!zu5VrJV1XHd20wol.wsWtrfg3dhPNok1C' @ 0 : 0; will stop at (end)

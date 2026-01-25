@@ -3,14 +3,14 @@
     multiple smite spells.
  */
 const optionName = "Smite Handler";
-const version = "12.4.0";
+const version = "13.5.0";
 
 try {
     if (args[0].tag === "OnUse" && args[0].macroPass === "preDamageRoll") {
         let targetToken = workflow.hitTargets.first();
 
         // make sure it's an eligible attack
-        if (targetToken && (macroActivity.actionType === "mwak") && !MidiQOL.hasUsedBonusAction(actor)) {
+        if (targetToken && (rolledActivity.actionType === "mwak") && !MidiQOL.hasUsedBonusAction(actor)) {
             // collect the actor's smite spells
             let smiteSpells = actor.items.filter(i => i.type === 'spell' && i.name.endsWith(' Smite'));
 

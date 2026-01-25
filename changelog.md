@@ -91,3 +91,12 @@
 * Added Oath of Glory subclass
 * Moved Weapon Mastery feature to the Class > Generic Features compendium 
 * Updated Faerie Fire animation
+
+# 13.5.12
+* Updated to new Boss Loot module structure
+* Updated drow poison saves to ignore actors with poison immunity
+* Fixed Smite Handler for recent module updates
+* Fixed Feather Fall, Hex, and Hunter's Mark spells
+* Removed the Blessed Strikes base feature from the Cleric class
+* Added check for sleeping before prompting to standup from prone
+* Added check and prompt if attacking self
