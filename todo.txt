@@ -1,1 +1,1 @@
-No save prompt from midi
+- Prompt for corruption

@@ -20,7 +20,7 @@
 * Updated Aura of Protection, Danger Sense, and Disciple of Life class features
 * Updated Thrown Weapon Fighting style feat
 * Updated Dwarven Resilience, Gnomish Cunning, and Surprise Attack racial features
-* Updated Aura of Life, Cloudkill, Crusader's Mantle, Darkness, Fog Cloud, Magic Missile, Protection from Evil and Good, Scorching Ray, Silence, Sleet Storm, Spike Growth, Stinking Cloud and Web spells
+* Updated Aura of Life, Cloudkill, Crusader's Mantle, Darkness, Fog Cloud, Magic Missile, Protection from Evil and Good, Scorching Ray, Silence, Sleet Storm, Spike Growth, Stinking Cloud, and Web spells
 * Updated to core version 13.348
 * Fix duplication bug with Sap
 
@@ -100,3 +100,12 @@
 * Removed the Blessed Strikes base feature from the Cleric class
 * Added check for sleeping before prompting to standup from prone
 * Added check and prompt if attacking self
+
+# 13.5.13
+* Added a macro to cleanup all game combats
+* Added Prismatic Spray, and Warp Bolt spells
+* Added Helm of Brilliance and support item gems
+* Fixed the animation for Detect Magic
+* Fixed 'Blessed Strikes: Divine Strike' to only apply to weapon attacks
+* Fixed the animation for Spirit Guardians
+* Updated Healer's Warhammer
