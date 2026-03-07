@@ -1,1 +1,11 @@
+- actor update functionality
 - Prompt for corruption
+- options for initiative bonuses in module hook
+
+
+Tactical Mind (Fighter)
+Intercept feat
+
+Circle of the Stars
+Beast Master
+

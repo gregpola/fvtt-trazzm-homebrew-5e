@@ -468,5 +468,4 @@ class HomebrewEffects {
             await MidiQOL.socket().executeAsGM('addDependent', {concentrationEffectUuid: entity.uuid, dependentUuid: dependent.uuid});
         }
     }
-
 }

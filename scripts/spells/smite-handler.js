@@ -1,4 +1,4 @@
-/*
+ /*
     A general handler for all 'Smite' spells. This is to minimize the number of dialog's that popup for an actor with
     multiple smite spells.
  */

@@ -1,7 +1,7 @@
 /*
 	You touch a creature and can end either one disease or one condition afflicting it. The condition can be Blinded, Deafened, Paralyzed, or Poisoned.
 */
-const version = "12.4.0";
+const version = "13.5.0";
 const optionName = "Lesser Restoration";
 const condition_list = new Set(["blinded", "deafened", "paralyzed", "diseased", "poisoned"]);
 
@@ -38,7 +38,14 @@ try {
 			}
 
 			if (removedCondition) {
-				await targetToken.actor.toggleStatusEffect(removedCondition, {active: false});
+				// remove the effects that contribute the removed condition
+				let actorEffects = Array.from(targetToken.actor.allApplicableEffects());
+				let removedEffects = actorEffects.filter(s => s.statuses.has(removedCondition));
+				if (removedEffects) {
+					const effectIdList = removedEffects.map(obj => obj.id);
+					await MidiQOL.socket().executeAsGM("removeEffects", {actorUuid: targetToken.actor.uuid, effects: effectIdList});
+				}
+
 
 				let chatContent = `<div class="midi-qol-nobox"><div class="midi-qol-flex-container"><div>Cures ${removedCondition} from: </div><div class="midi-qol-target-npc midi-qol-target-name" id="${targetToken.id}"> ${targetToken.actor.name}</div><div><img src="${targetToken.document.texture.src}" width="30" height="30" style="border:0px" /></div></div></div>`;
 				ChatMessage.create({

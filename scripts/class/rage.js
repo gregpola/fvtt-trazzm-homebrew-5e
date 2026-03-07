@@ -2,7 +2,7 @@
     This macro is used to handle subclass features that add riders to Rage
 */
 const optionName = "Rage";
-const version = "12.4.1";
+const version = "13.5.0";
 const mindlessRageEffectName = "Mindless Rage Active";
 
 try {
@@ -19,42 +19,34 @@ try {
             await actor.toggleStatusEffect("charmed", {active: false});
             await actor.toggleStatusEffect("frightened", {active: false});
 
-            let effectData = {
-                name: mindlessRageEffectName,
-                icon: 'icons/magic/fire/flame-burning-eye.webp',
-                changes: [
-                    {
-                        key: 'system.traits.ci.value',
-                        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-                        value: 'charmed',
-                        priority: 20
-                    },
-                    {
-                        key: 'system.traits.ci.value',
-                        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-                        value: 'frightened',
-                        priority: 20
-                    }
-                ],
-                flags: {
-                    dae: {
-                        specialDuration: []
-                    }
-                },
-                origin: actor.uuid,
-                duration: {
-                    seconds: null
-                },
-                disabled: false
-            };
-
-            await MidiQOL.socket().executeAsGM("createEffects", {actorUuid: actor.uuid, effects: [effectData]});
+            let activity = await mindlessRage.system.activities.find(a => a.identifier === 'activate');
+            if (activity) {
+                await activity.use();
+            }
         }
 
         // Handle Fanatical Focus
         const fanaticalFocus = actor.items.find(i => i.name === "Fanatical Focus");
         if (fanaticalFocus) {
             await fanaticalFocus.update({"system.uses.spent": 0});
+        }
+
+        // Handle Wild Heart - Rage of the Wilds
+        const rageOfTheWilds = actor.items.find(i => i.name === "Rage of the Wilds");
+        if (rageOfTheWilds) {
+            let activity = await rageOfTheWilds.system.activities.find(a => a.identifier === 'activate');
+            if (activity) {
+                await activity.use();
+            }
+        }
+
+        // Handle Wild Heart - Power of the Wilds
+        const powerOfTheWilds = actor.items.find(i => i.name === "Power of the Wilds");
+        if (powerOfTheWilds) {
+            let activity = await powerOfTheWilds.system.activities.find(a => a.identifier === 'activate');
+            if (activity) {
+                await activity.use();
+            }
         }
 
     }

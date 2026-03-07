@@ -293,7 +293,7 @@ export class WeaponMastery {
                                 {
                                     key: "flags.midi-qol.advantage.attack.all",
                                     mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-                                    value: `targetId == "${targetToken.id}"`,
+                                    value: `targetId === "${targetToken.id}"`,
                                     priority: 20
                                 }
                             ],
@@ -304,7 +304,8 @@ export class WeaponMastery {
                                     stackable: 'noneNameOnly',
                                     specialDuration: [
                                         'turnEndSource',
-                                        '1Attack'
+                                        '1Attack',
+                                        'endCombat'
                                     ]
                                 }
                             }

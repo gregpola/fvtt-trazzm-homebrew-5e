@@ -4,7 +4,7 @@
 
     @scale.cleric.divine-strike
 */
-const version = "13.5.0";
+const version = "13.5.1";
 const optionName = "Blessed Strikes: Divine Strike";
 const timeFlag = "blessed-strikes-time";
 
@@ -14,7 +14,7 @@ try {
         if (rolledItem.type !== "weapon") return {};
 
         // Check for availability i.e. once per actors turn
-        if (!game.combat || !HomebrewHelpers.isAvailableThisTurn(actor, timeFlag)) {
+        if (!game.combat || !HomebrewHelpers.isOwnTurn(token) || !HomebrewHelpers.isAvailableThisTurn(actor, timeFlag)) {
             console.log(`${optionName}: is not available for this action`);
             return {};
         }

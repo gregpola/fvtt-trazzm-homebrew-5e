@@ -109,3 +109,27 @@
 * Fixed 'Blessed Strikes: Divine Strike' to only apply to weapon attacks
 * Fixed the animation for Spirit Guardians
 * Updated Healer's Warhammer
+
+# 13.5.14
+* Added cantrip selection to Bard, Cleric, Druid, Sorcerer, Warlock, Wizard during creation and level up
+* Added Blade Barrier, Control Water, Heal, and Regenerate spells
+* Added Deathcap, and Young Purple Worm poisons
+* Added Bladesinger wizard subclass
+* Added Circle of Sea druid subclass
+* Added Rune Knight, and Battle Master fighter subclasses
+* Added Swarmkeeper ranger subclass
+* Added Tabaxi species
+* Updated the Assassinate feature
+* Updated the Rage barbarian feature for several subclass features
+* Updated Lesser Restoration spell to better handle condition removal
+* Updated Air Genasi, Bugbear, Lizardfolk, and MooseTaur species
+* Updated Rime of the Frostmaiden player items
+* Updated College of Lore bard subclass
+* Updated Path of the Wild Heart barbarian subclass
+* Updated Custom Background to allow selecting fighting style feats
+* Updated Mindless Rage
+* Fixed Fire Shield reactive damage
+* Fixed Flaming Sphere fire aura
+* Fixed 'Blessed Strikes: Divine Strike' to only apply on the actor's turn
+* Fixed Vex to make sure it fits the RAW
+* Fixed Feather Fall, and Counterspell auto reactions

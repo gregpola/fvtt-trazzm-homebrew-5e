@@ -7,7 +7,6 @@ import {WarlockFeatures} from "./WarlockFeatures.js";
 import {WizardFeatures} from "./WizardFeatures.js";
 import {SummonHelper} from "./SummonHelper.js";
 import {WeaponMastery} from "./WeaponMastery.js";
-import {MonsterMacros} from './MonsterMacros.js';
 import {macros} from './macros.js';
 import {registerSettings} from './settings.js';
 import {doTurnStartOptions} from "./utils.js";
@@ -27,8 +26,7 @@ const SUB_MODULES = {
     WarlockFeatures,
     WizardFeatures,
     SummonHelper,
-    WeaponMastery,
-    MonsterMacros
+    WeaponMastery
 };
 
 Hooks.once('init', async function () {
@@ -94,7 +92,6 @@ function initialize_module() {
         cl.register();
     });
     globalThis.TrazzmHomebrew.weaponMastery = WeaponMastery;
-    globalThis.TrazzmHomebrew.MonsterMacros = MonsterMacros;
 }
 
 globalThis.TrazzmHomebrew = {

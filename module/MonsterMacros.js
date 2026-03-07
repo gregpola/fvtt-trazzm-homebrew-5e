@@ -1,9 +1,8 @@
-const _flagGroup = "fvtt-trazzm-homebrew-5e";
 const _damageTypesFlag = "damage-types";
 const _regenerationTimeFlag = "regeneration-time-flag";
 const _regenOffEffectName = "Regeneration Off";
 
-export class MonsterMacros {
+class MonsterMacros {
 
     static register() {
         logger.info("%c fvtt-trazzm-homebrew-5e", "color: #D030DE", " | Registering MonsterMacros");
@@ -34,7 +33,7 @@ export class MonsterMacros {
             return false;
         }
 
-        let damageTypesReceived = actor.getFlag(_flagGroup, _damageTypesFlag);
+        let damageTypesReceived = actor.getFlag("fvtt-trazzm-homebrew-5e", _damageTypesFlag);
         if (suppressionTypes && damageTypesReceived) {
             if ((suppressionTypes.length > 0) && (damageTypesReceived.length > 0)) {
                 for (let rf of suppressionTypes) {
@@ -48,7 +47,7 @@ export class MonsterMacros {
     }
 
     static async applyDamageTypes(actor, damageDetails) {
-        let damageTypesReceived = actor.getFlag(_flagGroup, _damageTypesFlag);
+        let damageTypesReceived = actor.getFlag("fvtt-trazzm-homebrew-5e", _damageTypesFlag);
         if (!damageTypesReceived) {
             damageTypesReceived = [];
         }
@@ -64,13 +63,13 @@ export class MonsterMacros {
             }
 
             if (addedDamageType) {
-                await actor.setFlag(_flagGroup, _damageTypesFlag, damageTypesReceived);
+                await actor.setFlag("fvtt-trazzm-homebrew-5e", _damageTypesFlag, damageTypesReceived);
             }
         }
     }
 
     static async clearDamageTypes(actor) {
-        await actor.unsetFlag(_flagGroup, _damageTypesFlag);
+        await actor.unsetFlag("fvtt-trazzm-homebrew-5e", _damageTypesFlag);
     }
 
     static async applyNoRegenerationEffect(actor) {

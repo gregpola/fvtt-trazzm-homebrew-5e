@@ -1,4 +1,4 @@
-const VERSION = "12.3.0";
+const VERSION = "13.5.0";
 
 export class RestHandler {
 
@@ -9,7 +9,23 @@ export class RestHandler {
 
     static hooks() {
         Hooks.on("dnd5e.restCompleted", (actor, result, config) => {
-            //console.log(result);
+            // check for used Arcane Recovery and has Bladesong
+            let usedArcaneRecovery = false;
+
+            for (let updateItem of result.updateItems) {
+                const item = actor.items.get(updateItem._id);
+                if (item && item.name === 'Arcane Recovery') {
+                    usedArcaneRecovery = true;
+                }
+            }
+
+            const bladesongItem = actor.items.getName('Bladesong');
+            if (bladesongItem && usedArcaneRecovery) {
+                let activity = bladesongItem.system.activities.find(a => a.identifier === 'recovery');
+                if (activity) {
+                    activity.use();
+                }
+            }
         });
     }
 

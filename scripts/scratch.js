@@ -47,12 +47,24 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(rolledActivity.actionType))
         system.attributes.concentration.roll.mode
 		
 		flags.midi-qol.canFlank
-		
+
+label="Fire Rune - Shackled", turn=end, saveDC=@abilities.str.mod + 8 + @attributes.prof, saveAbility=str, saveCount=1-
+label="Fire Rune - Burning", turn=start, damageRoll=2d6, damageType=fire
+
+reaction === 'manual'
+reaction == 'isDamaged' && activity?.hasAttack
+
+Array.from(actor.allApplicableEffects())
+await TrazzmHomebrew.weaponMastery.workflow(workflow, macroItem);
+
 raceOrType.includes('undead')
 ['fiend', 'undead'].includes(typeOrRace)
 
+			Compendium.dnd-players-handbook.classes.Item.phbftrCombatSupe
+
 @scale.bard.inspiration
 @scale.paladin.aura
+@scale.battle-master.superiority.die
 
 workflow.hitTargets.size
 token.actor.system.attributes.hp.value > 0
@@ -113,16 +125,11 @@ const cost = canvas.grid.measurePath([template, token.document]).cost;
 		}
 
 		// Overtime setup to remove a condition on save
-		turn=end, saveAbility=wis, saveDC=@attributes.spell.dc, label=Wrathful Smite
-		turn = start, rollType = save, saveAbility = con, saveDamage = halfdamage, saveRemove = false, saveMagic = true, damageType = radiant, damageRoll = (@spellLevel)d10, saveDC = @attributes.spell.dc
-		turn = end, saveAbility = wis, saveDC = 19, label = Frightened
-		label=Watery Grapple, turn = start, damageType = bludgeoning, damageRoll = 2d8
+		label="Prismatic Spray - Indigo Ray", turn=end, saveDC=@attributes.spell.dc, saveAbility=con, saveCount=3-, failCount=3-petrified
 
 			// options = { maxSize: undefined, includeIncapacitated: false, canSee: false }
 		let secondTarget = await MidiQOL.findNearby(CONST.TOKEN_DISPOSITIONS.FRIENDLY, ttoken, 5, {canSee: true});
 
-
-await TrazzmHomebrew.weaponMastery.workflow(workflow, macroItem);
 
 <section class="secret">
     <p><strong>Foundry Note</strong></p>
@@ -149,4 +156,8 @@ if (activity) {
     };
 
     await MidiQOL.completeActivityUse(activity, options, {}, {});
+}
+
+for (let targetToken of workflow.failedSaves) {
+	await targetToken.actor.toggleStatusEffect('prone', {active: true});
 }

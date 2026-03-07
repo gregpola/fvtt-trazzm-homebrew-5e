@@ -3,51 +3,50 @@
     flame. The attacker takes 2d8 Fire damage from a warm shield or 2d8 Cold damage from a chill shield.
 */
 const optionName = "Fire Shield";
-const version = "12.4.0";
+const version = "13.5.0";
 
 try {
     if (args[0].tag === "TargetOnUse" && args[0].macroPass === "isHit") {
         // get the attacker to check the distance and mwak or msak
-        if (["mwak", "msak"].includes(rolledItem.system.actionType)) {
+        if (["mwak", "msak"].includes(rolledActivity.actionType)) {
             const attacker = rolledItem.actor;
             const attackerToken = MidiQOL.tokenForActor(attacker);
-            if (MidiQOL.computeDistance(attackerToken, token) > 5) return;
+            if (MidiQOL.computeDistance(attackerToken, token) <= 5) {
+                // Get the type of shield
+                const coldShield = HomebrewHelpers.findEffect(actor, 'Chill Shield');
+                let activity = undefined;
 
-            // TODO get the type of shield
-            const coldShield = HomebrewHelpers.findEffect(actor, 'Chill Shield');
-            let activity = undefined;
+                if (coldShield) {
+                    activity = macroItem.system.activities.find(a => a.identifier === 'fire-shield-cold-damage');
+                    await animeCold(token, attackerToken);
+                } else {
+                    activity = macroItem.system.activities.find(a => a.identifier === 'fire-shield-fire-damage');
+                    await animeFire(token, attackerToken);
+                }
 
-            if (coldShield) {
-                activity = macroItem.system.activities.find(a => a.identifier === 'fire-shield-cold-damage');
-                await animeCold(token, attackerToken);
-            }
-            else {
-                activity = macroItem.system.activities.find(a => a.identifier === 'fire-shield-fire-damage');
-                await animeFire(token, attackerToken);
-            }
+                // synthetic activity use
+                if (activity) {
+                    let targets = new Set();
+                    targets.add(attackerToken);
 
-            // synthetic activity use
-            if (activity) {
-                let targets = new Set();
-                targets.add(attackerToken);
+                    const options = {
+                        midiOptions: {
+                            targetsToUse: targets,
+                            noOnUseMacro: true,
+                            configureDialog: false,
+                            showFullCard: true,
+                            ignoreUserTargets: true,
+                            checkGMStatus: false,
+                            autoRollAttack: true,
+                            autoRollDamage: "always",
+                            fastForwardAttack: true,
+                            fastForwardDamage: true,
+                            workflowData: true
+                        }
+                    };
 
-                const options = {
-                    midiOptions: {
-                        targetsToUse: targets,
-                        noOnUseMacro: true,
-                        configureDialog: false,
-                        showFullCard: true,
-                        ignoreUserTargets: true,
-                        checkGMStatus: false,
-                        autoRollAttack: true,
-                        autoRollDamage: "always",
-                        fastForwardAttack: true,
-                        fastForwardDamage: true,
-                        workflowData: true
-                    }
-                };
-
-                await MidiQOL.completeActivityUse(activity.uuid, options, {}, {});
+                    await MidiQOL.completeActivityUse(activity.uuid, options, {}, {});
+                }
             }
         }
     }

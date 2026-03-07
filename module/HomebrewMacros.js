@@ -256,20 +256,6 @@ class HomebrewMacros {
             .play();
     }
 
-    static async handleDistractingStrike({speaker, actor, token, character, item, args, scope, workflow}) {
-        if (args[0].macroPass === "isAttacked") {
-            if (actor) {
-                let maneuverEffect = actor.effects.find(e => e.name === 'Distracting Strike - Distracted');
-                if (maneuverEffect.origin !== item.actor.uuid) {
-                    await MidiQOL.socket().executeAsGM('removeEffects', {
-                        'actorUuid': actor.uuid,
-                        'effects': [maneuverEffect.id]
-                    });
-                }
-            }
-        }
-    }
-
     static async revertWildShape(actor, effectName) {
         if (actor.isPolymorphed) {
             let originalActor = await actor.revertOriginalForm();
