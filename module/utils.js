@@ -65,6 +65,10 @@ export async function removeWalls(name, actor) {
     }
 }
 
+export async function updateTargets(targetIds) {
+    canvas.tokens?.setTargets(targetIds);
+}
+
 /**
  * A dialog to show options at the start of a combatants turn.
  *

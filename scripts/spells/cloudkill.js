@@ -131,7 +131,7 @@ async function drawAmbientLight(template, actor) {
 function getAllowedMoveLocation(casterToken, template, maxSquares) {
     for (let i = maxSquares; i > 0; i--) {
         let movePixels = i * canvas.grid.size;
-        let ray = new Ray(casterToken.center, template.object.center);
+        let ray = new foundry.canvas.geometry.Ray(casterToken.center, template.object.center);
         let newCenter = ray.project((ray.distance + movePixels)/ray.distance);
 
         const testCollision = CONFIG.Canvas.polygonBackends.move.testCollision(template.object.center, newCenter, { type: "move", mode: "any" });

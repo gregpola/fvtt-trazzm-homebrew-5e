@@ -773,9 +773,18 @@ class HomebrewHelpers {
         return actor.system.details.cr;
     }
 
-    static updateTargets(newTargets) {
-        game.user.updateTokenTargets(Array.from(newTargets).map(target => target.id ?? target));
-        game.user.broadcastActivity({targets: game.user.targets.ids});
+    // static updateTargets(newTargets) {
+    //     game.user.updateTokenTargets(Array.from(newTargets).map(target => target.id ?? target));
+    //     game.user.broadcastActivity({targets: game.user.targets.ids});
+    // }
+
+    static async updateTargets(targets, user = game.user) {
+        let targetIds = Array.from(targets).map(target => target.id ?? target);
+        if (user === game.user) {
+            canvas.tokens?.setTargets(targetIds);
+        } else {
+            await game.trazzm.socket.executeAsGM("updateTargets", targetIds);
+        }
     }
 
     static async addFavorite(actor, item) {
@@ -939,13 +948,14 @@ class HomebrewHelpers {
         return false;
     }
 
-    static findSummonedOwner(dependentUuid, summonedEffectName) {
+    static findSummonedOwner(tokenId, summonedEffectName) {
         for (let token of canvas.scene.tokens) {
             let summonedEffect = token.actor.effects.find(eff => eff.name === summonedEffectName);
             if (summonedEffect) {
-                let flag = summonedEffect.getFlag("dnd5e", "dependents");
-                if ( flag && flag[0] && flag[0].uuid === dependentUuid) {
-                    return token.actor;
+                for (let dep of summonedEffect.getDependents()) {
+                    if (dep.id === tokenId) {
+                        return token.actor;
+                    }
                 }
             }
         }
@@ -954,13 +964,12 @@ class HomebrewHelpers {
     }
 
     static async findBeastCompanion(actor) {
-        const effect = HomebrewHelpers.findEffect(actor, "Summon: Primal Companion");
-        if (effect) {
-            const beastUuid = effect.flags?.dnd5e?.dependents[0]?.uuid ?? undefined;
-            if (beastUuid) {
-                const tokenDoc = await fromUuid(beastUuid);
-                if (tokenDoc) {
-                    return tokenDoc.actor;
+        const summonedEffect = HomebrewHelpers.findEffect(actor, "Summon: Primal Companion");
+        if (summonedEffect) {
+            for (let dep of summonedEffect.getDependents()) {
+                const beastToken = canvas.tokens.get(dep.id);
+                if (beastToken) {
+                    return beastToken;
                 }
             }
         }
@@ -1042,7 +1051,7 @@ class HomebrewHelpers {
         // draw the walls around the template
         let segmentLength = Math.floor(effectiveWidth / 2) - 5;
         let segmentAngle = (template.direction + 90)* (Math.PI/180);
-        let segmentRay = Ray.fromAngle(template.x, template.y, segmentAngle, segmentLength);
+        let segmentRay = foundry.canvas.geometry.Ray.fromAngle(template.x, template.y, segmentAngle, segmentLength);
         wallsData.push({
             c: [segmentRay.A.x, segmentRay.A.y, segmentRay.B.x, segmentRay.B.y],
             move: CONST.WALL_MOVEMENT_TYPES.NONE,
@@ -1055,7 +1064,7 @@ class HomebrewHelpers {
 
         segmentLength = templateLength;
         segmentAngle = rayAngle;
-        segmentRay = Ray.fromAngle(segmentRay.B.x, segmentRay.B.y, segmentAngle, segmentLength);
+        segmentRay = foundry.canvas.geometry.Ray.fromAngle(segmentRay.B.x, segmentRay.B.y, segmentAngle, segmentLength);
         wallsData.push({
             c: [segmentRay.A.x, segmentRay.A.y, segmentRay.B.x, segmentRay.B.y],
             move: CONST.WALL_MOVEMENT_TYPES.NONE,
@@ -1068,7 +1077,7 @@ class HomebrewHelpers {
 
         segmentLength = effectiveWidth - 10;
         segmentAngle = (template.direction + 270)* (Math.PI/180);;
-        segmentRay = Ray.fromAngle(segmentRay.B.x, segmentRay.B.y, segmentAngle, segmentLength);
+        segmentRay = foundry.canvas.geometry.Ray.fromAngle(segmentRay.B.x, segmentRay.B.y, segmentAngle, segmentLength);
         wallsData.push({
             c: [segmentRay.A.x, segmentRay.A.y, segmentRay.B.x, segmentRay.B.y],
             move: CONST.WALL_MOVEMENT_TYPES.NONE,
@@ -1081,7 +1090,7 @@ class HomebrewHelpers {
 
         segmentLength = templateLength;
         segmentAngle = (template.direction + 180)* (Math.PI/180);;
-        segmentRay = Ray.fromAngle(segmentRay.B.x, segmentRay.B.y, segmentAngle, segmentLength);
+        segmentRay = foundry.canvas.geometry.Ray.fromAngle(segmentRay.B.x, segmentRay.B.y, segmentAngle, segmentLength);
         wallsData.push({
             c: [segmentRay.A.x, segmentRay.A.y, segmentRay.B.x, segmentRay.B.y],
             move: CONST.WALL_MOVEMENT_TYPES.NONE,
@@ -1094,7 +1103,7 @@ class HomebrewHelpers {
 
         segmentLength = Math.floor(effectiveWidth / 2) - 5;
         segmentAngle = (template.direction + 90)* (Math.PI/180);
-        segmentRay = Ray.fromAngle(segmentRay.B.x, segmentRay.B.y, segmentAngle, segmentLength);
+        segmentRay = foundry.canvas.geometry.Ray.fromAngle(segmentRay.B.x, segmentRay.B.y, segmentAngle, segmentLength);
         wallsData.push({
             c: [segmentRay.A.x, segmentRay.A.y, segmentRay.B.x, segmentRay.B.y],
             move: CONST.WALL_MOVEMENT_TYPES.NONE,

@@ -1,11 +1,12 @@
 - actor update functionality
 - Prompt for corruption
-- options for initiative bonuses in module hook
+- options for initiative bonuses in module hook -- need support from the carousel
+- Fumble and Critical effects
+
+Wand of Secrets
 
 
-Tactical Mind (Fighter)
 Intercept feat
-
 Circle of the Stars
-Beast Master
+Arcane Mark spell
 

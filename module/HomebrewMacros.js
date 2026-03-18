@@ -118,7 +118,7 @@ class HomebrewMacros {
         const squares = maxSquares ? maxSquares : 1;
         let distance = 5 * squares;
         distance = Math.min(distance, tokenDistance - 5);
-        let ray = new Ray(pullerToken.center, targetToken.center);
+        let ray = new foundry.canvas.geometry.Ray(pullerToken.center, targetToken.center);
         await HomebrewMacros.moveTokenAlongRay(targetToken, ray, -distance);
     }
 
@@ -147,7 +147,7 @@ class HomebrewMacros {
         let newCenter;
         let hitsWall = true;
         let oldDistance;
-        let ray = Ray.fromAngle(targetToken.center.x, targetToken.center.y, origRay.angle, origRay.distance);
+        let ray = foundry.canvas.geometry.Ray.fromAngle(targetToken.center.x, targetToken.center.y, origRay.angle, origRay.distance);
         if (ray.distance === 0) {
             return;
         }
@@ -189,7 +189,7 @@ class HomebrewMacros {
         let knockBackFactor = knockBackFt / canvas.dimensions.distance;
         let distance = canvas.dimensions.size * knockBackFactor;
         const angle = (Math.random() * 360) * (Math.PI / 180);
-        const ray = Ray.fromAngle(targetToken.center.x, targetToken.center.y, angle, distance);
+        const ray = foundry.canvas.geometry.Ray.fromAngle(targetToken.center.x, targetToken.center.y, angle, distance);
         let newCenter = ray.project(squares);
         await MidiQOL.moveTokenAwayFromPoint(targetToken, knockBackFt, newCenter);
     }

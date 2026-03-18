@@ -22,7 +22,7 @@ try {
 }
 
 async function drawLineWall(template) {
-    const ray = Ray.fromAngle(template.x,
+    const ray = foundry.canvas.geometry.Ray.fromAngle(template.x,
         template.y,
         template.direction * (Math.PI/180),
         template.distance * canvas.grid.size / canvas.dimensions.distance);

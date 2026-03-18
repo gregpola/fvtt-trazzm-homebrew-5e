@@ -154,6 +154,21 @@ export class CombatHandler {
                 }
             }
         });
+
+        // TODO Unfortunately the hooks are not called when rolling initiative using the carousal
+        /*
+            actor	Actor5e	The Actor that is rolling initiative.
+            roll	D20Roll	The pre-evaluated roll.
+         */
+        Hooks.on("dnd5e.preRollInitiative", async (actor, roll) => {
+            const ambush = actor.items.getName("Ambush");
+
+        });
+
+        Hooks.on("dnd5e.rollInitiative", async (actor, combatants) => {
+            const ambush = actor.items.getName("Ambush");
+
+        });
     }
 
     static async wait(ms) {

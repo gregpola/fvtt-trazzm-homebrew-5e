@@ -12,12 +12,8 @@ try {
         if (HomebrewHelpers.isAvailableThisTurn(actor, timeFlag) && game.combat) {
             const targetToken = workflow.hitTargets.first();
             if (targetToken) {
-                // get the summoned token'ss parent actor
-                const sceneId = canvas.scene.id;
-                const tokenId = token.id;
-                const dependentUuid = `Scene.${sceneId}.Token.${tokenId}`;
-                const parentActor = HomebrewHelpers.findSummonedOwner(dependentUuid, "Summon: Primal Companion");
-
+                // get the summoned token's parent actor
+                const parentActor = HomebrewHelpers.findSummonedOwner(token.id, "Summon: Primal Companion");
                 if (!parentActor) {
                     ui.notifications.error(`${optionName}: ${version} - Unable to find the summoned's owner`);
                     return {};
@@ -25,7 +21,6 @@ try {
 
                 const originStart = `Actor.${parentActor.id}.`;
                 let isMarked = false;
-
                 for (let targetEffect of targetToken.actor?.getRollData()?.effects) {
                     if ((targetEffect.name === targetEffectName) && targetEffect.origin.startsWith(originStart)) {
                         isMarked = true;

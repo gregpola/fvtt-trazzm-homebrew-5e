@@ -133,3 +133,12 @@
 * Fixed 'Blessed Strikes: Divine Strike' to only apply on the actor's turn
 * Fixed Vex to make sure it fits the RAW
 * Fixed Feather Fall, and Counterspell auto reactions
+
+# 13.5.15
+* Added Infestation spell
+* Added Tactical Mind fighter feature
+* Added Shadar-kai species
+* Added Nightfang, and Wand of Secrets items
+* Updated references to Ray to remove deprecation warnings
+* Updated Beast Master ranger subclass
+* Fixed Fighter, Paladin, and Ranger to present proper selection of fighting style feats
