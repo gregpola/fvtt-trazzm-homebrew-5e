@@ -10,7 +10,7 @@
 
     Current Sneak Attack Damage: @scale.rogue.sneak-attack
 */
-const version = "12.4.4";
+const version = "13.5.0";
 const optionName = "Sneak Attack";
 const timeFlag = "last-sneak-attack";
 
@@ -59,14 +59,12 @@ try {
             let targetToken = workflow.hitTargets.first();
 
             // Determine if the attack is eligible for Sneak Attack
-            let isSneak = workflow.advantage;
+            let isSneak = workflow.advantage && !workflow.disadvantage;
 
             if (!isSneak && checkAllyNearTarget(token, targetToken)) {
                 // adjacent enemy
-                isSneak = !workflow.disadvantage;
+                isSneak = true;
             }
-
-            // TODO handle other subclass options
 
             if (!isSneak) {
                 console.debug(`${optionName} - attack not eligible for sneak attack`);

@@ -1,3 +1,4 @@
+import Constants from './t5e-constants.js';
 import {CombatHandler} from "./CombatHandler.js";
 import {RestHandler} from "./RestHandler.js";
 import {SaveHandler} from "./SaveHandler.js";
@@ -38,8 +39,8 @@ Hooks.once('init', async function () {
 
 Hooks.once("ready", async () => {
     // Handle showing changelog
-    const currentVersion = game.modules.get("fvtt-trazzm-homebrew-5e").version;
-    const lastVersion = game.settings.get("fvtt-trazzm-homebrew-5e", "lastVersion");
+    const currentVersion = game.modules.get(Constants.MODULE_ID).version;
+    const lastVersion = game.settings.get(Constants.MODULE_ID, Constants.LAST_VERSION);
 
     if (foundry.utils.isNewerVersion(currentVersion, lastVersion)) {
         const journal = await fromUuid("Compendium.fvtt-trazzm-homebrew-5e.homebrew-journal-entries.JournalEntry.L9YHsoeODbdhqdKU");
@@ -47,14 +48,14 @@ Hooks.once("ready", async () => {
         if (page) {
             journal.sheet.render(true, {pageId: page.id});
         }
-        game.settings.set("fvtt-trazzm-homebrew-5e", "lastVersion", currentVersion)
+        game.settings.set(Constants.MODULE_ID, Constants.LAST_VERSION, currentVersion)
     }
 });
 
 
 Hooks.once('socketlib.ready', async function() {
     game.trazzm = game.trazzm || {};
-    game.trazzm.socket = socketlib.registerModule("fvtt-trazzm-homebrew-5e");
+    game.trazzm.socket = socketlib.registerModule(Constants.MODULE_ID);
 
     game.trazzm.socket.register('doTurnStartOptions', doTurnStartOptions);
     game.trazzm.socket.register('doLegendaryAction', doLegendaryAction);
@@ -73,7 +74,7 @@ Hooks.once('socketlib.ready', async function() {
 Hooks.on("renderApplicationV2", (application, element, context, options) => {
     //options.window.resizable = true;
     if (application instanceof Compendium) {
-        const heightMod = game.settings.get("fvtt-trazzm-homebrew-5e", "shrink-compendium-windows");
+        const heightMod = game.settings.get(Constants.MODULE_ID, Constants.SHRINK_COMPENDIUM_WINDOWS);
         if (heightMod) {
             const screenHeight = canvas.screenDimensions[1];
             const betterHeight = screenHeight - 100 - heightMod;

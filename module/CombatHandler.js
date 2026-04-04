@@ -1,3 +1,4 @@
+import Constants from './t5e-constants.js';
 import {combat} from './combat.js';
 
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
@@ -40,6 +41,14 @@ export class CombatHandler {
             return true;
         });
 
+        Hooks.on("midi-qol.AttackRollComplete", async (workflow) => {
+            if (workflow.isFumble && ["mwak", "rwak"].includes(workflow.activity.actionType)) {
+                const fumbleHandler = game.settings.get(Constants.MODULE_ID, Constants.USE_WEAPON_FUMBLES);
+                if (fumbleHandler === Constants.FUMBLE_DUNGEON_DUDES || fumbleHandler.toLowerCase() === 'dudes') {
+                    await CombatHandler.handleWeaponFumble(workflow);
+                }
+            }
+        });
 
         Hooks.on('preUpdateCombat', combat.legendaryActionsPrompt);
 
@@ -100,7 +109,7 @@ export class CombatHandler {
             }
 
             // pan to combatant
-            if (combat && combat.started && combat?.combatant?.token && game.settings.get(_flagGroup, "pan-to-combatant")) {
+            if (combat && combat.started && combat?.combatant?.token && game.settings.get(Constants.MODULE_ID, Constants.PAN_TO_COMBATANT)) {
                 if (canvas.dimensions.rect.contains(combat?.combatant?.token.x, combat?.combatant?.token.y)) {
                     canvas.animatePan({ x: combat?.combatant?.token.x, y: combat?.combatant?.token.y });
                 }
@@ -324,5 +333,238 @@ export class CombatHandler {
 
         // Prompt if there's damage or (healing and includeHealing is true)
         return hasDamageParts;
+    }
+
+    static async handleWeaponFumble(workflow) {
+        const fumbleTableRoll = await new CONFIG.Dice.D20Roll("1d20").evaluate();
+        switch (fumbleTableRoll.total) {
+            case 1:
+                ChatMessage.create({
+                    content: `${workflow.token.name} suffers Dangerously exposed. The target of your attack can use its reaction to either make a single melee attack against you with advantage, or move half its speed without provoking opportunity attacks.`,
+                    speaker: ChatMessage.getSpeaker({actor: workflow.actor})
+                });
+                break;
+
+            case 2:
+            case 3:
+                ChatMessage.create({
+                    content: `${workflow.token.name} suffers Lost grip. Your currently equipped weapon flies from your hand in a random direction, landing up to 15 feet away from you.`,
+                    speaker: ChatMessage.getSpeaker({actor: workflow.actor})
+                });
+
+                // randomly determine thrown location
+                const squares = Math.floor(Math.random() * 3) + 1;
+                const distance = canvas.dimensions.size * squares;
+                const angle = (Math.random() * 360) * (Math.PI / 180);
+
+                const ray = foundry.canvas.geometry.Ray.fromAngle(workflow.token.center.x, workflow.token.center.y, angle, 1);
+                let newCenter = ray.project(distance);
+                //let newCenter = ray.project(1 + ((canvas.dimensions.size * knockBackFactor) / ray.distance));
+
+                const pileData = await game.itempiles.API.createItemPile({
+                    enabled: true,
+                    deleteWhenEmpty: true,
+                    position: {
+                        x: newCenter.x,
+                        y: newCenter.y
+                    },
+                    itemPileFlags: {
+                        enabled: true,
+                        deleteWhenEmpty: true
+                    },
+                    tokenOverrides: {
+                        name: workflow.item.name
+                    },
+                    items: [
+                        {
+                            item: workflow.item,
+                            quantity: 1
+                        }
+                    ]
+                });
+                await game.itempiles.API.removeItems(workflow.actor, [{ item: workflow.item, quantity: 1 }]);
+                break;
+
+            case 4:
+            case 5:
+                ChatMessage.create({
+                    content: `${workflow.token.name} suffers Clumsy footwork. Your speed is reduced to zero until the start of your next turn. If you’ve already moved this turn, you fall prone. `,
+                    speaker: ChatMessage.getSpeaker({actor: workflow.actor})
+                });
+                const movedThisTurn = workflow.token.document.movementHistory.filter(m=>m.movementId === token.document.movementHistory.at(-1).movementId).reduce((acc, c) => acc += c.cost ?? 0, 0);
+                if (movedThisTurn) {
+                    await workflow.actor.toggleStatusEffect("prone", {active: true});
+                }
+                else {
+                    const rdEffect = {
+                        name: "Clumsy Footwork",
+                        transfer: false,
+                        img: "icons/skills/movement/ball-spinning-blue.webpp",
+                        origin: workflow.actor.uuid,
+                        type: "base",
+                        changes: [
+                            {
+                                key: "system.attributes.movement.all",
+                                mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
+                                value: "0",
+                                priority: 20
+                            }
+                        ],
+                        disabled: false,
+                        flags: {
+                            dae: {
+                                showIcon: false,
+                                stackable: 'noneNameOnly',
+                                specialDuration: [
+                                    'turnStartSource',
+                                    'endCombat'
+                                ]
+                            }
+                        }
+                    };
+                    await MidiQOL.createEffects({ actorUuid: workflow.actor.uuid, effects: [rdEffect] });
+                }
+                break;
+
+            case 6:
+            case 7:
+                ChatMessage.create({
+                    content: `${workflow.token.name} suffers Resounding deflection. You have disadvantage on your next attack roll.`,
+                    speaker: ChatMessage.getSpeaker({actor: workflow.actor})
+                });
+                const rdEffect = {
+                    name: "Resounding Deflection",
+                    transfer: false,
+                    img: "icons/skills/targeting/crosshair-arrowhead-blue.webp",
+                    origin: workflow.actor.uuid,
+                    type: "base",
+                    changes: [
+                        {
+                            key: "flags.automated-conditions-5e.attack.disadvantage",
+                            mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
+                            value: "once",
+                            priority: 20
+                        }
+                    ],
+                    disabled: false,
+                    flags: {
+                        dae: {
+                            showIcon: false,
+                            stackable: 'noneNameOnly',
+                            specialDuration: [
+                                'endCombat',
+                                'turnEnd'
+                            ]
+                        }
+                    }
+                };
+                await MidiQOL.createEffects({ actorUuid: workflow.actor.uuid, effects: [rdEffect] });
+                break;
+
+            case 8:
+            case 9:
+                ChatMessage.create({
+                    content: `${workflow.token.name} suffers Disrupted focus. You can’t take reactions until the start of your next turn.`,
+                    speaker: ChatMessage.getSpeaker({actor: workflow.actor})
+                });
+                await MidiQOL.setReactionUsed(workflow.actor);
+                break;
+
+            case 10:
+            case 11:
+                ChatMessage.create({
+                    content: `${workflow.token.name} is Caught off-guard. The next attack roll made against you gains advantage.`,
+                    speaker: ChatMessage.getSpeaker({actor: workflow.actor})
+                });
+                const cogEffect = {
+                    name: "Caught Off-guard",
+                    transfer: false,
+                    img: "icons/skills/targeting/crosshair-arrowhead-blue.webp",
+                    origin: workflow.actor.uuid,
+                    type: "base",
+                    changes: [
+                        {
+                            key: "flags.automated-conditions-5e.grants.attack.advantage",
+                            mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
+                            value: "once",
+                            priority: 20
+                        }
+                    ],
+                    disabled: false,
+                    flags: {
+                        dae: {
+                            showIcon: false,
+                            stackable: 'noneNameOnly',
+                            specialDuration: [
+                                'endCombat',
+                                'turnEnd'
+                            ]
+                        }
+                    }
+                };
+                await MidiQOL.createEffects({ actorUuid: workflow.actor.uuid, effects: [cogEffect] });
+                break;
+
+            case 12:
+            case 13:
+            case 14:
+            case 15:
+            case 16:
+            case 17:
+                ChatMessage.create({
+                    content: `${workflow.token.name} suffers Poor aim. The attack misses with no additional effect.`,
+                    speaker: ChatMessage.getSpeaker({actor: workflow.actor})
+                });
+                break;
+
+            case 18:
+            case 19:
+                ChatMessage.create({
+                    content: `${workflow.token.name} suffers Transferred momentum. The attack misses, but you gain advantage on your next attack roll.`,
+                    speaker: ChatMessage.getSpeaker({actor: workflow.actor})
+                });
+                const tmEffect = {
+                    name: "Transferred Momentum",
+                    transfer: false,
+                    img: "icons/skills/targeting/crosshair-arrowhead-blue.webp",
+                    origin: workflow.actor.uuid,
+                    type: "base",
+                    changes: [
+                        {
+                            key: "flags.automated-conditions-5e.attack.advantage",
+                            mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
+                            value: "once; actionType.mwak || actionType.rwak",
+                            priority: 20
+                        }
+                    ],
+                    disabled: false,
+                    flags: {
+                        dae: {
+                            showIcon: false,
+                            stackable: 'noneNameOnly',
+                            specialDuration: [
+                                'endCombat',
+                                'turnEnd'
+                            ]
+                        }
+                    }
+                };
+                await MidiQOL.createEffects({ actorUuid: workflow.actor.uuid, effects: [tmEffect] });
+                break;
+
+            case 20:
+                ChatMessage.create({
+                    content: `${workflow.token.name} gains Remarkable reversal. Instead of a miss, the attack hits instead.`,
+                    speaker: ChatMessage.getSpeaker({actor: workflow.actor})
+                });
+                const newAttackRoll = await new CONFIG.Dice.D20Roll
+                (
+                    String(99),
+                    workflow.item.getRollData(),
+                    {}
+                ).evaluate();
+                await workflow.setAttackRoll(newAttackRoll);
+                break;
+        }
     }
 }

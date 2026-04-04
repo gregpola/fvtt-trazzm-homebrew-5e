@@ -3,7 +3,7 @@
     space you can see that is also in Dim Light or Darkness. You then have Advantage on the next melee attack you make
     before the end of the current turn.
  */
-const version = "12.4.0";
+const version = "13.5.0";
 const optionName = "Shadow Step";
 
 try {

@@ -142,3 +142,16 @@
 * Updated references to Ray to remove deprecation warnings
 * Updated Beast Master ranger subclass
 * Fixed Fighter, Paladin, and Ranger to present proper selection of fighting style feats
+
+# 13.5.16
+* Added macros to convert selected tokens to be lootable and to revert it
+* Added weapon attack fumble effects with a module setting to toggle it
+* Added Behir
+* Fixed Hexblade granted spells to be always prepared
+* Fixed Sneak Attack triggering incorrectly from recent MidiQOL changes
+* Updated Spiritual Weapon to have darkvision
+* Updated Generic Actions and Cunning Action with a better hide implementation
+* Updated Mass Cure Wounds to play a sound on cast
+* Updated midi settings to fix reaction spamming
+* Updated other module settings for better flow
+* Refactored the settings to use constants

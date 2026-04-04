@@ -190,7 +190,7 @@ class HomebrewMacros {
         let distance = canvas.dimensions.size * knockBackFactor;
         const angle = (Math.random() * 360) * (Math.PI / 180);
         const ray = foundry.canvas.geometry.Ray.fromAngle(targetToken.center.x, targetToken.center.y, angle, distance);
-        let newCenter = ray.project(squares);
+        let newCenter = ray.project(1);
         await MidiQOL.moveTokenAwayFromPoint(targetToken, knockBackFt, newCenter);
     }
 
