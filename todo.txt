@@ -1,4 +1,5 @@
 
+
 - actor update functionality
 - Prompt for corruption
 - options for initiative bonuses in module hook -- need support from the carousel

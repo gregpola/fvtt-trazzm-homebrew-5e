@@ -18,6 +18,7 @@ import {removeAmbientLight} from "./utils.js";
 import {drawWalls} from "./utils.js";
 import {removeWalls} from "./utils.js";
 import {updateTargets} from "./utils.js";
+import {toggleStatusEffect} from "./utils.js";
 
 const SUB_MODULES = {
     CombatHandler,
@@ -65,6 +66,7 @@ Hooks.once('socketlib.ready', async function() {
     game.trazzm.socket.register('drawWalls', drawWalls);
     game.trazzm.socket.register('removeWalls', removeWalls);
     game.trazzm.socket.register('updateTargets', updateTargets);
+    game.trazzm.socket.register('toggleStatusEffect', toggleStatusEffect);
 });
 
 // Hooks.on("renderApplicationV1", (application, html, data) => {

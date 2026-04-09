@@ -69,6 +69,11 @@ export async function updateTargets(targetIds) {
     canvas.tokens?.setTargets(targetIds);
 }
 
+export async function toggleStatusEffect(data) {
+    const actor = await fromUuid(data.actorUuid);
+    await actor?.toggleStatusEffect(data.statusId, {active: data.enabled});
+}
+
 /**
  * A dialog to show options at the start of a combatants turn.
  *

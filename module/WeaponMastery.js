@@ -274,8 +274,12 @@ export class WeaponMastery {
                             let saveResult = await targetToken.actor.rollSavingThrow(config, dialog, message);
 
                             if (!saveResult[0].isSuccess) {
-                                MidiQOL.socket().executeAsGM('toggleStatusEffect',
-                                    {actorUuid: targetToken.actor.uuid, statusId: 'prone', options: {active:true}});
+                                await game.trazzm.socket.executeAsGM("toggleStatusEffect",
+                                    {actorUuid: targetToken.actor.uuid, statusId: 'prone', enabled: true});
+                                ChatMessage.create({
+                                    content: `${targetToken.name} is knocked prone.`,
+                                    speaker: ChatMessage.getSpeaker({actor: workflow.actor})
+                                });
                             }
                         }
                     }

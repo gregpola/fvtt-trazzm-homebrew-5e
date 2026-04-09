@@ -1,21 +1,8 @@
-2026/04/04-08:49:40.811 9e8c Recovering log #4490
-2026/04/04-08:49:40.813 9e8c Delete type=0 #4490
-2026/04/04-08:49:40.814 9e8c Delete type=3 #4488
-2026/04/04-08:49:54.265 c6d4 Level-0 table #4494: started
-2026/04/04-08:49:54.265 c6d4 Level-0 table #4494: 0 bytes OK
-2026/04/04-08:49:54.266 c6d4 Delete type=0 #4492
-2026/04/04-08:49:54.271 c6d4 Manual compaction at level-0 from '!folders!4TldRVZugAZve66O' @ 72057594037927935 : 1 .. '!macros!zZBgBH5qLQpFjYpD' @ 0 : 0; will stop at '!macros!gF1EjrEJWY9s40kN' @ 504 : 1
-2026/04/04-08:49:54.271 c6d4 Compacting 1@0 + 0@1 files
-2026/04/04-08:49:54.277 c6d4 Generated table #4495@0: 2 keys, 895 bytes
-2026/04/04-08:49:54.277 c6d4 Compacted 1@0 + 0@1 files => 895 bytes
-2026/04/04-08:49:54.278 c6d4 compacted to: files[ 0 1 1 0 0 0 0 ]
-2026/04/04-08:49:54.281 c6d4 Delete type=2 #4489
-2026/04/04-08:49:54.282 c6d4 Manual compaction at level-0 from '!macros!gF1EjrEJWY9s40kN' @ 504 : 1 .. '!macros!zZBgBH5qLQpFjYpD' @ 0 : 0; will stop at (end)
-2026/04/04-08:49:54.282 c6d4 Manual compaction at level-1 from '!folders!4TldRVZugAZve66O' @ 72057594037927935 : 1 .. '!macros!zZBgBH5qLQpFjYpD' @ 0 : 0; will stop at '!macros!gF1EjrEJWY9s40kN' @ 506 : 1
-2026/04/04-08:49:54.282 c6d4 Compacting 1@1 + 1@2 files
-2026/04/04-08:49:54.284 c6d4 Generated table #4496@1: 52 keys, 52838 bytes
-2026/04/04-08:49:54.284 c6d4 Compacted 1@1 + 1@2 files => 52838 bytes
-2026/04/04-08:49:54.284 c6d4 compacted to: files[ 0 0 1 0 0 0 0 ]
-2026/04/04-08:49:54.284 c6d4 Delete type=2 #4475
-2026/04/04-08:49:54.284 c6d4 Delete type=2 #4495
-2026/04/04-08:49:54.287 c6d4 Manual compaction at level-1 from '!macros!gF1EjrEJWY9s40kN' @ 506 : 1 .. '!macros!zZBgBH5qLQpFjYpD' @ 0 : 0; will stop at (end)
+2026/04/08-11:30:22.467 4270 Recovering log #4516
+2026/04/08-11:30:22.475 4270 Delete type=0 #4516
+2026/04/08-11:30:22.475 4270 Delete type=3 #4515
+2026/04/08-11:30:32.137 666c Level-0 table #4520: started
+2026/04/08-11:30:32.137 666c Level-0 table #4520: 0 bytes OK
+2026/04/08-11:30:32.139 666c Delete type=0 #4518
+2026/04/08-11:30:32.144 666c Manual compaction at level-0 from '!folders!4TldRVZugAZve66O' @ 72057594037927935 : 1 .. '!macros!zZBgBH5qLQpFjYpD' @ 0 : 0; will stop at (end)
+2026/04/08-11:30:32.144 666c Manual compaction at level-1 from '!folders!4TldRVZugAZve66O' @ 72057594037927935 : 1 .. '!macros!zZBgBH5qLQpFjYpD' @ 0 : 0; will stop at (end)

@@ -4,7 +4,7 @@
     doesn’t regenerate.
 */
 const optionName = "Regeneration";
-const version = "13.5.0";
+const version = "13.5.1";
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
 const _suppressionTypes = ['acid', 'fire'];
 const _healingFormula = "10";
@@ -12,20 +12,20 @@ const _healingFormula = "10";
 try {
     if (args[0].tag === "TargetOnUse" && args[0].macroPass === "isDamaged") {
         // apply damage types
-        await TrazzmHomebrew.MonsterMacros.applyDamageTypes(actor, workflow.damageDetail);
+        await MonsterMacros.applyDamageTypes(actor, workflow.damageDetail);
 
         // check for death
-        if ((workflow.damageItem.newHP === 0) && !TrazzmHomebrew.MonsterMacros.shouldRegenerateThisTurn(actor, _suppressionTypes)) {
-            await TrazzmHomebrew.MonsterMacros.applyNoRegenerationEffect(actor);
+        if ((workflow.damageItem.newHP === 0) && !MonsterMacros.shouldRegenerateThisTurn(actor, _suppressionTypes)) {
+            await MonsterMacros.applyNoRegenerationEffect(actor);
         }
 
     }
     else if (args[0] === "each" && lastArgValue.turn === "startTurn") {
-        const regen = await TrazzmHomebrew.MonsterMacros.shouldRegenerateThisTurn(actor, _suppressionTypes);
+        const regen = await MonsterMacros.shouldRegenerateThisTurn(actor, _suppressionTypes);
         if (regen) {
             const healRoll = await new Roll(_healingFormula).evaluate();
             await actor.applyDamage(- healRoll.total);
-            await HomebrewHelpers.setUsedThisTurn(actor, TrazzmHomebrew.MonsterMacros.regenerationTimeFlag);
+            await HomebrewHelpers.setUsedThisTurn(actor, MonsterMacros.regenerationTimeFlag);
 
             const actualHealing = Math.min(healRoll.total, (actor.system.attributes.hp.max - actor.system.attributes.hp.value));
             await ChatMessage.create({
@@ -34,11 +34,11 @@ try {
         }
         else if (actor.system.attributes.hp.value <= 0) {
             // check for death
-            await TrazzmHomebrew.MonsterMacros.applyNoRegenerationEffect(actor);
+            await MonsterMacros.applyNoRegenerationEffect(actor);
             await actor.toggleStatusEffect("dead", {active: true});
         }
 
-        await TrazzmHomebrew.MonsterMacros.clearDamageTypes(actor);
+        await MonsterMacros.clearDamageTypes(actor);
     }
 
 } catch (err) {

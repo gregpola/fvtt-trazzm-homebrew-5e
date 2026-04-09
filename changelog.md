@@ -155,3 +155,10 @@
 * Updated midi settings to fix reaction spamming
 * Updated other module settings for better flow
 * Refactored the settings to use constants
+
+# 13.5.17
+* Added socket call to toggle status effects as the GM
+* Added automatic weapon attack fumble handling
+* Fixed Troll regeneration feature and updated the troll monster
+* Fixed Topple weapon mastery
+* Updated to dnd5e 5.3
