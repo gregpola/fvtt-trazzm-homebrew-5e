@@ -162,3 +162,12 @@
 * Fixed Troll regeneration feature and updated the troll monster
 * Fixed Topple weapon mastery
 * Updated to dnd5e 5.3
+
+# 13.5.18
+* Added Oath of the Ancients subclass
+* Fixed Aura of Protection not applying
+* Fixed Aura of Devotion not applying Charm immunity
+* Updated Flaming Sphere, Healing Spirit, Maximilian's Earthen Grasp, Spiritual Weapon summons to match caster disposition
+* Updated the Sneak Attack monster feature
+* Updated Hex spell to apply a visual effect to the target
+* Update Drow monsters that have Sneak Attack
