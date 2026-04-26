@@ -5,7 +5,7 @@
 
     If the target drops to 0 Hit Points before this spell ends, you can take a Bonus Action on a later turn to curse a new creature.
 */
-const version = "12.4.0";
+const version = "13.5.0";
 const optionName = "Hex - Move Curse";
 
 try {
@@ -35,16 +35,17 @@ try {
             // get the new Hex effect and add it to the source actor's concentration
             let existingConcentration = MidiQOL.getConcentrationEffect(actor, macroItem);
             if (existingConcentration) {
-                const hexedEffect = targetToken.actor.effects.find(eff => eff.name.toLowerCase().startsWith('hexed ') && eff.origin.startsWith(actor.uuid));
-                if (hexedEffect) {
-                    await MidiQOL.socket().executeAsGM('addDependent', {documentUuid: existingConcentration.uuid, concentrationEffectUuid: existingConcentration.uuid, dependentUuid: hexedEffect.uuid});
-                }
-
                 // remove the old Hex effect
-                let dependents = existingConcentration.getDependents();
-                if (dependents.length > 0) {
-                    const oldActor = dependents[0].target;
-                    await MidiQOL.socket().executeAsGM("removeEffects", {actorUuid: oldActor.uuid, effects: [dependents[0].id]});
+                let effects = existingConcentration.getDependents();
+                if (effects.length > 0) {
+                    const dependentToRemove = effects.find((effect) => effect.target.system.attributes.hp.value < 1);
+                    if (dependentToRemove) {
+                        const oldActor = dependentToRemove.target;
+                        const actorEffect = HomebrewHelpers.findEffectStartsWith(oldActor, 'Hexed ');
+                        if (actorEffect) {
+                            MidiQOL.socket().executeAsGM("removeEffects", {actorUuid: oldActor.uuid, effects: [actorEffect.id]});
+                        }
+                    }
                 }
             }
         }

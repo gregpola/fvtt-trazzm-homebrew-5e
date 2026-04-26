@@ -144,7 +144,7 @@ class TurnStartDialog extends HandlebarsApplicationMixin(ApplicationV2) {
             standUp: {
                 label: "Stand Up", callback: async (html) => {
                     const actor = await fromUuid(this.data.actorUuid);
-                    const effectIDs = actor.getRollData().effects.filter(e => e.name.toLowerCase() === 'prone').map(e => e.id);
+                    const effectIDs = actor.getRollData().effects.filter(e => e.statuses.has('prone')).map(e => e.id);
                     await MidiQOL.socket().executeAsGM('removeEffects', {
                         'actorUuid': actor.uuid,
                         'effects': effectIDs
@@ -322,7 +322,9 @@ class LegendaryActionDialog extends HandlebarsApplicationMixin(ApplicationV2) {
 			<div class="form-group">
 			  <p>Each of the following actors have Legendary Actions they can take this turn:</p>
 			  <br />
-			    <table style="width:100%"><tbody>${content}</tbody></table>
+			    <table style="width:100%">
+			        <tbody>${content}</tbody>
+			    </table>
 			  <br />
 			</div>`;
 

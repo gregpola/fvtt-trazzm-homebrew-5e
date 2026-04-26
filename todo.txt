@@ -1,3 +1,7 @@
+Summon Mongo not upgrading attack damage for item
+Mark all drow as humanoid
+Check drow weapons working with poison
+Look at self enchantment for True Strike
 
 
 - actor update functionality

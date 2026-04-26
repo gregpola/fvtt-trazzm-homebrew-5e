@@ -53,6 +53,7 @@ label="Fire Rune - Burning", turn=start, damageRoll=2d6, damageType=fire
 
 reaction === 'manual'
 reaction == 'isDamaged' && activity?.hasAttack
+reaction === 'isDamaged' && ['bludgeoning', 'piercing', 'slashing'].some(type=>damageTypes[type])
 
 Array.from(actor.allApplicableEffects())
 await TrazzmHomebrew.weaponMastery.workflow(workflow, macroItem);
@@ -71,6 +72,8 @@ token.actor.system.attributes.hp.value > 0
 
 flags.dae.rest-recovery.force.maximiseHitDieRoll
 foundry.utils.getProperty(actor, CONSTANTS.FLAGS.DAE.MAXIMISE_HIT_DIE_ROLL);
+
+Roll Formula: 1d8 --> -@utilityRollTotal
 
 flags.automated-conditions-5e.save.advantage | Custom | riderStatuses.charmed || riderStatuses.frightened
 radius=30; allies; bonus=1d4; radiant; !isSpell

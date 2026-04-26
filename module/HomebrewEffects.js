@@ -15,6 +15,24 @@ class HomebrewEffects {
         });
     }
 
+    static async findEffectBySourceActor(actor, effectName, sourceActor) {
+        const targetActorEffects = Array.from(actor.allApplicableEffects());
+        const matchingEffects = targetActorEffects.filter(eff => eff.name === effectName);
+
+        if (matchingEffects.length > 0) {
+            for (let effect of matchingEffects) {
+                if (effect.origin) {
+                    const effectOrigin = await fromUuid(effect.origin);
+                    if (effectOrigin.parent === sourceActor) {
+                        return effect;
+                    }
+                }
+            }
+        }
+
+        return undefined;
+    }
+
     static filterEffectsByConditions(actor, conditions) {
         if (Array.isArray(conditions)) {
             let results = [];

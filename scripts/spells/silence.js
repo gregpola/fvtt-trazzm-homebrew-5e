@@ -5,8 +5,8 @@
     component is impossible there.
 */
 const optionName = "Silence";
-const version = "13.5.0";
-const effectName = "Silence - Thunder Immunity";
+const version = "13.5.1";
+const effectName = "Silenced";
 
 try {
     // this just applies/removes thunder immunity
@@ -14,34 +14,19 @@ try {
     let targetToken = event.data.token;
     if (targetToken) {
         const sourceItemId = region.flags['region-attacher'].itemUuid;
+        const sourceItem = await fromUuid(sourceItemId);
+        let silencedEffect;
+
+        if (sourceItem) {
+            silencedEffect = sourceItem.effects.find(e => e.name === effectName);
+        }
 
         // look for even type
-        if (event.name === "tokenEnter") {
-            let effectData = {
-                name: effectName,
-                icon: "systems/dnd5e/icons/svg/damage/thunder.svg",
-                origin: sourceItemId,
-                description: '<p>The target has immunity tlo thunder damage while within the area of silence.</p>',
-                statuses: [],
-                changes: [
-                    {
-                        key: 'system.traits.di.value',
-                        value: 'thunder',
-                        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-                        priority: 20
-                    }
-                ],
-                flags: {
-                    dae: {
-                        specialDuration: ['shortRest', 'combatEnd'],
-                        stackable: 'noneName'
-                    }
-                }
-            };
-            await MidiQOL.socket().executeAsGM("createEffects", {actorUuid: targetToken.actor.uuid, effects: [effectData]});
+        if (event.name === "tokenEnter" && silencedEffect) {
+            await MidiQOL.socket().executeAsGM("createEffects", {actorUuid: targetToken.actor.uuid, effects: [silencedEffect]});
         }
         else if (event.name === "tokenExit") {
-            const effect = HomebrewHelpers.findEffect(targetToken.actor, effectName, sourceItemId);
+            const effect = await HomebrewEffects.findEffectBySourceActor(targetToken.actor, effectName, sourceItem.parent);
             if (effect) {
                 await MidiQOL.socket().executeAsGM("removeEffects", {
                     actorUuid: targetToken.actor.uuid,

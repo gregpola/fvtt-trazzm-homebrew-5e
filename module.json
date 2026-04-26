@@ -337,7 +337,8 @@
         "type": "system",
         "compatibility": {
           "minimum": "5.0.0",
-          "verified": "5.2.5"
+          "maximum": "5.9.99",
+          "verified": "5.3.2"
         }
       }
     ],

@@ -171,3 +171,25 @@
 * Updated the Sneak Attack monster feature
 * Updated Hex spell to apply a visual effect to the target
 * Update Drow monsters that have Sneak Attack
+
+# 13.5.19
+* Added Ankheg, Choker monsters
+* Added Second Chance feat
+* Added Mongo to the Automation Actors compendium
+* Updated Fire Elemental and Salamander so their fire aura no longer targets themselves
+* Updated the Character Building Recipe journal entry
+* Updated Banishing Smite, Banishment, Beacon of Hope, Blinding Smite, Blindness/Deafness, Blur, Confusion, Crusader's Mantle, Dragon's Breath, Ensnaring Strike, Envenom, Hold Person, Hold Monster, Immolation, Maximilian's Earthen Grasp, Mirror Image, Shadow Blade, Shield, Staggering Smite, Tasha's Caustic Brew, Tasha's Hideous Laughter, Toxic Shield, Wrathful Smite, and Zephyr Strike spells to expire at the end of combat, since they are short duration spells
+* Updated Hex spell to hopefully fix the dropped concentration error when moving the curse
+* Updated Hold Person to only affect humanoids and fix the overtime saving throw
+* Updated Spiritual Weapon to require concentration, increase movement to 30, and give it a Dash Action
+* Updated Silence to have better visuals and more consistent application and removal logic
+* Updated Sleep spell to better handle second save and expiration from taking damage
+* Updated Witch Bolt to have animation and sound
+* Updated Generic Actions to add an animation to the distracted target to make it more obvious to the players
+* Updated Generic Actions and Cunning Action Hide functionality to remove on skill check failure
+* Updated Rage to remove it on becoming incapacitated
+* Updated Deflect Attacks and Deflect Energy to better handle the reaction
+* Updated Monk's Unarmed Strike to properly handle the push and knock prone options 
+* Fixed the standup from prone functionality to handle more cases
+* Fixed the monster feature Parry
+* Fixed weapon attack fumble handling to not throw natural weapons

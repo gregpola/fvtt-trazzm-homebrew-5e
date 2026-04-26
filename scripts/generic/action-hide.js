@@ -1,20 +1,21 @@
-/*
-    With the Hide action, you try to conceal yourself. To do so, you must succeed on a DC 15 Dexterity (Stealth) check
-    while you’re Heavily Obscured or behind Three-Quarters Cover or Total Cover, and you must be out of any enemy’s line
-    of sight; if you can see a creature, you can discern whether it can see you.
-
-    On a successful check, you have the Invisible condition while hidden. Make note of your check’s total, which is the
-    DC for a creature to find you with a Wisdom (Perception) check.
-
-    You stop being hidden immediately after any of the following occurs: you make a sound louder than a whisper, an
-    enemy finds you, you make an attack roll, or you cast a spell with a Verbal component.
- */
-const version = "12.4.1";
+const version = "13.5.0";
 const optionName = "Hide Action";
 
 try {
-    let result = await actor.rollSkill("ste");
-    console.log(result);
+    if (args[0].macroPass === "postActiveEffects") {
+        let hidingEffect = HomebrewHelpers.findEffect(actor, "Hiding");
+        if (hidingEffect) {
+            let rawStealthValue = foundry.utils.getProperty(hidingEffect, 'flags.stealthy.stealth');
+            let stealthValue = Number(rawStealthValue ?? 0);
+            if (stealthValue < 15) {
+                await MidiQOL.socket().executeAsGM('removeEffects', {
+                    'actorUuid': actor.uuid,
+                    'effects': [hidingEffect.id]
+                });
+            }
+        }
+    }
+
 } catch (err) {
     console.error(`${optionName}: ${version}`, err);
 }

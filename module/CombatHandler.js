@@ -347,42 +347,51 @@ export class CombatHandler {
 
             case 2:
             case 3:
-                ChatMessage.create({
-                    content: `${workflow.token.name} suffers Lost grip. Your currently equipped weapon flies from your hand in a random direction, landing up to 15 feet away from you.`,
-                    speaker: ChatMessage.getSpeaker({actor: workflow.actor})
-                });
+                // make sure it's not a natural weapon
+                if (workflow.item.system.type.value === 'natural') {
+                    ChatMessage.create({
+                        content: `${workflow.token.name} suffers Poor aim. The attack misses with no additional effect.`,
+                        speaker: ChatMessage.getSpeaker({actor: workflow.actor})
+                    });
+                }
+                else {
+                    ChatMessage.create({
+                        content: `${workflow.token.name} suffers Lost grip. Your currently equipped weapon flies from your hand in a random direction, landing up to 15 feet away from you.`,
+                        speaker: ChatMessage.getSpeaker({actor: workflow.actor})
+                    });
 
-                // randomly determine thrown location
-                const squares = Math.floor(Math.random() * 3) + 1;
-                const distance = canvas.dimensions.size * squares;
-                const angle = (Math.random() * 360) * (Math.PI / 180);
+                    // randomly determine thrown location
+                    const squares = Math.floor(Math.random() * 3) + 1;
+                    const distance = canvas.dimensions.size * squares;
+                    const angle = (Math.random() * 360) * (Math.PI / 180);
 
-                const ray = foundry.canvas.geometry.Ray.fromAngle(workflow.token.center.x, workflow.token.center.y, angle, 1);
-                let newCenter = ray.project(distance);
-                //let newCenter = ray.project(1 + ((canvas.dimensions.size * knockBackFactor) / ray.distance));
+                    const ray = foundry.canvas.geometry.Ray.fromAngle(workflow.token.center.x, workflow.token.center.y, angle, 1);
+                    let newCenter = ray.project(distance);
+                    //let newCenter = ray.project(1 + ((canvas.dimensions.size * knockBackFactor) / ray.distance));
 
-                const pileData = await game.itempiles.API.createItemPile({
-                    enabled: true,
-                    deleteWhenEmpty: true,
-                    position: {
-                        x: newCenter.x,
-                        y: newCenter.y
-                    },
-                    itemPileFlags: {
+                    const pileData = await game.itempiles.API.createItemPile({
                         enabled: true,
-                        deleteWhenEmpty: true
-                    },
-                    tokenOverrides: {
-                        name: workflow.item.name
-                    },
-                    items: [
-                        {
-                            item: workflow.item,
-                            quantity: 1
-                        }
-                    ]
-                });
-                await game.itempiles.API.removeItems(workflow.actor, [{ item: workflow.item, quantity: 1 }]);
+                        deleteWhenEmpty: true,
+                        position: {
+                            x: newCenter.x,
+                            y: newCenter.y
+                        },
+                        itemPileFlags: {
+                            enabled: true,
+                            deleteWhenEmpty: true
+                        },
+                        tokenOverrides: {
+                            name: workflow.item.name
+                        },
+                        items: [
+                            {
+                                item: workflow.item,
+                                quantity: 1
+                            }
+                        ]
+                    });
+                    await game.itempiles.API.removeItems(workflow.actor, [{ item: workflow.item, quantity: 1 }]);
+                }
                 break;
 
             case 4:

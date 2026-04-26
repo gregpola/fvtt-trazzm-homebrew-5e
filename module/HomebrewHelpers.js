@@ -1157,4 +1157,28 @@ class HomebrewHelpers {
 
         return null;
     }
+
+    static async modifyDamageApplied(damageItem, amount) {
+        if (amount < 0) {
+            amount = Math.max(amount, -damageItem.hpDamage - damageItem.tempDamage);
+        }
+
+        damageItem.damageDetail.push({
+            value: amount,
+            active: {multiplier: 1},
+            type: 'none'
+        });
+
+        damageItem.rawDamageDetail.push({
+            value: amount,
+            type: 'none'
+        });
+
+        let actualTotal = damageItem.totalDamage + amount;
+        damageItem.totalDamage = actualTotal;
+        let newTempHP = damageItem.oldTempHP - actualTotal;
+        damageItem.newTempHP = Math.max(newTempHP, 0);
+        damageItem.newHP = Math.clamp(damageItem.oldHP + Math.min(0, newTempHP), 0, damageItem.oldHP);
+        damageItem.hpDamage = damageItem.oldHP - damageItem.newHP;
+    }
 }
