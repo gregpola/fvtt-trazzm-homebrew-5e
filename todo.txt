@@ -1,4 +1,3 @@
-Summon Mongo not upgrading attack damage for item
 Mark all drow as humanoid
 Check drow weapons working with poison
 Look at self enchantment for True Strike
@@ -14,3 +13,21 @@ Intercept feat
 Circle of the Stars
 Arcane Mark spell
 
+
+
+V14 Modules out of date
+- BG3 Hud
+- Effect Macro
+- Enhanced Region Behavior
+- Item Piles
+- Lib Color Settings
+- Macro Autocomplete
+- MATT -- replaced by Region Behavior Adjustments???
+- Monk's Token Bar
+- PnP
+- Region Active Effects ???
+- Region Attacher
+
+
+
+Region Behavior Adjustments ✅
