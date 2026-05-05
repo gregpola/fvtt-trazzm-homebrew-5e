@@ -58,6 +58,28 @@ export class CombatHandler {
                 return;
             }
 
+            // make sure the current combatant is on top and move dead to bottom
+            if (combat.combatant.actor.statuses.has('dead')) {
+                combat.combatant.token.sort = 0;
+            }
+            else {
+                var maxSort = combat.combatant.token.sort;
+                var maxToken = null;
+                for (let combatant of combat.combatants) {
+                    if (combatant.token.sort > maxSort) {
+                        maxSort = combatant.token.sort;
+                        maxToken = combatant.token;
+                    }
+                }
+
+                // see if we need to swap sort's
+                if (maxSort > combat.combatant.token.sort) {
+                    const oldSort = combat.combatant.token.sort;
+                    combat.combatant.token.sort = maxSort;
+                    maxToken.sort = oldSort;
+                }
+            }
+
             // make sure we have a direction
             if (!context.direction) {
                 console.log("updateCombat - skipping for no direction")

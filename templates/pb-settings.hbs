@@ -1,0 +1,30 @@
+<div>
+    {{!-- Enabled --}}
+    {{ formField fields.enabled name="pointBuySettings.enabled" value=source.enabled
+                 input=inputs.createCheckboxInput localize=false rootId=partId }}
+
+    {{!-- Points Pool --}}
+    {{ formField fields.duration name="pointBuySettings.pool" value=source.pool localize=false
+                 rootId=partId }}
+
+    <hr>
+    <div class="form-group">
+        <p class="hint">Set the cost to increase to the score from the lower value. Set to -1 if you do not allow that score.</p>
+    </div>
+    <fieldset>
+        <legend>Point Costs</legend>
+        <section>
+            {{#each costs as |value score|}}
+                <div class="form-group slim">
+                    <label>{{score}}</label>
+                    <div class="form-fields">
+                        {{!-- FormDataExtended doesn't like names that are numbers so need to nest it a level deeper --}}
+                        {{numberInput value name=(concat "score." score) step=1 dataset=(object dtype="number")}}
+                    </div>
+                </div>
+            {{/each}}
+        </section>
+    </fieldset>
+
+    <br>
+</div>

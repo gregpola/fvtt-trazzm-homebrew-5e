@@ -1,0 +1,26 @@
+.pb-calculator {
+    & table {
+        margin: 0;
+        & input[type="number"] {
+            width: 40px;
+            text-align: center;
+        }
+        .ability-number {
+            text-align: center;
+        }
+    }
+}
+
+.pointCostMenu {
+    .window-content {
+        padding-top: 0;
+    }
+    .form-group {
+        label {
+            text-align: right;
+        }
+        .form-fields {
+            justify-content: flex-start;
+        }
+    }
+}

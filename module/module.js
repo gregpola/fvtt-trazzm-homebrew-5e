@@ -8,6 +8,7 @@ import {WarlockFeatures} from "./WarlockFeatures.js";
 import {WizardFeatures} from "./WizardFeatures.js";
 import {SummonHelper} from "./SummonHelper.js";
 import {WeaponMastery} from "./WeaponMastery.js";
+import {PointBuyCalculator} from "./PointBuyCalculator.js";
 import {macros} from './macros.js';
 import {registerSettings} from './settings.js';
 import {doTurnStartOptions} from "./utils.js";
@@ -96,7 +97,9 @@ function initialize_module() {
         //console.log(cl);
         cl.register();
     });
+
     globalThis.TrazzmHomebrew.weaponMastery = WeaponMastery;
+    globalThis.TrazzmHomebrew.pointBuyCalculator = PointBuyCalculator;
 }
 
 globalThis.TrazzmHomebrew = {

@@ -9,8 +9,9 @@ export default class Constants {
     static SHRINK_COMPENDIUM_WINDOWS = 'shrink-compendium-windows';
     static USE_WEAPON_FUMBLES = 'use-weapon-fumbles';
 
+    static POINT_BUY_SETTINGS = 'pointBuySettings';
+
     // settings values
     static FUMBLE_NONE = 'None';
     static FUMBLE_DUNGEON_DUDES = 'Dungeon Dudes';
-
 }
