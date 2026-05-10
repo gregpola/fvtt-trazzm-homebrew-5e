@@ -49,5 +49,5 @@ jobs:
           makeLatest: true
           token: ${{ secrets.GITHUB_TOKEN }}
           artifacts: './module.json,./module.zip'
-          tag: latest
+          tag: ${{ github.event.release.tag_name }}
           body: ${{ github.event.release.body }}
