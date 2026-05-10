@@ -13,4 +13,6 @@ export default class Constants {
     static FUMBLE_NONE = 'None';
     static FUMBLE_DUNGEON_DUDES = 'Dungeon Dudes';
 
+    // point buy
+    static POINT_BUY_SETTINGS = 'pointBuySettings';
 }

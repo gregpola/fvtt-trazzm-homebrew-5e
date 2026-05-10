@@ -1,0 +1,57 @@
+.pb-calculator {
+    & table {
+        margin: 0;
+        & input[type="number"] {
+            width: 40px;
+            text-align: center;
+        }
+        .ability-number {
+            text-align: center;
+        }
+    }
+}
+
+.pointCostMenu {
+    .window-content {
+        padding-top: 0;
+    }
+    .form-group {
+        label {
+            text-align: left;
+        }
+        .form-fields {
+            justify-content: flex-start;
+        }
+    }
+}
+
+.trazzm-flex-row {
+    display: flex;
+    flex-direction: row;
+    text-align: left;
+}
+
+.trazzm-flex-col {
+    display: flex;
+    flex-direction: column;
+}
+
+.trazzm-quick-setup .form-control {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.trazzm-quick-setup .form-control > input {
+    margin-right: 0.5rem;
+}
+
+.trazzm-quick-setup .form-control > label {
+    font-size: 1rem;
+}
+
+.trazzm-quick-setup .small-text {
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+    padding: 0 0.35rem;
+}

@@ -1,0 +1,12 @@
+<section>
+  <p class="hint">{{"Change the (cumulative) costs of each ability score value"}}</p>
+  {{#each pointCosts as |value score|}}
+    <div class="form-group slim">
+      <label>{{score}}</label>
+      <div class="form-fields">
+        {{!-- FormDataExtended doesn't like names that are numbers so need to nest it a level deeper --}}
+        {{numberInput value name=(concat "score." score) step=1 dataset=(object dtype="number")}}
+      </div>
+    </div>
+  {{/each}}
+</section>

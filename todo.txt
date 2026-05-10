@@ -1,9 +1,8 @@
-Summon Mongo not upgrading attack damage for item
-Mark all drow as humanoid
-Check drow weapons working with poison
-Look at self enchantment for True Strike
 
 
+Nik's Show and Tell module
+
+- random scroll tables
 - actor update functionality
 - Prompt for corruption
 - options for initiative bonuses in module hook -- need support from the carousel

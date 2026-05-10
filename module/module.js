@@ -19,6 +19,9 @@ import {drawWalls} from "./utils.js";
 import {removeWalls} from "./utils.js";
 import {updateTargets} from "./utils.js";
 import {toggleStatusEffect} from "./utils.js";
+import {PointBuyCalculator} from "./PointBuyCalculator.js";
+
+export let pointBuyEnabled = false;
 
 const SUB_MODULES = {
     CombatHandler,
@@ -35,6 +38,7 @@ const SUB_MODULES = {
 Hooks.once('init', async function () {
     console.log('%c fvtt-trazzm-homebrew-5e | Initializing homebrew-5e', 'color: #D030DE');
     registerSettings();
+    fetchParams();
     initialize_module();
 });
 
@@ -87,7 +91,6 @@ Hooks.on("renderApplicationV2", (application, element, context, options) => {
     }
 });
 
-
 /**
  * Creation & delete hooks for persistent effects
  */
@@ -97,8 +100,38 @@ function initialize_module() {
         cl.register();
     });
     globalThis.TrazzmHomebrew.weaponMastery = WeaponMastery;
+    globalThis.TrazzmHomebrew.pointBuyCalculator = PointBuyCalculator;
+
+    // Add point buy calculator access from the actor sheet controls
+    if (pointBuyEnabled) {
+        Hooks.on("getHeaderControlsActorSheetV2", appendDocumentSheetHeaderControls);
+    }
+
+}
+
+export function fetchParams() {
+    const pointBuySettings = game.settings.get(Constants.MODULE_ID, Constants.POINT_BUY_SETTINGS);
+    if (pointBuySettings && pointBuySettings.enabled) {
+        pointBuyEnabled = true;
+    }
 }
 
 globalThis.TrazzmHomebrew = {
     macros
 }
+
+export function i18n(key) {
+    return game.i18n?.localize(key) ?? key;
+}
+
+function appendDocumentSheetHeaderControls(app, controls) {
+    if (pointBuyEnabled) {
+        controls.push({
+            label: i18n("TrazzmHomebrew.PBCalculator.title"),
+            icon: "fa-solid fa-calculator",
+            action: "open-pb-calculator",
+            onClick: () => new PointBuyCalculator({ document: app.document }).render({ force: true })
+        });
+    }
+}
+

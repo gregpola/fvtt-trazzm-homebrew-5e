@@ -1,0 +1,43 @@
+<div class="trazzm-flex-col">
+    <!-- Enabled -->
+    <div>
+        <div class="form-control">
+            <input id="enable-point-buy" name="pointBuySettings.enabled" type="checkbox" {{checked source.enabled}}/>
+            <label for="enable-point-buy">{{localize "TrazzmHomebrew.PBCalculator.enable"}}</label>
+        </div>
+    </div>
+
+    <br>
+
+    <!-- Total Points Available to spend -->
+    <div>
+        <div class="form-group" style="margin-bottom: 5px;">
+            <label for="pool-size">{{localize "TrazzmHomebrew.PBCalculator.Pool.title"}}</label>
+            <div class="form-fields">
+                <input id="pool-size" name="pointBuySettings.pool" type="number" step="1" min="0" value="{{source.pool}}"/>
+            </div>
+        </div>
+        <p class="hint">{{localize "TrazzmHomebrew.PBCalculator.Pool.hint"}}</p>
+    </div>
+
+    <br>
+
+    <fieldset class="card">
+        <legend>{{localize "TrazzmHomebrew.PBCalculator.PointCosts.legend"}}</legend>
+
+        {{#each source.costs as |value score|}}
+            <div class="form-group">
+                <label>{{localize (concat "TrazzmHomebrew.PBCalculator.PointCosts." score)}}</label>
+                <div class="form-fields">
+                    {{ numberInput value name=(concat "pointBuySettings.costs." score) min=-1 step=1 }}
+                </div>
+            </div>
+        {{/each}}
+
+        <div class="form-group">
+            <p class="hint">{{localize "TrazzmHomebrew.PBCalculator.PointCosts.hint"}}</p>
+        </div>
+    </fieldset>
+
+    <br>
+</div>

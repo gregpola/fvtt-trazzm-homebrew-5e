@@ -1,0 +1,33 @@
+{
+  "TrazzmHomebrew": {
+    "PBCalculator": {
+      "enable": "Enable Point Buy",
+      "Pool": {
+        "title": "Pool Points",
+        "hint": "The total number of points available to spend. Standard is 27 and heroic is 35."
+      },
+      "PointCosts": {
+        "legend": "Point Costs by Score",
+        "hint": "Set the cost to increase to the score from the lower value. Set to -1 if you do not allow that score.",
+        "eight": "8",
+        "nine": "9",
+        "ten": "10",
+        "eleven": "11",
+        "twelve": "12",
+        "thirteen": "13",
+        "fourteen": "14",
+        "fifteen": "15",
+        "sixteen": "16",
+        "seventeen": "17",
+        "eighteen": "18"
+      },
+      "title": "Point Buy Calculator",
+      "score": "Score",
+      "nextCost": "Next Cost",
+      "modifier": "Modifier",
+      "SubmitCalculation": "Apply to Actor",
+      "Reset": "Reset",
+      "adjustHint": "Use the Up and Down keys to change the scores one at a time"
+    }
+  }
+}

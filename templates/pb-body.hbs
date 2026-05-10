@@ -1,0 +1,24 @@
+<div>
+    <p>{{localize "TrazzmHomebrew.PBCalculator.adjustHint"}}</p>
+    <table>
+        <thead>
+        <tr>
+            <th>{{localize "DND5E.AbilityScore"}}</th>
+            <th class="ability-number">{{localize "TrazzmHomebrew.PBCalculator.score"}}</th>
+            <th class="ability-number">{{localize "TrazzmHomebrew.PBCalculator.nextCost"}}</th>
+            <th class="ability-number">{{localize "TrazzmHomebrew.PBCalculator.modifier"}}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{#each abilities as |value key|}}
+            <tr>
+                <td>{{value.label}}</td>
+                <td>{{numberInput value.base name=(concat "system.abilities." key ".value") max=value.max min=value.min}}</td>
+                <td class="ability-number">{{value.nextCost}}</td>
+                <td class="ability-number">({{numberFormat value.modifier sign=true}})</td>
+            </tr>
+        {{/each}}
+        </tbody>
+    </table>
+    <hr>
+</div>

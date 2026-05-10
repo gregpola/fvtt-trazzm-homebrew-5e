@@ -176,7 +176,7 @@
 * Added Ankheg, Choker monsters
 * Added Second Chance feat
 * Added Mongo to the Automation Actors compendium
-* Updated Fire Elemental and Salamander so their fire aura no longer targets themselves
+* Updated Fire Elemental and Salamander so their fire aura to no longer target themselves
 * Updated the Character Building Recipe journal entry
 * Updated Banishing Smite, Banishment, Beacon of Hope, Blinding Smite, Blindness/Deafness, Blur, Confusion, Crusader's Mantle, Dragon's Breath, Ensnaring Strike, Envenom, Hold Person, Hold Monster, Immolation, Maximilian's Earthen Grasp, Mirror Image, Shadow Blade, Shield, Staggering Smite, Tasha's Caustic Brew, Tasha's Hideous Laughter, Toxic Shield, Wrathful Smite, and Zephyr Strike spells to expire at the end of combat, since they are short duration spells
 * Updated Hex spell to hopefully fix the dropped concentration error when moving the curse
@@ -193,3 +193,11 @@
 * Fixed the standup from prone functionality to handle more cases
 * Fixed the monster feature Parry
 * Fixed weapon attack fumble handling to not throw natural weapons
+
+# 13.5.20
+* Added logic to make sure the current combatant's token is always on top in the scene
+* Added a Point Buy Calculator
+* Added some monsters
+* Fixed all Drow NPC's that were missing their creature type
+* Updated to DND5E system 5.3.3
+* Added Nik's Show and Tell module to make it easier to share photos and information with players

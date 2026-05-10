@@ -1,4 +1,5 @@
 import Constants from './t5e-constants.js';
+import {PointBuySettings, PointBuySettingsConfig} from "./PointBuyCalculator.js";
 
 export function registerSettings() {
 
@@ -42,4 +43,27 @@ export function registerSettings() {
         }
     });
 
+
+    // Point Buy
+    game.settings.registerMenu(Constants.MODULE_ID, Constants.POINT_BUY_SETTINGS, {
+        name: "Point Buy Calculator",
+        label: "Point Buy Settings",
+        hint: "Configure point buy settings for player characters",
+        icon: "fas fa-cogs",
+        type: PointBuySettingsConfig,
+        restricted: true
+    });
+
+    game.settings.register(Constants.MODULE_ID, Constants.POINT_BUY_SETTINGS, {
+        name: "Point Buy Configuration",
+        scope: "world",
+        config: false,
+        type: PointBuySettings,
+        default: {
+            enabled: false,
+            pool: 35,
+            costs: PointBuySettingsConfig.defaultCosts
+        }
+        //, onChange: () => game.dnd5e.bastion.initializeUI()
+    });
 }
