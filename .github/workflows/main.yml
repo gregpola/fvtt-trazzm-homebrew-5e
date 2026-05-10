@@ -46,7 +46,7 @@ jobs:
           name: Latest
           draft: false
           prerelease: false
-          skipIfReleaseExists: true
+          makeLatest: true
           token: ${{ secrets.GITHUB_TOKEN }}
           artifacts: './module.json,./module.zip'
           tag: latest
