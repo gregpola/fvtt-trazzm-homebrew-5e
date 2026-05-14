@@ -201,3 +201,12 @@
 * Fixed all Drow NPC's that were missing their creature type
 * Updated to DND5E system 5.3.3
 * Added Nik's Show and Tell module to make it easier to share photos and information with players
+
+# 13.5.21
+* Improved the logic of the function HomebrewEffects.findEffectBySourceActor
+* Added Yips' Find Steed spell to improve the functionality
+* Added the Find Steed spell to Homebrew spells
+* Fixed Babau Demon Slimeskin feature reactive damage
+* Fixed Fire Shield reactive damage and improved the animation
+* Fixed Detect Magic to have the animation follow the caster
+* Updated the Flame Tongue enchantment

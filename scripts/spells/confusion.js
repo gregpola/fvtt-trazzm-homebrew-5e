@@ -13,7 +13,7 @@
     turn=end, saveAbility=wis, saveDC=@attributes.spell.dc, label=Confusion
 */
 const optionName = "Confusion";
-const version = "12.4.0";
+const version = "13.5.0";
 const rollTableId = "Compendium.dnd-players-handbook.tables.RollTable.phbsplConfusionB";
 
 try {

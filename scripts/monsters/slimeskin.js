@@ -7,7 +7,7 @@
     ammunition made of metal or wood that hits the demon is destroyed after dealing damage.
 */
 const optionName = "Slimeskin";
-const version = "13.5.0";
+const version = "13.5.1";
 
 try {
     if (args[0].tag === "TargetOnUse" && args[0].macroPass === "isHit") {
@@ -22,6 +22,13 @@ try {
                     let targets = new Set();
                     targets.add(attackerToken);
 
+                    // get the actor owner
+                    let actorUser = MidiQOL.playerForActor(actor);
+                    if (!actorUser?.active) {
+                        console.info(`${optionName} - unable to locate the actor player, sending to GM`);
+                        actorUser = game.users?.activeGM;
+                    }
+
                     const options = {
                         midiOptions: {
                             targetsToUse: targets,
@@ -29,12 +36,13 @@ try {
                             configureDialog: false,
                             showFullCard: true,
                             ignoreUserTargets: true,
-                            checkGMStatus: false,
+                            checkGMStatus: true,
                             autoRollAttack: true,
                             autoRollDamage: "always",
                             fastForwardAttack: true,
                             fastForwardDamage: true,
-                            workflowData: true
+                            workflowData: true,
+                            asUser: actorUser.id
                         }
                     };
 

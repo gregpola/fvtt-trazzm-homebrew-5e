@@ -3,7 +3,7 @@
     flame. The attacker takes 2d8 Fire damage from a warm shield or 2d8 Cold damage from a chill shield.
 */
 const optionName = "Fire Shield";
-const version = "13.5.0";
+const version = "13.5.1";
 
 try {
     if (args[0].tag === "TargetOnUse" && args[0].macroPass === "isHit") {
@@ -24,6 +24,13 @@ try {
                     await animeFire(token, attackerToken);
                 }
 
+                // get the actor owner
+                let actorUser = MidiQOL.playerForActor(actor);
+                if (!actorUser?.active) {
+                    console.info(`${optionName} - unable to locate the actor player, sending to GM`);
+                    actorUser = game.users?.activeGM;
+                }
+
                 // synthetic activity use
                 if (activity) {
                     let targets = new Set();
@@ -36,11 +43,12 @@ try {
                             configureDialog: false,
                             showFullCard: true,
                             ignoreUserTargets: true,
-                            checkGMStatus: false,
+                            checkGMStatus: true,
                             autoRollAttack: true,
                             autoRollDamage: "always",
                             fastForwardAttack: true,
                             fastForwardDamage: true,
+                            asUser: actorUser.id,
                             workflowData: true
                         }
                     };

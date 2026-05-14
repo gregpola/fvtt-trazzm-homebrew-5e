@@ -37,6 +37,10 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(rolledActivity.actionType))
 		const abilityBonus = Math.max(rollingActor.system.abilities.str.mod, rollingActor.system.abilities.dex.mod);
 		max(1, @abilities.wis.mod)
 
+await actor.update({
+	"system.abilities.cha.value": actor.system.abilities.cha.value
+});
+
 		flags.midi - qol.neverTarget
 		system.attributes.attunement.max
 
@@ -164,3 +168,17 @@ if (activity) {
 for (let targetToken of workflow.failedSaves) {
 	await targetToken.actor.toggleStatusEffect('prone', {active: true});
 }
+
+const {dialogUtils, socketUtils, workflowUtils} = chrisPremades.utils;
+
+if (workflow.activity.hasAttack && !MidiQOL.hasUsedReaction(macroItem.actor)) {
+	let selection = await dialogUtils.confirm(item.name, `Use ${macroItem.name} as a reaction to dodge the attack from ${workflow.actor.name}?`, {userId: socketUtils.firstOwner(macroItem.actor, true)});
+
+	if (selection) {
+		await workflowUtils.completeItemUse(macroItem, {}, {configureDialog: false, asUser: socketUtils.firstOwner(macroItem.actor, true)});
+		MidiQOL.setReactionUsed(macroItem.actor, true);
+		workflow.aborted = true;
+	}
+}
+
+			MidiQOL.completeActivityUse(rollActivity, {midiOptions: {asUser: game.users.activeGM?.id ?? game.user.id}}, {configure: false});
