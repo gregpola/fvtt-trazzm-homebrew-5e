@@ -206,6 +206,7 @@
 * Improved the logic of the function HomebrewEffects.findEffectBySourceActor
 * Added Yips' Find Steed spell to improve the functionality
 * Added the Find Steed spell to Homebrew spells
+* Added Remorhaz and Young Remorhaz
 * Fixed Babau Demon Slimeskin feature reactive damage
 * Fixed Fire Shield reactive damage and improved the animation
 * Fixed Detect Magic to have the animation follow the caster
