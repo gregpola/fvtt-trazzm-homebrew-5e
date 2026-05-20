@@ -2,7 +2,7 @@
 	
 */
 const optionName = "Precision";
-const version = "13.5.0";
+const version = "14.5.0";
 
 try {
 	if (args[0].macroPass === "postActiveEffects") {
@@ -127,11 +127,15 @@ const cost = canvas.grid.measurePath([template, token.document]).cost;
 			await targetToken.actor.toggleStatusEffect('prone', {active: true});
 		}
 
-		// Overtime setup to remove a condition on save
-		label="Prismatic Spray - Indigo Ray", turn=end, saveDC=@attributes.spell.dc, saveAbility=con, saveCount=3-, failCount=3-petrified
+// Overtime setup to remove a condition on save
+label="Prismatic Spray - Indigo Ray", turn=end, saveDC=@attributes.spell.dc, saveAbility=con, saveCount=3-, failCount=3-petrified
+
+// Sleep spell
+			label="Sleeping", turn=end, saveDC=@attributes.spell.dc, saveAbility=wis, failCount=1+sleeping
+			label="Covered in Slime", turn=start, damageRoll=[[@item.level*2]]d4, damageType=acid
 
 			// options = { maxSize: undefined, includeIncapacitated: false, canSee: false }
-		let secondTarget = await MidiQOL.findNearby(CONST.TOKEN_DISPOSITIONS.FRIENDLY, ttoken, 5, {canSee: true});
+let secondTarget = await MidiQOL.findNearby(CONST.TOKEN_DISPOSITIONS.FRIENDLY, ttoken, 5, {canSee: true});
 
 
 <section class="secret">
@@ -164,3 +168,33 @@ if (activity) {
 for (let targetToken of workflow.failedSaves) {
 	await targetToken.actor.toggleStatusEffect('prone', {active: true});
 }
+
+Light Spell:
+	"light": {
+		"negative": false,
+		"priority": 0,
+		"alpha": 0.3,
+		"angle": 360,
+		"bright": 20,
+		"color": "#ff810a",
+		"coloration": 1,
+		"dim": 40,
+		"attenuation": 0.5,
+		"luminosity": 0.5,
+		"saturation": 0,
+		"contrast": 0,
+		"shadows": 0,
+		"animation": {
+		"type": "flame",
+			"speed": 1,
+			"intensity": 3,
+			"reverse": false
+	},
+	"darkness": {
+		"min": 0,
+			"max": 1
+	}
+
+				token.light | Override | {"negative":false,"priority":0,"alpha":0.35,"angle":360,"bright":1,"color":"#737b32","coloration":1,"dim":2,"attenuation":0.75,"luminosity":0.5,"saturation":0,"contrast":0,"shadows":0,"animation":{"type":"torch","speed":7,"intensity":5,"reverse":false},"darkness":{"min":0,"max":1}}
+				"animation":{"type":"torch","speed":7,"intensity":5,"reverse":false}
+				{"type": 'pulse',"speed": 3,"intensity": 5,"reverse": false}

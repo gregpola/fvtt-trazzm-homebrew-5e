@@ -20,7 +20,7 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
 
       #Substitute the Manifest and Download URLs in the module.json
       - name: Substitute Manifest and Download Links For Versioned Ones
@@ -57,13 +57,13 @@ jobs:
       - name: Create Release
         id: create_latest_release
         uses: ncipollo/release-action@v1
-        if: endsWith(github.ref, 'main')
         with:
           allowUpdates: true
           name: Latest
           draft: false
           prerelease: false
+          makeLatest: true
           token: ${{ secrets.GITHUB_TOKEN }}
           artifacts: './module.json,./module.zip'
-          tag: latest
+          tag: ${{ github.event.release.tag_name }}
           body: ${{ github.event.release.body }}

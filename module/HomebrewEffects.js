@@ -23,8 +23,15 @@ class HomebrewEffects {
             for (let effect of matchingEffects) {
                 if (effect.origin) {
                     const effectOrigin = await fromUuid(effect.origin);
-                    if (effectOrigin.parent === sourceActor) {
-                        return effect;
+                    if (effectOrigin) {
+                        let parent = effectOrigin.parent;
+                        while (parent && parent !== sourceActor) {
+                            parent = parent.parent;
+                        }
+
+                        if (parent) {
+                            return effect;
+                        }
                     }
                 }
             }

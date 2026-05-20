@@ -3,17 +3,22 @@
     roll before the spell ends, the creature takes 5 Cold damage. The spell ends early if you have no Temporary Hit Points.
 */
 const optionName = "Armor of Agathys";
-const version = "12.4.0";
+const version = "14.5.0";
 
 try {
     if (args[0].tag === "TargetOnUse" && args[0].macroPass === "isHit") {
-        if (["mwak", "msak"].includes(rolledItem.system.actionType)) {
+        if (["mwak", "msak"].includes(rolledActivity.actionType)) {
             const attacker = rolledItem.actor;
             const attackerToken = MidiQOL.tokenForActor(attacker);
 
             const activity = macroItem.system.activities.find(a => a.identifier === 'frost-damage');
             if (activity) {
-                await animeCold(token, attackerToken);
+                // get the actor owner
+                let actorUser = MidiQOL.playerForActor(actor);
+                if (!actorUser?.active) {
+                    console.info(`${optionName} - unable to locate the actor player, sending to GM`);
+                    actorUser = game.users?.activeGM;
+                }
 
                 let targets = new Set();
                 targets.add(attackerToken);
@@ -25,11 +30,12 @@ try {
                         configureDialog: false,
                         showFullCard: true,
                         ignoreUserTargets: true,
-                        checkGMStatus: false,
+                        checkGMStatus: true,
                         autoRollAttack: true,
                         autoRollDamage: "always",
                         fastForwardAttack: true,
                         fastForwardDamage: true,
+                        asUser: actorUser.id,
                         workflowData: true
                     }
                 };
@@ -47,13 +53,4 @@ try {
 
 } catch (err) {
     console.error(`${optionName}: ${version}`, err);
-}
-
-async function animeCold(token, target) {
-    new Sequence()
-        .effect()
-        .file("jb2a.ray_of_frost.blue.05ft")
-        .atLocation(token)
-        .stretchTo(target)
-        .play()
 }

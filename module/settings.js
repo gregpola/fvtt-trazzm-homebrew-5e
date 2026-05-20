@@ -43,6 +43,7 @@ export function registerSettings() {
         }
     });
 
+
     // Point Buy
     game.settings.registerMenu(Constants.MODULE_ID, Constants.POINT_BUY_SETTINGS, {
         name: "Point Buy Calculator",

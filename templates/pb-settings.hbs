@@ -1,29 +1,42 @@
-<div>
-    {{!-- Enabled --}}
-    {{ formField fields.enabled name="pointBuySettings.enabled" value=source.enabled
-                 input=inputs.createCheckboxInput localize=false rootId=partId }}
-
-    {{!-- Points Pool --}}
-    {{ formField fields.duration name="pointBuySettings.pool" value=source.pool localize=false
-                 rootId=partId }}
-
-    <hr>
-    <div class="form-group">
-        <p class="hint">Set the cost to increase to the score from the lower value. Set to -1 if you do not allow that score.</p>
+<div class="trazzm-flex-col">
+    <!-- Enabled -->
+    <div>
+        <div class="form-control">
+            <input id="enable-point-buy" name="pointBuySettings.enabled" type="checkbox" {{checked source.enabled}}/>
+            <label for="enable-point-buy">{{localize "TrazzmHomebrew.PBCalculator.enable"}}</label>
+        </div>
     </div>
-    <fieldset>
-        <legend>Point Costs</legend>
-        <section>
-            {{#each costs as |value score|}}
-                <div class="form-group slim">
-                    <label>{{score}}</label>
-                    <div class="form-fields">
-                        {{!-- FormDataExtended doesn't like names that are numbers so need to nest it a level deeper --}}
-                        {{numberInput value name=(concat "score." score) step=1 dataset=(object dtype="number")}}
-                    </div>
+
+    <br>
+
+    <!-- Total Points Available to spend -->
+    <div>
+        <div class="form-group" style="margin-bottom: 5px;">
+            <label for="pool-size">{{localize "TrazzmHomebrew.PBCalculator.Pool.title"}}</label>
+            <div class="form-fields">
+                <input id="pool-size" name="pointBuySettings.pool" type="number" step="1" min="0" value="{{source.pool}}"/>
+            </div>
+        </div>
+        <p class="hint">{{localize "TrazzmHomebrew.PBCalculator.Pool.hint"}}</p>
+    </div>
+
+    <br>
+
+    <fieldset class="card">
+        <legend>{{localize "TrazzmHomebrew.PBCalculator.PointCosts.legend"}}</legend>
+
+        {{#each source.costs as |value score|}}
+            <div class="form-group">
+                <label>{{localize (concat "TrazzmHomebrew.PBCalculator.PointCosts." score)}}</label>
+                <div class="form-fields">
+                    {{ numberInput value name=(concat "pointBuySettings.costs." score) min=-1 step=1 }}
                 </div>
-            {{/each}}
-        </section>
+            </div>
+        {{/each}}
+
+        <div class="form-group">
+            <p class="hint">{{localize "TrazzmHomebrew.PBCalculator.PointCosts.hint"}}</p>
+        </div>
     </fieldset>
 
     <br>

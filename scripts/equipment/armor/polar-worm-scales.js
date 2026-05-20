@@ -4,7 +4,7 @@
 
     This damage increases by 1d6 when you reach 5th level (2d6), 9th level (3d6), 13th level (4d6), and 17th level (5d6).
 */
-const version = "13.5.0";
+const version = "13.5.1";
 const optionName = "Polar Worm Scales";
 
 try {
@@ -14,7 +14,13 @@ try {
             const attacker = rolledItem.actor;
             const attackerToken = MidiQOL.tokenForActor(attacker);
             if (MidiQOL.computeDistance(attackerToken, token) <= 5) {
-                // replace with activity use
+                // get the actor owner
+                let actorUser = MidiQOL.playerForActor(actor);
+                if (!actorUser?.active) {
+                    console.info(`${optionName} - unable to locate the actor player, sending to GM`);
+                    actorUser = game.users?.activeGM;
+                }
+
                 let activity = await macroItem.system.activities.find(a => a.identifier === 'heated-body');
                 if (activity) {
                     const options = {
@@ -29,6 +35,7 @@ try {
                             autoRollDamage: "always",
                             fastForwardAttack: true,
                             fastForwardDamage: true,
+                            asUser: actorUser.id,
                             workflowData: true
                         }
                     };

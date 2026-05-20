@@ -22,20 +22,20 @@ export class PointBuySettings extends foundry.abstract.DataModel {
                 required: true, label: "Point Buy Enabled", hint: "Turn on to allow using point buy for player character ability scores"
             }),
             pool: new NumberField({
-                required: true, positive: true, integer: true, min: 0, initial: 35, label: "Points Pool"
+                required: true, positive: true, integer: true, min: 0, initial: 35, step: 1, label: "Points Pool"
             }),
             costs: new SchemaField({
-                eight: new NumberField({ integer: true, min: 0, initial: 0, label: "8" }),
-                nine: new NumberField({ integer: true, min: 0, initial: 1, label: "9" }),
-                ten: new NumberField({ integer: true, min: 0, initial: 1, label: "10" }),
-                eleven: new NumberField({ integer: true, min: 0, initial: 1, label: "11" }),
-                twelve: new NumberField({ integer: true, min: 0, initial: 1, label: "12" }),
-                thirteen: new NumberField({ integer: true, min: 0, initial: 1, label: "13" }),
-                fourteen: new NumberField({ integer: true, min: 0, initial: 2, label: "14" }),
-                fifteen: new NumberField({ integer: true, min: 0, initial: 2, label: "15" }),
-                sixteen: new NumberField({ integer: true, min: -1, initial: 3, label: "16" }),
-                seventeen: new NumberField({ integer: true, min: -1, initial: 3, label: "17" }),
-                eighteen: new NumberField({ integer: true, min: -1, initial: 4, label: "18" })
+                eight: new NumberField({ required: true, integer: true, min: 0, initial: 0, step: 1, label: "8" }),
+                nine: new NumberField({ required: true, integer: true, min: 0, initial: 1, step: 1, label: "9" }),
+                ten: new NumberField({ required: true, integer: true, min: 0, initial: 1, step: 1, label: "10" }),
+                eleven: new NumberField({ required: true, integer: true, min: 0, initial: 1, step: 1, label: "11" }),
+                twelve: new NumberField({ required: true, integer: true, min: 0, initial: 1, step: 1, label: "12" }),
+                thirteen: new NumberField({ required: true, integer: true, min: 0, initial: 1, step: 1, label: "13" }),
+                fourteen: new NumberField({ required: true, integer: true, min: 0, initial: 2, step: 1, label: "14" }),
+                fifteen: new NumberField({ required: true, integer: true, min: 0, initial: 2, step: 1, label: "15" }),
+                sixteen: new NumberField({ required: true, integer: true, min: -1, initial: 3, step: 1, label: "16" }),
+                seventeen: new NumberField({ required: true, integer: true, min: -1, initial: 3, step: 1, label: "17" }),
+                eighteen: new NumberField({ required: true, integer: true, min: -1, initial: 4, step: 1, label: "18" })
             })
         };
     }
@@ -51,7 +51,7 @@ export class PointBuySettingsConfig extends Application5e {
         tag: "form",
         classes: ["standard-form", "pointCostMenu"],
         position: {
-            width: 500
+            width: 400
         },
         window: {
             icon: "fa-solid fa-calculator",
@@ -173,4 +173,203 @@ export class PointBuySettingsConfig extends Application5e {
             return foundry.applications.settings.SettingsConfig.reloadConfirm({ world: requiresWorldReload });
         }
     }
+}
+
+// This should only be used on a brand new character
+export class PointBuyCalculator extends HandlebarsApplicationMixin(foundry.applications.sheets.ActorSheet) {
+    static DEFAULT_OPTIONS = {
+        classes: ["standard-form", "pb-calculator"],
+        window: {
+            icon: "fa-solid fa-calculator"
+        },
+        actions: {
+            reset: this.#onReset
+        },
+        form: {
+            closeOnSubmit: true
+        }
+    };
+
+    /** @override */
+    static PARTS = {
+        header: {
+            template: modulePath("templates/pb-header.hbs")
+        },
+        body: {
+            template: modulePath("templates/pb-body.hbs")
+        },
+        footer: {
+            template: "templates/generic/form-footer.hbs"
+        }
+    };
+
+    /** @override */
+    async _prepareContext(options) {
+        const context = await super._prepareContext(options);
+
+        Object.assign(context, {
+            actor: this.document
+        });
+
+        return context;
+    }
+
+    /**
+     * Tracks the ability score for each ability
+     * @type {Record<string, number>}
+     */
+    scores = this._resetScores();
+    changes = this._resetChanges();
+    pointBuySettings = game.settings.get(Constants.MODULE_ID, Constants.POINT_BUY_SETTINGS);
+    maxScore = this._calculateMaxScore();
+    scoreCosts = this._buildCosts();
+
+    /**
+     * Resets the scores object
+     * @this PointBuyCalculator
+     * @param {PointerEvent} _event - The originating click event
+     * @param {HTMLElement} _target - The capturing HTML element which defines the [data-action]
+     */
+    static async #onReset(_event, _target) {
+        this.scores = this._resetScores();
+        this.changes = this._resetChanges();
+        await this.render();
+    }
+
+    _resetScores() {
+        return Object.keys(CONFIG.DND5E.abilities).reduce((attribute, key) => {
+            attribute[key] = 8;
+            return attribute;
+        }, {});
+    }
+
+    _resetChanges() {
+        return Object.keys(CONFIG.DND5E.abilities).reduce((attribute, key) => {
+            attribute[key] = 0;
+            return attribute;
+        }, {});
+    }
+
+    _calculateMaxScore() {
+        const costKeys = Object.keys(this.pointBuySettings.costs);
+        const costValues = Object.values(this.pointBuySettings.costs);
+        let maxScore = 8;
+
+        for (let i = 0; i < costKeys.length; i++) {
+            if (costValues[i] > 0) {
+                var costKeyValue = 8 + i;
+                maxScore = Math.max(maxScore, costKeyValue);
+            }
+        }
+
+        return maxScore
+    }
+
+    _buildCosts() {
+        const costKeys = Object.keys(this.pointBuySettings.costs);
+        const costValues = Object.values(this.pointBuySettings.costs);
+
+        let result = {
+        };
+
+        for (let i = 0; i < costKeys.length; i++) {
+            if (costValues[i] > -1) {
+                var costKeyValue = 8 + i;
+                var abilityCost = costValues[i];
+
+                if (i > 0) {
+                    abilityCost += result[costKeyValue - 1];
+                }
+                result[costKeyValue] = abilityCost;
+            }
+        }
+
+        return result;
+    }
+
+    _calcNextCost(value) {
+        const costKeys = Object.keys(this.pointBuySettings.costs);
+        const costValues = Object.values(this.pointBuySettings.costs);
+        let result = 1;
+
+        for (let i = 0; i < costKeys.length; i++) {
+            var costKeyValue = 8 + i;
+            if (costKeyValue === value) {
+                result = costValues[i + 1];
+                break;
+            }
+        }
+
+        return result;
+    }
+
+    /** @override */
+    async _preparePartContext(partId, context, options) {
+        await super._preparePartContext(partId, context, options);
+
+        switch (partId) {
+            case "header":
+                context.points = {
+                    current: this.pointBuySettings.pool - Object.keys(this.changes).reduce((total, key) => {
+                        total += this.scoreCosts[this.scores[key] + this.changes[key]];
+                        return total;
+                    }, 0),
+                    max: this.pointBuySettings.pool
+                };
+                break;
+
+            case "body":
+                context.abilities = Object.keys(CONFIG.DND5E.abilities).reduce((abilities, key) => {
+                    abilities[key] = {
+                        label: CONFIG.DND5E.abilities[key].label,
+                        base: this.scores[key],
+                        min: 8,
+                        max: this.maxScore,
+                        total: this.scores[key] + this.changes[key],
+                        nextCost: this._calcNextCost(this.scores[key] + this.changes[key])
+                    };
+
+                    // set the modifier
+                    abilities[key].modifier = Math.floor((abilities[key].total - 10) / 2);
+
+                    // set the max based on current value and points remaining
+                    if (abilities[key].nextCost > context.points.current) {
+                        abilities[key].max = abilities[key].total;
+                    }
+
+                    return abilities;
+
+                }, {});
+                break;
+
+            case "footer":
+                context.buttons = [
+                    {type: "submit", icon: "fa-solid fa-save", label: "TrazzmHomebrew.PBCalculator.SubmitCalculation"},
+                    {type: "button", icon: "fa-solid fa-rotate-left", label: "TrazzmHomebrew.PBCalculator.Reset", action: "reset"}
+                ];
+                break;
+        }
+
+        return context;
+    }
+
+    async _onChangeForm(_formConfig, _event) {
+        const fd = new FormDataExtended(this.element);
+
+        this.scores = Object.keys(CONFIG.DND5E.abilities).reduce((attribute, key) => {
+            attribute[key] = foundry.utils.getProperty(fd.object, `system.abilities.${key}.value`);
+            return attribute;
+        }, {});
+
+        if (this.rendered) await this.render();
+    }
+
+    _processFormData(event, form, formData) {
+        for (const key of Object.keys(CONFIG.DND5E.abilities)) {
+            formData.object[`system.abilities.${key}.value`] = this.scores[key];
+        }
+
+        return super._processFormData(event, form, formData);
+    }
+
 }

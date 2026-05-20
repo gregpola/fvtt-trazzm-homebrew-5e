@@ -8,7 +8,7 @@
     Using a Higher-Level Spell Slot. The damage increases by 2d4 for each spell slot level above 2.
  */
 const optionName = "Cloud of Daggers Move";
-const version = "13.5.0";
+const version = "14.5.0";
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
 const flagName = "cloud-of-daggers-flag";
 
@@ -16,33 +16,15 @@ try {
     if (args[0].macroPass === "postActiveEffects") {
         const flag = actor.getFlag(_flagGroup, flagName);
         if (flag) {
-            const template = await fromUuid(flag.templateUuid);
-            if (template) {
-                let newTemplate = await fromUuid(args[0].templateUuid);
-                if (newTemplate) {
-                    const newX = newTemplate.x;
-                    const newY = newTemplate.y;
-                    await game.trazzm.socket.executeAsGM("updateTemplate", template.uuid, {x: newX, y: newY});
-
-                } else {
-                    const position = await Sequencer.Crosshair.show({
-                        name: "Move Cloud of Daggers",
-                        location: {
-                            obj: template,
-                            limitMaxRange: 30
-                        },
-                        snap: {
-                            position: CONST.GRID_SNAPPING_MODES.CENTER | CONST.GRID_SNAPPING_MODES.VERTEX
-                        }
-                    });
-
-                    if (position) {
-                        await game.trazzm.socket.executeAsGM("updateTemplate", template.uuid, {x: position.x, y: position.y});
-                    }
+            const existingRegion = await fromUuid(flag.templateUuid);
+            if (existingRegion) {
+                let newRegion = await fromUuid(args[0].templateUuid);
+                if (newRegion) {
+                    await game.trazzm.socket.executeAsGM("updateTemplate", existingRegion.uuid, {shapes: newRegion.shapes});
                 }
             }
             else {
-                console.error(`${optionName}: ${version} -- unable to find template`);
+                console.error(`${optionName}: ${version} -- unable to find the region`);
             }
         }
         else {
