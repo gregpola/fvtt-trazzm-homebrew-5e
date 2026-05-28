@@ -30,18 +30,16 @@ async function applyDisadvantage(targetToken) {
         origin: item.uuid,
         changes: [
             {
-                key: 'flags.midi-qol.disadvantage.ability.save.con',
+                key: 'flags.automated-conditions-5e.save.disadvantage',
                 mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-                value: true,
+                value: 'once;',
                 priority: 20
             }
         ],
         duration: {
-            turns: 1
         },
         flags: {
             dae: {
-                specialDuration: ['isSave']
             }
         }
     };

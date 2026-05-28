@@ -1,16 +1,33 @@
-Flame tongue whip --> electrical
-Dismiss summon activity
+Toll the dead auto adjust damage
+Flame Tongue enchantment
 
-- Calendaria
-- Add summons to combat and roll initiative and long rest and auto delete at 0 hp -- module handler
-- random scroll tables
-- auto handle versatile weapons???
+
+Drow poison
+Remove drow poisoned weapons and replace with new potions
+Add to combat and roll initiative for summons
+
+** Difficult terrain effect -- spike growth ***
+*** Hook on combat end, short rest, and long rest to automatically expire effects that should ***
+
+College of swords
+Find Steed - Life Bond feature
+Vanish to the Space Between Worlds
+Command spell automation
+
 - actor update functionality
 - Prompt for corruption
 - options for initiative bonuses in module hook -- need support from the carousel
 - Critical effects table
 
-Intercept feat
 Circle of the Stars
 Arcane Mark spell
+Intercept feat
 
+
+
+Module Enhanced region behavior ??? Do we need this???
+
+V14 Modules out of date
+- DND5e scriplets
+- Lib Color Settings
+- MATT -- replaced by Region Behavior Adjustments???

@@ -24,14 +24,11 @@ try {
             targetToken = workflow.effectTargets.first().document;
             originActor = actor;
             sourceItem = originActor.items.find(i => i.name === optionName && i.type === 'spell');
-
         }
         else if (lastArgValue && lastArgValue.tokenUuid) {
-            targetToken = await fromUuid(lastArgValue.tokenUuid);
-            originActor = await fromUuid(lastArgValue.origin);
-            const castData = lastArgValue.efData.flags['midi-qol'].castData;
-            sourceItem = await fromUuid(castData.itemUuid);
-
+            targetToken = token;
+            originActor = (await fromUuid(lastArgValue.origin)).actor;
+            sourceItem = macroItem;
         }
 
         await applySpellDamage(targetToken, originActor, sourceItem, eventName);
@@ -42,9 +39,8 @@ try {
             eventName = 'tokenTurnEnd';
         }
 
-        originActor = await fromUuid(lastArgValue.origin);
-        const castData = lastArgValue.efData.flags['midi-qol'].castData;
-        sourceItem = await fromUuid(castData.itemUuid);
+        originActor = (await fromUuid(lastArgValue.origin)).actor;
+        sourceItem = macroItem;
 
         // ignore friendlies
         let sourceDisposition = CONST.TOKEN_DISPOSITIONS.FRIENDLY;

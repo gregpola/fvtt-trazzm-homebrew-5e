@@ -3,7 +3,7 @@
     can see within range. Make a melee spell attack against each target. On a hit, a target takes 6d10 Force damage.
 */
 const optionName = "Steel Wind Strike";
-const version = "12.4.0";
+const version = "14.5.0";
 
 try {
     if (args[0].macroPass === "postActiveEffects") {
@@ -29,7 +29,6 @@ try {
                     }
                 };
 
-                await anime(token, targetToken);
                 await MidiQOL.completeActivityUse(activity, options, {}, {});
             }
         }
@@ -37,13 +36,4 @@ try {
 
 } catch (err) {
     console.error(`${optionName}: ${version}`, err);
-}
-
-async function anime(token, target) {
-    new Sequence()
-        .effect()
-        .file("jb2a.falchion.melee.01.white")
-        .atLocation(token)
-        .stretchTo(target)
-        .play()
 }

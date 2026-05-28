@@ -11,28 +11,15 @@
     As a Bonus Action on your later turns, you can change the direction in which the Line blasts from you.
 */
 const optionName = "Gust of Wind";
-const version = "12.4.0";
+const version = "14.5.0";
+const _flagGroup = "fvtt-trazzm-homebrew-5e";
+const flagName = "gust-of-wind-flag";
 
 try {
-    if (rolledActivity?.name === "Cast" || rolledActivity?.name === "Change Direction") {
-        if (args[0].macroPass === "preItemRoll") {
-            Hooks.once("createMeasuredTemplate", async (template) => {
-                await template.update({
-                    fillColor: 0,
-                    fillAlpha: 0,
-                    alpha: 0,
-                    opacity: 0.1
-                });
-            });
-
-            Hooks.once("createRegion", async (region) => {
-                await region.update({'visibility': 0});
-            });
-        }
-        else if (args[0].macroPass === "postActiveEffects") {
-            for (let targetToken of workflow.failedSaves) {
-                await HomebrewMacros.pushTarget(token, targetToken, 3);
-            }
+    if (args[0].macroPass === "postActiveEffects") {
+        await actor.setFlag(_flagGroup, flagName, {templateUuid: args[0].templateUuid});
+        for (let targetToken of workflow.failedSaves) {
+            await HomebrewMacros.pushTarget(token, targetToken, 3);
         }
     }
 

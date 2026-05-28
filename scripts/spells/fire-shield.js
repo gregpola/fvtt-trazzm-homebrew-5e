@@ -18,10 +18,15 @@ try {
 
                 if (coldShield) {
                     activity = macroItem.system.activities.find(a => a.identifier === 'fire-shield-cold-damage');
-                    await animeCold(token, attackerToken);
                 } else {
                     activity = macroItem.system.activities.find(a => a.identifier === 'fire-shield-fire-damage');
-                    await animeFire(token, attackerToken);
+                }
+
+                // get the actor owner
+                let actorUser = MidiQOL.playerForActor(actor);
+                if (!actorUser?.active) {
+                    console.info(`${optionName} - unable to locate the actor player, sending to GM`);
+                    actorUser = game.users?.activeGM;
                 }
 
                 // get the actor owner
@@ -61,22 +66,4 @@ try {
 
 } catch (err) {
     console.error(`${optionName}: ${version}`, err);
-}
-
-async function animeCold(token, target) {
-    new Sequence()
-        .effect()
-        .file("jb2a.ray_of_frost.blue.05ft")
-        .atLocation(token)
-        .stretchTo(target)
-        .play()
-}
-
-async function animeFire(token, target) {
-    new Sequence()
-        .effect()
-        .file("jb2a.fire_bolt.orange.05ft")
-        .atLocation(token)
-        .stretchTo(target)
-        .play()
 }

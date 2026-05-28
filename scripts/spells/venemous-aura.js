@@ -3,13 +3,20 @@
     10 feet of you are poisoned until the start of their next turn.
  */
 const optionName = "Venomous Aura";
-const version = "13.5.0";
+const version = "14.5.0";
 
 
 try {
     if (args[0] === "each" && lastArgValue.turn === 'startTurn') {
         // apply poisoned
-        await HomebrewEffects.applyPoisonedEffect2024(actor, macroItem, ['turnStart', 'endCombat']);
+        // get the effect from the item
+        const effect = macroItem.effects.getName('Venomous Aura Poisoned');
+        if ( effect) {
+            const hasPoisonImmunity = actor.system.traits.ci.value.has('poisoned');
+            if (!hasPoisonImmunity) {
+                await MidiQOL.socket().executeAsGM("createEffects", {actorUuid: actor.uuid, effects: [effect]});
+            }
+        }
     }
 
 } catch (err) {

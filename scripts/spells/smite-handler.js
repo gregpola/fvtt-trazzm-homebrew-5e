@@ -3,7 +3,7 @@
     multiple smite spells.
  */
 const optionName = "Smite Handler";
-const version = "13.5.0";
+const version = "14.5.0";
 
 try {
     if (args[0].tag === "OnUse" && args[0].macroPass === "preDamageRoll") {
@@ -13,19 +13,42 @@ try {
         if (targetToken && (rolledActivity.actionType === "mwak") && !MidiQOL.hasUsedBonusAction(actor)) {
             // collect the actor's smite spells
             let smiteSpells = actor.items.filter(i => i.type === 'spell' && i.name.endsWith(' Smite'));
-
             if (smiteSpells.length > 0) {
+                // sort by level and alpha
+                smiteSpells.sort((a, b) => {
+                    // Primary sort: Age (Ascending)
+                    if (a.system.level !== b.system.level) {
+                        return a.system.level - b.system.level;
+                    }
+
+                    // Secondary sort: Name (Lexicographical)
+                    if (a.name !== b.name) {
+                        return a.name.localeCompare(b.name);
+                    }
+
+                    return 0;
+                });
+
                 const spellData = foundry.utils.duplicate(actor.getRollData().spells);
                 let spellSlotData = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0};
+                let slotsDisplay = '';
 
                 for (let [key, {level, value, max}] of Object.entries(spellData)) {
-                    if (value > 0 && max > 0) {
-                        spellSlotData[level] = value;
+                    if (max > 0) {
+                        if (slotsDisplay.length > 0) {
+                            slotsDisplay += ', ';
+                        }
+                        slotsDisplay += `L${level}: ${value}/${max}`;
+
+                        if (value > 0) {
+                            spellSlotData[level] = value;
+                        }
                     }
                 }
 
                 let content = `<p>Available smite spells for this attack:</p>`;
                 let optionsCount = 0;
+                let spell_content = ``;
                 for (let spell of smiteSpells) {
                     let limitedUse = false;
                     if (spell.hasLimitedUses && spell.system.uses.max > 0 && spell.system.uses.spent < spell.system.uses.max) {
@@ -33,22 +56,23 @@ try {
                     }
 
                     if (limitedUse || hasSlotsForSpell(spell, spellSlotData)) {
-                        if (optionsCount === 0) {
-                            content += `<label style="margin-left: 15px; margin-bottom: 5px;"><input style="right: 10px;" type="radio" name="choice" value="${spell.id}" checked />${spell.name} (L${spell.system.level})</label>`;
+                        if (limitedUse) {
+                            spell_content += `<option value=${spell.id}>L${spell.system.level} - ${spell.name} (free use available)</option>`;
                         }
                         else {
-                            content += `<label style="margin-left: 15px; margin-bottom: 5px;"><input style="right: 10px;" type="radio" name="choice" value="${spell.id}" />${spell.name} (L${spell.system.level})</label>`;
+                            spell_content += `<option value=${spell.id}>L${spell.system.level} - ${spell.name}</option>`;
                         }
-
                         optionsCount++;
                     }
                 }
+                content += `<p style="margin-bottom: 5px;"><select name="spells">${spell_content}</select></p>`;
+                content += `<p>Available spell slots:<br>${slotsDisplay}</p>`;
 
                 if (optionsCount > 0) {
-                    content += '<div style="margin-bottom: 10px;" />';
+                    content += '<div style="margin-bottom: 5px;" />';
 
                     const result = await foundry.applications.api.DialogV2.wait({
-                        window: { title: "Smite Spell Options" },
+                        window: { title: "Apply a Smite Spell?" },
                         form: { closeOnSubmit: true },
                         content: content,
                         buttons: [
@@ -57,7 +81,7 @@ try {
                                 default: true,
                                 label: "Cast",
                                 callback: (event, button, dialog) => {
-                                    return button.form.elements.choice.value;
+                                    return button.form.elements.spells.value
                                 }
                             },
                             {
@@ -68,7 +92,10 @@ try {
                             },
                         ],
                         rejectClose: false,
-                        modal: true
+                        modal: true,
+                        position: {
+                            width: 400
+                        }
                     });
 
                     if (result === null || result === "Pass") {
@@ -83,7 +110,7 @@ try {
                             const options = {
                                 midiOptions: {
                                     targetUuids: [actor.uuid],
-                                    noOnUseMacro: true,
+                                    noOnUseMacro: false,
                                     configureDialog: true,
                                     showFullCard: false,
                                     ignoreUserTargets: true,

@@ -99,6 +99,7 @@ function initialize_module() {
         //console.log(cl);
         cl.register();
     });
+
     globalThis.TrazzmHomebrew.weaponMastery = WeaponMastery;
     globalThis.TrazzmHomebrew.pointBuyCalculator = PointBuyCalculator;
 

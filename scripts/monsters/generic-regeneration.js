@@ -4,13 +4,13 @@
     doesn’t regenerate.
 */
 const optionName = "Regeneration";
-const version = "13.5.1";
+const version = "14.5.0";
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
 const _suppressionTypes = ['acid', 'fire'];
 const _healingFormula = "10";
 
 try {
-    if (args[0].tag === "TargetOnUse" && args[0].macroPass === "isDamaged") {
+    if (args[0].tag === "TargetOnUse" && args[0].macroPass === "preTargetDamageApplication") {
         // apply damage types
         await MonsterMacros.applyDamageTypes(actor, workflow.damageDetail);
 
@@ -36,6 +36,11 @@ try {
             // check for death
             await MonsterMacros.applyNoRegenerationEffect(actor);
             await actor.toggleStatusEffect("dead", {active: true});
+        }
+        else {
+            await ChatMessage.create({
+                content: `${actor.name} is unable to regenerate this turn`,
+                speaker: ChatMessage.getSpeaker({ actor: actor })});
         }
 
         await MonsterMacros.clearDamageTypes(actor);

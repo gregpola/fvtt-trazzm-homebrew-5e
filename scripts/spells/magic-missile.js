@@ -6,7 +6,7 @@
     Using a Higher-Level Spell Slot. The spell creates one more dart for each spell slot level above 1.
 */
 const optionName = "Magic Missile";
-const version = "13.5.0";
+const version = "14.5.0";
 const damageType = "force";
 
 try {
@@ -17,8 +17,8 @@ try {
         // check for need to select targets
         if (workflow.targets.size === 1) {
             let target = workflow.targets.first();
-            await launchMissiles(target, missileCount, macroItem);
-            //await launchMissilesActivity(target, missileCount, macroItem);
+            //await launchMissiles(target, missileCount, macroItem);
+            await launchMissilesActivity(target, missileCount, macroItem);
         }
         else {
             // ask how many missiles per target
@@ -73,7 +73,8 @@ try {
 
             if (targetData) {
                 for (let td of targetData) {
-                    await launchMissiles(td.target, td.count, macroItem);
+                    //await launchMissiles(td.target, td.count, macroItem);
+                    await launchMissilesActivity(td.target, td.count, macroItem);
                 }
             }
         }
@@ -81,38 +82,6 @@ try {
 
 } catch (err) {
     console.error(`${optionName}: ${version}`, err);
-}
-
-async function launchMissiles(targetToken, missileCount, sourceItem){
-    for (let i = 0; i < missileCount; i++) {
-        await anime(token, targetToken);
-        let damageRoll = await new CONFIG.Dice.DamageRoll('1d4+1', {}, {type: damageType}).evaluate();
-        //await new MidiQOL.DamageOnlyWorkflow(actor, token, null, null, [targetToken], damageRoll, {flavor: optionName, itemCardId: args[0].itemCardId, itemData: sourceItem?.toObject()});
-        //let damageRoll = await new Roll('1d4+1').evaluate();
-        await MidiQOL.displayDSNForRoll([damageRoll], "damageRoll");
-        await MidiQOL.applyTokenDamage(
-            [{ damage: damageRoll.total, type: damageType }],
-            damageRoll.total,
-            new Set([targetToken]),
-            sourceItem,
-            new Set(),
-            {flavor: optionName}
-        );
-        await new Promise(resolve => setTimeout(resolve, 100));
-    }
-}
-
-async function anime(controlledToken, targetToken) {
-    const targetElevation = targetToken.document?.elevation ?? 0;
-
-    new Sequence()
-        .effect()
-        .file('blfx.spell.range.ray.burst5.missile.sinusoidal.impact.intro.purple')
-        .zIndex(100)
-        .elevation(targetElevation)
-        .atLocation(controlledToken)
-        .stretchTo(targetToken)
-        .play()
 }
 
 async function launchMissilesActivity(targetToken, missileCount, sourceItem) {
@@ -137,7 +106,6 @@ async function launchMissilesActivity(targetToken, missileCount, sourceItem) {
         };
 
         for (let i = 0; i < missileCount; i++) {
-            await anime(token, targetToken);
             await MidiQOL.completeActivityUse(activity.uuid, options, {}, {});
         }
     }

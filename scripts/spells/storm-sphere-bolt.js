@@ -3,7 +3,7 @@
     center of the sphere toward one creature you choose within 60 feet of the center. Make a ranged spell attack. You
     have advantage on the attack roll if the target is in the sphere. On a hit, the target takes 4d6 lightning damage.
  */
-const version = "13.5.0";
+const version = "14.5.0";
 const optionName = "Storm Sphere Bolt";
 
 try {
@@ -13,14 +13,14 @@ try {
         if (targetToken) {
             let tokenInTemplate = false;
 
-            const spellTemplate = targetToken.scene.templates.find(t => t.flags.dnd5e.item === macroItem.uuid);
+            const spellTemplate = targetToken.scene.regions.find(t => t.flags.dnd5e.item === macroItem.uuid);
             if (spellTemplate) {
-                const templateShape = spellTemplate.object?.shape;
+                const templateShape = spellTemplate.shapes[0];
 
                 if (templateShape) {
                     tokenInTemplate = targetToken.document.getOccupiedGridSpaceOffsets().map(i => targetToken.scene.grid.getCenterPoint(i)).some(i => spellTemplate.object.testPoint(i))
                     if (tokenInTemplate) {
-                        workflow.advantage = true;
+                        workflow.tracker.advantage.add(true, "In Storm Sphere");
                     }
                 }
 

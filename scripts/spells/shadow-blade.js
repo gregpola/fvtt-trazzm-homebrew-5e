@@ -3,9 +3,8 @@
     a 5th- or 6th-level spell slot, the damage increases to 4d8. When you cast it using a spell slot of 7th level or
     higher, the damage increases to 5d8.
  */
-const version = "12.4.0";
+const version = "14.5.0";
 const optionName = "Shadow Blade";
-const itemId = "Compendium.fvtt-trazzm-homebrew-5e.trazzm-automation-items-2024.Item.BYuo5htmfWVmMevl";
 
 try {
     if (args[0].macroPass === "postActiveEffects") {

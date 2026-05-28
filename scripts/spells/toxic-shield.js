@@ -7,7 +7,7 @@
     1d8 for every 2 slot levels above 1st.
 */
 const optionName = "Toxic Shield";
-const version = "13.5.0";
+const version = "14.5.0";
 
 try {
     if (args[0].tag === "TargetOnUse" && args[0].macroPass === "isHit") {
@@ -16,20 +16,28 @@ try {
             const attacker = rolledItem.actor;
             const attackerToken = MidiQOL.tokenForActor(attacker);
 
+            // get the actor owner
+            let actorUser = MidiQOL.playerForActor(actor);
+            if (!actorUser?.active) {
+                console.info(`${optionName} - unable to locate the actor player, sending to GM`);
+                actorUser = game.users?.activeGM;
+            }
+
             let activity = macroItem.system.activities.find(a => a.identifier === 'poison-damage');
             if (activity) {
                 const options = {
                     midiOptions: {
                         targetsToUse: new Set([attackerToken]),
-                        noOnUseMacro: false,
+                        noOnUseMacro: true,
                         configureDialog: false,
-                        showFullCard: false,
+                        showFullCard: true,
                         ignoreUserTargets: true,
-                        checkGMStatus: false,
+                        checkGMStatus: true,
                         autoRollAttack: true,
                         autoRollDamage: "always",
                         fastForwardAttack: true,
                         fastForwardDamage: true,
+                        asUser: actorUser.id,
                         workflowData: true
                     }
                 };

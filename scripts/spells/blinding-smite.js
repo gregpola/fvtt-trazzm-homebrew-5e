@@ -5,19 +5,29 @@
 
     Using a Higher-Level Spell Slot. The extra damage increases by 1d8 for each spell slot level above 3.
 */
-const version = "12.4.2";
+const version = "14.5.0";
 const optionName = "Blinding Smite";
 const damageType = "radiant";
 const effectName = "Blinded";
 
 try {
     if (args[0].macroPass === "DamageBonus") {
+        // apply secondary effect
         let targetToken = workflow.hitTargets.first();
+        if (targetToken) {
+            const applyActivity = await macroItem.system.activities.find(a => a.identifier === 'apply-blinded');
+            if (applyActivity) {
+                const targetUuids = Array.from(workflow.hitTargets).map(t => t.document.uuid);
+                const hookId = Hooks.on("midi-qol.RollComplete", async (wf) => {
+                    if (wf.id !== workflow.id) return;
+                    Hooks.off("midi-qol.RollComplete", hookId);
+                    await MidiQOL.completeActivityUse(applyActivity, {midiOptions: {targetUuids}});
+                });
+            }
+        }
+
         const spellLevel = actor.flags["fvtt-trazzm-homebrew-5e"].BlindingSmite?.level ?? 3;
-        const diceCount = spellLevel;
-
-        await applyEffects(targetToken, macroItem, actor.system.attributes.spell.dc);
-
+        const diceCount = Math.max(Number(spellLevel), 3);
         return new game.system.dice.DamageRoll(`${diceCount}d8`, {}, {
             isCritical: workflow.isCritical,
             properties: ["mgc"],
@@ -28,31 +38,4 @@ try {
 
 } catch (err) {
     console.error(`${optionName}: ${version}`, err);
-}
-
-async function applyEffects(targetToken, macroItem, saveDC) {
-    let effectData = {
-        name: effectName,
-        icon: "icons/skills/wounds/injury-eyes-blood-red-pink.webp",
-        origin: macroItem.uuid,
-        type: "base",
-        transfer: false,
-        statuses: [
-            "blinded"
-        ],
-        changes: [
-            {
-                key:"flags.midi-qol.OverTime",
-                value: `turn=end, saveAbility=con, saveDC=${saveDC}, label=${effectName}`,
-                mode: CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
-                priority: 20
-            }],
-        flags: {
-            dae: {
-                specialDuration: ['shortRest', 'longRest', 'combatEnd']
-            }
-        },
-        duration: {seconds: 60}};
-
-    await MidiQOL.socket().executeAsGM("createEffects", { actorUuid: targetToken.actor.uuid, effects: [effectData] });
 }

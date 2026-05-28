@@ -220,6 +220,18 @@
         "ASSISTANT": "OWNER"
       },
       "system": "dnd5e"
+    },
+    {
+      "name": "trazzm-active-effects-2024",
+      "label": "Active Effects",
+      "path": "packs/trazzm-active-effects-2024",
+      "type": "ActiveEffect",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "system": "dnd5e",
+      "flags": {}
     }
   ],
   "packFolders": [
@@ -256,14 +268,15 @@
         "trazzm-automation-actors-2024",
         "trazzm-automation-items-2024",
         "homebrew-macros",
-        "homebrew-journal-entries"
+        "homebrew-journal-entries",
+        "trazzm-active-effects-2024"
       ]
     }
   ],
   "compatibility": {
-    "minimum": "13",
-    "verified": "13.351",
-    "maximum": "13.999"
+    "minimum": "14",
+    "verified": "14.360.0",
+    "maximum": "14.999.999"
   },
   "relationships": {
     "requires": [
@@ -283,63 +296,41 @@
         "compatibility": {}
       },
       {
+        "id": "regionba",
+        "type": "module",
+        "compatibility": {}
+      },
+      {
         "id": "socketlib",
         "type": "module",
         "compatibility": {
           "minimum": "1.1.3",
           "verified": "1.1.4"
         }
-      }
-    ],
-    "systems": [
+      },
       {
-        "id": "dnd5e",
-        "type": "system",
-        "compatibility": {
-          "minimum": "5.0.0",
-          "maximum": "5.9.99",
-          "verified": "5.3.3"
-        }
+        "id": "lib-wrapper",
+        "type": "module"
       }
     ],
     "recommends": [
-      {
-        "id": "ATL",
-        "type": "module",
-        "compatibility": {}
-      },
       {
         "id": "auraeffects",
         "type": "module",
         "compatibility": {}
       },
       {
+        "id": "boss-loot-assets-premium",
+        "type": "module",
+        "compatibility": {}
+      },
+      {
+        "id": "blfx-assets-pack01",
+        "type": "module",
+        "compatibility": {}
+      },
+      {
         "id": "JB2A_DnD5e",
-        "type": "module",
-        "compatibility": {}
-      },
-      {
-        "id": "region-active-effects",
-        "type": "module",
-        "compatibility": {}
-      },
-      {
-        "id": "region-attacher",
-        "type": "module",
-        "compatibility": {}
-      },
-      {
-        "id": "sequencer",
-        "type": "module",
-        "compatibility": {}
-      },
-      {
-        "id": "tokenmagic",
-        "type": "module",
-        "compatibility": {}
-      },
-      {
-        "id": "portal-lib",
         "type": "module",
         "compatibility": {}
       },
@@ -354,7 +345,17 @@
         "compatibility": {}
       },
       {
+        "id": "portal-lib",
+        "type": "module",
+        "compatibility": {}
+      },
+      {
         "id": "rest-recovery",
+        "type": "module",
+        "compatibility": {}
+      },
+      {
+        "id": "sequencer",
         "type": "module",
         "compatibility": {}
       },
@@ -364,29 +365,33 @@
         "compatibility": {}
       },
       {
+        "id": "tokenmagic",
+        "type": "module",
+        "compatibility": {}
+      },
+      {
         "id": "vision-5e",
         "type": "module",
         "compatibility": {}
-      },
+      }
+    ],
+    "systems": [
       {
-        "id": "visual-active-effects",
-        "type": "module",
-        "compatibility": {}
-      },
-      {
-        "id": "boss-loot-assets-premium",
-        "type": "module",
-        "compatibility": {}
-      },
-      {
-        "id": "blfx-assets-pack01",
-        "type": "module",
-        "compatibility": {}
+        "id": "dnd5e",
+        "type": "system",
+        "compatibility": {
+          "minimum": "5.0.0",
+          "maximum": "5.9.99",
+          "verified": "5.3.3"
+        }
       }
     ]
   },
   "esmodules": [
     "module/module.js"
+  ],
+  "styles": [
+    "css/styles.css"
   ],
   "scripts": [
     "module/HomebrewMacros.js",

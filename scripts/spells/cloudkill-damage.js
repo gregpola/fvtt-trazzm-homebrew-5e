@@ -9,46 +9,61 @@
 
     The Sphere moves 10 feet away from you at the start of each of your turns.
  */
-const version = "13.5.0";
 const optionName = "Cloudkill";
-const _flagGroup = "fvtt-trazzm-homebrew-5e";
+const version = "14.5.0";
 
-// the enter or end turn macro
-let targetToken = event.data.token;
-if (targetToken) {
-    const tflags = region.flags['region-attacher'];
+try {
+    let originActor = (await fromUuid(lastArgValue?.origin))?.actor;
 
-    if (tflags && tflags.itemUuid) {
-        const sourceItem = await fromUuid(tflags.itemUuid);
-        if (sourceItem) {
-            let targetCombatant = game.combat.getCombatantByToken(targetToken);
-            if (targetCombatant) {
-                const originActor = sourceItem.parent;
-                const flagName = `cloudkill-${originActor.id}`;
-                if (HomebrewHelpers.perTurnCheck(targetCombatant, flagName, event.name)) {
-                    // synthetic activity use
-                    const activity = sourceItem.system.activities.find(a => a.identifier === 'cloudkill-damage');
-                    if (activity) {
-                        await HomebrewHelpers.setTurnCheck(targetCombatant, flagName);
+    if (args[0] === "on") {
+        await applySpellDamage(token, originActor, macroItem, 'tokenEnter');
 
-                        const options = {
-                            midiOptions: {
-                                targetsToUse: new Set([targetToken]),
-                                noOnUseMacro: false,
-                                configureDialog: false,
-                                showFullCard: false,
-                                ignoreUserTargets: true,
-                                checkGMStatus: true,
-                                autoRollAttack: true,
-                                autoRollDamage: "always",
-                                fastForwardAttack: true,
-                                fastForwardDamage: true,
-                                workflowData: false
-                            }
-                        };
+    }
+    else if (args[0] === "each" && lastArgValue.turn === 'endTurn') {
+        await applySpellDamage(token, originActor, macroItem, 'tokenTurnEnd');
 
-                        await MidiQOL.completeActivityUse(activity.uuid, options, {}, {});
-                    }
+    }
+
+} catch (err) {
+    console.error(`${optionName}: ${version}`, err);
+}
+
+async function applySpellDamage(targetToken, originActor, sourceItem, eventName) {
+    if (targetToken) {
+        // make sure the target is not flagged as never target
+        const neverTargetFlag = targetToken.actor.getFlag("midi-qol", "neverTarget");
+        if (neverTargetFlag) {
+            console.log(`${optionName} - skipping target ${targetToken.name} - flagged as neverTarget`);
+            return;
+        }
+
+        let targetCombatant = game.combat.getCombatantByToken(targetToken.document);
+        if (targetCombatant) {
+            const flagName = `cloudkill-damage-${originActor.id}`;
+            if (HomebrewHelpers.perTurnCheck(targetCombatant, flagName, eventName)) {
+                // synthetic activity use
+                const activity = sourceItem.system.activities.find(a => a.identifier === 'apply-damage');
+                if (activity) {
+                    await HomebrewHelpers.setTurnCheck(targetCombatant, flagName);
+                    let targetUuids = [targetToken.document.uuid];
+
+                    const options = {
+                        midiOptions: {
+                            targetUuids: targetUuids,
+                            noOnUseMacro: true,
+                            configureDialog: false,
+                            showFullCard: false,
+                            ignoreUserTargets: true,
+                            checkGMStatus: true,
+                            autoRollAttack: true,
+                            autoRollDamage: "always",
+                            fastForwardAttack: true,
+                            fastForwardDamage: true,
+                            workflowData: true
+                        }
+                    };
+
+                    await MidiQOL.completeActivityUse(activity.uuid, options, {}, {});
                 }
             }
         }

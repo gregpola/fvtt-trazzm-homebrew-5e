@@ -36,7 +36,7 @@ try {
                             configureDialog: false,
                             showFullCard: true,
                             ignoreUserTargets: true,
-                            checkGMStatus: true,
+                            checkGMStatus: false,
                             autoRollAttack: true,
                             autoRollDamage: "always",
                             fastForwardAttack: true,

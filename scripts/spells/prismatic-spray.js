@@ -8,10 +8,10 @@
 
 */
 const optionName = "Prismatic Spray";
-const version = "13.5.0";
+const version = "14.5.0";
 
 try {
-    if (args[0].macroPass === "postActiveEffects") {
+    if (args[0].macroPass === "preActiveEffects") {
         let redSet = []; // 1
         let orangeSet = []; // 2
         let yellowSet = []; // 3
@@ -23,7 +23,7 @@ try {
 
         // determine beams hitting each target
         for (let targetToken of workflow.targets) {
-            let targetCombatant = game.combat.getCombatantByToken(token.document);
+            let targetCombatant = game.combat.getCombatantByToken(targetToken.document);
             if (targetCombatant) {
                 let beamRoll = await new Roll('1d8').evaluate();
 
@@ -108,31 +108,40 @@ try {
         // apply beams to targets
         if (redSet.length > 0) {
             await applyRedBeam(redSet);
+            await HomebrewMacros.wait(1000);
         }
 
         if (orangeSet.length > 0) {
             await applyOrangeBeam(orangeSet);
+            await HomebrewMacros.wait(1000);
         }
 
         if (yellowSet.length > 0) {
             await applyYellowBeam(yellowSet);
+            await HomebrewMacros.wait(1000);
         }
 
         if (greenSet.length > 0) {
             await applyGreenBeam(greenSet);
+            await HomebrewMacros.wait(1000);
         }
 
         if (blueSet.length > 0) {
             await applyBlueBeam(blueSet);
+            await HomebrewMacros.wait(1000);
         }
 
         if (indigoSet.length > 0) {
             await applyIndigoBeam(indigoSet);
+            await HomebrewMacros.wait(1000);
         }
 
         if (violetSet.length > 0) {
             await applyVioletBeam(violetSet);
         }
+        // else {
+        //     await applyVioletBeam(workflow.targets);
+        // }
     }
 
 } catch (err) {

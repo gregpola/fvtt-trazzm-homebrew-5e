@@ -6,27 +6,14 @@
     Prone condition. A creature that enters the area or ends its turn there must also succeed on that save or fall Prone.
 */
 const optionName = "Grease";
-const version = "12.4.0";
-const _flagGroup = "fvtt-trazzm-homebrew-5e";
+const version = "14.5.0";
 
 try {
-    if (rolledActivity?.name === "Cast") {
-        if (args[0].macroPass === "preItemRoll") {
-            Hooks.once("createMeasuredTemplate", async (template) => {
-                await template.update({'fillAlpha': 0.1});
-            });
-
-            Hooks.once("createRegion", async (region) => {
-                await region.update({'visibility': 0});
-            });
-        }
-        else if (args[0].macroPass === "postActiveEffects") {
-            for (let tt of workflow.failedSaves) {
-                await tt.actor.toggleStatusEffect('prone', {active: true});
-            }
+    if (args[0].macroPass === "postActiveEffects") {
+        for (let tt of workflow.failedSaves) {
+            await tt.actor.toggleStatusEffect('prone', {active: true});
         }
     }
-
 } catch (err) {
     console.error(`${optionName} : ${version}`, err);
 }

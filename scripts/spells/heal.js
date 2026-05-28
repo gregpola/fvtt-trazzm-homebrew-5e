@@ -4,7 +4,7 @@
 
 	Using a Higher-Level Spell Slot. The healing increases by 10 for each spell slot level above 6.
 */
-const version = "13.5.0";
+const version = "14.5.0";
 const optionName = "Heal";
 const condition_list = new Set(["blinded", "deafened", "poisoned"]);
 
