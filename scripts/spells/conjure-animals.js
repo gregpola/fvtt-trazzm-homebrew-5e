@@ -1,24 +1,13 @@
 /*
-	Whenever the pack moves within 10 feet of a creature you can see and whenever a creature you can see enters a space
-	within 10 feet of the pack or ends its turn there, you can force that creature to make a Dexterity saving throw. On
-	a failed save, the creature takes 3d10 Slashing damage. A creature makes this save only once per turn.
+	You have Advantage on Strength saving throws while you’re within 5 feet of the pack, and when you move on your turn,
+	you can also move the pack up to 30 feet to an unoccupied space you can see.
 */
 const optionName = "Conjure Animals";
-const version = "13.5.0";
-const _flagGroup = "fvtt-trazzm-homebrew-5e";
-const flagName = "conjure-animals-flag";
+const version = "14.5.0";
 
 try {
-    if (args[0].macroPass === "preItemRoll") {
-        Hooks.once("createMeasuredTemplate", async (template) => {
-            await actor.setFlag(_flagGroup, flagName, {templateUuid: template.uuid});
-
-            await template.update({
-                fillAlpha: 0,
-                alpha: 0,
-                opacity: 0.1
-            });
-        });
+    if (args[0].tag === "TargetOnUse" && args[0].macroPass === "preTargetSave") {
+        console.log(workflow);
     }
 
 } catch (err) {

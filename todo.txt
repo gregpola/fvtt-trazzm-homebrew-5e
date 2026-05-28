@@ -1,9 +1,12 @@
+Toll the dead auto adjust damage
 Flame Tongue enchantment
-test Smite Spells
+
+
 Drow poison
-
 Remove drow poisoned weapons and replace with new potions
+Add to combat and roll initiative for summons
 
+** Difficult terrain effect -- spike growth ***
 *** Hook on combat end, short rest, and long rest to automatically expire effects that should ***
 
 College of swords
@@ -22,8 +25,9 @@ Intercept feat
 
 
 
+Module Enhanced region behavior ??? Do we need this???
+
 V14 Modules out of date
 - DND5e scriplets
 - Lib Color Settings
-- Macro Autocomplete
 - MATT -- replaced by Region Behavior Adjustments???

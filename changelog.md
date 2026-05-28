@@ -5,6 +5,9 @@
 
 # 14.5.1
 * Added Point Buy Calculator from v13
-* Added logic to make sure the current combatant's token is always on top in the scene
 * Updated Circle of the Elements to mark all granted spells as always prepared
-* Updated all homebrew spells for v14 changes
+* Updated all homebrew cantrip, 1st, and most 2nd level spells for v14 changes
+
+# 14.5.1.1
+* Updated Troll regeneration for v14
+* Updated the remaining homebrew spells for v14

@@ -1,7 +1,7 @@
 /*
     When you use the sword to attack a target that is in dim light or darkness, you make the attack roll with advantage.
  */
-const version = "12.4.0";
+const version = "14.5.0";
 const optionName = "Shadow Blade - Advantage";
 
 try {
@@ -10,7 +10,7 @@ try {
         if (targetToken) {
             const tokenLightLevel = HomebrewHelpers.getLightLevel(targetToken);
             if (tokenLightLevel !== 'bright') {
-                workflow.advantage = true;
+                workflow.tracker.advantage.add(true, "Dim light or Darkness");
             }
         }
     }

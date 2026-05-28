@@ -1,0 +1,200 @@
+{
+    "lightPerception": {
+        "id": "lightPerception",
+        "label": "DETECTION.LightPerception",
+        "type": 0,
+        "sort": -8,
+        "tokenConfig": true,
+        "walls": true,
+        "angle": true,
+        "imprecise": false,
+        "important": false
+    },
+    "basicSight": {
+        "id": "basicSight",
+        "label": "DND5E.SenseDarkvision",
+        "type": 0,
+        "sort": -7,
+        "tokenConfig": true,
+        "walls": true,
+        "angle": true,
+        "imprecise": false,
+        "important": false
+    },
+    "seeInvisibility": {
+        "id": "seeInvisibility",
+        "label": "VISION5E.SeeInvisibility",
+        "type": 3,
+        "walls": false,
+        "angle": false,
+        "tokenConfig": true,
+        "imprecise": false,
+        "important": false,
+        "sort": 0
+    },
+    "feelTremor": {
+        "id": "feelTremor",
+        "label": "DND5E.SenseTremorsense",
+        "type": 2,
+        "walls": false,
+        "angle": false,
+        "imprecise": true,
+        "sort": -3,
+        "tokenConfig": true,
+        "important": false
+    },
+    "seeAll": {
+        "id": "seeAll",
+        "label": "DND5E.SenseTruesight",
+        "type": 0,
+        "sort": -5,
+        "tokenConfig": true,
+        "walls": true,
+        "angle": true,
+        "imprecise": false,
+        "important": false
+    },
+    "blindsight": {
+        "id": "blindsight",
+        "label": "DND5E.SenseBlindsight",
+        "type": 0,
+        "sort": -4,
+        "tokenConfig": true,
+        "walls": true,
+        "angle": true,
+        "imprecise": false,
+        "important": false
+    },
+    "bloodSense": {
+        "id": "bloodSense",
+        "label": "VISION5E.BloodSense",
+        "type": 3,
+        "walls": false,
+        "angle": false,
+        "important": true,
+        "imprecise": true,
+        "tokenConfig": true,
+        "sort": 0
+    },
+    "detectEvilAndGood": {
+        "type": 3,
+        "angle": false,
+        "important": true,
+        "imprecise": true,
+        "id": "detectEvilAndGood",
+        "label": "VISION5E.DetectEvilAndGood",
+        "tokenConfig": true,
+        "walls": true,
+        "sort": 0
+    },
+    "detectMagic": {
+        "type": 3,
+        "angle": false,
+        "important": true,
+        "imprecise": false,
+        "id": "detectMagic",
+        "label": "VISION5E.DetectMagic",
+        "tokenConfig": true,
+        "walls": true,
+        "sort": 0
+    },
+    "detectPoisonAndDisease": {
+        "type": 3,
+        "angle": false,
+        "important": true,
+        "imprecise": true,
+        "id": "detectPoisonAndDisease",
+        "label": "VISION5E.DetectPoisonAndDisease",
+        "tokenConfig": true,
+        "walls": true,
+        "sort": 0
+    },
+    "detectThoughts": {
+        "type": 3,
+        "angle": false,
+        "important": true,
+        "imprecise": true,
+        "id": "detectThoughts",
+        "label": "VISION5E.DetectThoughts",
+        "tokenConfig": true,
+        "walls": true,
+        "sort": 0
+    },
+    "devilsSight": {
+        "id": "devilsSight",
+        "label": "VISION5E.DevilsSight",
+        "type": 0,
+        "sort": -6,
+        "tokenConfig": true,
+        "walls": true,
+        "angle": true,
+        "imprecise": false,
+        "important": false
+    },
+    "divineSense": {
+        "id": "divineSense",
+        "label": "VISION5E.DivineSense",
+        "type": 3,
+        "walls": false,
+        "angle": false,
+        "important": true,
+        "imprecise": true,
+        "tokenConfig": true,
+        "sort": 0
+    },
+    "etherealSight": {
+        "id": "etherealSight",
+        "label": "VISION5E.EtherealSight",
+        "type": 3,
+        "walls": false,
+        "angle": false,
+        "sort": 1,
+        "tokenConfig": true,
+        "imprecise": false,
+        "important": false
+    },
+    "eyesOfTheGrave": {
+        "id": "eyesOfTheGrave",
+        "label": "VISION5E.EyesOfTheGrave",
+        "type": 3,
+        "angle": false,
+        "important": true,
+        "imprecise": true,
+        "tokenConfig": true,
+        "walls": true,
+        "sort": 0
+    },
+    "hearing": {
+        "id": "hearing",
+        "label": "VISION5E.Hearing",
+        "type": 1,
+        "angle": false,
+        "imprecise": true,
+        "sort": -1,
+        "tokenConfig": true,
+        "walls": true,
+        "important": false
+    },
+    "lifeSense": {
+        "id": "lifeSense",
+        "label": "VISION5E.LifeSense",
+        "type": 3,
+        "walls": false,
+        "angle": false,
+        "important": true,
+        "imprecise": true,
+        "tokenConfig": true,
+        "sort": 0
+    },
+    "thermalVision": {
+        "id": "thermalVision",
+        "label": "VISION5E.ThermalVision",
+        "type": 0,
+        "tokenConfig": true,
+        "walls": true,
+        "angle": true,
+        "imprecise": false,
+        "important": false,
+        "sort": 0
+    }
+}

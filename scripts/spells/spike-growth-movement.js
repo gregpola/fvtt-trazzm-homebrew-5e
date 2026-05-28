@@ -15,53 +15,67 @@
 	is cast must take a Search action and succeed on a Wisdom (Perception) or Wisdom (Survival) check against your spell
 	save DC to recognize the terrain as hazardous before entering it.
 */
-const version = "13.5.1";
+const version = "14.5.0";
 const optionName = "Spike Growth";
+const _flagGroup = "fvtt-trazzm-homebrew-5e";
+const _flagName = "in-spike-growth";
 
-// Move within
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+try {
+    if (args[0] === "on") {
+        const hookId = Hooks.on('moveToken', tokenMoved);
+        await actor.setFlag(_flagGroup, _flagName, { hook: hookId});
 
-console.log("Spike Growth -- " + event.user.name);
-if (!event.data.teleport) {
-    const distanceMoved = event.data.movement.passed.distance;
-	const squaresMoved = distanceMoved / 5;
+    }
+    else if (args[0] === "off") {
+        console.log("off");
+        let flag = token.actor.getFlag(_flagGroup, _flagName);
+        if (flag) {
+            Hooks.off('moveToken', flag.hook);
+            await actor.unsetFlag(_flagGroup, _flagName);
+        }
+    }
 
-	if (squaresMoved > 0) {
-		const originActor = await fromUuid(region.flags['region-attacher'].actorUuid);
+} catch (err) {
+    console.error(`${optionName}: ${version}`, err);
+}
 
-        let targetToken = event.data.token;
-        if (targetToken) {
-            const sourceItem = await fromUuid(region.flags['region-attacher'].itemUuid);
-            if (sourceItem) {
-                // synthetic activity use
-                const activity = sourceItem.system.activities.find(a => a.identifier === 'movement-damage');
-                if (activity) {
-                    let targetUuids = [targetToken.uuid];
+async function tokenMoved(token, movement, options, user) {
+    if (token.actor) {
+        let flag = token.actor.getFlag(_flagGroup, _flagName);
+        if (flag) {
+            // TODO handle damage for each 5 feet moved
+            const isFinalMovement = !movement.pending.waypoints.length;
+            if (isFinalMovement) {
+                Hooks.off('moveToken', flag.hook);
 
-                    const options = {
-                        midiOptions: {
-                            targetUuids: targetUuids,
-                            noOnUseMacro: true,
-                            configureDialog: false,
-                            showFullCard: false,
-                            ignoreUserTargets: true,
-                            checkGMStatus: true,
-                            autoRollAttack: true,
-                            autoRollDamage: "always",
-                            fastForwardAttack: true,
-                            fastForwardDamage: true,
-                            workflowData: true
-                        }
-                    };
-
-                    await MidiQOL.completeActivityUse(activity.uuid, options, {}, {});
-                    await new Sequence().effect().file("jb2a.swirling_leaves.loop.01.green").atLocation(targetToken).scaleToObject(1.5).play();
+                // get the source item
+                if (sourceItem) {
+                    await applyMoveDamage(token, sourceItem);
                 }
-                else {
-                    ui.notifications.error(`${optionName}: ${version} - missing Movement Damage activity`);
-                }
-
             }
         }
-	}
+    }
+}
+
+async function applyMoveDamage(targetToken, macroItem) {
+    let activity = macroItem.system.activities.find(a => a.identifier === 'movement-damage');
+    if (activity) {
+        const options = {
+            midiOptions: {
+                targetsToUse: new Set([targetToken]),
+                noOnUseMacro: false,
+                configureDialog: false,
+                showFullCard: false,
+                ignoreUserTargets: true,
+                checkGMStatus: true,
+                autoRollAttack: true,
+                autoRollDamage: "always",
+                fastForwardAttack: true,
+                fastForwardDamage: true,
+                workflowData: false
+            }
+        };
+
+        await MidiQOL.completeActivityUse(activity, options, {}, {});
+    }
 }

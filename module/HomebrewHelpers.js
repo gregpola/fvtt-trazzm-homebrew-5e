@@ -1023,20 +1023,18 @@ class HomebrewHelpers {
     }
 
     static getLightLevel(token) {
-        if (token.document.parent.environment.globalLight.enabled) return 'bright';
-        let c = Object.values(token.center);
-        let lights = canvas.effects.lightSources.filter(src => !(src instanceof foundry.canvas.sources.GlobalLightSource) && src.shape.contains(...c));
-        if (!lights.length) return 'dark';
-        let inBright = lights.some(light => {
-            let {data: {x, y}, ratio} = light;
-            let bright = ClockwiseSweepPolygon.create({'x': x, 'y': y}, {
-                type: 'light',
-                boundaryShapes: [new PIXI.Circle(x, y, ratio * light.shape.config.radius)]
-            });
-            return bright.contains(...c);
-        });
-        if (inBright) return 'bright';
-        return 'dim';
+        // this feature uses the effects added to tokens by the 'Token Light Condition' module
+        const dimLight = this.findEffect(token.actor, 'Dim Lighting');
+        const darkLight = this.findEffect(token.actor, 'Dark Lighting');
+
+        if (darkLight) {
+            return 'dark';
+        }
+        else if (dimLight) {
+            return 'dim';
+        }
+
+        return 'bright';
     }
 
     static async drawWallTemplateWalls(template, templateName, actorId) {
@@ -1181,4 +1179,30 @@ class HomebrewHelpers {
         damageItem.newHP = Math.clamp(damageItem.oldHP + Math.min(0, newTempHP), 0, damageItem.oldHP);
         damageItem.hpDamage = damageItem.oldHP - damageItem.newHP;
     }
+
+    static async getTokenCorner(sourceToken, targetToken) {
+        const sourceCenter = sourceToken.center;
+        const targetCorners = [
+            targetToken.bounds.topEdge.A,
+            targetToken.bounds.topEdge.B,
+            targetToken.bounds.bottomEdge.A,
+            targetToken.bounds.bottomEdge.B,
+        ];
+
+        // Distances from source center to each corner
+        const distances = targetCorners.map(corner => {
+            const dx = corner.x - sourceCenter.x;
+            const dy = corner.y - sourceCenter.y;
+            return { corner, distance: Math.sqrt(dx * dx + dy * dy) };
+        });
+
+        // Sort corners by distance
+        distances.sort((a, b) => a.distance - b.distance);
+
+        // Select the two closest corners
+        const closestCorners = [distances[0].corner, distances[1].corner];
+
+        const randomIndex = Math.floor(Math.random() * closestCorners.length);
+        return closestCorners[randomIndex];
+    };
 }

@@ -9,7 +9,7 @@
     Using a Higher-Level Spell Slot. The damage increases by 1d8 for each spell slot level above 4.
 */
 const optionName = "Conjure Woodland Beings";
-const version = "12.4.0";
+const version = "14.5.0";
 
 try {
     let targetToken;
@@ -23,14 +23,11 @@ try {
             targetToken = workflow.effectTargets.first().document;
             originActor = actor;
             sourceItem = originActor.items.find(i => i.name === optionName && i.type === 'spell');
-
         }
         else if (lastArgValue && lastArgValue.tokenUuid) {
             targetToken = await fromUuid(lastArgValue.tokenUuid);
-            originActor = await fromUuid(lastArgValue.origin);
-            const castData = lastArgValue.efData.flags['midi-qol'].castData;
-            sourceItem = await fromUuid(castData.itemUuid);
-
+            originActor = (await fromUuid(lastArgValue.origin)).actor;
+            sourceItem = macroItem;
         }
 
         await applySpellDamage(targetToken, originActor, sourceItem, eventName);
@@ -41,9 +38,8 @@ try {
             eventName = 'tokenTurnEnd';
         }
 
-        originActor = await fromUuid(lastArgValue.origin);
-        const castData = lastArgValue.efData.flags['midi-qol'].castData;
-        sourceItem = await fromUuid(castData.itemUuid);
+        originActor = (await fromUuid(lastArgValue.origin)).actor;
+        sourceItem = macroItem;
 
         // ignore friendlies
         let sourceDisposition = CONST.TOKEN_DISPOSITIONS.FRIENDLY;
@@ -64,6 +60,13 @@ try {
 // target token must be a document
 async function applySpellDamage(targetToken, originActor, sourceItem, eventName) {
     if (targetToken) {
+        // make sure the target is not flagged as never target
+        const neverTargetFlag = targetToken.actor.getFlag("midi-qol", "neverTarget");
+        if (neverTargetFlag) {
+            console.log(`${optionName} - skipping target ${targetToken.name} - flagged as neverTarget`);
+            return;
+        }
+
         let targetCombatant = game.combat.getCombatantByToken(targetToken);
         if (targetCombatant) {
             const flagName = `woodland-beings-${originActor.id}`;
