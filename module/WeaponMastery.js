@@ -257,29 +257,31 @@ export class WeaponMastery {
 
                 case 'topple':
                     if (workflow.macroPass === 'postAttackRoll' && targetToken) {
-                        const proceed = await foundry.applications.api.DialogV2.confirm({
-                            window: {
-                                title: 'Weapon Mastery: Topple',
-                            },
-                            content: `Do you want to attempt to knock ${targetToken.name} prone?`,
-                            rejectClose: false,
-                            modal: true
-                        });
+                        if (!MidiQOL.hasCondition(targetToken.actor, "Prone")) {
+                            const proceed = await foundry.applications.api.DialogV2.confirm({
+                                window: {
+                                    title: 'Weapon Mastery: Topple',
+                                },
+                                content: `Do you want to attempt to knock ${targetToken.name} prone?`,
+                                rejectClose: false,
+                                modal: true
+                            });
 
-                        if (proceed) {
-                            const saveDC = 8 + abilityMod + workflow.actor.system.attributes.prof;
-                            const config = { undefined, ability: "con", target: saveDC };
-                            const dialog = {};
-                            const message = { data: { speaker: ChatMessage.implementation.getSpeaker({ actor: targetToken.actor }) } };
-                            let saveResult = await targetToken.actor.rollSavingThrow(config, dialog, message);
+                            if (proceed) {
+                                const saveDC = 8 + abilityMod + workflow.actor.system.attributes.prof;
+                                const config = {undefined, ability: "con", target: saveDC};
+                                const dialog = {};
+                                const message = {data: {speaker: ChatMessage.implementation.getSpeaker({actor: targetToken.actor})}};
+                                let saveResult = await targetToken.actor.rollSavingThrow(config, dialog, message);
 
-                            if (!saveResult[0].isSuccess) {
-                                await game.trazzm.socket.executeAsGM("toggleStatusEffect",
-                                    {actorUuid: targetToken.actor.uuid, statusId: 'prone', enabled: true});
-                                ChatMessage.create({
-                                    content: `${targetToken.name} is knocked prone.`,
-                                    speaker: ChatMessage.getSpeaker({actor: workflow.actor})
-                                });
+                                if (!saveResult[0].isSuccess) {
+                                    await game.trazzm.socket.executeAsGM("toggleStatusEffect",
+                                        {actorUuid: targetToken.actor.uuid, statusId: 'prone', enabled: true});
+                                    ChatMessage.create({
+                                        content: `${targetToken.name} is knocked prone.`,
+                                        speaker: ChatMessage.getSpeaker({actor: workflow.actor})
+                                    });
+                                }
                             }
                         }
                     }

@@ -2,14 +2,14 @@
     The target must succeed on a Strength saving throw or drop one object of your choice that it's holding, with the object landing in its space.
 */
 const optionName = "Disarming Attack";
-const version = "13.5.0";
+const version = "14.5.0";
 
 try {
     if (args[0].macroPass === "postActiveEffects") {
         for (let targetToken of workflow.failedSaves) {
             // check for potential dropped items
             let possibleItems = targetToken.actor.items.filter(i => i.system.equipped &&
-                ((i.type === 'weapon' && i.system.type.value !== 'natural' ) ||
+                ((i.type === 'weapon' && i.system.type.value !== 'natural' && (i.name.indexOf('War Bonded') < 0 ) ) ||
                     i.system.type.value.toLowerCase() === 'trinket' ||
                     i.system.type.value.toLowerCase() === 'wand' ||
                     i.system.type.value.toLowerCase() === 'potion' ));

@@ -43,7 +43,7 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          name: Latest
+          name: ${{github.event.release.name}}
           draft: false
           prerelease: false
           makeLatest: true

@@ -15,11 +15,17 @@ try {
 console.info("%c fvtt-trazzm-homebrew-5e", "color: #D030DE", " | Bag of Tricks (Gray)");
 ui.notifications.error(`${optionName}: ${version} - missing Font of Magic`);
 
-<section className="secret">
+<section id="secret-3J7hDKX4Or99Zq94" class="secret">
 	<p><strong>Foundry Note</strong></p>
 	<p>This feature includes an Active Effect which automatically increases your walking Speed but does not automate the
 		Advantage.</p>
 </section>
+
+const _flagGroup = "fvtt-trazzm-homebrew-5e";
+const _flagName = "mastery-vex-target";
+let flag = actor.getFlag(_flagGroup, _flagName);
+await actor.setFlag(_flagGroup, _flagName, target.actor.uuid);
+await actor.unsetFlag(_flagGroup, _flagName);
 
 
 // Useful references
@@ -93,11 +99,6 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(rolledActivity.actionType))
 			const cost = canvas.grid.measurePath([template, token.document]).cost;
 
 
-			const _flagGroup = "fvtt-trazzm-homebrew-5e";
-			const _flagName = "mastery-vex-target";
-			let flag = actor.getFlag(_flagGroup, _flagName);
-			await actor.setFlag(_flagGroup, _flagName, target.actor.uuid);
-			await actor.unsetFlag(_flagGroup, _flagName);
 
 			let effectIdsToRemove = actor.getRollData().effects.filter(e => e.origin === stuckEffect.origin).map(effect => effect.id);
 			const damageDice = actor.system.scale.barbarian["brutal-strike"];
@@ -171,120 +172,3 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(rolledActivity.actionType))
 				await MidiQOL.completeActivityUse(activity, options, {}, {});
 			}
 
-			for (let targetToken of workflow.failedSaves) {
-				await targetToken.actor.toggleStatusEffect('prone', {active: true});
-			}
-
-			Light
-			Spell:
-				"light"
-		:
-			{
-				"negative"
-			:
-				false,
-					"priority"
-			:
-				0,
-					"alpha"
-			:
-				0.3,
-					"angle"
-			:
-				360,
-					"bright"
-			:
-				20,
-					"color"
-			:
-				"#ff810a",
-					"coloration"
-			:
-				1,
-					"dim"
-			:
-				40,
-					"attenuation"
-			:
-				0.5,
-					"luminosity"
-			:
-				0.5,
-					"saturation"
-			:
-				0,
-					"contrast"
-			:
-				0,
-					"shadows"
-			:
-				0,
-					"animation"
-			:
-				{
-					"type"
-				:
-					"flame",
-						"speed"
-				:
-					1,
-						"intensity"
-				:
-					3,
-						"reverse"
-				:
-					false
-				}
-			,
-				"darkness"
-			:
-				{
-					"min"
-				:
-					0,
-						"max"
-				:
-					1
-				}
-
-				token.light | Override | {
-					"negative": false,
-					"priority": 0,
-					"alpha": 0.35,
-					"angle": 360,
-					"bright": 1,
-					"color": "#737b32",
-					"coloration": 1,
-					"dim": 2,
-					"attenuation": 0.75,
-					"luminosity": 0.5,
-					"saturation": 0,
-					"contrast": 0,
-					"shadows": 0,
-					"animation": {"type": "torch", "speed": 7, "intensity": 5, "reverse": false},
-					"darkness": {"min": 0, "max": 1}
-				}
-				"animation"
-			:
-				{
-					"type"
-				:
-					"torch", "speed"
-				:
-					7, "intensity"
-				:
-					5, "reverse"
-				:
-					false
-				}
-				{
-					"type"
-				:
-					'pulse', "speed"
-				:
-					3, "intensity"
-				:
-					5, "reverse"
-				:
-					false
-				}

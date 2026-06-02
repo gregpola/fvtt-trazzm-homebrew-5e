@@ -1,33 +1,23 @@
-Toll the dead auto adjust damage
-Flame Tongue enchantment
+College of swords
+Evoker
+Circle of the Stars
 
-
-Drow poison
-Remove drow poisoned weapons and replace with new potions
+Remove drow poisoned weapons and replace with new poisons
+Command spell automation
+Find Steed - Life Bond feature
+Arcane Mark spell
 Add to combat and roll initiative for summons
 
-** Difficult terrain effect -- spike growth ***
+
 *** Hook on combat end, short rest, and long rest to automatically expire effects that should ***
 
-College of swords
-Find Steed - Life Bond feature
-Vanish to the Space Between Worlds
-Command spell automation
-
-- actor update functionality
-- Prompt for corruption
-- options for initiative bonuses in module hook -- need support from the carousel
-- Critical effects table
-
-Circle of the Stars
-Arcane Mark spell
-Intercept feat
-
-
-
-Module Enhanced region behavior ??? Do we need this???
+Recover ammunition logic
+actor update functionality
+Prompt for corruption
+options for initiative bonuses in module hook -- need support from the carousel
+Critical effects table
+Intercept feat ???
 
 V14 Modules out of date
 - DND5e scriplets
 - Lib Color Settings
-- MATT -- replaced by Region Behavior Adjustments???

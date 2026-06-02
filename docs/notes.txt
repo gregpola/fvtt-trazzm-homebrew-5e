@@ -1,0 +1,135 @@
+========================================================================================================================
+OVERTIME values
+========================================================================================================================
+
+label="Fire Rune - Shackled", turn=end, saveDC=@abilities.str.mod + 8 + @attributes.prof, saveAbility=str, saveCount=1-
+label="Fire Rune - Burning", turn=start, damageRoll=2d6, damageType=fire
+turn=start, saveAbility=con, saveDC=@attributes.spell.dc, damageRoll=${@item.level}d6, damageType=fire, damageBeforeSave=true, label=Searing Smite
+turn=end, saveAbility=wis, saveDC=@attributes.spell.dc, label=Wrathful Smite
+turn=start, saveAbility=con, saveDC=@attributes.spell.dc, saveCount=1-, statusId=poisoned, label=Stinking Cloud
+label="Prismatic Spray - Indigo Ray", turn=end, saveDC=@attributes.spell.dc, saveAbility=con, saveCount=3-, failCount=3-petrified
+label=Prismatic Spray (Violet), turn=end, saveAbility=wis, saveDC=@attributes.spell.dc, saveMagic=true, saveCount=1-, failCount=1-
+
+========================================================================================================================
+Good examples
+========================================================================================================================
+
+Insect Plague - Region enter/turnEnd activity and apply difficult terrain
+
+========================================================================================================================
+
+try {
+    if (args[0].macroPass === "postDamageRoll") {
+        // check the target's health
+        const targetToken = workflow.failedSaves.first();
+        if (targetToken) {
+            if (targetToken.actor.system.attributes.hp.value < targetToken.actor.system.attributes.hp.max) {
+                // set damage dice to d12's
+                let newDamageRolls = [];
+                for (let damageRoll of workflow.damageRolls) {
+                    let oldFormula = damageRoll.formula;
+                    let newFormula = oldFormula.replace("d8", "d12");
+
+                    if (oldFormula !== newFormula) {
+                        let newRoll = await new CONFIG.Dice.DamageRoll(newFormula, workflow.activity, damageRoll.options).evaluate();
+                        newDamageRolls.push(newRoll);
+                    }
+                    else {
+                        newDamageRolls.push(damageRoll);
+                    }
+                }
+
+                await workflow.setDamageRolls(newDamageRolls);
+            }
+        }
+    }
+
+} catch (err) {
+    console.error(`${optionName}: ${version}`, err);
+}
+
+========================================================================================================================
+
+const targetUuids = [token.document.uuid];
+const act = macroItem.system.activities.find(a => a.identifier === identifier);
+if (act) await MidiQOL.completeActivityUse(act, { midiOptions: { targetUuids } });
+
+========================================================================================================================
+
+token.light.dim                 UPGRADE     20
+token.light.bright              UPGRADE     10
+token.light.alpha               OVERRIDE    0.3
+token.light.coloration          OVERRIDE    1
+token.light.color               OVERRIDE    #F98026         ??? String?
+token.light.contrast            OVERRIDE    0.5
+token.light.animation.type      OVERRIDE    torch / flame /
+token.light.animation.speed     OVERRIDE    5
+token.light.animation.intensity OVERRIDE    5
+
+========================================================================================================================
+Core Light Animations
+
+Bewitching Wave: Similar to Pulsing Wave but adds rippling and warping effects to the rings.
+    witchwave
+
+Chroma: A light source that shifts between colors; intensity determines if shifts stay within a hue or span the full spectrum.
+    chroma
+
+Energy Field: A dome of creeping, seething energy webs over the light's radii.
+    energy
+
+Fairy Light: A swirling, water-like ripple of color-changing light with a ghostly appearance.
+    fairy
+
+Force Grid: grid
+
+Ghostly Light: Rippling layers that flow over the light source; intensity controls ripple visibility and color swirl strength.
+    ghost
+
+Hexa Dome: A rotating spherical barrier of hexagons with pulsing interiors.
+    hexa
+
+Light Dome: A spherical barrier of rippling energy while maintaining the light's radius.
+    dome
+
+Mysterious Emanation: Semi-random spiraling swirls of energy tendrils.
+    emanation
+
+Pulse: Creates a steady rhythm where the light grows and fades; intensity controls how much the bright radius reduces during the fade.
+    pulse
+
+Pulsing Wave: Generates concentric circles of bright light moving outward from the source.
+    wave
+
+Radial Rainbow: Concentric circles of color-shifting light moving outward.
+    radialrainbow
+
+Revolving Light: revolving
+Siren Light: siren
+Smoke Patch: smokepatch
+Sound Reactive Pulse: reactivepulse
+Star Light: starlight
+Sunburst: sunburst
+Swirling Fog: fog
+Swirling Rainbow: rainbowswirl
+
+Torch: Simulates flickering light with semi-regular pulses; historically labeled "flickering light" in older codebases but functionally the standard torch effect.
+    flame
+
+Vortex: vortex
+
+========================================================================================================================
+
+for (let targetToken of workflow.failedSaves) {
+    await targetToken.actor.toggleStatusEffect('prone', {active: true});
+}
+
+========================================================================================================================
+
+========================================================================================================================
+
+========================================================================================================================
+
+========================================================================================================================
+
+========================================================================================================================

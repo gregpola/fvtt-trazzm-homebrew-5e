@@ -50,7 +50,12 @@ export class CombatHandler {
             }
         });
 
-        Hooks.on('preUpdateCombat', combat.legendaryActionsPrompt);
+        Hooks.on('createCombatant', async (combatant, options, userId) => {
+            const actor = combatant?.actor;
+            if (actor) {
+                await CombatHandler.handleItemRecharge(actor);
+            }
+        });
 
         Hooks.on("updateCombat", async (combat, update, context, userId) => {
             if (!combat?.combatant?.isOwner) {
@@ -103,7 +108,10 @@ export class CombatHandler {
             }
 
             let actor = combat?.combatant?.actor;
-            if (actor && !isBackwards) {
+            if (actor && !isBackwards && !combat.combatant?.defeated) {
+                // check for item recharge
+                await CombatHandler.handleItemRecharge(actor);
+
                 // check for heroic warrior
                 const heroicWarrior = actor.items.getName("Heroic Warrior");
                 if (heroicWarrior) {
@@ -206,6 +214,17 @@ export class CombatHandler {
         return new Promise(resolve => {
             setTimeout(resolve, ms);
         });
+    }
+
+    static async handleItemRecharge(actor){
+        for (const item of actor.items) {
+            const recharge = item.system.uses?.recovery?.find(r => r.period === 'recharge');
+            if (recharge) {
+                if (item.system.uses.value === 0) {
+                    await item.system.uses.rollRecharge();
+                }
+            }
+        }
     }
 
     /**
@@ -369,8 +388,8 @@ export class CombatHandler {
 
             case 2:
             case 3:
-                // make sure it's not a natural weapon
-                if (workflow.item.system.type.value === 'natural') {
+                // make sure it's not a natural weapon or an Eldritch Knight's bonded weapon
+                if (workflow.item.system.type.value === 'natural' || (workflow.item.name.indexOf('War Bonded') >= 0 ) ){
                     ChatMessage.create({
                         content: `${workflow.token.name} suffers Poor aim. The attack misses with no additional effect.`,
                         speaker: ChatMessage.getSpeaker({actor: workflow.actor})
