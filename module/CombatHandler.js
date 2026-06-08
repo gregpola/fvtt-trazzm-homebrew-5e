@@ -22,7 +22,7 @@ export class CombatHandler {
 
                 const confirmed = await foundry.applications.api.DialogV2.confirm({
                     window: {
-                        title: 'Weapon Mastery: Push',
+                        title: 'Attacking Yourself Again',
                     },
                     content: dialogContent,
                     rejectClose: false,
@@ -122,7 +122,7 @@ export class CombatHandler {
                 // At the start of each of your turns, you regain Hit Points equal to 5 plus your Constitution modifier
                 // if you are Bloodied and have at least 1 Hit Point.
                 const survivor = actor.items.getName("Survivor");
-                const bloodied = HomebrewHelpers.findEffect(actor, "Bloodied");
+                const bloodied = HomebrewEffects.findEffect(actor, "Bloodied");
                 if (survivor && bloodied && (actor.system.attributes.hp.value > 0)) {
                     const healRoll = 5 + actor.system.abilities.con.mod;
                     await actor.applyDamage(- healRoll);

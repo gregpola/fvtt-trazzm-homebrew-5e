@@ -6,7 +6,7 @@
     Using a Higher-Level Spell Slot. The spell creates one more dart for each spell slot level above 1.
 */
 const optionName = "Magic Missile";
-const version = "14.5.0";
+const version = "14.5.1";
 const damageType = "force";
 
 try {
@@ -73,7 +73,6 @@ try {
 
             if (targetData) {
                 for (let td of targetData) {
-                    //await launchMissiles(td.target, td.count, macroItem);
                     await launchMissilesActivity(td.target, td.count, macroItem);
                 }
             }
@@ -88,25 +87,8 @@ async function launchMissilesActivity(targetToken, missileCount, sourceItem) {
     const activity = sourceItem.system.activities.find(a => a.identifier === 'single-missile');
     if (activity) {
         let targetUuids = [targetToken.document.uuid];
-
-        const options = {
-            midiOptions: {
-                targetUuids: targetUuids,
-                noOnUseMacro: true,
-                configureDialog: false,
-                showFullCard: false,
-                ignoreUserTargets: true,
-                checkGMStatus: true,
-                autoRollAttack: true,
-                autoRollDamage: "always",
-                fastForwardAttack: true,
-                fastForwardDamage: true,
-                workflowData: true
-            }
-        };
-
         for (let i = 0; i < missileCount; i++) {
-            await MidiQOL.completeActivityUse(activity.uuid, options, {}, {});
+            await MidiQOL.completeActivityUse(activity, { midiOptions: { targetUuids } });
         }
     }
     else {

@@ -5,7 +5,7 @@
 
     If the target drops to 0 Hit Points before this spell ends, you can take a Bonus Action on a later turn to curse a new creature.
 */
-const version = "13.5.0";
+const version = "14.5.0";
 const optionName = "Hex - Move Curse";
 
 try {
@@ -41,7 +41,7 @@ try {
                     const dependentToRemove = effects.find((effect) => effect.target.system.attributes.hp.value < 1);
                     if (dependentToRemove) {
                         const oldActor = dependentToRemove.target;
-                        const actorEffect = HomebrewHelpers.findEffectStartsWith(oldActor, 'Hexed ');
+                        const actorEffect = HomebrewEffects.findEffectStartsWith(oldActor, 'Hexed ');
                         if (actorEffect) {
                             MidiQOL.socket().executeAsGM("removeEffects", {actorUuid: oldActor.uuid, effects: [actorEffect.id]});
                         }

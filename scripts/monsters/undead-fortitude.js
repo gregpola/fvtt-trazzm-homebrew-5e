@@ -2,7 +2,7 @@
     If damage reduces the undead to 0 hit points, it must make a Constitution saving throw with a DC of 5 + the damage
     taken, unless the damage is radiant or from a critical hit. On a success, the undead drops to 1 hit point instead.
 */
-const version = "13.5.0";
+const version = "14.5.0";
 const optionName = "Undead Fortitude";
 
 try {
@@ -34,7 +34,7 @@ try {
                         fastForward: true,
                         options: {
                             window: {
-                                title: `${optionName} (CON Save DC ${saveDC})`,
+                                title: `${optionName} DC${saveDC}`,
                             }
                         }
                     },

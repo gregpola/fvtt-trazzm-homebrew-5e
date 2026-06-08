@@ -1,22 +1,33 @@
-College of swords
-Evoker
-Circle of the Stars
+Hellish rebuke triggers on no damage -- wait for midi fix or use Gambit's? i.e. onUseMacro | isDamaged
 
-Remove drow poisoned weapons and replace with new poisons
-Command spell automation
+Gnoll Vampire
+
+
+========================================================================================================================
+SECONDARY
+========================================================================================================================
+
+Refactor homebrew classes to consolidate and eliminate dead code
 Find Steed - Life Bond feature
 Arcane Mark spell
+Command spell
 Add to combat and roll initiative for summons
 
+========================================================================================================================
+LONG TERM
+========================================================================================================================
 
-*** Hook on combat end, short rest, and long rest to automatically expire effects that should ***
-
+Fork Combat Carousel
 Recover ammunition logic
 actor update functionality
 Prompt for corruption
 options for initiative bonuses in module hook -- need support from the carousel
 Critical effects table
 Intercept feat ???
+
+========================================================================================================================
+MIGRATION
+========================================================================================================================
 
 V14 Modules out of date
 - DND5e scriplets

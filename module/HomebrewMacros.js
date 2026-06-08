@@ -267,7 +267,7 @@ class HomebrewMacros {
             }
 
             // remove features
-            let itemEffect = HomebrewHelpers.findEffect(originalActor, effectName);
+            let itemEffect = HomebrewEffects.findEffect(originalActor, effectName);
             if (itemEffect) {
                 await MidiQOL.socket().executeAsGM("removeEffects", { actorUuid: originalActor.uuid, effects: [itemEffect.id] });
             }
@@ -279,23 +279,36 @@ class HomebrewMacros {
         }
     }
 
-    static async applyLifeDrainEffect(sourceActor, targetActor, damage) {
-        // check for existing
-        let drainedEffect = targetActor.effects.find(eff => eff.name === "Life Drained");
+    /**
+     * The target’s Hit Point maximum decreases by an amount equal to the Necrotic damage taken, and the source regains
+     * Hit Points equal to that amount.
+     *
+     * @param sourceToken
+     * @param targetActor
+     * @param damage
+     * @returns {Promise<void>}
+     */
+    static async applyLifeDrainEffect(sourceToken, targetActor, damage, sourceItem) {
+        // Apply the life drain damage to the target
+        let drainedEffect = HomebrewEffects.findEffect(targetActor, "Life Drained");
         if (drainedEffect) {
-            const effectData = drainedEffect.toObject();
-            effectData.changes.push({
-                key: 'system.attributes.hp.tempmax',
-                mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-                value: -damage,
-                priority: 20
-            });
-            await drainedEffect.update({changes: effectData.changes});
+            const hpMaxChange = drainedEffect.changes.find(change => change.key === 'system.attributes.hp.tempmax');
+            if (hpMaxChange) {
+                const newDrainValue = Number(hpMaxChange.value) - damage;
+                await drainedEffect.update({
+                    changes: [{
+                        key: 'system.attributes.hp.tempmax',
+                        value: `${newDrainValue}`,
+                        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                        priority: 20
+                    }]});
+            }
+
         } else {
             let effectData = {
                 name: 'Life Drained',
                 icon: 'icons/magic/unholy/strike-body-life-soul-purple.webp',
-                origin: sourceActor.uuid,
+                origin: sourceToken.actor.uuid,
                 transfer: false,
                 disabled: false,
                 changes: [
@@ -315,13 +328,14 @@ class HomebrewMacros {
             await MidiQOL.socket().executeAsGM("createEffects", {actorUuid: targetActor.uuid, effects: [effectData]});
         }
 
-        // check for death
-        if (targetActor.system.attributes.hp.effectiveMax <= 0) {
-            const isDead = MidiQOL.hasCondition(actor, "Dead");
-            if (!isDead) {
-                await targetActor.toggleStatusEffect("dead", {active: true});
-            }
-        }
+        // apply healing to the source
+        const damageRoll = await new CONFIG.Dice.DamageRoll(`${damage}`, {}, {type: "healing", properties: ["mgc"]}).evaluate();
+        await new MidiQOL.DamageOnlyWorkflow(sourceToken.actor, sourceToken, null, null, [sourceToken], damageRoll, {
+            flavor: 'Life Drain',
+            itemCardId: "new",
+            itemData: sourceItem.toObject()
+        });
+
     }
 
     static async getActorFromCompendium(transformActorId) {

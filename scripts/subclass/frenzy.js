@@ -4,13 +4,13 @@
 	and add them together. The damage has the same type as the weapon or Unarmed Strike used for the attack.
 */
 const optionName = "Frenzy";
-const version = "12.4.0";
+const version = "14.5.0";
 const timeFlag = "last-frenzy";
 
 try {
     if (args[0].macroPass === "DamageBonus") {
-        const rageEffect = HomebrewHelpers.findEffect(actor, "Rage");
-        const recklessEffect = HomebrewHelpers.findEffect(actor, "Reckless");
+        const rageEffect = HomebrewEffects.findEffect(actor, "Rage");
+        const recklessEffect = HomebrewEffects.findEffect(actor, "Reckless");
 
         if (rageEffect && recklessEffect && HomebrewHelpers.isAvailableThisTurn(actor, timeFlag) && game.combat) {
             const damageDice = actor.system.scale.barbarian["rage-damage"];

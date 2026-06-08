@@ -8,7 +8,7 @@
     but can’t target a creature again if it has succeeded on a saving throw against this casting of stream of consumption.
 */
 const optionName = "Stream of Consumption";
-const version = "13.5.0";
+const version = "14.5.0";
 const savedEffectName = "Saved (Stream of Consumption)";
 
 try {
@@ -16,7 +16,7 @@ try {
     if (args[0].macroPass === "prePreambleComplete") {
         let targetToken = workflow.targets.first();
         if (targetToken) {
-            const effect = HomebrewHelpers.findEffect(targetToken.actor, savedEffectName);
+            const effect = HomebrewEffects.findEffect(targetToken.actor, savedEffectName);
             if (effect) {
                 ui.notifications.error(`${optionName}: ${version} - failed because that target has already saved`);
                 workflow.aborted = true;

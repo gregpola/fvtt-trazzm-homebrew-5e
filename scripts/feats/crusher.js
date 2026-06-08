@@ -2,7 +2,7 @@
 	When you score a Critical Hit that deals Bludgeoning damage to a creature, attack rolls against that creature have
 	Advantage until the start of your next turn.
  */
-const version = "12.4.1";
+const version = "14.5.0";
 const optionName = "Crusher - Enhanced Critical";
 
 try {
@@ -28,7 +28,7 @@ try {
 		};
 
 		for (let targetToken of workflow.hitTargets) {
-			let effect = HomebrewHelpers.findEffect(targetToken.actor, optionName);
+			let effect = HomebrewEffects.findEffect(targetToken.actor, optionName);
 			if (effect) {
 				await MidiQOL.socket().executeAsGM("removeEffects", { actorUuid: targetToken.actor.uuid, effects: [effect.id] });
 			}

@@ -3,7 +3,7 @@
 	The target’s hit point maximum is reduced by an amount equal to the necrotic damage taken. This reduction lasts until
 	the target finishes a long rest. The target dies if its hit point maximum is reduced to 0.
 */
-const version = "12.4.0";
+const version = "14.5.0";
 const optionName = "Death Lance";
 const effectName = "Death Lance - HP Max Reduction";
 
@@ -15,8 +15,7 @@ try {
 
             if (nectroticDamage.damage > 0) {
                 // apply hp max reduction
-                //let currentTempMax = targetToken.actor.system.attributes.hp.tempmax;
-                let currentEffect = HomebrewHelpers.findEffect(targetToken.actor, effectName);
+                let currentEffect = HomebrewEffects.findEffect(targetToken.actor, effectName);
 
                 if (currentEffect) {
                     // update the existing

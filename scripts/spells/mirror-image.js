@@ -10,7 +10,7 @@
     A creature is unaffected by this spell if it has the Blinded condition, Blindsight, or Truesight.
 */
 const optionName = "Mirror Image";
-const version = "14.5.0";
+const version = "14.5.1";
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
 const _flagName = "mirror-image-count";
 
@@ -19,7 +19,7 @@ try {
         await actor.setFlag(_flagGroup, _flagName, 3);
     }
     else if (args[0].tag === "TargetOnUse" && args[0].macroPass === "isHit") {
-        let spellEffect = HomebrewHelpers.findEffect(actor, "Mirror Image");
+        let spellEffect = HomebrewEffects.findEffect(actor, "Mirror Image");
         if (spellEffect) {
             // check the attacking actor for unaffected traits
             const tokenDistance = MidiQOL.computeDistance(token, workflow.token);

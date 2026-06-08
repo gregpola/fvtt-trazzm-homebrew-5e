@@ -6,10 +6,10 @@
     rune, you can’t do so again until you finish a short or long rest.
 */
 const optionName = "Fire Rune";
-const version = "13.5.0";
+const version = "14.5.0";
 
 try {
-    if (args[0].macroPass === "DamageBonus") {
+    if (args[0].macroPass === "DamageBonus" && workflow.hitTargets.size) {
         // make sure there are uses left
         const maxValue = macroItem.system.uses.max;
         const spentValue = macroItem.system.uses.spent;

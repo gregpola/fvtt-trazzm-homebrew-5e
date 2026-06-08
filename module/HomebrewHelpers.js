@@ -295,36 +295,6 @@ class HomebrewHelpers {
         );
     };
 
-    static findEffect(actor, name, origin = undefined) {
-        if (origin) {
-            return actor.getRollData().effects.find(eff => eff.name === name && eff.origin === origin);
-        }
-        else {
-            return actor.getRollData().effects.find(eff => eff.name === name);
-        }
-    };
-
-    static findEffectStartsWith(actor, name, origin = undefined) {
-        if (origin) {
-            return actor.getRollData().effects.find(eff => eff.name.startsWith(name) && eff.origin === origin);
-        }
-        else {
-            return actor.getRollData().effects.find(eff => eff.name.startsWith(name));
-        }
-    };
-
-    static async updateEffect(effect, updates) {
-        if (game.user.isGM) {
-            await effect.update(updates);
-        } else {
-            updates._id = effect.id;
-            await MidiQOL.socket().executeAsGM('updateEffects', {
-                'actorUuid': effect.parent.uuid,
-                'updates': [updates]
-            });
-        }
-    };
-
     static async applyDamage(tokenList, damageValue, damageType) {
         let targets;
         if (Array.isArray(tokenList)) {
@@ -773,11 +743,6 @@ class HomebrewHelpers {
         return actor.system.details.cr;
     }
 
-    // static updateTargets(newTargets) {
-    //     game.user.updateTokenTargets(Array.from(newTargets).map(target => target.id ?? target));
-    //     game.user.broadcastActivity({targets: game.user.targets.ids});
-    // }
-
     static async updateTargets(targets, user = game.user) {
         let targetIds = Array.from(targets).map(target => target.id ?? target);
         if (user === game.user) {
@@ -790,9 +755,50 @@ class HomebrewHelpers {
     static async addFavorite(actor, item) {
         // sanity checks
         if (actor && item) {
-            let favorites = foundry.utils.deepClone(actor.system.favorites);
-            favorites.push({type: "item", id: item.getRelativeUUID(actor)});
-            await actor.update({ "system.favorites": favorites });
+            const itemUuid = item.getRelativeUUID(actor);
+            const index = actor.system.favorites.findIndex(i => i.id === itemUuid);
+            if (index < 0) {
+                let favorites = foundry.utils.deepClone(actor.system.favorites);
+                favorites.push({type: "item", id: itemUuid});
+                await actor.update({"system.favorites": favorites});
+            }
+        }
+    }
+
+    static async removeFavorite(actor, item) {
+        // sanity checks
+        if (actor && item) {
+            const itemUuid = item.getRelativeUUID(actor);
+            const index = actor.system.favorites.findIndex(i => i.id === itemUuid);
+            if (index > -1) {
+                let favorites = foundry.utils.deepClone(actor.system.favorites);
+                favorites.splice(index, index);
+                await actor.update({"system.favorites": favorites});
+            }
+        }
+    }
+
+    static async addFavoriteActivity(actor, activity) {
+        // sanity checks
+        if (actor && activity) {
+            const index = actor.system.favorites.findIndex(i => i.id === activity.uuid);
+            if (index < 0) {
+                let favorites = foundry.utils.deepClone(actor.system.favorites);
+                favorites.push({type: "activity", id: activity.uuid});
+                await actor.update({ "system.favorites": favorites });
+            }
+        }
+    }
+
+    static async removeFavoriteActivity(actor, activity) {
+        // sanity checks
+        if (actor && activity) {
+            const index = actor.system.favorites.findIndex(i => i.id === activity.uuid);
+            if (index > -1) {
+                let favorites = foundry.utils.deepClone(actor.system.favorites);
+                favorites.splice(index, index);
+                await actor.update({"system.favorites": favorites});
+            }
         }
     }
 
@@ -854,40 +860,6 @@ class HomebrewHelpers {
         let duration = this.itemDurationSeconds(item);
         duration -= ((currentRound - startRound) * 6);
         return duration;
-    }
-
-    static async storeSpellDataInRegion(templateId, casterToken, castLevel, actorFlag, regionFlag) {
-        let templateDoc = canvas.scene.collections.templates.get(templateId);
-        if (templateDoc) {
-            const templateRegionId = templateDoc.flags['region-attacher']?.attachedRegion;
-            if (templateRegionId) {
-                const templateRegion = canvas.scene?.regions?.get(templateRegionId.substring(templateRegionId.lastIndexOf(".") + 1));
-                if (templateRegion) {
-                    // store the spell data in the region
-                    const spelldc = casterToken.actor.system.attributes.spell.dc ?? 12;
-
-                    await templateRegion.setFlag('world', regionFlag, {
-                        castLevel: castLevel,
-                        saveDC: spelldc,
-                        sourceTokenId: casterToken.id
-                    });
-
-                    await casterToken.actor.setFlag("fvtt-trazzm-homebrew-5e", actorFlag, {templateId: templateDoc.uuid});
-                }
-                else {
-                    ui.notifications.error(`storeSpellDataInRegion() - unable to find the region`);
-                    console.error(`storeSpellDataInRegion() - unable to find the region`);
-                }
-            }
-            else {
-                ui.notifications.error(`storeSpellDataInRegion() - unable to find the region id`);
-                console.error(`storeSpellDataInRegion() - unable to find the region id`);
-            }
-        }
-        else {
-            ui.notifications.error(`storeSpellDataInRegion() - unable to find template by id: ${templateId}`);
-            console.error(`storeSpellDataInRegion() - unable to find template by id: ${templateId}`);
-        }
     }
 
     static currentTurn() {
@@ -964,7 +936,7 @@ class HomebrewHelpers {
     }
 
     static async findBeastCompanion(actor) {
-        const summonedEffect = HomebrewHelpers.findEffect(actor, "Summon: Primal Companion");
+        const summonedEffect = HomebrewEffects.findEffect(actor, "Summon: Primal Companion");
         if (summonedEffect) {
             for (let dep of summonedEffect.getDependents()) {
                 const beastToken = canvas.tokens.get(dep.id);
@@ -977,55 +949,10 @@ class HomebrewHelpers {
         return undefined;
     }
 
-    static hasResilience(actor, conditionType) {
-        // sanity checks
-        if (!actor) {
-            console.error("fvtt-trazzm-homebrew-5e | ", "hasResilience() - No actor specified");
-            return false;
-        }
-
-        if (!conditionType || conditionType.length === 0) {
-            console.error("fvtt-trazzm-homebrew-5e | ", "hasResilience() - No conditionType specified");
-            return false;
-        }
-
-        // get all rider effects that grant save advantage
-        let resiliences = new Set();
-
-        for (let effect of actor.getRollData().effects) {
-            let applicableChanges = effect.changes.filter(c => c.key === 'flags.automated-conditions-5e.save.advantage');
-
-            for (let change of applicableChanges) {
-                let tokens = change.value.split("||");
-
-                for (let token of tokens) {
-                    console.log(token);
-                    if (token.trim().startsWith("riderStatuses.")) {
-                        let status = token.trim().substring(14).trim();
-                        resiliences.add(status);
-                    }
-                }
-            }
-        }
-
-        let ct = conditionType.toLowerCase();
-        switch (ct) {
-            case "poison":
-            case "poisoned":
-                return resiliences.has('poisoned');
-
-            case "asleep":
-            case "sleep":
-                return resiliences.has('sleep');
-        }
-
-        return false;
-    }
-
     static getLightLevel(token) {
         // this feature uses the effects added to tokens by the 'Token Light Condition' module
-        const dimLight = this.findEffect(token.actor, 'Dim Lighting');
-        const darkLight = this.findEffect(token.actor, 'Dark Lighting');
+        const dimLight = HomebrewEffects.findEffect(token.actor, 'Dim Lighting');
+        const darkLight = HomebrewEffects.findEffect(token.actor, 'Dark Lighting');
 
         if (darkLight) {
             return 'dark';

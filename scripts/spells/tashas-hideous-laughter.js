@@ -3,12 +3,12 @@
     Advantage on the save if the save is triggered by damage. On a successful save, the spell ends.
 */
 const optionName = "Tashas Hideous Laughter";
-const version = "12.4.0";
+const version = "14.5.0";
 
 try {
     if (args[0].tag === "TargetOnUse" && args[0].macroPass === "isDamaged") {
         // trigger save
-        let effect = HomebrewHelpers.findEffect(actor, "Uncontrollable Laughter");
+        let effect = HomebrewEffects.findEffect(actor, "Uncontrollable Laughter");
         if (effect) {
             const config = { undefined, ability: "wis", target: macroItem.parent.system.attributes.spell.dc, advantage: true };
             const dialog = {};

@@ -46,7 +46,7 @@ export class SaveHandler {
             const targetIterator = workflow.targets.values();
             for (const tokenDoc of targetIterator) {
                 // Check for Corona of Light
-                let coronaOfLight = HomebrewHelpers.findEffect(tokenDoc.document.actor, 'Corona of Light - Disadvantage (In Aura)');
+                let coronaOfLight = HomebrewEffects.findEffect(tokenDoc.document.actor, 'Corona of Light - Disadvantage (In Aura)');
                 if (coronaOfLight && appliesToCoronaOfLight) {
                     await MidiQOL.socket().executeAsGM('createEffects', {
                         'actorUuid': tokenDoc.document.actor.uuid,

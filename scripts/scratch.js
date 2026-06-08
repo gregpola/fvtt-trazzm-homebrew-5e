@@ -15,7 +15,7 @@ try {
 console.info("%c fvtt-trazzm-homebrew-5e", "color: #D030DE", " | Bag of Tricks (Gray)");
 ui.notifications.error(`${optionName}: ${version} - missing Font of Magic`);
 
-<section id="secret-3J7hDKX4Or99Zq94" class="secret">
+<section class="secret">
 	<p><strong>Foundry Note</strong></p>
 	<p>This feature includes an Active Effect which automatically increases your walking Speed but does not automate the
 		Advantage.</p>
@@ -81,24 +81,8 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(rolledActivity.actionType))
 			flags.dae.rest - recovery.force.maximiseHitDieRoll
 			foundry.utils.getProperty(actor, CONSTANTS.FLAGS.DAE.MAXIMISE_HIT_DIE_ROLL);
 
-			Roll
-			Formula: 1
-			d8-- > -@utilityRollTotal
-
-			flags.automated - conditions - 5
-			e.save.advantage | Custom | riderStatuses.charmed || riderStatuses.frightened
-			radius = 30;
-			allies;
-			bonus = 1
-			d4;
-			radiant;
-			!isSpell
-				['mwak', 'rwak'].some(type => actionType[type])
-
 			const distance = canvas.grid.measurePath([template, token.document]).distance;
 			const cost = canvas.grid.measurePath([template, token.document]).cost;
-
-
 
 			let effectIdsToRemove = actor.getRollData().effects.filter(e => e.origin === stuckEffect.origin).map(effect => effect.id);
 			const damageDice = actor.system.scale.barbarian["brutal-strike"];

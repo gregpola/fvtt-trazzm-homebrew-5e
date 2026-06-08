@@ -5,7 +5,7 @@
     until you take a Bonus Action to issue the command again or until you drop, stow, or sheathe the weapon.
 */
 const optionName = "Lightning Blade";
-const version = "14.5.0";
+const version = "14.5.1";
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
 const _flagName = "lightningBladeLight";
 
@@ -18,23 +18,42 @@ try {
             updates["flags.fvtt-trazzm-homebrew-5e.lightningBladeLight"] = {
                 "light.dim": ownerToken._source.light.dim,
                 "light.bright": ownerToken._source.light.bright,
-                "light.angle": ownerToken._source.light.angle,
                 "light.alpha": ownerToken._source.light.alpha,
+                "light.angle": ownerToken._source.light.angle,
                 "light.coloration": ownerToken._source.light.coloration,
                 "light.color": ownerToken._source.light.color,
                 "light.contrast": ownerToken._source.light.contrast,
-                "light.animation": ownerToken._source.light.animation
+                "light.negative": ownerToken._source.light.negative,
+                "light.priority": ownerToken._source.light.priority,
+                "light.attenuation": ownerToken._source.light.attenuation,
+                "light.luminosity": ownerToken._source.light.luminosity,
+                "light.saturation": ownerToken._source.light.saturation,
+                "light.shadows": ownerToken._source.light.shadows,
+                "light.animation.type": ownerToken._source.light.animation.type,
+                "light.animation.speed": ownerToken._source.light.animation.speed,
+                "light.animation.intensity": ownerToken._source.light.animation.intensity,
+                "light.animation.reverse": ownerToken._source.light.animation.reverse
+
             };
 
             // apply new lighting
             updates["light.dim"] = 40;
             updates["light.bright"] = 20;
-            updates["light.angle"] = 360;
             updates["light.alpha"] = 0.3;
-            updates["light.coloration"] = 1;
-            updates["light.color"] = "#0a51eb";
+            updates["light.angle"] = 360;
+            updates["light.coloration"] = 2;
+            updates["light.color"] = "#2a1ed2";
             updates["light.contrast"] = 1.0;
-            updates["light.animation"] = "{'type': 'energy', 'speed': 10, 'intensity': 10, 'reverse': false}";
+            updates["light.negative"] = false;
+            updates["light.priority"] = 9;
+            updates["light.attenuation"] = 0.5;
+            updates["light.luminosity"] = 0.5;
+            updates["light.saturation"] = 0;
+            updates["light.shadows"] = 0;
+            updates["light.animation.type"] = "energy";
+            updates["light.animation.speed"] = 7;
+            updates["light.animation.intensity"] = 7;
+            updates["light.animation.reverse"] = false;
 
             await ownerToken.update(updates);
 

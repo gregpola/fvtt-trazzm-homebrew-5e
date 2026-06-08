@@ -1,28 +1,10 @@
-/*
-    This weapon starts each day with 3 charges, and refreshes with a long rest. When you hit with a thrown attack using
-    this weapon, you can expend one charge to do one of the following actions:
-
-    Distracting Strike. When you hit a creature with a weapon attack, you can expend one charge to distract the creature,
-    giving your allies an opening. The next attack roll against the target by an attacker other than you has advantage
-    if the attack is made before the start of your next turn.
-
-    Trip Attack. When you hit a creature with a weapon attack, you can expend one charge to attempt to knock the target
-    down. If the target is large or smaller, it must make a Strength saving throw. On a failed save, you knock the
-    target prone.
-
-    Goading Attack. When you hit a creature with a weapon attack, you can expend one charge to attempt to goad the
-    target into attacking you. The target must make a Wisdom saving throw. On a failed save, the target has disadvantage
-    on all attack rolls against targets other than you until the end of your next turn.
- */
-const version = "13.5.0";
+const version = "14.5.1";
 const optionName = "Tacticians Gambit";
 
 try {
     if (args[0].tag === "OnUse" && args[0].macroPass === "postAttackRoll") {
-        // TODO make sure the actor hit with a thrown attack
         const targetToken = workflow.hitTargets.first();
-        const isThrown = workflow.attackMode === "thrown";
-        let eligibleAttack = targetToken && isThrown;
+        let eligibleAttack = targetToken;
 
         // make sure the actor has charges remaining
         let usesLeft = macroItem.system.uses?.value ?? 0;
@@ -59,44 +41,29 @@ try {
                 }
             });
 
-            const options = {
-                midiOptions: {
-                    targetUuids: [targetToken.actor.uuid],
-                    noOnUseMacro: false,
-                    configureDialog: false,
-                    showFullCard: false,
-                    ignoreUserTargets: true,
-                    checkGMStatus: false,
-                    autoRollAttack: true,
-                    autoRollDamage: "always",
-                    fastForwardAttack: true,
-                    fastForwardDamage: true,
-                    workflowData: true
-                }
-            };
-
+            const targetUuids = [targetToken.document.uuid];
             if (optionPicked === 'distract') {
                 let activity = await macroItem.system.activities.find(a => a.identifier === 'distracting-strike');
                 if (activity) {
-                    MidiQOL.completeActivityUse(activity, options, {}, {});
+                    await MidiQOL.completeActivityUse(activity, { midiOptions: { targetUuids } });
                 }
             }
             else if (optionPicked === 'trip') {
                 let activity = await macroItem.system.activities.find(a => a.identifier === 'trip-attack');
                 if (activity) {
-                    MidiQOL.completeActivityUse(activity, options, {}, {});
+                    await MidiQOL.completeActivityUse(activity, { midiOptions: { targetUuids } });
                 }
             }
             else if (optionPicked === 'goad') {
                 let activity = await macroItem.system.activities.find(a => a.identifier === 'goading-attack');
                 if (activity) {
-                    MidiQOL.completeActivityUse(activity, options, {}, {});
+                    await MidiQOL.completeActivityUse(activity, { midiOptions: { targetUuids } });
                 }
             }
         }
     }
     else if (args[0].tag === "TargetOnUse" && args[0].macroPass === "isAttacked") {
-        let maneuverEffect = HomebrewHelpers.findEffect(actor, 'Distracted');
+        let maneuverEffect = HomebrewEffects.findEffect(actor, 'Distracted');
         if (maneuverEffect) {
             await MidiQOL.socket().executeAsGM('removeEffects', {
                 'actorUuid': actor.uuid,

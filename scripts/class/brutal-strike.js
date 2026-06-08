@@ -11,14 +11,14 @@
     by only one Hamstring Blow at a time - the most recent one.
 */
 const optionName = "Brutal Strike";
-const version = "12.4.0";
+const version = "14.5.0";
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
 const _flagName = "used-brutal-strike";
 
 try {
     if (args[0].macroPass === "preItemRoll") {
         // make sure the actor is in a Reckless state
-        const hasReckless = HomebrewHelpers.findEffect(actor, 'Reckless');
+        const hasReckless = HomebrewEffects.findEffect(actor, 'Reckless');
         if (!hasReckless) {
             ui.notifications.error(`${optionName}: ${version} - not reckless`);
             return false;
@@ -67,7 +67,7 @@ try {
         }
         else if (args[0].tag === "OnUse" && args[0].macroPass === "preAttackRoll") {
             if (workflow.item.abilityMod === 'str') {
-                const recklessEffect = HomebrewHelpers.findEffect(actor, 'Reckless');
+                const recklessEffect = HomebrewEffects.findEffect(actor, 'Reckless');
                 if (recklessEffect) {
                     await recklessEffect.update({disabled: true});
                 }

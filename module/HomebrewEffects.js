@@ -63,7 +63,7 @@ class HomebrewEffects {
     };
 
     static async removeEffectByName(actor, effectName) {
-        const effect = HomebrewHelpers.findEffect(actor, effectName);
+        const effect = HomebrewEffects.findEffect(actor, effectName);
         if (effect) {
             await MidiQOL.socket().executeAsGM('removeEffects', {
                 'actorUuid': actor.uuid,
@@ -73,7 +73,7 @@ class HomebrewEffects {
     }
 
     static async removeEffectByNameAndOrigin(actor, effectName, origin) {
-        const effect = HomebrewHelpers.findEffect(actor, effectName, origin);
+        const effect = HomebrewEffects.findEffect(actor, effectName, origin);
         if (effect) {
             await MidiQOL.socket().executeAsGM('removeEffects', {
                 'actorUuid': actor.uuid,
@@ -83,7 +83,7 @@ class HomebrewEffects {
     }
 
     static async removeConcentrationEffectByName(actor, effectName) {
-        const effect = HomebrewHelpers.findEffect(actor, `Concentrating: ${effectName}`);
+        const effect = HomebrewEffects.findEffect(actor, `Concentrating: ${effectName}`);
         if (effect) {
             await MidiQOL.socket().executeAsGM('removeEffects', {
                 'actorUuid': actor.uuid,
@@ -92,72 +92,35 @@ class HomebrewEffects {
         }
     }
 
-    static async applyEtherealEffect(actor, origin, specialDurations = undefined, seconds = undefined) {
-        if (actor) {
-            const originValue = typeof origin === "string" ? origin : origin.uuid;
-            const existing = actor.getRollData().effects.find(eff => eff.name === deafenedName && eff.origin === originValue);
-            if (existing) {
-                console.log("HomebrewEffects - not applying condition deafened, already exists");
-                return false;
-            }
-
-            let effectData = {
-                name: etherealName,
-                icon: 'icons/creatures/magical/spirit-undead-ghost-purple.webp',
-                changes: [
-                    {
-                        key: 'flags.midi-qol.neverTarget',
-                        mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-                        value: true,
-                        priority: 20
-                    },
-                    {
-                        key: 'system.traits.di.all',
-                        mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-                        value: true,
-                        priority: 21
-                    },
-                    {
-                        key: 'system.traits.ci.all',
-                        mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-                        value: true,
-                        priority: 22
-                    },
-                    {
-                        key: 'ATL.hidden',
-                        mode: CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
-                        value: true,
-                        priority: 23
-                    }
-                ],
-                statuses: [
-                ],
-                flags: {
-                    dae: {
-                        specialDuration: []
-                    }
-                },
-                origin: originValue,
-                duration: {
-                    seconds: null
-                },
-                disabled: false
-            };
-
-            if (specialDurations) {
-                effectData.flags.dae.specialDuration = effectData.flags.dae.specialDuration.concat(specialDurations);
-            }
-
-            if (seconds) {
-                effectData.duration.seconds = seconds;
-            }
-
-            return await MidiQOL.socket().executeAsGM("createEffects",
-                {actorUuid: actor.uuid, effects: [effectData]});
+    static findEffect(actor, name, origin = undefined) {
+        if (origin) {
+            return actor.getRollData().effects.find(eff => eff.name === name && eff.origin === origin);
         }
+        else {
+            return actor.getRollData().effects.find(eff => eff.name === name);
+        }
+    };
 
-        return undefined;
-    }
+    static findEffectStartsWith(actor, name, origin = undefined) {
+        if (origin) {
+            return actor.getRollData().effects.find(eff => eff.name.startsWith(name) && eff.origin === origin);
+        }
+        else {
+            return actor.getRollData().effects.find(eff => eff.name.startsWith(name));
+        }
+    };
+
+    static async updateEffect(effect, updates) {
+        if (game.user.isGM) {
+            await effect.update(updates);
+        } else {
+            updates._id = effect.id;
+            await MidiQOL.socket().executeAsGM('updateEffects', {
+                'actorUuid': effect.parent.uuid,
+                'updates': [updates]
+            });
+        }
+    };
 
     // for 2024 the origin must be the activating item, not an uuid
     static async applyPoisonedEffect2024(actor, origin, specialDurations = undefined, seconds = undefined) {

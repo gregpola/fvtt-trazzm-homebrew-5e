@@ -9,6 +9,8 @@ turn=end, saveAbility=wis, saveDC=@attributes.spell.dc, label=Wrathful Smite
 turn=start, saveAbility=con, saveDC=@attributes.spell.dc, saveCount=1-, statusId=poisoned, label=Stinking Cloud
 label="Prismatic Spray - Indigo Ray", turn=end, saveDC=@attributes.spell.dc, saveAbility=con, saveCount=3-, failCount=3-petrified
 label=Prismatic Spray (Violet), turn=end, saveAbility=wis, saveDC=@attributes.spell.dc, saveMagic=true, saveCount=1-, failCount=1-
+label=Slowed, turn=end, saveAbility=wis, saveDC=@attributes.spell.dc
+label=Cold Aura, turn=start, damageRoll=3d6, damageType=cold
 
 ========================================================================================================================
 Good examples
@@ -50,9 +52,16 @@ try {
 
 ========================================================================================================================
 
+const targetUuids = Array.from(workflow.hitTargets).map(t => t.document.uuid);
 const targetUuids = [token.document.uuid];
-const act = macroItem.system.activities.find(a => a.identifier === identifier);
-if (act) await MidiQOL.completeActivityUse(act, { midiOptions: { targetUuids } });
+const activity = macroItem.system.activities.find(a => a.identifier === identifier);
+if (activity) await MidiQOL.completeActivityUse(activity, { midiOptions: { targetUuids } });
+
+let activity = await macroItem.system.activities.find(a => a.identifier === 'invoke-rune');
+if (activity) {
+    await activity.use();
+}
+
 
 ========================================================================================================================
 
@@ -119,6 +128,35 @@ Torch: Simulates flickering light with semi-regular pulses; historically labeled
 Vortex: vortex
 
 ========================================================================================================================
+Token lighting for Lightning Blade:
+
+    "light": {
+      "negative": false,
+      "priority": 9,
+      "alpha": 1,
+      "angle": 360,
+      "bright": 20,
+      "color": "#2a1ed2",
+      "coloration": 1,
+      "dim": 40,
+      "attenuation": 0.5,
+      "luminosity": 0.5,
+      "saturation": 0,
+      "contrast": 0,
+      "shadows": 0,
+      "animation": {
+        "type": "energy",
+        "speed": 7,
+        "intensity": 7,
+        "reverse": false
+      },
+      "darkness": {
+        "min": 0,
+        "max": 1
+      }
+    },
+
+========================================================================================================================
 
 for (let targetToken of workflow.failedSaves) {
     await targetToken.actor.toggleStatusEffect('prone', {active: true});
@@ -126,9 +164,38 @@ for (let targetToken of workflow.failedSaves) {
 
 ========================================================================================================================
 
-========================================================================================================================
+const damageType = 'psychic';
+let damageRoll = await new CONFIG.Dice.DamageRoll('3d6', {}, {type: damageType}).evaluate();
+await MidiQOL.displayDSNForRoll([damageRoll], "damageRoll");
+await MidiQOL.applyTokenDamage(
+    [{ damage: damageRoll.total, type: damageType }],
+    damageRoll.total,
+    new Set([token]),
+    item,
+    new Set(),
+    {flavor: 'Weave the Elder Sign'}
+);
 
 ========================================================================================================================
+
+const defensiveEffect = macroItem.effects.getName(defensiveEffectName);
+if (defensiveEffect) {
+    const armorChange = defensiveEffect.changes.find(change => change.key === 'system.attributes.ac.bonus');
+    if (armorChange) {
+        await defensiveEffect.update({
+            changes: [{
+                key: 'system.attributes.ac.bonus',
+                value: `${theRoll.total}`,
+                mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                priority: 20
+            }]});
+        await MidiQOL.socket().executeAsGM("createEffects", {actorUuid: actor.uuid, effects: [defensiveEffect]});
+    }
+}
+
+========================================================================================================================
+
+!["undead","elf"].includes(raceOrType) && !raceOrType.includes('elf')
 
 ========================================================================================================================
 
