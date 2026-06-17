@@ -5,13 +5,13 @@
 	Enhanced Critical. When you score a Critical Hit that deals Piercing damage to a creature, you can roll one
 	additional damage die when determining the extra Piercing damage the target takes.
  */
-const version = "13.5.0";
+const version = "14.5.0";
 const optionName = "Piercer";
 const damageType = "piercing";
 const timeFlag = "piercer-time";
 
 try {
-    if (args[0].macroPass === "DamageBonus") {
+    if (args[0].macroPass === "DamageBonus" && (workflow.hitTargets.size > 0)) {
         // make sure it's an allowed attack
         if (workflow.damageDetail.filter(i=>i.type === damageType).length < 1) {
             console.debug(`${optionName}: ${version} - not ${damageType} damage`);

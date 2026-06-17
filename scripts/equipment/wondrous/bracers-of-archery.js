@@ -2,7 +2,7 @@
 	While wearing these bracers, you have proficiency with the Longbow and Shortbow, and you gain a +2 bonus to damage
 	rolls made with such weapons.
  */
-const version = "12.4.0";
+const version = "14.5.0";
 const optionName = "Bracers of Archery";
 try {
 	if (args[0].macroPass === "DamageBonus") {

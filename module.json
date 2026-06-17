@@ -275,8 +275,8 @@
   ],
   "compatibility": {
     "minimum": "14",
-    "verified": "14.360.0",
-    "maximum": "14.999.999"
+    "verified": "14.364",
+    "maximum": "14.999"
   },
   "relationships": {
     "requires": [

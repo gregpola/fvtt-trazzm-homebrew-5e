@@ -4,12 +4,12 @@
 
     @scale.druid.elemental-fury
 */
-const version = "12.4.1";
+const version = "14.5.0";
 const optionName = "Elemental Fury: Primal Strike";
 const timeFlag = "primal-strike-time";
 
 try {
-    if (args[0].macroPass === "DamageBonus") {
+    if (args[0].macroPass === "DamageBonus" && (workflow.hitTargets.size > 0)) {
         if (!workflow.hitTargets.size) return {};
 
         // make sure it is an attack

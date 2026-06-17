@@ -11,11 +11,11 @@
         - Trip Attack
 */
 const optionName = "Maneuver Handler";
-const version = "13.5.0";
+const version = "14.5.0";
 const optionsArray = ['Disarming Attack', 'Distracting Strike', 'Goading Attack', 'Maneuvering Attack', 'Menacing Attack', 'Pushing Attack', 'Trip Attack'];
 
 try {
-    if (args[0].macroPass === "DamageBonus" && rolledActivity.type === 'attack' && rolledActivity.name !== 'Use Maneuver') {
+    if (args[0].macroPass === "DamageBonus" && rolledActivity.type === 'attack' && rolledActivity.name !== 'Use Maneuver' && (workflow.hitTargets.size > 0)) {
         // make sure the character has superiority dice available
         const combatSuperiority = actor.items.getName("Combat Superiority");
         if (combatSuperiority) {

@@ -6,10 +6,10 @@
     Charisma modifier to one damage roll of that spell.
 */
 const optionName = "Elemental Affinity";
-const version = "12.4.0";
+const version = "14.5.0";
 
 try {
-    if (args[0].macroPass === "DamageBonus" && item.type === 'spell') {
+    if (args[0].macroPass === "DamageBonus" && item.type === 'spell' && (workflow.hitTargets.size > 0)) {
         const damageBonus = actor.system.abilities.cha.mod;
 
         // get the damage type

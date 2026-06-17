@@ -3,13 +3,13 @@
 	you hit with a weapon or an Unarmed Strike takes extra damage equal to 1d6 plus half your Barbarian level (round down).
 	The extra damage is Necrotic or Radiant; you choose the type each time you deal the damage.
 */
-const version = "14.5.0";
+const version = "14.5.1";
 const optionName = "Divine Fury";
 const rageEffectName = "Rage";
 const timeFlag = "last-divine-fury";
 
 try {
-    if (args[0].macroPass === "DamageBonus") {
+    if (args[0].macroPass === "DamageBonus" && (workflow.hitTargets.size > 0)) {
         // make sure the actor is raging
         if (!HomebrewEffects.findEffect(actor, rageEffectName)) {
             console.log(`${optionName}: not raging`);

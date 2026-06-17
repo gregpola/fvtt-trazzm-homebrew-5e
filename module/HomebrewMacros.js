@@ -3,6 +3,15 @@ const _poisonedWeaponFlag = "poisoned-weapon";
 
 class HomebrewMacros {
 
+    static SIZE_TO_GRID_FOR_PULL = {
+        tiny: 1,
+        sm: 1,
+        med: 1,
+        lg: 1,
+        huge: 2,
+        grg: 3,
+    };
+
     static async wait(ms) {
         return new Promise(resolve => {
             setTimeout(resolve, ms);
@@ -95,6 +104,63 @@ class HomebrewMacros {
             return detectX && detectY && (ignoreToken !== t);
         });
         return hasToken;
+    }
+
+    static async pullTargetTowardsSelf(selfToken, targetToken, maxDistance, optionName) {
+        // get the distance
+        const tokenDistance = MidiQOL.computeDistance(selfToken, targetToken, {wallsBlock: true, includeCover: true});
+        let longestDistance = Math.floor(Math.min(tokenDistance, maxDistance) / 5) * 5;
+
+        // alter for token size
+        const tokenGridSize = HomebrewMacros.SIZE_TO_GRID_FOR_PULL[selfToken.actor.system.traits.size];
+        longestDistance -= (tokenGridSize * 5);
+
+        // ask how far to pull
+        let optionsContent = '';
+        let firstOption = true;
+
+        while (longestDistance > 0) {
+            if (firstOption) {
+                optionsContent += `<tr><td><label><input type="radio" name="choice" value="${longestDistance}" checked>   ${longestDistance} feet</label></td></tr>`;
+                firstOption = false;
+            }
+            else {
+                optionsContent += `<tr><td><label><input type="radio" name="choice" value="${longestDistance}">   ${longestDistance} feet</label></td></tr>`;
+            }
+
+            longestDistance -= 5;
+        }
+
+        const content = `
+			        <div class="form-group">
+                        <table style="width:100%">
+                            <thead>
+                                <tr><th>How far do you want to pull ${targetToken.name}?</th></tr>
+                            </thead>
+                            <tbody>${optionsContent}</tbody>
+                        </table>
+                    </div>`;
+
+        let distancePulled = await foundry.applications.api.DialogV2.prompt({
+            content: content,
+            rejectClose: false,
+            ok: {
+                label: "Pull Target",
+                callback: (event, button, dialog) => {
+                    return button.form.elements.choice.value;
+                }
+            },
+            window: {
+                title: `${optionName}`,
+            },
+            position: {
+                width: 400
+            }
+        });
+
+        if (distancePulled) {
+            await HomebrewMacros.pullTarget(selfToken, targetToken, distancePulled / 5);
+        }
     }
 
     /**

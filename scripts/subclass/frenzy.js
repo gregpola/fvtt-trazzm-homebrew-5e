@@ -4,11 +4,11 @@
 	and add them together. The damage has the same type as the weapon or Unarmed Strike used for the attack.
 */
 const optionName = "Frenzy";
-const version = "14.5.0";
+const version = "14.5.1";
 const timeFlag = "last-frenzy";
 
 try {
-    if (args[0].macroPass === "DamageBonus") {
+    if (args[0].macroPass === "DamageBonus" && workflow.hitTargets.size) {
         const rageEffect = HomebrewEffects.findEffect(actor, "Rage");
         const recklessEffect = HomebrewEffects.findEffect(actor, "Reckless");
 

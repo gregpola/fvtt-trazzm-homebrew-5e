@@ -4,12 +4,12 @@
 
 	You can use Empowered Spell even if you have already used a different Metamagic option during the casting of the spell.
 */
-const version = "12.4.0";
+const version = "14.5.0";
 const optionName = "Metamagic: Empowered Spell";
 const cost = 1;
 
 try {
-    if (args[0].macroPass === "DamageBonus") {
+    if (args[0].macroPass === "DamageBonus" && (workflow.hitTargets.size > 0)) {
         let usesLeft = HomebrewHelpers.getAvailableSorceryPoints(actor);
         if (!usesLeft || usesLeft < cost) {
             console.log(`${optionName} - not enough Sorcery Points left`);

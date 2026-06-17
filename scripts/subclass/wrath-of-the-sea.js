@@ -5,12 +5,21 @@
     damage, roll a number of d6s equal to your Wisdom modifier (minimum of one die).
 */
 const optionName = "Wrath of the Sea";
-const version = "13.5.0";
+const version = "14.5.0";
 
 try {
     if (args[0].macroPass === "postActiveEffects") {
-        for (let targetToken of workflow.failedSaves) {
-            await HomebrewMacros.pushTarget(token, targetToken, 3);
+        // check for Stormborn
+        const hasStormborn = actor.items.getName("Stormborn");
+        if (hasStormborn) {
+            let effectsToApply = [];
+            for (let effect of hasStormborn.effects) {
+                effectsToApply.push(effect);
+            }
+
+            if (effectsToApply.length > 0) {
+                await MidiQOL.socket().executeAsGM("createEffects", {actorUuid: actor.uuid, effects: effectsToApply});
+            }
         }
     }
 

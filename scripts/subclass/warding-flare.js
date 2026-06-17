@@ -3,7 +3,7 @@
     Disadvantage on the attack roll, causing light to flare before it hits or misses.
 */
 const optionName = "Warding Flare";
-const version = "12.4.0";
+const version = "14.5.0";
 
 try {
     if (args[0].tag === "OnUse" && args[0].macroPass === "preAttackRoll") {
@@ -11,6 +11,8 @@ try {
         const hasUsedReaction = MidiQOL.hasUsedReaction(sourceActor);
 
         if (!hasUsedReaction) {
+            // ask if they want to use it
+
             // Trigger the activity for the source player
             let browserUser = MidiQOL.playerForActor(sourceActor);
             if (!browserUser?.active) {

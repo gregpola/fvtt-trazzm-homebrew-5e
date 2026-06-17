@@ -1,6 +1,34 @@
-Hellish rebuke triggers on no damage -- wait for midi fix or use Gambit's? i.e. onUseMacro | isDamaged
+Artificer plans as separate features and selection during level up (Improved Armorer)
+Artificer feature automation
 
 Gnoll Vampire
+Thaumaturge -- any spell list?
+Hellish rebuke triggers on no damage -- wait for midi fix or use Gambit's? i.e. onUseMacro | isDamaged
+
+========================================================================================================================
+Artificer Spells
+========================================================================================================================
+
+Tasha’s Bubbling Cauldron -- alchemist feature
+
+Air Bubble
+Ashardalon's Stride
+Catapult
+Catnap
+Elemental Bane
+Flame Arrows
+Homunculus Servant
+Intellect Fortress
+Kinetic Jaunt
+Lightning Lure
+Pyrotechnics
+Skill Empowerment
+Skywrite
+Snare
+Tiny Servant
+Tortoise Shell
+Transmute Rock
+Vortex Warp
 
 
 ========================================================================================================================

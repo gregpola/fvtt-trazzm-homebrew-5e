@@ -5,22 +5,24 @@
 
     Using a Higher-Level Spell Slot. The damage increases by 1d8 for each spell slot level above 1.
 */
-const version = "14.5.0";
+const version = "14.5.1";
 const optionName = "Divine Smite";
 
 try {
     if (args[0].macroPass === "DamageBonus") {
         let targetToken = workflow.hitTargets.first();
-        let undead = ["undead", "fiend"].some(type => (targetToken.actor.system.details.type?.value || "").toLowerCase().includes(type));
-        const spellLevel = actor.flags["fvtt-trazzm-homebrew-5e"].DivineSmite.level ?? 1;
-        const diceCount = 1 + Number(spellLevel) + (undead ? 1 : 0);
+        if (targetToken) {
+            let undead = ["undead", "fiend"].some(type => (targetToken.actor.system.details.type?.value || "").toLowerCase().includes(type));
+            const spellLevel = actor.flags["fvtt-trazzm-homebrew-5e"].DivineSmite.level ?? 1;
+            const diceCount = 1 + Number(spellLevel) + (undead ? 1 : 0);
 
-        return new game.system.dice.DamageRoll(`${diceCount}d8`, {}, {
-            isCritical: workflow.isCritical,
-            properties: ["mgc"],
-            type: "radiant",
-            flavor: optionName
-        });
+            return new game.system.dice.DamageRoll(`${diceCount}d8`, {}, {
+                isCritical: workflow.isCritical,
+                properties: ["mgc"],
+                type: "radiant",
+                flavor: optionName
+            });
+        }
     }
 
 } catch (err) {

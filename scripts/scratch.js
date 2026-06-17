@@ -132,27 +132,3 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(rolledActivity.actionType))
 
 			// options = { maxSize: undefined, includeIncapacitated: false, canSee: false }
 			let secondTarget = await MidiQOL.findNearby(CONST.TOKEN_DISPOSITIONS.FRIENDLY, ttoken, 5, {canSee: true});
-
-
-			let activity = await macroItem.system.activities.find(a => a.identifier === 'sheath-in-booming-energy');
-			let activity = macroItem.system.activities.getName("Protect Target");
-			if (activity) {
-				const options = {
-					midiOptions: {
-						targetsToUse: new Set(targets),
-						noOnUseMacro: false,
-						configureDialog: true,
-						showFullCard: false,
-						ignoreUserTargets: false,
-						checkGMStatus: true,
-						autoRollAttack: false,
-						autoRollDamage: "always",
-						fastForwardAttack: false,
-						fastForwardDamage: true,
-						workflowData: false
-					}
-				};
-
-				await MidiQOL.completeActivityUse(activity, options, {}, {});
-			}
-

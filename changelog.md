@@ -48,3 +48,13 @@
 * Updated Fire Shield, Hellish Rebuke, Hex, Mirror Image, Produce Flame, Stream of Consumption, and Tasha's Hideous Laughter spells
 * Updated Frenzy feature of Path of the Berserker
 * Updated drow poisoned weapons to work better in v14
+
+# 14.5.4
+* Added the Artificer class and Alchemist, Armor, Battle Smith, and Reanimator subclasses. It has the basics completed, but some features will be more fully automated in future updates and it hasn't been thoroughly tested.
+* Added Lantern of Revealing
+* Updated War God's Blessing to use Cast activities
+* Updated Corona of Light and Warding Flare for Light Domain
+* Updated Soul of Forge for Forge Domain
+* Fixed Cleric's Thaumaturge feature to allow the cantrip selection
+* Fixed Druid's Primal Order - Magician feature to allow the cantrip selection
+* General - lots of updates to fix DamageBonus macros

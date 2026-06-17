@@ -3,11 +3,11 @@
     each turn that you cast a damaging cantrip, you can add your ability modifier to the damage you deal.
 */
 const optionName = "Empowered Cantrips";
-const version = "13.5.0";
+const version = "14.5.0";
 const timeFlag = "last-empowered-cantrip";
 
 try {
-    if (args[0].macroPass === "DamageBonus") {
+    if (args[0].macroPass === "DamageBonus" && (workflow.hitTargets.size > 0)) {
         if (rolledItem.type === "spell" && workflow.castData.castLevel === 0) {
             // Once per turn
             if (HomebrewHelpers.isAvailableThisTurn(actor, timeFlag) && game.combat) {
