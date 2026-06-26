@@ -6,17 +6,25 @@
     L15 - Improved Deflection. Whenever your Steel Defender uses its Deflect Attack, the attacker takes Force damage equal to 1d4 plus your Intelligence modifier.
 */
 const optionName = "Steel Defender";
-const version = "14.5.0";
+const version = "14.5.1";
 
 try {
     if (args[0].macroPass === "postActiveEffects") {
-        // get the summon
-        const theSteelDefender = actor.summonedCreatures.find(s => s.name === 'Steel Defender')
-        if (theSteelDefender) {
+        // get the summoned
+        const companionTokenDoc = workflow.summonedCreatures[0];
+        const companion = companionTokenDoc.actor;
+
+        // delete all the other summon's tokens
+        let duplicatePlaceables = canvas.tokens.placeables.filter(t => t.id !== companionTokenDoc.id && t.name === companion.name);
+        if (duplicatePlaceables.length) {
+            await canvas.scene.deleteEmbeddedDocuments("Token", duplicatePlaceables.map(d => d.id));
+        }
+
+        if (companion) {
             const intMod = actor.system.abilities.int.mod;
             const abilityBonus = actor.system.attributes.spell.mod;
 
-            const repairItem = theSteelDefender.items.getName("Repair");
+            const repairItem = companion.items.getName("Repair");
             if (repairItem) {
                 let healingActivity = repairItem.system.activities.getName("Heal");
                 await healingActivity.update({
@@ -24,14 +32,14 @@ try {
                 });
             }
 
-            const rendItem = theSteelDefender.items.getName("Force-Empowered Rend");
+            const rendItem = companion.items.getName("Force-Empowered Rend");
             if (rendItem) {
                 await rendItem.update({
                     "system.damage.base.bonus" : intMod
                 });
             }
 
-            const attackBonusEffect = HomebrewEffects.findEffect(theSteelDefender, "Attack Bonus");
+            const attackBonusEffect = HomebrewEffects.findEffect(companion, "Attack Bonus");
             if (attackBonusEffect) {
                 const bonusChange = attackBonusEffect.changes.find(change => change.key === 'system.bonuses.mwak.attack');
                 if (bonusChange) {
@@ -48,7 +56,7 @@ try {
             // Update for level 15
             const hasImprovedDefender = actor.items.getName("Improved Deflection");
             if (hasImprovedDefender) {
-                const deflectAttackItem = theSteelDefender.items.getName("Deflect Attack");
+                const deflectAttackItem = companion.items.getName("Deflect Attack");
                 if (deflectAttackItem) {
                     let distractActivity = deflectAttackItem.system.activities.getName("Distract Target");
                     if (distractActivity) {

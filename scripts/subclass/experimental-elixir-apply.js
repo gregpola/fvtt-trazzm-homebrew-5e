@@ -1,16 +1,25 @@
-const version = "14.5.0";
+const version = "14.5.1";
 const optionName = "Experimental Elixir - Apply";
+const _flagGroup = "fvtt-trazzm-homebrew-5e";
+const _flagName = "experimental-elixir-choice";
 
 try {
     if (args[0].macroPass === "postActiveEffects") {
         const targetUuids = Array.from(workflow.targets).map(t => t.document.uuid);
+        let elixirChoice = macroItem.getFlag(_flagGroup, _flagName);
+        let elixirRollValue = 0;
 
-        const elixirEffectRoll = await new Roll('1d6').evaluate();
-        await game.dice3d?.showForRoll(elixirEffectRoll);
+        if (elixirChoice) {
+            elixirRollValue = 6;
+        }
+        else {
+            const elixirEffectRoll = await new Roll('1d6').evaluate();
+            await game.dice3d?.showForRoll(elixirEffectRoll);
+            elixirRollValue = elixirEffectRoll.total;
+        }
 
         let activity;
-
-        switch (elixirEffectRoll.total) {
+        switch (elixirRollValue) {
             case 1:
                 activity = macroItem.system.activities.getName('Healing');
                 if (activity) await MidiQOL.completeActivityUse(activity, { midiOptions: { targetUuids } });

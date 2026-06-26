@@ -1,10 +1,18 @@
 const optionName = "Reanimated Companion";
-const version = "14.5.0";
+const version = "14.5.1";
 
 try {
     if (args[0].macroPass === "postActiveEffects") {
-        // get the summon
-        const companion = actor.summonedCreatures.find(s => s.name === 'Reanimated Companion');
+        // get the summoned
+        const companionTokenDoc = workflow.summonedCreatures[0];
+        const companion = companionTokenDoc.actor;
+
+        // delete all the other summon's tokens
+        let duplicatePlaceables = canvas.tokens.placeables.filter(t => t.id !== companionTokenDoc.id && t.name === companion.name);
+        if (duplicatePlaceables.length) {
+            await canvas.scene.deleteEmbeddedDocuments("Token", duplicatePlaceables.map(d => d.id));
+        }
+
         if (companion) {
             const intMod = actor.system.abilities.int.mod;
             const actorDC = actor.system.attributes.spell.dc ?? 12;

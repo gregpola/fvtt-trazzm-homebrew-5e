@@ -52,7 +52,7 @@ export class CombatHandler {
 
         Hooks.on('createCombatant', async (combatant, options, userId) => {
             const actor = combatant?.actor;
-            if (actor) {
+            if (actor && !combatant.isNPC) {
                 await CombatHandler.handleItemRecharge(actor);
             }
         });
@@ -110,7 +110,9 @@ export class CombatHandler {
             let actor = combat?.combatant?.actor;
             if (actor && !isBackwards && !combat.combatant?.defeated) {
                 // check for item recharge
-                await CombatHandler.handleItemRecharge(actor);
+                if (!combat.combatant.isNPC) {
+                    await CombatHandler.handleItemRecharge(actor);
+                }
 
                 // check for heroic warrior
                 const heroicWarrior = actor.items.getName("Heroic Warrior");

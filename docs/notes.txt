@@ -62,6 +62,73 @@ if (activity) {
     await activity.use();
 }
 
+========================================================================================================================
+
+for (let targetToken of workflow.failedSaves) {
+    await targetToken.actor.toggleStatusEffect('prone', {active: true});
+}
+
+========================================================================================================================
+
+const damageType = 'psychic';
+let damageRoll = await new CONFIG.Dice.DamageRoll('3d6', {}, {type: damageType}).evaluate();
+await MidiQOL.displayDSNForRoll([damageRoll], "damageRoll");
+await MidiQOL.applyTokenDamage(
+    [{ damage: damageRoll.total, type: damageType }],
+    damageRoll.total,
+    new Set([token]),
+    item,
+    new Set(),
+    {flavor: 'Weave the Elder Sign'}
+);
+
+========================================================================================================================
+
+const defensiveEffect = macroItem.effects.getName(defensiveEffectName);
+if (defensiveEffect) {
+    const armorChange = defensiveEffect.changes.find(change => change.key === 'system.attributes.ac.bonus');
+    if (armorChange) {
+        await defensiveEffect.update({
+            changes: [{
+                key: 'system.attributes.ac.bonus',
+                value: `${theRoll.total}`,
+                mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                priority: 20
+            }]});
+        await MidiQOL.socket().executeAsGM("createEffects", {actorUuid: actor.uuid, effects: [defensiveEffect]});
+    }
+}
+
+========================================================================================================================
+
+!["undead","elf"].includes(raceOrType) && !raceOrType.includes('elf')
+reaction === 'isDamaged' && workflow.damageApplied > 0
+
+========================================================================================================================
+// Select 1 potion from compendium browser
+
+            const filters = {
+                locked: {
+                    types: new Set(['consumable']),
+                    additional: {
+                        rarity: { common: 1, uncommon: 1 },
+                        type: { potion: 1 }
+                    }
+                }
+            };
+
+            const result = await dnd5e.applications.CompendiumBrowser.select({
+                filters,
+                selection: { min: 1, max: 1 }
+            });
+
+========================================================================================================================
+
+
+
+========================================================================================================================
+
+
 
 ========================================================================================================================
 
@@ -128,6 +195,7 @@ Torch: Simulates flickering light with semi-regular pulses; historically labeled
 Vortex: vortex
 
 ========================================================================================================================
+
 Token lighting for Lightning Blade:
 
     "light": {
@@ -156,48 +224,3 @@ Token lighting for Lightning Blade:
       }
     },
 
-========================================================================================================================
-
-for (let targetToken of workflow.failedSaves) {
-    await targetToken.actor.toggleStatusEffect('prone', {active: true});
-}
-
-========================================================================================================================
-
-const damageType = 'psychic';
-let damageRoll = await new CONFIG.Dice.DamageRoll('3d6', {}, {type: damageType}).evaluate();
-await MidiQOL.displayDSNForRoll([damageRoll], "damageRoll");
-await MidiQOL.applyTokenDamage(
-    [{ damage: damageRoll.total, type: damageType }],
-    damageRoll.total,
-    new Set([token]),
-    item,
-    new Set(),
-    {flavor: 'Weave the Elder Sign'}
-);
-
-========================================================================================================================
-
-const defensiveEffect = macroItem.effects.getName(defensiveEffectName);
-if (defensiveEffect) {
-    const armorChange = defensiveEffect.changes.find(change => change.key === 'system.attributes.ac.bonus');
-    if (armorChange) {
-        await defensiveEffect.update({
-            changes: [{
-                key: 'system.attributes.ac.bonus',
-                value: `${theRoll.total}`,
-                mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-                priority: 20
-            }]});
-        await MidiQOL.socket().executeAsGM("createEffects", {actorUuid: actor.uuid, effects: [defensiveEffect]});
-    }
-}
-
-========================================================================================================================
-
-!["undead","elf"].includes(raceOrType) && !raceOrType.includes('elf')
-reaction === 'isDamaged' && workflow.damageApplied > 0
-
-========================================================================================================================
-
-========================================================================================================================

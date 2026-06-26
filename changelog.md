@@ -50,7 +50,7 @@
 * Updated drow poisoned weapons to work better in v14
 
 # 14.5.4
-* Added the Artificer class and Alchemist, Armor, Battle Smith, and Reanimator subclasses. It has the basics completed, but some features will be more fully automated in future updates and it hasn't been thoroughly tested.
+* Added the Artificer class and Alchemist, Armorer, Battle Smith, and Reanimator subclasses. It has the basics completed, but some features will be more fully automated in future updates and it hasn't been thoroughly tested.
 * Added Lantern of Revealing
 * Updated War God's Blessing to use Cast activities
 * Updated Corona of Light and Warding Flare for Light Domain
@@ -58,3 +58,16 @@
 * Fixed Cleric's Thaumaturge feature to allow the cantrip selection
 * Fixed Druid's Primal Order - Magician feature to allow the cantrip selection
 * General - lots of updates to fix DamageBonus macros
+
+# 14.5.5
+* Added Artificer plans and their selection process during level up
+* Added Tasha's Bubbling Cauldron spell
+* Added Hollow Warden ranger subclass
+* Added Ashardalon's Stride, Elemental Bane, Flame Arrows, Homunculus Servant, Intellect Fortress, Lightning Lure, Pyrotechnics, Skill Empowerment, Tiny Servant, Tortoise Shell, Transmute Rock, and Vortex Warp spells
+* Updated to the latest Boss Loot animations for: Conjure Barrage, Dispel Magic, Sleet Storm, and Wind Wall spells
+* Updated True Strike to prompt the actor for which spellcasting ability to use
+* Updated Alchemist's Experimental Elixir, and Chemical Mastery features
+* Updated Artificer's Soul of Artifice feature
+* Updated Homebrew Attunement to work with other items that modify attunement count
+* Fixed advancement issues with Artificer
+* Fix for duplicate recharge rolls on NPC's

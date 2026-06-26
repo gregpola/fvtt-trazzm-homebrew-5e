@@ -106,14 +106,26 @@ class HomebrewMacros {
         return hasToken;
     }
 
+    /**
+     * Give pull distance options, no closer than adjacent to the pulling token
+     * @param selfToken
+     * @param targetToken
+     * @param maxDistance
+     * @param optionName
+     * @returns {Promise<void>}
+     */
     static async pullTargetTowardsSelf(selfToken, targetToken, maxDistance, optionName) {
         // get the distance
         const tokenDistance = MidiQOL.computeDistance(selfToken, targetToken, {wallsBlock: true, includeCover: true});
-        let longestDistance = Math.floor(Math.min(tokenDistance, maxDistance) / 5) * 5;
+        let maxMovement = (tokenDistance / 5) * 5;
 
         // alter for token size
         const tokenGridSize = HomebrewMacros.SIZE_TO_GRID_FOR_PULL[selfToken.actor.system.traits.size];
-        longestDistance -= (tokenGridSize * 5);
+        const tokenSizeAdjustment = (tokenGridSize * 5);
+        maxMovement -= (tokenGridSize * 5);
+
+        const adjustedMax = (maxDistance / 5) * 5;
+        let longestDistance = Math.min(maxMovement, adjustedMax);
 
         // ask how far to pull
         let optionsContent = '';

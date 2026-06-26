@@ -15,9 +15,16 @@ class HomebrewEffects {
         });
     }
 
-    static async findEffectBySourceActor(actor, effectName, sourceActor) {
+    static async findEffectBySourceActor(actor, effectName, sourceActor, startsWith) {
         const targetActorEffects = Array.from(actor.allApplicableEffects());
-        const matchingEffects = targetActorEffects.filter(eff => eff.name === effectName);
+        let matchingEffects;
+
+        if (startsWith) {
+            matchingEffects = targetActorEffects.filter(eff => eff.name.startsWith(effectName));
+        }
+        else {
+            matchingEffects = targetActorEffects.filter(eff => eff.name === effectName);
+        }
 
         if (matchingEffects.length > 0) {
             for (let effect of matchingEffects) {

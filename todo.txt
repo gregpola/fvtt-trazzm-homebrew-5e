@@ -1,41 +1,27 @@
-Artificer plans as separate features and selection during level up (Improved Armorer)
-Artificer feature automation
 
+
+Artificer features: Spell-Storing Item
 Gnoll Vampire
 Thaumaturge -- any spell list?
-Hellish rebuke triggers on no damage -- wait for midi fix or use Gambit's? i.e. onUseMacro | isDamaged
 
 ========================================================================================================================
 Artificer Spells
 ========================================================================================================================
 
-Tasha’s Bubbling Cauldron -- alchemist feature
-
+Snare
 Air Bubble
-Ashardalon's Stride
 Catapult
 Catnap
-Elemental Bane
-Flame Arrows
-Homunculus Servant
-Intellect Fortress
 Kinetic Jaunt
-Lightning Lure
-Pyrotechnics
-Skill Empowerment
 Skywrite
-Snare
-Tiny Servant
-Tortoise Shell
-Transmute Rock
-Vortex Warp
-
 
 ========================================================================================================================
 SECONDARY
 ========================================================================================================================
 
-Refactor homebrew classes to consolidate and eliminate dead code
+Refactor homebrew code to consolidate and eliminate dead code
+
+Hellish rebuke triggers on no damage -- wait for midi fix or use Gambit's? i.e. onUseMacro | isDamaged
 Find Steed - Life Bond feature
 Arcane Mark spell
 Command spell

@@ -1,3 +1,8 @@
-2026/06/17-08:25:26.164 f64c Recovering log #2489
-2026/06/17-08:25:26.176 f64c Delete type=0 #2489
-2026/06/17-08:25:26.176 f64c Delete type=3 #2487
+2026/06/26-17:29:57.282 8634 Recovering log #2550
+2026/06/26-17:29:57.290 8634 Delete type=0 #2550
+2026/06/26-17:29:57.290 8634 Delete type=3 #2549
+2026/06/26-17:30:20.846 5f20 Level-0 table #2554: started
+2026/06/26-17:30:20.846 5f20 Level-0 table #2554: 0 bytes OK
+2026/06/26-17:30:20.849 5f20 Delete type=0 #2552
+2026/06/26-17:30:20.854 5f20 Manual compaction at level-0 from '!actors!0jJv5jbdhVdgAOcF' @ 72057594037927935 : 1 .. '!folders!ncZ5pnVPuzoPtgSz' @ 0 : 0; will stop at (end)
+2026/06/26-17:30:20.859 5f20 Manual compaction at level-1 from '!actors!0jJv5jbdhVdgAOcF' @ 72057594037927935 : 1 .. '!folders!ncZ5pnVPuzoPtgSz' @ 0 : 0; will stop at (end)
