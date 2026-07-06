@@ -1,3 +1,6 @@
+/*
+    Handles summon and transform activity handling
+ */
 const successChanceText = "% chance of success";
 
 export class SummonHelper {
@@ -40,6 +43,14 @@ export class SummonHelper {
             }
 
             return true;
+        });
+
+        Hooks.on("dnd5e.transformActorV2", async(actor, target, data, options) => {
+            // check if wild shape
+            if (options.parent?.item?.identifier === 'wild-shape') {
+                // handle features
+            }
+
         });
     }
 }

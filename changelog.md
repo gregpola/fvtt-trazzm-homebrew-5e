@@ -71,3 +71,16 @@
 * Updated Homebrew Attunement to work with other items that modify attunement count
 * Fixed advancement issues with Artificer
 * Fix for duplicate recharge rolls on NPC's
+
+# 14.5.6
+* Added Haunted One, Investigator, Mist Wanderer, and Spirit Medium backgrounds from Ravenloft: The Horrors Within
+* Added all the Dark Gifts feats from Ravenloft: The Horrors Within
+* Added Sharp Eye, and Survivor origin feats from Ravenloft: The Horrors Within
+* Added the College of Spirits Bard subclass from Ravenloft: The Horrors Within
+* Added the Phantom Rogue subclass from Ravenloft: The Horrors Within
+* Added the Shadow Sorcery subclass from Ravenloft: The Horrors Within
+* Added Phantasmal Killer spell
+* Updated Malfeasant subclass to prompt for contaminated spell selection
+* Updated Spirit Guardians to use v14 region behaviors and new Boss Loot animation
+* Updated Wild Shape to use v14 transformations
+* Reworked the Sneak Attack, Cunning Strike, and Devious Strikes to use more feature activities

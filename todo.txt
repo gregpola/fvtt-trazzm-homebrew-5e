@@ -1,6 +1,6 @@
+Rhystal wild shapes
 
 
-Artificer features: Spell-Storing Item
 Gnoll Vampire
 Thaumaturge -- any spell list?
 
@@ -20,7 +20,7 @@ SECONDARY
 ========================================================================================================================
 
 Refactor homebrew code to consolidate and eliminate dead code
-
+Artificer features: Spell-Storing Item
 Hellish rebuke triggers on no damage -- wait for midi fix or use Gambit's? i.e. onUseMacro | isDamaged
 Find Steed - Life Bond feature
 Arcane Mark spell

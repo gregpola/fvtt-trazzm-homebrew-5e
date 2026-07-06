@@ -11,12 +11,27 @@ label="Prismatic Spray - Indigo Ray", turn=end, saveDC=@attributes.spell.dc, sav
 label=Prismatic Spray (Violet), turn=end, saveAbility=wis, saveDC=@attributes.spell.dc, saveMagic=true, saveCount=1-, failCount=1-
 label=Slowed, turn=end, saveAbility=wis, saveDC=@attributes.spell.dc
 label=Cold Aura, turn=start, damageRoll=3d6, damageType=cold
+label=Poisoned, turn=end, saveAbility=con, saveCount=1-, saveDC=@abilities.dex.mod + 8 + @attributes.prof
+label=Poisoned (Envenomed), turn=end, saveAbility=con, saveCount=1-, saveDC=@abilities.dex.mod + 8 + @attributes.prof, damageRoll=2d6, damageType=poison
+label=Knocked Out, turn=end, saveAbility=con, saveCount=1-, saveDC=@abilities.dex.mod + 8 + @attributes.prof
+label=Phantasmal Killer, turn=end, saveAbility=wis, saveDC=@attributes.spell.dc, saveMagic=true, saveCount=1-, damageRoll=@item.leveld10, damageType=psychic
 
 ========================================================================================================================
 Good examples
 ========================================================================================================================
 
 Insect Plague - Region enter/turnEnd activity and apply difficult terrain
+
+
+========================================================================================================================
+
+const coverAura = macroItem.effects.getName("Spiritual Manifestation");
+if (coverAura) {
+    let newEffect = await MidiQOL.socket().executeAsGM("createEffects", {actorUuid: actor.uuid, effects: [coverAura]});
+    if (newEffect && newEffect.length) {
+        await MidiQOL.addConcentrationDependent(actor, newEffect[0], rolledItem);
+    }
+}
 
 ========================================================================================================================
 

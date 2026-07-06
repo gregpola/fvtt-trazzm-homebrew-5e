@@ -14,6 +14,10 @@ try {
 
 console.info("%c fvtt-trazzm-homebrew-5e", "color: #D030DE", " | Bag of Tricks (Gray)");
 ui.notifications.error(`${optionName}: ${version} - missing Font of Magic`);
+ChatMessage.create({
+	content: `${targetToken.name} is stuck in the webs`,
+	speaker: ChatMessage.getSpeaker({actor: originActor})
+});
 
 <section class="secret">
 	<p><strong>Foundry Note</strong></p>
@@ -33,6 +37,10 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(rolledActivity.actionType))
 	if (!["rwak", "mwak", "rsak", "msak"].includes(macroActivity.actionType))
 		if (["tiny", "sm", "med", "lg"].includes(targetToken.actor.system.traits.size)) {
 
+
+		@utilityRollTotal
+		(@scaling)d(@attributes.hd.largestFace)
+
 			actor.system.abilities.cha.mod
 
 			const characterLevel = actor.type === "character" ? actor.system.details.level : actor.system.details.cr;
@@ -45,6 +53,11 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(rolledActivity.actionType))
 			const spellLevel = workflow.castData.castLevel;
 			const abilityBonus = Math.max(rollingActor.system.abilities.str.mod, rollingActor.system.abilities.dex.mod);
 			max(1, @abilities.wis.mod)
+			floor(classes?.rogue?.levels ?? 1 / 2)
+			ceil(@scale.rogue.sneak-attack.number / 2)
+			ceil((1 + ceil(@attributes.classes.rogue.levels/2))/2)d6
+			@classes.bard.levels
+			@scale.bard.inspiration + @abilities.cha.mod
 
 			flags.midi - qol.neverTarget
 			system.attributes.attunement.max
@@ -56,6 +69,11 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(rolledActivity.actionType))
 			system.attributes.concentration.roll.mode
 
 			flags.midi - qol.canFlank
+
+			const maxValue = combatSuperiority.system.uses.max;
+			const spentValue = combatSuperiority.system.uses.spent;
+			const newValue = maxValue - 4;
+			await monksFocus.update({"system.uses.spent": newValue});
 
 
 			reaction === 'manual'
@@ -72,10 +90,9 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(rolledActivity.actionType))
 
 		@scale.bard.inspiration
 		@scale.paladin.aura
-		@scale.battle
-			-master.superiority.die
+		@scale.battle-master.superiority.die
+			const damageDice = actor.system.scale.barbarian["brutal-strike"];
 
-			workflow.hitTargets.size
 			token.actor.system.attributes.hp.value > 0
 
 			flags.dae.rest - recovery.force.maximiseHitDieRoll
@@ -85,13 +102,7 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(rolledActivity.actionType))
 			const cost = canvas.grid.measurePath([template, token.document]).cost;
 
 			let effectIdsToRemove = actor.getRollData().effects.filter(e => e.origin === stuckEffect.origin).map(effect => effect.id);
-			const damageDice = actor.system.scale.barbarian["brutal-strike"];
 
-			ui.notifications.error(`${optionName}: ${version} - no shared language`);
-			ChatMessage.create({
-				content: `${targetToken.name} is stuck in the webs`,
-				speaker: ChatMessage.getSpeaker({actor: originActor})
-			});
 
 			await targetToken.actor.toggleStatusEffect("poisoned", {active: false});
 
@@ -132,3 +143,4 @@ if (!["mwak", "rwak", "msak", "rsak"].includes(rolledActivity.actionType))
 
 			// options = { maxSize: undefined, includeIncapacitated: false, canSee: false }
 			let secondTarget = await MidiQOL.findNearby(CONST.TOKEN_DISPOSITIONS.FRIENDLY, ttoken, 5, {canSee: true});
+			await actor.deleteEmbeddedDocuments('Item', [macroItem.id]);

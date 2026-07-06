@@ -99,6 +99,24 @@ class HomebrewEffects {
         }
     }
 
+    static async removePriorEffectsByOriginItem(actor, originItem) {
+        let effectIds = [];
+
+        for (let effect of actor.getRollData().effects) {
+            if (effect.origin?.startsWith(originItem.uuid)) {
+                effectIds.push(effect.id);
+            }
+        }
+
+        // pop off the last one, as it should be the currently active effect
+        effectIds.pop();
+
+        // remove the others from the actor
+        if (effectIds.length > 0) {
+            await MidiQOL.socket().executeAsGM('removeEffects', {'actorUuid': actor.uuid, 'effects': effectIds});
+        }
+    }
+
     static findEffect(actor, name, origin = undefined) {
         if (origin) {
             return actor.getRollData().effects.find(eff => eff.name === name && eff.origin === origin);

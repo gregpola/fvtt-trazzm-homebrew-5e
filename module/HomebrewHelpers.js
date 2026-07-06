@@ -1132,4 +1132,96 @@ class HomebrewHelpers {
         const randomIndex = Math.floor(Math.random() * closestCorners.length);
         return closestCorners[randomIndex];
     };
+
+    static getSoulTrinketCount(actor) {
+        let currentTrinketCount = 0;
+        const currentTrinkets = actor.items.filter(i => i.identifier === 'soul-trinket');
+        if (currentTrinkets) {
+            // system.quantity
+            for (let t of currentTrinkets) {
+                currentTrinketCount += t.system.quantity ?? 0;
+            }
+        }
+
+        return currentTrinketCount;
+    }
+
+    static async destroySoulTrinkets(actor, count){
+        if (actor && count > 0){
+            const currentTrinkets = actor.items.filter(i => i.identifier === 'soul-trinket');
+            if (currentTrinkets) {
+                for (let trinket of currentTrinkets) {
+                    if (trinket.system.quantity > 1) {
+                        const newQuantity = trinket.system.quantity - 1;
+                        await trinket.update({'system.quantity' : newQuantity});
+                        return true;
+                    }
+                    else if (trinket.system.quantity > 0) {
+                        await actor.deleteEmbeddedDocuments('Item', [trinket.id]);
+                        return true;
+                    }
+                }
+
+                // if we get here, there is no trinket to destroy
+                console.error("Called removeSoulTrinkets and actor has none to destroy");
+                return false;
+            }
+            else {
+                console.error("Called removeSoulTrinkets and actor has none");
+                return false;
+            }
+        }
+        else {
+            console.error("Called removeSoulTrinkets with missing parameter");
+            return false;
+        }
+    }
+
+    /**
+     *  Returns the selected spirit to channel for College of Spirits
+     *
+     * @param choiceData    an array of maps
+     * @returns {Promise<undefined>}
+     */
+    static async pickChanneledSpirit(choiceData) {
+        let spiritItem = undefined;
+
+        if (choiceData) {
+            // build content
+            let spiritContent = "";
+
+            for (let option of choiceData) {
+                if (spiritContent.length === 0) {
+                    spiritContent += `<label style="right: 10px;"><input type="radio" name="choice" value=${option.uuid} checked>  ${option.name}</label>`;
+                }
+                else {
+                    spiritContent += `<label style="right: 10px;"><input type="radio" name="choice" value=${option.uuid}>  ${option.name}</label>`;
+                }
+            }
+
+            // display Dialog
+            const spiritUuid = await foundry.applications.api.DialogV2.prompt({
+                window: {
+                    title: "Spirits from Beyond"
+                },
+                position: {
+                    width: 400
+                },
+                content: spiritContent,
+                rejectClose: false,
+                modal: true,
+                ok: {
+                    callback: (event, button, dialog) => {
+                        return button.form.elements.choice.value;
+                    }
+                }
+            });
+
+            if (spiritUuid) {
+                spiritItem = await fromUuid(spiritUuid);
+            }
+        }
+
+        return spiritItem;
+    }
 }

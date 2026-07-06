@@ -8,7 +8,7 @@ export class RestHandler {
     }
 
     static hooks() {
-        Hooks.on("dnd5e.restCompleted", (actor, result, config) => {
+        Hooks.on("dnd5e.restCompleted", async(actor, result, config) => {
             // check for used Arcane Recovery and has Bladesong
             let usedArcaneRecovery = false;
 
@@ -26,6 +26,18 @@ export class RestHandler {
                     activity.use();
                 }
             }
+
+            // check for Spirits from Beyond
+            const spiritsFromBeyond = actor.items.getName("Spirits from Beyond");
+            if (spiritsFromBeyond) {
+                // remove all spirits
+                let channeledSpirits = actor.items.filter(i => i.type === "consumable" && i.identifier.startsWith("spirit-"));
+                if (channeledSpirits.length) {
+                    const itemIds = Array.from(channeledSpirits).map(t => t.id);
+                    await actor.deleteEmbeddedDocuments('Item', itemIds);
+                }
+            }
+
         });
     }
 

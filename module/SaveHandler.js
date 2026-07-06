@@ -1,3 +1,6 @@
+/**
+ * SaveHandler handles all ability checks i.e. saves, skills, tools, checks
+ */
 const _elementalResistanceTypes = new Set(["acid", "cold", "fire", "lightning", "thunder"]);
 const _coronaOfLightTypes = new Set(["fire", "radiant"]);
 
@@ -58,15 +61,12 @@ export class SaveHandler {
         });
 
         Hooks.on("dnd5e.rollDeathSave", async (rolls, details) => {
-            console.log("rollDeathSave");
             const theRoll = Number(rolls[0].result);
             const survivor = details.subject.items.getName("Survivor");
             if (survivor && rolls[0].total >= 18) {
                 rolls[0].total = 20;
             }
         });
-
-
     }
 
     static async wait(ms) { return new Promise(resolve => { setTimeout(resolve, ms); }); }
