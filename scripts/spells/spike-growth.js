@@ -15,7 +15,7 @@
 	is cast must take a Search action and succeed on a Wisdom (Perception) or Wisdom (Survival) check against your spell
 	save DC to recognize the terrain as hazardous before entering it.
 */
-const version = "14.5.0";
+const version = "14.5.1";
 const optionName = "Spike Growth";
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
 const _flagName = "spike-growth-data";
@@ -69,6 +69,13 @@ async function tokenMoved(token, movement, options, user) {
 async function applyMoveDamage(targetToken, macroItem) {
     let activity = macroItem.system.activities.find(a => a.identifier === 'movement-damage');
     if (activity) {
+        // get the actor owner
+        let actorUser = MidiQOL.playerForActor(targetToken.actor);
+        if (!actorUser?.active) {
+            console.info(`${optionName} - unable to locate the actor player, sending to GM`);
+            actorUser = game.users?.activeGM;
+        }
+
         const options = {
             midiOptions: {
                 targetsToUse: new Set([targetToken]),
@@ -81,6 +88,7 @@ async function applyMoveDamage(targetToken, macroItem) {
                 autoRollDamage: "always",
                 fastForwardAttack: true,
                 fastForwardDamage: true,
+                asUser: actorUser.id,
                 workflowData: false
             }
         };

@@ -4,48 +4,110 @@
     doesn’t regenerate.
 */
 const optionName = "Regeneration";
-const version = "14.5.0";
-const _flagGroup = "fvtt-trazzm-homebrew-5e";
+const version = "14.5.1";
+
 const _suppressionTypes = ['acid', 'fire'];
 const _healingFormula = "10";
 
+const _regenSuppressedId = "suppress-regeneration";
+const _regenOffId = "regeneration-off";
+const _regenerationTimeFlag = "regeneration-time-flag";
+
 try {
     if (args[0].tag === "TargetOnUse" && args[0].macroPass === "preTargetDamageApplication") {
-        // apply damage types
-        await MonsterMacros.applyDamageTypes(actor, workflow.damageDetail);
+        // Check for damage type suppressions
+        const applicableRolls = workflow.damageDetail.filter(i => _suppressionTypes.includes(i.type));
+        if (applicableRolls && applicableRolls.length > 0) {
+            // Suppress Regeneration
+            const activity = macroItem.system.activities.find(a => a.identifier === _regenSuppressedId);
+            if (activity) {
+                // get the actor owner
+                let actorUser = MidiQOL.playerForActor(actor);
+                if (!actorUser?.active) {
+                    console.info(`${optionName} - unable to locate the actor player, sending to GM`);
+                    actorUser = game.users?.activeGM;
+                }
 
-        // check for death
-        if ((workflow.damageItem.newHP === 0) && !MonsterMacros.shouldRegenerateThisTurn(actor, _suppressionTypes)) {
-            await MonsterMacros.applyNoRegenerationEffect(actor);
+                const options = {
+                    midiOptions: {
+                        noOnUseMacro: true,
+                        configureDialog: false,
+                        showFullCard: false,
+                        ignoreUserTargets: true,
+                        checkGMStatus: true,
+                        autoRollAttack: true,
+                        autoRollDamage: "always",
+                        fastForwardAttack: true,
+                        fastForwardDamage: true,
+                        asUser: actorUser.id,
+                        workflowData: true
+                    }
+                };
+
+                await MidiQOL.completeActivityUse(activity.uuid, options, {}, {});
+            }
         }
 
-    }
-    else if (args[0] === "each" && lastArgValue.turn === "startTurn") {
-        const regen = await MonsterMacros.shouldRegenerateThisTurn(actor, _suppressionTypes);
-        if (regen) {
-            const healRoll = await new Roll(_healingFormula).evaluate();
-            await actor.applyDamage(- healRoll.total);
-            await HomebrewHelpers.setUsedThisTurn(actor, MonsterMacros.regenerationTimeFlag);
+        // check for death ???
+        if ((workflow.damageItem.newHP === 0) && !shouldRegenerateThisTurn(actor)) {
+            const stopActivity = macroItem.system.activities.find(a => a.identifier === _regenOffId);
+            if (stopActivity) {
+                // get the actor owner
+                let actorUser = MidiQOL.playerForActor(actor);
+                if (!actorUser?.active) {
+                    console.info(`${optionName} - unable to locate the actor player, sending to GM`);
+                    actorUser = game.users?.activeGM;
+                }
 
-            const actualHealing = Math.min(healRoll.total, (actor.system.attributes.hp.max - actor.system.attributes.hp.value));
-            await ChatMessage.create({
-                content: `${actor.name} regenerated ${actualHealing} hit points`,
-                speaker: ChatMessage.getSpeaker({ actor: actor })});
-        }
-        else if (actor.system.attributes.hp.value <= 0) {
-            // check for death
-            await MonsterMacros.applyNoRegenerationEffect(actor);
-            await actor.toggleStatusEffect("dead", {active: true});
-        }
-        else {
-            await ChatMessage.create({
-                content: `${actor.name} is unable to regenerate this turn`,
-                speaker: ChatMessage.getSpeaker({ actor: actor })});
+                const options = {
+                    midiOptions: {
+                        noOnUseMacro: true,
+                        configureDialog: false,
+                        showFullCard: false,
+                        ignoreUserTargets: true,
+                        checkGMStatus: true,
+                        autoRollAttack: true,
+                        autoRollDamage: "always",
+                        fastForwardAttack: true,
+                        fastForwardDamage: true,
+                        asUser: actorUser.id,
+                        workflowData: true
+                    }
+                };
+
+                await MidiQOL.completeActivityUse(stopActivity.uuid, options, {}, {});
+            }
         }
 
-        await MonsterMacros.clearDamageTypes(actor);
     }
 
 } catch (err) {
     console.error(`${optionName}: ${version}`, err);
+}
+
+function shouldRegenerateThisTurn(actor) {
+    if (!HomebrewHelpers.isAvailableThisTurn(actor, _regenerationTimeFlag)) {
+        return false;
+    }
+
+    // check for dead
+    const noRegenEffect = actor.effects.getName("Regeneration Off");
+    if (noRegenEffect) {
+        return false;
+    }
+
+    // check for suppressed
+    const suppressedEffect = actor.effects.getName("Regeneration Suppressed");
+    if (suppressedEffect) {
+        return false;
+    }
+
+    // check for full health
+    var currentHP = actor.system.attributes.hp.value;
+    var maxHP = actor.system.attributes.hp.max;
+    if (currentHP === maxHP) {
+        return false;
+    }
+
+    return true;
 }

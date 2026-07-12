@@ -23,6 +23,9 @@ Good examples
 Insect Plague - Region enter/turnEnd activity and apply difficult terrain
 
 
+// don't apply aura to dead tokens
+token.actor.system.attributes.hp.value > 0
+
 ========================================================================================================================
 
 const coverAura = macroItem.effects.getName("Spiritual Manifestation");

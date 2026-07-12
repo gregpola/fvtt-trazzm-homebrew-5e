@@ -84,3 +84,16 @@
 * Updated Spirit Guardians to use v14 region behaviors and new Boss Loot animation
 * Updated Wild Shape to use v14 transformations
 * Reworked the Sneak Attack, Cunning Strike, and Devious Strikes to use more feature activities
+
+# 14.5.7
+* Added the Prone Fighting fighting style feat
+* Added the Tactical Combatant general feat
+* Added Stormwalker’s Cloak
+* Added Ice Elemental, Magma Elemental, Mud Elemental, and Smoke Elemental monsters
+* Updated Spirit Guardians to offer a choice of radiant or necrotic damage when casting
+* Updated Conjure Woodland Beings to use v14 region behaviors
+* Updated Generic Regeneration to overcome permission issues and updated the trolls
+* Updated Ice Troll to fix regeneration and not proc cold aura when dead
+* Updated Spike Growth to fix user permission errors when applying movement damage
+* Updated Beast of the Land to fix not knocking prone on a charge attack
+* Updated Fire Elemental to migrate illumination to v14

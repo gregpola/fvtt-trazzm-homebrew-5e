@@ -108,6 +108,7 @@ class HomebrewMacros {
 
     /**
      * Give pull distance options, no closer than adjacent to the pulling token
+     *
      * @param selfToken
      * @param targetToken
      * @param maxDistance

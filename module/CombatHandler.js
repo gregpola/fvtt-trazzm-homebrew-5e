@@ -251,7 +251,7 @@ export class CombatHandler {
                 const isSleeping =  actor.statuses.has("sleeping");
 
                 // prone conditionals
-                let laughterEffect =  actor.getRollData().effects.find(eff => eff.name.toLowerCase().includes('hideous laughter'));
+                let laughterEffect = actor.getRollData().effects.find(eff => eff.name.toLowerCase().includes('hideous laughter'));
                 if (isProne && laughterEffect) {
                     isProne = false;
                 }
