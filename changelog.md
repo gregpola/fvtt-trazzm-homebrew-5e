@@ -97,3 +97,6 @@
 * Updated Spike Growth to fix user permission errors when applying movement damage
 * Updated Beast of the Land to fix not knocking prone on a charge attack
 * Updated Fire Elemental to migrate illumination to v14
+
+# 14.5.8
+* Added Dust, Ice, Magma, Mud, Smoke, and Steam Mephits

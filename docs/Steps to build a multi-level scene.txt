@@ -1,0 +1,14 @@
+
+
+
+General Notes:
+    For roof tiles, set Occlusion Modes to: Surface and Fade (entire tile)
+    Need to add surfaces (regions) between layers to block views
+        BW video 18:00
+
+    Intermediate surface should have top inclusive checked
+
+    Stairs are regions between the two levels
+    Select the stair region and place a new shape will create a similarly constrained stair
+
+    Use the Palette tool to change levels on multi-select walls

@@ -121,6 +121,9 @@ if (defensiveEffect) {
 
 !["undead","elf"].includes(raceOrType) && !raceOrType.includes('elf')
 reaction === 'isDamaged' && workflow.damageApplied > 0
+reaction === 'isDamaged' && ['bludgeoning', 'piercing', 'slashing'].some(type=>damageTypes[type])
+
+game.user.updateTokenTargets(args[0].targets.filter(tok=>tok.disposition !== canvas.tokens.get(args[0].tokenId).document.disposition).map(i=>i.id))
 
 ========================================================================================================================
 // Select 1 potion from compendium browser
