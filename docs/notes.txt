@@ -1,4 +1,13 @@
 ========================================================================================================================
+Common breakpoints
+========================================================================================================================
+
+midi-qol        src/module/Hooks.ts             609     executeMacroSpec        return macro.execute(scope);
+Foundry         scripts/src/foundry.mjs         130768  #processMacroCommand    macro.execute(scope);
+Foundry         scripts/src/foundry.mjs         52890   #executeScript          return fn.call(this, speaker, actor, token, character, scope, ...argValues);
+
+
+========================================================================================================================
 OVERTIME values
 ========================================================================================================================
 

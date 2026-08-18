@@ -1,8 +1,18 @@
-2026/07/12-11:07:50.655 f770 Recovering log #2885
-2026/07/12-11:07:50.663 f770 Delete type=0 #2885
-2026/07/12-11:07:50.663 f770 Delete type=3 #2884
-2026/07/12-11:08:02.250 11804 Level-0 table #2889: started
-2026/07/12-11:08:02.250 11804 Level-0 table #2889: 0 bytes OK
-2026/07/12-11:08:02.253 11804 Delete type=0 #2887
-2026/07/12-11:08:02.253 11804 Manual compaction at level-0 from '!folders!0Ca9gLGFA1up33c3' @ 72057594037927935 : 1 .. '!items.effects!zp7VyzpFwGHYvB4m.m1LeIn1z9uDlOXbj' @ 0 : 0; will stop at (end)
-2026/07/12-11:08:02.253 11804 Manual compaction at level-1 from '!folders!0Ca9gLGFA1up33c3' @ 72057594037927935 : 1 .. '!items.effects!zp7VyzpFwGHYvB4m.m1LeIn1z9uDlOXbj' @ 0 : 0; will stop at (end)
+2026/08/18-11:10:07.446 55e0 Recovering log #2992
+2026/08/18-11:10:07.446 55e0 Level-0 table #2994: started
+2026/08/18-11:10:07.451 55e0 Level-0 table #2994: 31256 bytes OK
+2026/08/18-11:10:07.460 55e0 Delete type=0 #2992
+2026/08/18-11:10:07.462 55e0 Delete type=3 #2991
+2026/08/18-11:10:08.607 c174 Moved #2994 to level-1 31256 bytes OK: files[ 0 1 1 0 0 0 0 ]
+2026/08/18-14:42:14.910 c174 Level-0 table #2997: started
+2026/08/18-14:42:14.910 c174 Level-0 table #2997: 0 bytes OK
+2026/08/18-14:42:14.914 c174 Delete type=0 #2995
+2026/08/18-14:42:14.918 c174 Manual compaction at level-0 from '!folders!0Ca9gLGFA1up33c3' @ 72057594037927935 : 1 .. '!items.effects!zp7VyzpFwGHYvB4m.m1LeIn1z9uDlOXbj' @ 0 : 0; will stop at (end)
+2026/08/18-14:42:14.925 c174 Manual compaction at level-1 from '!folders!0Ca9gLGFA1up33c3' @ 72057594037927935 : 1 .. '!items.effects!zp7VyzpFwGHYvB4m.m1LeIn1z9uDlOXbj' @ 0 : 0; will stop at '!items.effects!lw3fh0ik4HDhGday.YaqpTBomSt5z2TPA' @ 16611 : 1
+2026/08/18-14:42:14.925 c174 Compacting 1@1 + 1@2 files
+2026/08/18-14:42:14.942 c174 Generated table #2998@1: 765 keys, 1005729 bytes
+2026/08/18-14:42:14.942 c174 Compacted 1@1 + 1@2 files => 1005729 bytes
+2026/08/18-14:42:14.944 c174 compacted to: files[ 0 0 1 0 0 0 0 ]
+2026/08/18-14:42:14.944 c174 Delete type=2 #2990
+2026/08/18-14:42:14.944 c174 Delete type=2 #2994
+2026/08/18-14:42:14.948 c174 Manual compaction at level-1 from '!items.effects!lw3fh0ik4HDhGday.YaqpTBomSt5z2TPA' @ 16611 : 1 .. '!items.effects!zp7VyzpFwGHYvB4m.m1LeIn1z9uDlOXbj' @ 0 : 0; will stop at (end)

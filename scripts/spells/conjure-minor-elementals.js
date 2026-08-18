@@ -8,8 +8,7 @@
     Using a Higher-Level Spell Slot. The damage increases by 1d8 for each spell slot level above 4.
 */
 const optionName = "Conjure Minor Elementals";
-const version = "13.5.0";
-const auraEffectName = "Minor Elementals Aura";
+const version = "14.5.0";
 const damageTypes = [['🧪 Acid', 'acid'], ['❄️ Cold', 'cold'], ['🔥 Fire', 'fire'], ['⚡ Lightning', 'lightning']];
 
 try {
@@ -17,52 +16,45 @@ try {
         if (["mwak", "rwak", "msak", "rsak"].includes(rolledActivity.actionType)) {
             let targetToken = workflow.hitTargets.first();
             if (targetToken) {
-                const auraEffects = targetToken.actor.effects.filter(e => e.name === auraEffectName);
+                const auraEffect = actor.effects.getName(optionName);
+                if (auraEffect) {
+                    const castLevel = auraEffect.flags["midi-qol"].castData.castLevel;
+                    const damageDice = 2 + ((castLevel - 4) * 2);
 
-                if (auraEffects.length > 0) {
-                    for (let auraEffect of auraEffects) {
-                        let auraOrigin = await fromUuid(auraEffect.origin);
-                        if (auraOrigin.parent === actor) {
-                            const castLevel = auraEffect.flags["midi-qol"].castData.castLevel;
-                            const damageDice = 2 + ((castLevel - 4) * 2);
-
-
-                            // build the dialog content
-                            let content = `<p>Choose the ${optionName} damage type for this attack:</p>`;
-                            let first = true;
-                            for (let dt of damageTypes) {
-                                if (first) {
-                                    content += `<label style="margin-left: 15px; margin-bottom: 5px;"><input style="right: 10px;" type="radio" name="choice" value="${dt[1]}" checked />${dt[0]}</label>`;
-                                    first = false;
-                                }
-                                else {
-                                    content += `<label style="margin-left: 15px; margin-bottom: 5px;"><input style="right: 10px;" type="radio" name="choice" value="${dt[1]}" />${dt[0]}</label>`;
-                                }
-                            }
-                            content += '<div style="margin-bottom: 10px;" />';
-
-                            // prompt the player
-                            let damageType = await foundry.applications.api.DialogV2.prompt({
-                                content: content,
-                                rejectClose: false,
-                                ok: {
-                                    callback: (event, button, dialog) => {
-                                        return button.form.elements.choice.value;
-                                    }
-                                },
-                                window: {
-                                    title: `${optionName}`,
-                                },
-                                position: {
-                                    width: 400
-                                }
-                            });
-
-                            if (damageType) {
-                                // apply damage bonus
-                                await applyDamageBonus(actor, damageType, damageDice);
-                            }
+                    // build the dialog content
+                    let content = `<p>Choose the ${optionName} damage type for this attack:</p>`;
+                    let first = true;
+                    for (let dt of damageTypes) {
+                        if (first) {
+                            content += `<label style="margin-left: 15px; margin-bottom: 5px;"><input style="right: 10px;" type="radio" name="choice" value="${dt[1]}" checked />${dt[0]}</label>`;
+                            first = false;
                         }
+                        else {
+                            content += `<label style="margin-left: 15px; margin-bottom: 5px;"><input style="right: 10px;" type="radio" name="choice" value="${dt[1]}" />${dt[0]}</label>`;
+                        }
+                    }
+                    content += '<div style="margin-bottom: 10px;" />';
+
+                    // prompt the player
+                    let damageType = await foundry.applications.api.DialogV2.prompt({
+                        content: content,
+                        rejectClose: false,
+                        ok: {
+                            callback: (event, button, dialog) => {
+                                return button.form.elements.choice.value;
+                            }
+                        },
+                        window: {
+                            title: `${optionName}`,
+                        },
+                        position: {
+                            width: 400
+                        }
+                    });
+
+                    if (damageType) {
+                        // apply damage bonus
+                        await applyDamageBonus(actor, damageType, damageDice);
                     }
                 }
             }
@@ -88,13 +80,7 @@ async function applyDamageBonus(actor, damageType, damageDice) {
                 'value': `bonus=${damageDice}d8[${damageType}]; once;`,
                 'priority': 20
             }
-        ],
-        flags: {
-            dae: {
-                stackable: 'noneName',
-                specialDuration: ['turnStartSource', 'DamageDealt', 'combatEnd']
-            }
-        }
+        ]
     };
 
     await MidiQOL.socket().executeAsGM("createEffects", { actorUuid: actor.uuid, effects: [effectData] });

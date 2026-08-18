@@ -100,3 +100,13 @@
 
 # 14.5.8
 * Added Dust, Ice, Magma, Mud, Smoke, and Steam Mephits
+* Added Young Blue Dragon
+* Added Firbolg race
+* Added Urban Ranger subclass
+* Fixed a border case when auto-resizing compendium windows
+* Fixed Find Familiar duration
+* Fixed Topple weapon mastery prompting player instead of GM
+* Updated Malfeasant subclass to fix level up options
+* Updated the Ranger class to eliminate duplicate Hunter's Mark spells
+* Updated Aura of Life, Banishment, Confusion, and Evard's Black Tentacles spells to support new Boss Loot animations
+* Updated Conjure Minor Elementals for v14

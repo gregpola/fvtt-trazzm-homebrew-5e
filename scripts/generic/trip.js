@@ -1,3 +1,5 @@
 for (let targetToken of workflow.failedSaves) {
-    await targetToken.actor.toggleStatusEffect('prone', {active: true});
+    await game.trazzm.socket.executeAsGM(
+        "toggleStatusEffect",
+        {actorUuid: targetToken.actor.uuid, statusId: 'prone', enabled: true});
 }

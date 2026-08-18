@@ -82,7 +82,13 @@ Hooks.on("renderApplicationV2", (application, element, context, options) => {
     if (application instanceof Compendium) {
         const heightMod = game.settings.get(Constants.MODULE_ID, Constants.SHRINK_COMPENDIUM_WINDOWS);
         if (heightMod) {
-            const screenHeight = canvas.screenDimensions[1];
+            let screenHeight = canvas.screenDimensions[1];
+
+            // check for no scene case
+            if (screenHeight < 100) {
+                screenHeight = canvas.app.screen.height;
+            }
+
             const betterHeight = screenHeight - 100 - heightMod;
             if (application.position.height > betterHeight) {
                 application.position.height = betterHeight;
