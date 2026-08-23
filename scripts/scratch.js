@@ -1,4 +1,4 @@
-/*
+/**
 	
 */
 const optionName = "Precision";

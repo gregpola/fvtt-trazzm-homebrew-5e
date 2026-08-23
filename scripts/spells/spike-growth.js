@@ -15,7 +15,7 @@
 	is cast must take a Search action and succeed on a Wisdom (Perception) or Wisdom (Survival) check against your spell
 	save DC to recognize the terrain as hazardous before entering it.
 */
-const version = "14.5.1";
+const version = "14.5.2";
 const optionName = "Spike Growth";
 const _flagGroup = "fvtt-trazzm-homebrew-5e";
 const _flagName = "spike-growth-data";
@@ -47,8 +47,9 @@ async function tokenMoved(token, movement, options, user) {
         const isFinished = await movement.finished;
         const spaces = movement.passed.spaces;
         const isTeleport = options.teleport;
+        const validElevation = ((token.elevation < 5) && (token.elevation >= 0));
 
-        if (isFinished && !isTeleport) {
+        if (isFinished && !isTeleport && validElevation) {
             // get the source item
             const effect = token.actor.effects.getName(inSpikesEffectName);
             if (effect) {

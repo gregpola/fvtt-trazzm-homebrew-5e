@@ -110,3 +110,11 @@
 * Updated the Ranger class to eliminate duplicate Hunter's Mark spells
 * Updated Aura of Life, Banishment, Confusion, and Evard's Black Tentacles spells to support new Boss Loot animations
 * Updated Conjure Minor Elementals for v14
+
+# 14.5.9
+* Added Druid Wild Companion feature from the PHB to fix a broken reference
+* Added the Snare spell
+* Fixed Healing Spirit, it was using a legacy attribute for uses
+* Updated Spike Growth so that it doesn't damage flying or burrowing tokens
+* Updated True Strike to prompt for use rather than requiring an enchantment
+* Updated Savage Attacker to match RAW by having an option in the attack dialog to use it

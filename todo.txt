@@ -1,4 +1,5 @@
-Conjure Minor Elementals
+Test D&D Store Generator
+Hellish rebuke triggers on no damage -- wait for midi fix or use Gambit's? i.e. onUseMacro | isDamaged
 
 
 Gnoll Vampire
@@ -8,7 +9,6 @@ Thaumaturge -- any spell list?
 Artificer Spells
 ========================================================================================================================
 
-Snare
 Air Bubble
 Catapult
 Catnap
@@ -21,7 +21,6 @@ SECONDARY
 
 Refactor homebrew code to consolidate and eliminate dead code
 Artificer features: Spell-Storing Item
-Hellish rebuke triggers on no damage -- wait for midi fix or use Gambit's? i.e. onUseMacro | isDamaged
 Find Steed - Life Bond feature
 Arcane Mark spell
 Command spell
@@ -33,7 +32,6 @@ LONG TERM
 
 Fork Combat Carousel
 Recover ammunition logic
-actor update functionality
 Prompt for corruption
 options for initiative bonuses in module hook -- need support from the carousel
 Critical effects table

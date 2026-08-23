@@ -1224,4 +1224,75 @@ class HomebrewHelpers {
 
         return spiritItem;
     }
+
+    /**
+     * Displays a dialog for the user owner of the actor, asking if they want to use a feature and optionally any options associated with it
+     *
+     * @param actor
+     * @param title
+     * @param description
+     * @param optionsContent
+     * @returns a Map of the options selected
+     */
+    static async showUseAbilityDialog(actor, title, description, optionsContent) {
+        // build dialog content
+        let content = `
+              <form>
+                <div>${description}</div>
+                <hr />
+                <div id="abilityOptions" class="flexcol" style="margin-bottom: 5px;">${optionsContent}</div>
+              </form>`;
+
+        // Prompt the player
+        const result = await foundry.applications.api.DialogV2.wait({
+            window: { title: `${title}` },
+            form: { closeOnSubmit: true },
+            content: content,
+            buttons: [
+                {
+                    action: "Yes",
+                    default: true,
+                    label: "Yes",
+                    callback: (event, button, dialog) => {
+                        let optionChoices = new Map();
+                        optionChoices.set('use', true);
+
+                        // TODO return options selected -- check name, value, and type
+                        // TODO figure out <select>
+                        if (optionsContent && optionsContent.length > 0) {
+                            var grid = document.getElementById("abilityOptions");
+                            if (grid) {
+                                var inputElements = grid.getElementsByTagName("INPUT");
+                                for (var i = 0; i < inputElements.length; i++) {
+                                    if (inputElements[i].type === "checkbox" && inputElements[i].checked) {
+                                        optionChoices.set(inputElements[i].name, inputElements[i].value);
+                                    }
+                                    else if (inputElements[i].type === "radio" && inputElements[i].checked) {
+                                        optionChoices.set(inputElements[i].name, inputElements[i].value);
+                                    }
+                                }
+                            }
+                        }
+
+                        return optionChoices;
+                    }
+                },
+                {
+                    action: "No",
+                    default: false,
+                    label: "No",
+                    callback: () => null
+                },
+            ],
+            rejectClose: false,
+            modal: true
+        });
+
+        if (result) {
+            return result;
+        }
+        else {
+            return null;
+        }
+    }
 }

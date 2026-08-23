@@ -24,6 +24,7 @@ label=Poisoned, turn=end, saveAbility=con, saveCount=1-, saveDC=@abilities.dex.m
 label=Poisoned (Envenomed), turn=end, saveAbility=con, saveCount=1-, saveDC=@abilities.dex.mod + 8 + @attributes.prof, damageRoll=2d6, damageType=poison
 label=Knocked Out, turn=end, saveAbility=con, saveCount=1-, saveDC=@abilities.dex.mod + 8 + @attributes.prof
 label=Phantasmal Killer, turn=end, saveAbility=wis, saveDC=@attributes.spell.dc, saveMagic=true, saveCount=1-, damageRoll=@item.leveld10, damageType=psychic
+label=Snared, turn=end, saveAbility=dex, saveDC=@attributes.spell.dc
 
 ========================================================================================================================
 Good examples
