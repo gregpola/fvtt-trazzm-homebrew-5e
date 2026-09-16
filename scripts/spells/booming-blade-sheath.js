@@ -7,7 +7,6 @@ try {
     if (args[0] === "on") {
         const hookId = Hooks.on('moveToken', tokenMoved);
         await actor.setFlag(_flagGroup, _flagName, { hook: hookId, itemId: item.uuid});
-
     }
 } catch (err) {
     console.error(`${optionName}: ${version}`, err);

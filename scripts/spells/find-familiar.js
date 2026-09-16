@@ -1,5 +1,5 @@
 /*
-    Adds the Generic Actions item to the summon
+    Adds the Generic Actions item to the summoned familiar
 */
 const optionName = "Find Familiar";
 const version = "14.5.0";

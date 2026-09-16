@@ -242,6 +242,10 @@ class HomebrewHelpers {
         return ["tiny", "sm", "med", "lg"].includes(target.actor.system.traits.size);
     }
 
+    static isMediumOrSmaller(target) {
+        return ["tiny", "sm", "med"].includes(target.actor.system.traits.size);
+    }
+
     static isAvailableThisTurn(actor, flagName) {
         if (game.combat) {
             const combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn / 100}`;
@@ -432,6 +436,15 @@ class HomebrewHelpers {
                 }
             }
         ];
+    }
+
+    static getAvailableHitDice(actor) {
+        let documents = actor.items.filter(i => {
+            if (i.type !== 'class') return false;
+            return ((i.system.levels - i.system.hd.spent) > 0);
+        });
+
+        return documents.reduce((total, item) => total + (item.system.levels - item.system.hd.spent), 0);
     }
 
     static getAvailableSorceryPoints(actor) {

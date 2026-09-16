@@ -1,0 +1,20 @@
+<div class="t5e-dialog-shell">
+    <header class="t5e-dialog-header">
+        <i class="fa-solid t5e-dialog-icon" aria-hidden="true"></i>
+        <span class="t5e-dialog-title">{{localize title}}</span>
+        <button type="button" class="t5e-app-header-button" data-action="close" data-tooltip="{{localize 'Close'}}" aria-label="{{localize 'Close'}}">
+            <i class="fas fa-xmark" aria-hidden="true"></i>
+        </button>
+    </header>
+    <div id="dialog-app" class="t5e-dialog-body standard-form scrollable">
+        {{#if content}}<div class="t5e-dialog-content{{#unless inputs}} t5e-dialog-content-only{{/unless}}">{{{localize content}}}</div>{{/if}}
+        {{> (lookup @root 'inputTemplate') inputs=inputs inputTemplate=inputTemplate}}
+    </div>
+    {{#if buttons.length}}
+    <footer class="t5e-dialog-footer">
+        {{#each buttons}}
+            <button type="submit" data-action="confirm" name="{{name}}">{{localize label}}</button>
+        {{/each}}
+    </footer>
+    {{/if}}
+</div>

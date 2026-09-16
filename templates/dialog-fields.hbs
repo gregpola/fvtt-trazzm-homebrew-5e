@@ -1,0 +1,348 @@
+{{#each inputs}}
+    {{#t5e-wrapIf legend "fieldset"}}
+    {{#if legend}}<legend>{{localize legend}}</legend>{{/if}}
+    {{#t5e-wrapIf hasSubinputs "div" class="t5e-has-collapsible"}}
+    {{#if useHelper}}
+        {{#each options}}
+            {{formGroup field name=name value=value}}
+        {{/each}}
+    {{else if isButton}}
+        <div class="t5e-body-buttons {{#if displayAsRows}}t5e-stacked{{/if}}">
+            {{#each options}}
+                <button type="submit" class="t5e-body-button" data-action="confirm" id="{{id}}" name="{{name}}"{{#if tooltip}} data-tooltip="{{tooltip}}"{{/if}}{{#if reference}} data-reference-tooltip="{{reference}}"{{/if}}>
+                    {{#if image}}<img class="button-image{{#if imageClass}} {{imageClass}}{{/if}}{{#if invertColor}} t5e-svg-color-invert{{/if}}" src="{{image}}">{{/if}}
+                    <span>{{localize label}}</span>
+                </button>
+            {{/each}}
+        </div>  
+    {{else if isCheckbox}}
+        {{#if showCounter}}
+            <div class="t5e-budget-counter{{#if (gte currentNum totalMax)}} at-max{{/if}}">{{currentNum}}/{{totalMax}}</div>
+        {{/if}}
+        {{#each options}}
+            <div class="t5e-form-group"{{#if subinputs}} data-collapsible-id="{{id}}"{{/if}}>
+                <div{{#if subinputs}} class="t5e-summary"{{/if}}>
+                    <div class="form-group inline{{#if locked}} t5e-locked{{/if}}">
+                        {{#if ../hasSubinputs}}
+                        <div class="t5e-collapsible-icon-placeholder"{{#if subinputs}} data-action="toggleCollapsed"{{/if}}>
+                            {{#if subinputs}}<i class="fas fa-chevron-down fa-fw t5e-collapsible-icon"></i>{{/if}}
+                        </div>
+                        {{/if}}
+                        
+                        <label for="{{id}}"{{#if tooltip}} data-tooltip="{{tooltip}}"{{/if}}{{#if reference}} data-reference-tooltip="{{reference}}"{{/if}}>
+                            {{#if image}}<img class="label-image{{#if invertColor}} t5e-svg-color-invert{{/if}}" src="{{image}}" data-token-id="{{name}}">{{/if}}
+                            <span class="t5e-label-text">{{{localize label}}}</span>
+                        </label>
+                        {{#if tags}}
+                            <div class="t5e-tags">
+                                {{#each tags}}
+                                    <span class="t5e-combobox-tag" id="{{id}}" data-for="{{../id}}"{{#if tooltip}} data-tooltip="{{tooltip}}"{{/if}}>
+                                        {{#if icon}}<i class="{{icon}}"></i>{{/if}}
+                                        {{#if image}}<img class="t5e-damage-icon" src="{{image}}">{{/if}}
+                                        <span class="t5e-hint-text">{{localize label}}</span>
+                                    </span>
+                                {{/each}}
+                            </div>
+                        {{/if}}
+                        <div class="form-fields">
+                            <input type="checkbox" {{#if locked}}disabled{{else if (gte ../currentNum ../totalMax)}}{{#unless isChecked}}disabled{{/unless}}{{/if}} id="{{id}}" name="{{name}}" {{#if isChecked}}checked{{/if}}>
+                        </div>
+                        {{#each hints}}
+                            <p class="hint" id="{{id}}" data-for="{{../id}}"{{#if tooltip}} data-tooltip="{{tooltip}}"{{/if}}>{{#if icon}}<i class="{{icon}}"></i>{{/if}}{{{localize label}}}</p>
+                        {{/each}}
+                    </div>
+                </div>
+                {{#if subinputs}}
+                <div class="t5e-collapsible-content">
+                    <div class="t5e-collapsible-wrapper">
+                        {{> (lookup @root 'inputTemplate') inputs=subinputs inputTemplate=@root.inputTemplate}}
+                    </div>
+                </div>
+                {{/if}}
+            </div>
+        {{/each}}
+    {{else if isRequest}}
+        {{#each options}}
+            <div class="t5e-form-group"{{#if subinputs}} data-collapsible-id="{{id}}"{{/if}}>
+                <div{{#if subinputs}} class="t5e-summary"{{/if}}>
+                    <div class="form-group inline{{#if locked}} t5e-locked{{/if}}">
+                        {{#if ../hasSubinputs}}
+                        <div class="t5e-collapsible-icon-placeholder"{{#if subinputs}} data-action="toggleCollapsed"{{/if}}>
+                            {{#if subinputs}}<i class="fas fa-chevron-down fa-fw t5e-collapsible-icon"></i>{{/if}}
+                        </div>
+                        {{/if}}
+                        
+                        <label for="{{id}}"{{#if tooltip}} data-tooltip="{{tooltip}}"{{/if}}{{#if reference}} data-reference-tooltip="{{reference}}"{{/if}}>
+                            {{#if image}}<img class="label-image{{#if invertColor}} t5e-svg-color-invert{{/if}}" src="{{image}}" data-token-id="{{name}}">{{/if}}
+                            <span class="t5e-label-text">{{{localize label}}}</span>
+                        </label>
+                        {{#if tags}}
+                            <div class="t5e-tags">
+                                {{#each tags}}
+                                    <span class="t5e-combobox-tag" id="{{id}}" data-for="{{../id}}"{{#if tooltip}} data-tooltip="{{tooltip}}"{{/if}}>
+                                        {{#if icon}}<i class="{{icon}}"></i>{{/if}}
+                                        {{#if image}}<img class="t5e-damage-icon" src="{{image}}">{{/if}}
+                                        <span class="t5e-hint-text">{{localize label}}</span>
+                                    </span>
+                                {{/each}}
+                            </div>
+                        {{/if}}
+                        <div class="form-fields">
+                            <input type="hidden" name="{{name}}" value="{{isChecked}}" data-for="{{id}}">
+                            <button type="button" class="t5e-body-button t5e-request {{state.key}}" id="{{id}}" data-action="request"{{#if stateReason}} data-tooltip="{{stateReason}}"{{/if}}>
+                                {{#if state.icon}}<i class="{{state.icon}}"></i>{{/if}}
+                                <span>{{state.label}}</span>
+                            </button>
+                        </div>
+                        {{#each hints}}
+                            <p class="hint" id="{{id}}" data-for="{{../id}}"{{#if tooltip}} data-tooltip="{{tooltip}}"{{/if}}>{{#if icon}}<i class="{{icon}}"></i>{{/if}}{{{localize label}}}</p>
+                        {{/each}}
+                    </div>
+                </div>
+                {{#if subinputs}}
+                <div class="t5e-collapsible-content">
+                    <div class="t5e-collapsible-wrapper">
+                        {{> (lookup @root 'inputTemplate') inputs=subinputs inputTemplate=@root.inputTemplate}}
+                    </div>
+                </div>
+                {{/if}}
+            </div>
+        {{/each}}
+    {{else if isRadio}}
+        {{#each options}}
+            <div class="t5e-form-group"{{#if subinputs}} data-collapsible-id="{{id}}"{{/if}}>
+                <div{{#if subinputs}} class="t5e-summary"{{/if}}>
+                    <div class="form-group">
+                        {{#if ../hasSubinputs}}
+                        <div class="t5e-collapsible-icon-placeholder" {{#if subinputs}}data-action="toggleCollapsed"{{/if}}>
+                            {{#if subinputs}}<i class="fas fa-chevron-down fa-fw t5e-collapsible-icon"></i>{{/if}}
+                        </div>
+                        {{/if}}
+                        
+                        <label for="{{id}}"{{#if tooltip}} data-tooltip="{{tooltip}}"{{/if}}{{#if reference}} data-reference-tooltip="{{reference}}"{{/if}}>
+                            {{#if image}}<img class="label-image{{#if invertColor}} t5e-svg-color-invert{{/if}}" src="{{image}}" data-token-id="{{name}}">{{/if}}
+                            {{localize label}}
+                        </label>
+                        {{#if tags}}
+                            <div class="t5e-tags">
+                                {{#each tags}}
+                                    <span class="t5e-combobox-tag" id="{{id}}" data-for="{{../id}}"{{#if tooltip}} data-tooltip="{{tooltip}}"{{/if}}>
+                                        {{#if icon}}<i class="{{icon}}"></i>{{/if}}
+                                        {{#if image}}<img class="t5e-damage-icon" src="{{image}}">{{/if}}
+                                        <span class="t5e-hint-text">{{localize label}}</span>
+                                    </span>
+                                {{/each}}
+                            </div>
+                        {{/if}}
+                        <div class="form-fields">
+                            <input type="radio" id="{{id}}" name="{{../radioName}}" value="{{name}}" {{#if isChecked}}checked{{/if}}>
+                        </div>
+                        {{#each hints}}
+                            <p class="hint" id="{{id}}" data-for="{{../id}}"{{#if tooltip}} data-tooltip="{{tooltip}}"{{/if}}>{{#if icon}}<i class="{{icon}}"></i>{{/if}}{{{localize label}}}</p>
+                        {{/each}}
+                    </div>
+                </div>
+                {{#if subinputs}}
+                <div class="t5e-collapsible-content">
+                    <div class="t5e-collapsible-wrapper">
+                        {{> (lookup @root 'inputTemplate') inputs=subinputs inputTemplate=@root.inputTemplate}}
+                    </div>
+                </div>
+                {{/if}}
+            </div>
+        {{/each}}
+    {{else if isSelectAmount}}
+        {{#if totalMax}}
+            <div class="t5e-budget-counter{{#if atMax}} at-max{{/if}}">{{currentSpent}}/{{totalMax}}</div>
+        {{/if}}
+        {{#each options}}
+            <div class="t5e-form-group"{{#if subinputs}} data-collapsible-id="{{id}}"{{/if}}>
+                <div{{#if subinputs}} class="t5e-summary"{{/if}}>
+                    <div class="form-group t5e-form-group-amount">
+                        {{#if ../hasSubinputs}}
+                        <div class="t5e-collapsible-icon-placeholder"{{#if subinputs}} data-action="toggleCollapsed"{{/if}}>
+                            {{#if subinputs}}<i class="fas fa-chevron-down fa-fw t5e-collapsible-icon"></i>{{/if}}
+                        </div>
+                        {{/if}}
+                        
+                        <label class="t5e-label-container t5e-form-group-amount-label" for="{{id}}"{{#if tooltip}} data-tooltip="{{tooltip}}"{{/if}}{{#if reference}} data-reference-tooltip="{{reference}}"{{/if}}>
+                            {{#if image}}<img class="label-image{{#if invertColor}} t5e-svg-color-invert{{/if}}" src="{{image}}" data-token-id="{{name}}">{{/if}}
+                            {{{localize label}}}
+                        </label>
+                        {{#if tags}}
+                            <div class="t5e-tags">
+                                {{#each tags}}
+                                    <span class="t5e-combobox-tag" id="{{id}}" data-for="{{../id}}"{{#if tooltip}} data-tooltip="{{tooltip}}"{{/if}}>
+                                        {{#if icon}}<i class="{{icon}}"></i>{{/if}}
+                                        {{#if image}}<img class="t5e-damage-icon" src="{{image}}">{{/if}}
+                                        <span class="t5e-hint-text">{{localize label}}</span>
+                                    </span>
+                                {{/each}}
+                            </div>
+                        {{/if}}
+                        <div class="form-fields t5e-form-group-amount-fields">
+                            <select id="{{id}}" name="{{name}}">
+                                {{#each options}}
+                                    <option value="{{this}}" {{#if (gt this ../currentMaxAmount)}}disabled{{/if}} {{#if (eq this ../currentAmount)}}selected{{/if}}>{{this}}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                        {{#each hints}}
+                            <p class="hint" id="{{id}}" data-for="{{../id}}"{{#if tooltip}} data-tooltip="{{tooltip}}"{{/if}}>{{#if icon}}<i class="{{icon}}"></i>{{/if}}{{{localize label}}}</p>
+                        {{/each}}
+                    </div>
+                </div>
+                {{#if subinputs}}
+                <div class="t5e-collapsible-content">
+                    <div class="t5e-collapsible-wrapper">
+                        {{> (lookup @root 'inputTemplate') inputs=subinputs inputTemplate=@root.inputTemplate}}
+                    </div>
+                </div>
+                {{/if}}
+            </div>
+        {{/each}}
+    {{else if isSlider}}
+        {{#each options}}
+            <div class="t5e-form-group"{{#if subinputs}} data-collapsible-id="{{id}}"{{/if}}>
+                <div{{#if subinputs}} class="t5e-summary"{{/if}}>
+                    <div class="form-group">
+                        {{#if ../hasSubinputs}}
+                        <div class="t5e-collapsible-icon-placeholder"{{#if subinputs}} data-action="toggleCollapsed"{{/if}}>
+                            {{#if subinputs}}<i class="fas fa-chevron-down fa-fw t5e-collapsible-icon"></i>{{/if}}
+                        </div>
+                        {{/if}}
+                        
+                        <label for="{{id}}"{{#if tooltip}} data-tooltip="{{tooltip}}"{{/if}}{{#if reference}} data-reference-tooltip="{{reference}}"{{/if}}>
+                            {{#if image}}<img class="label-image{{#if invertColor}} t5e-svg-color-invert{{/if}}" src="{{image}}" data-token-id="{{name}}">{{/if}}
+                            {{{localize label}}}
+                        </label>
+                        <div class="form-fields">
+                            <range-picker value="{{#if value includeZero=true}}{{value}}{{else}}{{min}}{{/if}}" min="{{min}}" max="{{max}}" step="{{step}}" name="{{name}}" id="{{id}}"></range-picker>
+                        </div>
+                        {{#each hints}}
+                            <p class="hint" id="{{id}}" data-for="{{../id}}"{{#if tooltip}} data-tooltip="{{tooltip}}"{{/if}}>{{#if icon}}<i class="{{icon}}"></i>{{/if}}{{{localize label}}}</p>
+                        {{/each}}
+                    </div>
+                </div>
+                {{#if subinputs}}
+                <div class="t5e-collapsible-content">
+                    <div class="t5e-collapsible-wrapper">
+                        {{> (lookup @root 'inputTemplate') inputs=subinputs inputTemplate=@root.inputTemplate}}
+                    </div>
+                </div>
+                {{/if}}
+            </div>
+        {{/each}}
+    {{else if isFormula}}
+        <div class="t5e-formula{{#if header}} t5e-dialog-subheader{{/if}}">
+            {{#each groups}}
+                <div class="t5e-dice-group" id="{{id}}">
+                    <header class="t5e-dice-group-header">
+                        {{#if icon}}<img class="t5e-dmg-icon" src="{{icon}}">{{/if}}
+                        {{#if label}}<span class="t5e-dice-type-label">{{label}}</span>{{/if}}
+                        <strong class="t5e-dice-subtotal">{{formula}}</strong>
+                    </header>
+                    <ol class="dice-rolls">
+                        {{#each dice}}
+                            <li class="t5e-die-cell">
+                                <label class="roll{{#if faces}} d{{faces}}{{else}} t5e-die-generic{{/if}}{{#if add}} add{{else}} subtract{{/if}}" data-tooltip="{{tooltip}}">{{value}}</label>
+                            </li>
+                        {{/each}}
+                    </ol>
+                </div>
+            {{/each}}
+        </div>
+    {{else if isDice}}
+        {{#if showCounter}}
+            <div class="t5e-budget-counter">{{currentNum}}/{{totalMax}}</div>
+        {{/if}}
+        <div class="t5e-dice-picker" data-total-max="{{totalMax}}">
+            {{#each groups}}
+                <div class="t5e-dice-group">
+                    <header class="t5e-dice-group-header">
+                        {{#if icon}}<img class="t5e-dmg-icon" src="{{icon}}">{{/if}}
+                        {{#if label}}<span class="t5e-dice-type-label">{{label}}</span>{{/if}}
+                        <strong class="t5e-dice-subtotal">{{total}}</strong>
+                    </header>
+                    <ol class="dice-rolls">
+                        {{#each dice}}
+                            <li class="t5e-die-cell">
+                                <input type="checkbox" hidden id="d-{{name}}" name="{{name}}">
+                                <label for="d-{{name}}" class="roll d{{faces}}{{#unless isStandard}} t5e-die-generic{{/unless}}{{#if isMin}} min{{/if}}{{#if isMax}} max{{/if}}" data-tooltip="d{{faces}}">{{result}}</label>
+                            </li>
+                        {{/each}}
+                    </ol>
+                </div>
+            {{/each}}
+            {{#if grandTotal}}
+                <div class="t5e-dice-grand-total"><span>{{localize 'CAT.Dialog.Total'}}</span><strong>{{grandTotal}}</strong></div>
+            {{/if}}
+        </div>
+    {{else if isCombobox}}
+        {{#each options}}
+            <div class="t5e-form-group"{{#if subinputs}} data-collapsible-id="{{id}}"{{/if}}>
+                <div{{#if subinputs}} class="t5e-summary"{{/if}}>
+                    <div class="form-group{{#unless label}} t5e-no-label{{/unless}}">
+                        {{#if ../hasSubinputs}}
+                        <div class="t5e-collapsible-icon-placeholder"{{#if subinputs}} data-action="toggleCollapsed"{{/if}}>
+                            {{#if subinputs}}<i class="fas fa-chevron-down fa-fw t5e-collapsible-icon"></i>{{/if}}
+                        </div>
+                        {{/if}}
+                        
+                        {{#if label}}<label for="{{id}}"{{#if tooltip}} data-tooltip="{{tooltip}}"{{/if}}{{#if reference}} data-reference-tooltip="{{reference}}"{{/if}}>{{{localize label}}}</label>{{/if}}
+                        <div class="form-fields">
+                            <t5e-combobox input-id="{{id}}" name="{{name}}" value="{{value}}"{{#if placeholder}} placeholder="{{placeholder}}"{{/if}}>
+                                {{#each options}}
+                                    <option value="{{value}}" data-image="{{image}}" data-token-id="{{value}}"{{#if tag}} data-tag="{{tag}}"{{/if}}>{{label}}</option>
+                                {{/each}}
+                            </t5e-combobox>
+                        </div>
+                    </div>
+                    {{#each hints}}
+                        <p class="hint" id="{{id}}" data-for="{{../id}}"{{#if tooltip}} data-tooltip="{{tooltip}}"{{/if}}>{{#if icon}}<i class="{{icon}}"></i>{{/if}}{{{localize label}}}</p>
+                    {{/each}}
+                </div>
+                {{#if subinputs}}
+                <div class="t5e-collapsible-content">
+                    <div class="t5e-collapsible-wrapper">
+                        {{> (lookup @root 'inputTemplate') inputs=subinputs inputTemplate=@root.inputTemplate}}
+                    </div>
+                </div>
+                {{/if}}
+            </div>
+        {{/each}}
+    {{else if isComboboxMulti}}
+        {{#each options}}
+            <div class="t5e-form-group"{{#if subinputs}} data-collapsible-id="{{id}}"{{/if}}>
+                <div{{#if subinputs}} class="t5e-summary"{{/if}}>
+                    <div class="form-group t5e-multi-combobox-group{{#unless label}} t5e-no-label{{/unless}}">
+                        {{#if ../hasSubinputs}}
+                        <div class="t5e-collapsible-icon-placeholder" {{#if subinputs}}data-action="toggleCollapsed"{{/if}}>
+                            {{#if subinputs}}<i class="fas fa-chevron-down fa-fw t5e-collapsible-icon"></i>{{/if}}
+                        </div>
+                        {{/if}}
+                        
+                        {{#if label}}<label for="{{id}}"{{#if tooltip}} data-tooltip="{{tooltip}}"{{/if}}{{#if reference}} data-reference-tooltip="{{reference}}"{{/if}}>{{{localize label}}}</label>{{/if}}
+                        <t5e-multi-combobox input-id="{{id}}" name="{{name}}"{{#if amounts}} amounts{{/if}}{{#if maxTotal}} max-total="{{maxTotal}}"{{/if}}{{#if placeholder}} placeholder="{{placeholder}}"{{/if}}>
+                            {{#each options}}
+                                <option value="{{value}}" data-image="{{image}}" data-token-id="{{value}}" data-weight="{{weight}}"{{#if max}} data-max="{{max}}"{{/if}}{{#if tag}} data-tag="{{tag}}"{{/if}}{{#if selected}} selected{{/if}}{{#if amount includeZero=true}} data-amount="{{amount}}"{{/if}}>{{label}}</option>
+                            {{/each}}
+                        </t5e-multi-combobox>
+                    </div>
+                    {{#each hints}}
+                        <p class="hint" id="{{id}}" data-for="{{../id}}"{{#if tooltip}} data-tooltip="{{tooltip}}"{{/if}}>{{#if icon}}<i class="{{icon}}"></i>{{/if}}{{{localize label}}}</p>
+                    {{/each}}
+                </div>
+                {{#if subinputs}}
+                <div class="t5e-collapsible-content">
+                    <div class="t5e-collapsible-wrapper">
+                        {{> (lookup @root 'inputTemplate') inputs=subinputs inputTemplate=@root.inputTemplate}}
+                    </div>
+                </div>
+                {{/if}}
+            </div>
+        {{/each}}
+    {{/if}}
+    {{/t5e-wrapIf}}
+    {{/t5e-wrapIf}}
+{{/each}}

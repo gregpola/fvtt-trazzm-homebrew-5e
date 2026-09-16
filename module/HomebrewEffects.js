@@ -15,6 +15,24 @@ class HomebrewEffects {
         });
     }
 
+    static async getEffectSourceActor(actor, effect) {
+        if (effect.origin) {
+            const effectOrigin = await fromUuid(effect.origin);
+            if (effectOrigin) {
+                let parent = effectOrigin.parent;
+                while (parent && !(parent instanceof Actor)) {
+                    parent = parent.parent;
+                }
+
+                if (parent) {
+                    return parent;
+                }
+            }
+        }
+
+        return undefined;
+    }
+
     static async findEffectBySourceActor(actor, effectName, sourceActor, startsWith) {
         const targetActorEffects = Array.from(actor.allApplicableEffects());
         let matchingEffects;

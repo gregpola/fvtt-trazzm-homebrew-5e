@@ -274,6 +274,9 @@ export class WeaponMastery {
                                     const targetUuids = [targetToken.document.uuid];
                                     await MidiQOL.completeActivityUse(activity, { midiOptions: { targetUuids } });
                                 }
+                                else {
+                                    console.error(`Trazzm-homebrew WeaponMastery - missing Topple handler, please update your Weapon Mastery item`);
+                                }
                             }
                         }
                     }

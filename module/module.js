@@ -8,6 +8,7 @@ import {WizardFeatures} from "./WizardFeatures.js";
 import {SummonHelper} from "./SummonHelper.js";
 import {WeaponMastery} from "./WeaponMastery.js";
 import {DarkGiftsHandler} from "./t5e-DarkGifts.js";
+import {DialogUtils} from "./t5e-DialogUtils.js";
 import {macros} from './macros.js';
 import {registerSettings} from './settings.js';
 import {doTurnStartOptions} from "./utils.js";
@@ -20,6 +21,7 @@ import {removeWalls} from "./utils.js";
 import {updateTargets} from "./utils.js";
 import {toggleStatusEffect} from "./utils.js";
 import {PointBuyCalculator} from "./PointBuyCalculator.js";
+import * as handlers from './handlers.mjs';
 
 export let pointBuyEnabled = false;
 
@@ -32,13 +34,15 @@ const SUB_MODULES = {
     WizardFeatures,
     SummonHelper,
     WeaponMastery,
-    DarkGiftsHandler
+    DarkGiftsHandler,
+    DialogUtils
 };
 
 Hooks.once('init', async function () {
     console.log('%c fvtt-trazzm-homebrew-5e | Initializing homebrew-5e', 'color: #D030DE');
     registerSettings();
     fetchParams();
+    handlers.registerHelpers();
     initialize_module();
 });
 
@@ -108,6 +112,7 @@ function initialize_module() {
 
     globalThis.TrazzmHomebrew.weaponMastery = WeaponMastery;
     globalThis.TrazzmHomebrew.pointBuyCalculator = PointBuyCalculator;
+    globalThis.TrazzmHomebrew.dialogUtils = DialogUtils;
 
     // Add point buy calculator access from the actor sheet controls
     if (pointBuyEnabled) {
@@ -127,14 +132,10 @@ globalThis.TrazzmHomebrew = {
     macros
 }
 
-export function i18n(key) {
-    return game.i18n?.localize(key) ?? key;
-}
-
 function appendDocumentSheetHeaderControls(app, controls) {
     if (pointBuyEnabled) {
         controls.push({
-            label: i18n("TrazzmHomebrew.PBCalculator.title"),
+            label: _loc("TrazzmHomebrew.PBCalculator.title"),
             icon: "fa-solid fa-calculator",
             action: "open-pb-calculator",
             onClick: () => new PointBuyCalculator({ document: app.document }).render({ force: true })

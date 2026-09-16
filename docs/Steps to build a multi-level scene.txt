@@ -1,3 +1,9 @@
+1. Build ground floor first; including walls and surfaces
+    * Create new scene and set the background image, which will be the ground floor level
+2. Open Level Manager and create the other levels
+3.
+4. Once all the levels are built, add stairs and other level transitions
+
 
 
 
@@ -12,3 +18,8 @@ General Notes:
     Select the stair region and place a new shape will create a similarly constrained stair
 
     Use the Palette tool to change levels on multi-select walls
+
+
+
+
+    media/home/Public/Scenes/Ramshackle-Inn/Tavern-ground-floor.jpg

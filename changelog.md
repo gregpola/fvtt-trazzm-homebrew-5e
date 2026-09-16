@@ -118,3 +118,19 @@
 * Updated Spike Growth so that it doesn't damage flying or burrowing tokens
 * Updated True Strike to prompt for use rather than requiring an enchantment
 * Updated Savage Attacker to match RAW by having an option in the attack dialog to use it
+
+# 14.5.10
+* Added Mage Armor to fix issue with the PHB version expiring early
+* Added Mummy monster
+* Added Staff of Frost
+* Added Cone of Cold, Entangle, Ice Storm, Resistance, Vicious Mockery, and Wall of Ice spells
+* Added the Winter Walker ranger subclass
+* Added all backgrounds from Arcana Unleashed
+* Added all origin, general and fighting style feats from Arcana Unleashed
+* Updated Cunning Action to fix expiration changes for v14
+* Updated Generic Actions to fix expiration changes for v14
+* Updated Giant's Might to move uses to the base item
+* Updated Hunter's Mark to support the Winter Walker and tweaked some macro settings
+* Updated Starry Form to expire on rest or incapacitated
+* Updated Great Weapon Fighting to use automated conditions instead of a macro
+* Updated Conjure Woodland Beings, Control Water, and Fire Shield with new Boss Loot animations

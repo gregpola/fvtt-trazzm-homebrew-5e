@@ -28,6 +28,12 @@
       "SubmitCalculation": "Apply to Actor",
       "Reset": "Reset",
       "adjustHint": "Use the Up and Down keys to change the scores one at a time"
+    },
+    "Dialog": {
+      "SelectHitDice": {
+        "Title": "Select Hit Dice",
+        "HitDieLabel": "{className}: {remaining}/{max} {denomination}"
+      }
     }
   }
 }

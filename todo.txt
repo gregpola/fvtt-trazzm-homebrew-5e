@@ -1,7 +1,12 @@
+Warlike Familiar
+Silence spell region behavior
+
+
+
+Extended spell???
+Add break free, extinguish, etc... item and grant when applying appropriate effects
+
 Test D&D Store Generator
-Hellish rebuke triggers on no damage -- wait for midi fix or use Gambit's? i.e. onUseMacro | isDamaged
-
-
 Gnoll Vampire
 Thaumaturge -- any spell list?
 
