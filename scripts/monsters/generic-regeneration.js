@@ -4,7 +4,7 @@
     doesn’t regenerate.
 */
 const optionName = "Regeneration";
-const version = "14.5.1";
+const version = "14.5.2";
 
 const _suppressionTypes = ['acid', 'fire'];
 const _healingFormula = "10";
@@ -79,6 +79,16 @@ try {
             }
         }
 
+    }
+    else if (args[0] === "each" && lastArgValue.turn === 'startTurn') {
+        if (shouldRegenerateThisTurn(actor)) {
+            const damageRoll = await new CONFIG.Dice.DamageRoll(`${_healingFormula}`, {}, {type: "healing", properties: ["mgc"]}).evaluate();
+            await new MidiQOL.DamageOnlyWorkflow(actor, token, null, null, [token], damageRoll, {
+                flavor: optionName,
+                itemCardId: "new",
+                itemData: macroItem.toObject()
+            });
+        }
     }
 
 } catch (err) {

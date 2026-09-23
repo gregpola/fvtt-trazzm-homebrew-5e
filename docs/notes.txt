@@ -8,6 +8,19 @@ Foundry         scripts/src/foundry.mjs         52890   #executeScript          
 
 
 ========================================================================================================================
+Commands
+========================================================================================================================
+
+SHIFT-E     BW mass edit properties of selection
+
+========================================================================================================================
+Fixes
+========================================================================================================================
+
+DAEActiveEffectConfig.js, line 275:
+if (spec?.forcedMode && (typeof spec.forcedMode === "string")) {
+
+========================================================================================================================
 OVERTIME values
 ========================================================================================================================
 
@@ -37,7 +50,6 @@ Insect Plague - Region enter/turnEnd activity and apply difficult terrain
 
 // don't apply aura to dead tokens
 token.actor.system.attributes.hp.value > 0
-
 ========================================================================================================================
 AC5E
 ========================================================================================================================
@@ -102,10 +114,11 @@ try {
 
 const targetUuids = Array.from(workflow.hitTargets).map(t => t.document.uuid);
 const targetUuids = [token.document.uuid];
+
 const activity = macroItem.system.activities.find(a => a.identifier === identifier);
 if (activity) await MidiQOL.completeActivityUse(activity, { midiOptions: { targetUuids } });
 
-let activity = await macroItem.system.activities.find(a => a.identifier === 'invoke-rune');
+const activity = macroItem.system.activities.getName("Heal");
 if (activity) {
     await activity.use();
 }

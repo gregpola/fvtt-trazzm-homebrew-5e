@@ -2,7 +2,7 @@
     This macro is used to handle subclass features that add riders to Rage
 */
 const optionName = "Rage";
-const version = "13.5.0";
+const version = "14.5.0";
 const mindlessRageEffectName = "Mindless Rage Active";
 
 try {

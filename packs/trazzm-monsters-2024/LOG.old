@@ -1,3 +1,8 @@
-2026/09/16-12:29:43.523 2228 Recovering log #2984
-2026/09/16-12:29:43.531 2228 Delete type=0 #2984
-2026/09/16-12:29:43.531 2228 Delete type=3 #2979
+2026/09/22-12:04:47.703 ad2c Recovering log #3053
+2026/09/22-12:04:47.709 ad2c Delete type=0 #3053
+2026/09/22-12:04:47.709 ad2c Delete type=3 #3052
+2026/09/22-12:05:00.836 a9ac Level-0 table #3057: started
+2026/09/22-12:05:00.836 a9ac Level-0 table #3057: 0 bytes OK
+2026/09/22-12:05:00.838 a9ac Delete type=0 #3055
+2026/09/22-12:05:00.841 a9ac Manual compaction at level-0 from '!actors!0jJv5jbdhVdgAOcF' @ 72057594037927935 : 1 .. '!folders!pyQdb8g9cR3LnSX1' @ 0 : 0; will stop at (end)
+2026/09/22-12:05:00.841 a9ac Manual compaction at level-1 from '!actors!0jJv5jbdhVdgAOcF' @ 72057594037927935 : 1 .. '!folders!pyQdb8g9cR3LnSX1' @ 0 : 0; will stop at (end)

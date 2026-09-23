@@ -120,7 +120,7 @@
 * Updated Savage Attacker to match RAW by having an option in the attack dialog to use it
 
 # 14.5.10
-* Added Mage Armor to fix issue with the PHB version expiring early
+* Added Mage Armor to fix an issue with the PHB version expiring early
 * Added Mummy monster
 * Added Staff of Frost
 * Added Cone of Cold, Entangle, Ice Storm, Resistance, Vicious Mockery, and Wall of Ice spells
@@ -134,3 +134,17 @@
 * Updated Starry Form to expire on rest or incapacitated
 * Updated Great Weapon Fighting to use automated conditions instead of a macro
 * Updated Conjure Woodland Beings, Control Water, and Fire Shield with new Boss Loot animations
+
+# 14.5.11
+* Added Color Darkvision feature to the Races compendium. This allows characters with darkvision to see colors in scenes.
+* Added Unarmed Strike to the Background compendium with full RAW activities and added it to all backgrounds
+* Added the Aura of Evasion, Battle Familiar, Catnap, Detonate, Disruptive Tune, Enervation, and Zone of Amicability spells from Arcana Unleashed
+* Updated Bardic Inspiration to match RAW better, including not rolling the die when inspiring your target
+* Updated monster Regeneration and the trolls to fix issue with DAE
+* Updated Silence spell to use region behavior instead of a summon
+* Updated the generic and Monk's unarmed strike to match RAW
+* Updated Barbarian to remove Unarmed Strike
+* Updated Polearm Master to remove bad tip text and fix Pole Strike range
+* Fixed Tasha's Hideous Laughter to unlink the prone condition from the active effect and fix isDamaged macro
+* Fixed error in Find Familiar when adding generic actions to the familiar
+* Fixed Rage and Rage of Wilds to trigger correctly. Please activate the Rage feature only.

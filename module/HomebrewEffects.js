@@ -117,6 +117,20 @@ class HomebrewEffects {
         }
     }
 
+    static async removeAllConcentrationEffects(actor) {
+        let effectIds = [];
+
+        for (let effect of actor.getRollData().effects) {
+            if (effect.statuses.has(CONFIG.specialStatusEffects.CONCENTRATING)) {
+                effectIds.push(effect.id);
+            }
+        }
+
+        if (effectIds.length > 0) {
+            await MidiQOL.socket().executeAsGM('removeEffects', {'actorUuid': actor.uuid, 'effects': effectIds});
+        }
+    }
+
     static async removePriorEffectsByOriginItem(actor, originItem) {
         let effectIds = [];
 

@@ -3,19 +3,17 @@
     Advantage on the save if the save is triggered by damage. On a successful save, the spell ends.
 */
 const optionName = "Tashas Hideous Laughter";
-const version = "14.5.0";
+const version = "14.5.1";
 
 try {
     if (args[0].tag === "TargetOnUse" && args[0].macroPass === "isDamaged") {
         // trigger save
         let effect = HomebrewEffects.findEffect(actor, "Uncontrollable Laughter");
         if (effect) {
-            const config = { undefined, ability: "wis", target: macroItem.parent.system.attributes.spell.dc, advantage: true };
-            const dialog = {};
-            const message = { data: { speaker: ChatMessage.implementation.getSpeaker({ actor: actor }) } };
-            let saveResult = await actor.rollSavingThrow(config, dialog, message);
-            if (saveResult[0].isSuccess) {
-                await MidiQOL.socket().executeAsGM("removeEffects", { actorUuid: actor.uuid, effects: [effect.id] });
+            const activity = macroItem.system.activities.getName("Overtime");
+            if (activity) {
+                const targetUuids = [token.document.uuid];
+                await MidiQOL.completeActivityUse(activity, { midiOptions: { targetUuids } });
             }
         }
     }

@@ -1,3 +1,7 @@
-2026/09/16-12:29:43.372 2228 Recovering log #3537
-2026/09/16-12:29:43.379 2228 Delete type=0 #3537
-2026/09/16-12:29:43.379 2228 Delete type=3 #3535
+2026/09/22-12:04:47.582 ad2c Recovering log #3600
+2026/09/22-12:04:47.588 ad2c Delete type=0 #3600
+2026/09/22-12:04:47.588 ad2c Delete type=3 #3599
+2026/09/22-12:05:00.772 a9ac Level-0 table #3604: started
+2026/09/22-12:05:00.772 a9ac Level-0 table #3604: 0 bytes OK
+2026/09/22-12:05:00.775 a9ac Delete type=0 #3602
+2026/09/22-12:05:00.782 a9ac Manual compaction at level-0 from '!items!48NJkms6jK7q3cz6' @ 72057594037927935 : 1 .. '!items.effects!wDMIHnobcybNL2Up.rxhYSJxwA9KVGEuQ' @ 0 : 0; will stop at (end)
