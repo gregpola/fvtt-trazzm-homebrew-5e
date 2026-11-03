@@ -148,3 +148,21 @@
 * Fixed Tasha's Hideous Laughter to unlink the prone condition from the active effect and fix isDamaged macro
 * Fixed error in Find Familiar when adding generic actions to the familiar
 * Fixed Rage and Rage of Wilds to trigger correctly. Please activate the Rage feature only.
+
+# 14.5.12
+* Added Ring of Darkvision, and Ring of Truesight magic items
+* Added Dueling Ground, Entrancing Mirrors, Festering Blast, Fractured Awareness, Grave Ground, Hindsight, Illusory Dragon spells from Arcana Unleashed
+* Added Dimension Door and Wall of Fire spells to use new Boss Loot animations
+* Added Echo Knight fighter subclass
+* Added a generic Enlarge feature to the Monster Features compendium. It can be easily modified to support enlarging or reducing to any size.
+* Updated Skulker feat
+* Updated Wild Resurgence, and removed some unneeded Druid features
+* Updated Cosmic Omen Circle of the Stars feature
+* Updated Savage Attacker to only trigger on hits and to prompt the player
+* Updated Chromatic Orb to automate the leap targets
+* Updated the Cleric class to improve the implementations of Channel Divinity and Seer Undead. As part of this update, the following subclass features had to be updated to reference the new Channel Divinity:
+  * Preserve Life of Life Domain
+  * Radiance of Dawn of Light Domain
+  * Destructive Wrath of Tempest Domain
+  * Invoke Duplicity of Trickery Domain
+  * Guided Strike, War God's Blessing of War Domain

@@ -1,3 +1,13 @@
+const SIZE_ORDER = ["tiny", "sm", "med", "lg", "huge", "grg"];
+const SIZE_TO_GRID = {
+    tiny: 0.5,
+    sm: 1,
+    med: 1,
+    lg: 2,
+    huge: 3,
+    grg: 4,
+};
+
 class HomebrewHelpers {
 
     static hasAvailableGold(actor, amount) {
@@ -244,6 +254,42 @@ class HomebrewHelpers {
 
     static isMediumOrSmaller(target) {
         return ["tiny", "sm", "med"].includes(target.actor.system.traits.size);
+    }
+
+    static getTokenGridSize(token) {
+        if (token) {
+            const currentSize = token.actor.system.traits.size;
+            return SIZE_TO_GRID[currentSize];
+        }
+
+        return 1;
+    }
+
+    static async changeTokenSize(token, newSize) {
+        await token.actor.setFlag("fvtt-trazzm-homebrew-5e", "token-size-change",
+            { originalSize: token.actor.system.traits.size, originalHeight: token.document.height, originalWidth: token.document.width });
+
+        const newGrid = SIZE_TO_GRID[newSize];
+        await token.document.update({
+            width: newGrid,
+            height: newGrid
+        });
+
+        await token.actor.update({ "system.traits.size": newSize });
+    }
+
+    static async revertTokenSizeChange(token) {
+        let flag = token.actor.getFlag("fvtt-trazzm-homebrew-5e", "token-size-change");
+        if (flag) {
+            await token.actor.update({ "system.traits.size": flag.originalSize });
+
+            await token.document.update({
+                width: flag.originalWidth,
+                height: flag.originalHeight
+            });
+
+            await token.actor.unsetFlag("fvtt-trazzm-homebrew-5e", "token-size-change");
+        }
     }
 
     static isAvailableThisTurn(actor, flagName) {
@@ -1308,4 +1354,20 @@ class HomebrewHelpers {
             return null;
         }
     }
+
+    static async addItemFromCompendiumToActor(actor, itemUuid) {
+        if (actor && itemUuid) {
+            let theItem = await fromUuid(itemUuid);
+            if (theItem) {
+                await Item.create(theItem.toObject(), { parent: actor });
+            }
+            else {
+                ui.notifications.error(`addItemFromCompendiumToActor() - item not found in compendium`);
+            }
+        }
+        else {
+            ui.notifications.error(`addItemFromCompendiumToActor() - missing parameter`);
+        }
+    }
+
 }

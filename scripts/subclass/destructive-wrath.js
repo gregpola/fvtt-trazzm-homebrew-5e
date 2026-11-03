@@ -4,7 +4,7 @@
     When you roll lightning or thunder damage, you can use your Channel Divinity to deal maximum damage, instead of rolling.
 */
 const optionName = "Destructive Wrath";
-const version = "12.4.1";
+const version = "14.5.0";
 const validTypes = ['lightning', 'thunder'];
 
 try {

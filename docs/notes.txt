@@ -38,6 +38,7 @@ label=Poisoned (Envenomed), turn=end, saveAbility=con, saveCount=1-, saveDC=@abi
 label=Knocked Out, turn=end, saveAbility=con, saveCount=1-, saveDC=@abilities.dex.mod + 8 + @attributes.prof
 label=Phantasmal Killer, turn=end, saveAbility=wis, saveDC=@attributes.spell.dc, saveMagic=true, saveCount=1-, damageRoll=@item.leveld10, damageType=psychic
 label=Charmed, turn=end, saveAbility=wis, saveDC=@attributes.spell.dc
+label=Festering Blast, turn=start, damageRoll=2d10, damageType=poison, saveAbility=con, saveDC=@attributes.spell.dc, damageBeforeSave=true
 
 ========================================================================================================================
 Good examples

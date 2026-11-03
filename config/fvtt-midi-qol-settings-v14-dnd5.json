@@ -1,0 +1,671 @@
+{
+  "configSettings": {
+    "addChatDamageButtons": "gm",
+    "addDead": "overlay",
+    "addFakeDice": false,
+    "addWounded": 0,
+    "addWoundedStyle": "none",
+    "activityNamePrefix": false,
+    "conditionEditorEnabled": true,
+    "activationAutomation": "auto",
+    "midiWoundedCondition": "none",
+    "midiDeadCondition": "dead",
+    "midiUnconsciousCondition": "unconscious",
+    "allowUseMacro": true,
+    "allowActorUseMacro": true,
+    "attackPerTarget": true,
+    "autoApplyDamage": "yesCardMisses",
+    "damageCardStyle": "flexbox",
+    "playerDamageCard": "npcplayerbuttons",
+    "playerCardDamageDifferent": true,
+    "hidePlayerDamageCard": true,
+    "autoCEEffects": "none",
+    "autoCheckHit": "all",
+    "autoCheckSaves": "all",
+    "autoFastForward": [
+      "attack",
+      "damage",
+      "check",
+      "skill",
+      "tool"
+    ],
+    "autoItemEffects": "applyNoButton",
+    "autoRemoveSummonedCreature": true,
+    "autoUndoTransformations": true,
+    "autoRemoveTemplate": true,
+    "autoRemoveInstantaneousTemplate": true,
+    "constrainTemplatePlacement": true,
+    "templateSnapping": "half",
+    "autoRollAttack": true,
+    "autoRollDamage": "always",
+    "autoCompleteWorkflow": true,
+    "saveDROrder": "DRSaveDr",
+    "autoTarget": "wallsBlockIgnoreDefeated",
+    "averageDamage": "none",
+    "checkSaveText": false,
+    "checkTwoHanded": true,
+    "chooseAmmunition": true,
+    "collapsibleTargets": true,
+    "coloredBorders": "borders",
+    "concentrationAutomation": false,
+    "confirmAmmunition": true,
+    "gmConfirmAmmunition": true,
+    "consumeResource": "none",
+    "convenientEffectsReaction": "Reaction",
+    "criticalDamage": "default",
+    "criticalDamageGM": "default",
+    "criticalSound": "sounds/dice.wav",
+    "customSoundsPlaylist": "none",
+    "damageImmunities": "immunityPhysical",
+    "damageImmunityMultiplier": 0,
+    "damageResistanceMultiplier": 0.5,
+    "damageVulnerabilityMultiplier": 2,
+    "defaultSaveMultiplier": 0.5,
+    "diceSound": "sounds/dice.wav",
+    "displaySaveAdvantage": true,
+    "doConcentrationCheck": "chat",
+    "griddedGridless": false,
+    "gridlessFudge": 2,
+    "doReactions": "all",
+    "enableDDBGL": false,
+    "enforceReactions": "all",
+    "enforceBonusActions": "all",
+    "enforceSingleWeaponTarget": true,
+    "fixStickyKeys": true,
+    "fumbleSound": "sounds/dice.wav",
+    "gmAttackDamageCards": false,
+    "gmAutoAttack": true,
+    "gmAutoDamage": "always",
+    "gmAutoFastForward": [
+      "attack",
+      "damage",
+      "check",
+      "skill",
+      "tool"
+    ],
+    "gmConsumeResource": "none",
+    "gmDoReactions": "all",
+    "gmRemoveButtons": "off",
+    "preferredGM": "",
+    "ignoreSpellReactionRestriction": false,
+    "itemUseSound": "",
+    "keepRollStats": false,
+    "keyMapping": {
+      "DND5E.Advantage": "altKey",
+      "DND5E.Disadvantage": "ctrlKey",
+      "DND5E.Critical": "altKey",
+      "DND5E.Versatile": "shiftKey"
+    },
+    "mergeCardCondensed": true,
+    "addSheetButtons": true,
+    "mergeCardMulti": true,
+    "mergeCardMultiDamage": false,
+    "displayProperties": true,
+    "midiPropertiesTabRole": "1",
+    "confirmAttackDamage": "none",
+    "highlightSuccess": true,
+    "highLightCriticalAttackOnly": false,
+    "markPlayerDefeated": false,
+    "markNonPlayerDefeated": true,
+    "optionalRulesEnabled": true,
+    "paranoidGM": false,
+    "playerRollSaves": "mtb",
+    "playerSaveTimeout": 30,
+    "playerStatsOnly": false,
+    "potionUseSound": "",
+    "quickSettings": true,
+    "rangeTarget": "alwaysIgnoreDefeated",
+    "useTemplateRangedTargeting": false,
+    "reactionTimeout": 20,
+    "recordAOO": "all",
+    "removeButtons": "off",
+    "removeConcentration": true,
+    "removeConcentrationEffects": "effectsTemplates",
+    "playerRequireAmmunition": false,
+    "gmRequireAmmunition": false,
+    "requireMagical": "off",
+    "requiresTargets": "always",
+    "rollNPCLinkedSaves": "auto",
+    "rollNPCSaves": "auto",
+    "rollChecksBlind": [],
+    "rollSavesBlind": [],
+    "rollSkillsBlind": [],
+    "savesBeforeDamage": false,
+    "saveStatsEvery": 20,
+    "showDSN": true,
+    "showFastForward": true,
+    "showItemDetails": "all",
+    "showReactionAttackRoll": "all",
+    "showReactionChatMessage": false,
+    "singleConcentrationRoll": true,
+    "skillAbilityCheckAdvantage": true,
+    "spellHitSound": "",
+    "spellUseSound": "",
+    "spellUseSoundRanged": "",
+    "tempHPDamageConcentrationCheck": true,
+    "concentrationIncapacitatedConditionCheck": true,
+    "toggleOptionalRules": false,
+    "useCustomSounds": true,
+    "usePlayerPortrait": true,
+    "useTokenNames": true,
+    "undoChatColor": "Delete",
+    "undoWorkflow": false,
+    "useDamageDetail": true,
+    "waitForDamageApplication": true,
+    "weaponHitSound": "",
+    "weaponUseSound": "",
+    "weaponUseSoundRanged": "",
+    "rollAlternate": "formulaadv",
+    "optionalRules": {
+      "actionSpecialDurationImmediate": true,
+      "activeDefence": false,
+      "activeDefenceModifier": 12,
+      "activeDefenceShow": "selfroll",
+      "ActiveDefenceDC": true,
+      "challengeModeArmor": "none",
+      "challengeModeArmorScale": false,
+      "checkFlanking": "midiFlanking",
+      "flankingBonus": "2",
+      "flankingRequiresVisibility": true,
+      "checkRange": "longfail",
+      "coverCalculation": "none",
+      "displayBonusRolls": true,
+      "criticalNat20": false,
+      "criticalSaves": true,
+      "distanceIncludesHeight": true,
+      "distanceMeasurement": "center",
+      "incapacitated": "warn",
+      "invisAdvantage": "vision",
+      "hiddenAdvantage": "effect",
+      "maxDRValue": false,
+      "DRAllPerDamageDetail": false,
+      "nearbyAllyRanged": 0,
+      "nearbyFoe": 5,
+      "optionalCritRule": -1,
+      "removeHiddenInvis": true,
+      "wallsBlockRange": "center",
+      "mergeCardMulti": false,
+      "mergeCardMultiDamage": false,
+      "displayProperties": true,
+      "autoRerollInitiative": false,
+      "showFlankingHighlight": true,
+      "invisVision": true,
+      "vitalityItem": "",
+      "vitalityDeadCondition": "dead",
+      "vitalityDeathRequires": "vitalityOnly",
+      "visionTestHeight": "center",
+      "surfaceOcclusion": true,
+      "surfaceVisionFog": true,
+      "activeDefenceDC": false,
+      "enableddbGL": false
+    },
+    "itemTypeList": [],
+    "defaultSaveMult": 0.5,
+    "gmAttackDisplay": "full",
+    "gmDamageDisplay": "full",
+    "gmAttackDsn": "show",
+    "gmDamageDsn": "show",
+    "singleDamageCalculation": true,
+    "defaultOtherActivity": "auto",
+    "blindRollDisplay": "hidden"
+  },
+  "midiSoundSettings": {
+    "any": {},
+    "version": "0.9.48"
+  },
+  "itemRollButtons": false,
+  "autoRemoveTargets": "all",
+  "coloredBorders": "borders",
+  "criticalDamage": "default",
+  "criticalDamageGM": "default",
+  "debounceInterval": 0,
+  "dragDropTargeting": false,
+  "enableWorkflow": true,
+  "forceHideRoll": false,
+  "nsaFlag": true,
+  "saveToChatCard": true,
+  "playerControlsInvisibleTokens": false,
+  "replaceDefaultActivities": true,
+  "targetConfirmation": {
+    "enabled": false,
+    "always": false,
+    "noneTargeted": false,
+    "hasAttack": false,
+    "hasCreatureTarget": false,
+    "targetSelf": false,
+    "hasAoE": false,
+    "hasRangedAoE": false,
+    "longRange": false,
+    "inCover": false,
+    "allies": false,
+    "mixedDisposition": false,
+    "gridPosition": {
+      "x": 0,
+      "y": 0
+    }
+  },
+  "useWeakReferences": true,
+  "flags": {
+    "exportSource": {
+      "system": "dnd5e",
+      "coreVersion": "14.368",
+      "systemVersion": "5.3.3",
+      "midiVersion": "14.0.12"
+    }
+  },
+  "modules": {
+    "3ds-atlas": {
+      "title": "3DS:ATLAS",
+      "active": true,
+      "installed": true,
+      "version": "1.4.3",
+      "compatibility": "14.367"
+    },
+    "auraeffects": {
+      "title": "Aura Effects",
+      "active": true,
+      "installed": true,
+      "version": "2.2.2",
+      "compatibility": "14.367"
+    },
+    "automated-conditions-5e": {
+      "title": "Automated Conditions 5e",
+      "active": true,
+      "installed": true,
+      "version": "14.533.19.3",
+      "compatibility": "14.367"
+    },
+    "baileywiki-better-levels": {
+      "title": "Baileywiki Better Levels",
+      "active": true,
+      "installed": true,
+      "version": "2.0.3",
+      "compatibility": "14"
+    },
+    "bg3-hud-core": {
+      "title": "BG3 Inspired HUD - Core",
+      "active": true,
+      "installed": true,
+      "version": "0.6.0",
+      "compatibility": "14"
+    },
+    "bg3-hud-dnd5e": {
+      "title": "BG3 Inspired HUD - D&D5e",
+      "active": true,
+      "installed": true,
+      "version": "0.6.0",
+      "compatibility": "14"
+    },
+    "blfx-assets-pack01": {
+      "title": "BLFX Assets | Pack-01",
+      "active": true,
+      "installed": true,
+      "version": "1.0.28",
+      "compatibility": "14"
+    },
+    "boss-loot-assets-premium": {
+      "title": "BLFX Animation Editor Premium",
+      "active": true,
+      "installed": true,
+      "version": "3.5.1",
+      "compatibility": "14.368"
+    },
+    "chatlog-prune": {
+      "title": "Chat Log Prune",
+      "active": true,
+      "installed": true,
+      "version": "1.1.9",
+      "compatibility": "14"
+    },
+    "colorsettings": {
+      "title": "lib - Color Settings",
+      "active": true,
+      "installed": true,
+      "version": "3.0.4",
+      "compatibility": "13"
+    },
+    "combat-tracker-dock": {
+      "title": "Carousel Combat Tracker",
+      "active": true,
+      "installed": true,
+      "version": "5.0.2",
+      "compatibility": "14"
+    },
+    "da-level-importer": {
+      "title": "Dungeon Alchemist Level Importer",
+      "active": true,
+      "installed": true,
+      "version": "0.0.7",
+      "compatibility": "14"
+    },
+    "dae": {
+      "title": "Dynamic effects using Active Effects (DAE)",
+      "active": true,
+      "installed": true,
+      "version": "14.0.14",
+      "compatibility": "14.367"
+    },
+    "delve": {
+      "title": "DELVE",
+      "active": true,
+      "installed": true,
+      "version": "1.0.1",
+      "compatibility": "13"
+    },
+    "dice-calculator": {
+      "title": "Dice Tray",
+      "active": true,
+      "installed": true,
+      "version": "4.0.5",
+      "compatibility": "14"
+    },
+    "dice-so-nice": {
+      "title": "Dice So Nice!",
+      "active": true,
+      "installed": true,
+      "version": "6.3.1",
+      "compatibility": "14.368"
+    },
+    "dnd-dungeon-masters-guide": {
+      "title": "Dungeons & Dragons Dungeon Master's Guide",
+      "active": true,
+      "installed": true,
+      "version": "2.0.0",
+      "compatibility": "14"
+    },
+    "dnd-heroes-faerun": {
+      "title": "Forgotten Realms: Heroes of Faerûn",
+      "active": true,
+      "installed": true,
+      "version": "1.1.0",
+      "compatibility": "14"
+    },
+    "dnd-monster-manual": {
+      "title": "Dungeons & Dragons Monster Manual",
+      "active": true,
+      "installed": true,
+      "version": "1.4.0",
+      "compatibility": "14"
+    },
+    "dnd-players-handbook": {
+      "title": "Dungeons & Dragons Player's Handbook",
+      "active": true,
+      "installed": true,
+      "version": "2.2.0",
+      "compatibility": "14"
+    },
+    "dnd-tashas-cauldron": {
+      "title": "Tasha's Cauldron of Everything",
+      "active": true,
+      "installed": true,
+      "version": "3.0.0",
+      "compatibility": "14"
+    },
+    "Dnd5eStoreGenerator": {
+      "title": "D&D Store Generator",
+      "active": true,
+      "installed": true,
+      "version": "3.4.5",
+      "compatibility": "14"
+    },
+    "drakkenheim-core": {
+      "title": "Dungeons of Drakkenheim",
+      "active": true,
+      "installed": true,
+      "version": "3.0.0",
+      "compatibility": "14"
+    },
+    "easy-regions": {
+      "title": "Easy Regions",
+      "active": true,
+      "installed": true,
+      "version": "2.1.1",
+      "compatibility": "14.363"
+    },
+    "enhancedcombathud": {
+      "title": "Argon - Combat HUD (CORE)",
+      "active": true,
+      "installed": true,
+      "version": "5.0.1",
+      "compatibility": "14"
+    },
+    "enhancedcombathud-dnd5e": {
+      "title": "Argon - Combat HUD (DND5E)",
+      "active": true,
+      "installed": true,
+      "version": "5.2.2",
+      "compatibility": "14"
+    },
+    "forien-copy-environment": {
+      "title": "Forien's Copy Environment",
+      "active": true,
+      "installed": true,
+      "version": "v3.0.0",
+      "compatibility": "13"
+    },
+    "fvtt-trazzm-homebrew-5e": {
+      "title": "Trazzm 5e Homebrew",
+      "active": true,
+      "installed": true,
+      "version": "14.5.10",
+      "compatibility": "14.367"
+    },
+    "item-piles": {
+      "title": "Item Piles",
+      "active": true,
+      "installed": true,
+      "version": "3.3.4",
+      "compatibility": "14"
+    },
+    "itempilesdnd5e": {
+      "title": "Item Piles: D&D 5e",
+      "active": true,
+      "installed": true,
+      "version": "1.1.0",
+      "compatibility": "14"
+    },
+    "JB2A_DnD5e": {
+      "title": "JB2A - Jules and Ben's Animated Assets - Free Content",
+      "active": true,
+      "installed": true,
+      "version": "0.9.3",
+      "compatibility": "14"
+    },
+    "lib-wrapper": {
+      "title": "libWrapper",
+      "active": true,
+      "installed": true,
+      "version": "1.13.5.1",
+      "compatibility": "14"
+    },
+    "midi-qol": {
+      "title": "Midi QOL",
+      "active": true,
+      "installed": true,
+      "version": "14.0.12",
+      "compatibility": "14.357"
+    },
+    "module-list-export": {
+      "title": "Module List Export",
+      "active": true,
+      "installed": true,
+      "version": "1.0.4",
+      "compatibility": "14"
+    },
+    "monks-player-settings": {
+      "title": "Monk's Player Settings",
+      "active": true,
+      "installed": true,
+      "version": "14.01",
+      "compatibility": "14"
+    },
+    "monks-sound-enhancements": {
+      "title": "Monk's Sound Enhancements",
+      "active": true,
+      "installed": true,
+      "version": "14.01",
+      "compatibility": "14"
+    },
+    "monks-tokenbar": {
+      "title": "Monk's TokenBar",
+      "active": true,
+      "installed": true,
+      "version": "14.01",
+      "compatibility": "14"
+    },
+    "monks-wall-enhancement": {
+      "title": "Monk's Wall Enhancement",
+      "active": true,
+      "installed": true,
+      "version": "14.01",
+      "compatibility": "14"
+    },
+    "multi-token-edit": {
+      "title": "Baileywiki Mass Edit",
+      "active": true,
+      "installed": true,
+      "version": "3.3.6",
+      "compatibility": "14.365"
+    },
+    "niks-show-and-tell": {
+      "title": "Nik's Show & Tell",
+      "active": true,
+      "installed": true,
+      "version": "14.8.8",
+      "compatibility": "14"
+    },
+    "pointer": {
+      "title": "PnP - Pointer and Pings!",
+      "active": true,
+      "installed": true,
+      "version": "14.0.0",
+      "compatibility": "14"
+    },
+    "polyglot": {
+      "title": "Polyglot",
+      "active": true,
+      "installed": true,
+      "version": "2.10.2",
+      "compatibility": "14"
+    },
+    "portal-lib": {
+      "title": "Portal",
+      "active": true,
+      "installed": true,
+      "version": "4.0.0",
+      "compatibility": "14"
+    },
+    "regionba": {
+      "title": "Region Behaviour Adjustments",
+      "active": true,
+      "installed": true,
+      "version": "1.5.2",
+      "compatibility": "14"
+    },
+    "rest-recovery": {
+      "title": "Rest Recovery for 5E",
+      "active": true,
+      "installed": true,
+      "version": "5.2.5",
+      "compatibility": "14.366"
+    },
+    "restored-keep-levels": {
+      "title": "Restored Keep - Scene Levels Demo",
+      "active": true,
+      "installed": true,
+      "version": "1.4.0",
+      "compatibility": "14"
+    },
+    "Rideable": {
+      "title": "Rideable",
+      "active": true,
+      "installed": true,
+      "version": "5.0.19",
+      "compatibility": "14"
+    },
+    "rise-of-the-drow": {
+      "title": "Rise of the Drow",
+      "active": true,
+      "installed": true,
+      "version": "2.0.5",
+      "compatibility": "14.367"
+    },
+    "routinglib": {
+      "title": "routinglib",
+      "active": true,
+      "installed": true,
+      "version": "1.1.0",
+      "compatibility": "11"
+    },
+    "sequencer": {
+      "title": "Sequencer",
+      "active": true,
+      "installed": true,
+      "version": "4.2.3",
+      "compatibility": "14"
+    },
+    "shared-characters": {
+      "title": "Shared Characters",
+      "active": true,
+      "installed": true,
+      "version": "1.11.02",
+      "compatibility": "11"
+    },
+    "socketlib": {
+      "title": "socketlib",
+      "active": true,
+      "installed": true,
+      "version": "v1.1.4",
+      "compatibility": "14"
+    },
+    "stealthy": {
+      "title": "Stealthy",
+      "active": true,
+      "installed": true,
+      "version": "14.0.0",
+      "compatibility": "14"
+    },
+    "theripper-premium-hub": {
+      "title": "TheRipper93's Module Hub",
+      "active": true,
+      "installed": true,
+      "version": "6.0.1",
+      "compatibility": "14"
+    },
+    "tokenlightcondition": {
+      "title": "Token Light Condition",
+      "active": true,
+      "installed": true,
+      "version": "1.3.1",
+      "compatibility": "14.367"
+    },
+    "tokenmagic": {
+      "title": "Token Magic FX",
+      "active": true,
+      "installed": true,
+      "version": "0.8.4",
+      "compatibility": "14.363"
+    },
+    "tokenwarp": {
+      "title": "Token Warp",
+      "active": true,
+      "installed": true,
+      "version": "14.365.4.1",
+      "compatibility": "14.365"
+    },
+    "vision-5e": {
+      "title": "Vision 5e",
+      "active": true,
+      "installed": true,
+      "version": "3.2.2",
+      "compatibility": "14"
+    },
+    "visual-active-effects": {
+      "title": "Visual Active Effects",
+      "active": true,
+      "installed": true,
+      "version": "14.0.3",
+      "compatibility": "14"
+    }
+  }
+}

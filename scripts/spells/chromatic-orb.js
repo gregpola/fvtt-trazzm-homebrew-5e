@@ -12,19 +12,40 @@
     casting of this spell.
 */
 const optionName = "Chromatic Orb";
-const version = "13.5.0";
+const version = "14.5.0";
+const _flagGroup = "fvtt-trazzm-homebrew-5e";
+const _flagName = "chromatic-orb-leaps";
+let combatTime = `${game.combat.id}-${game.combat.round + game.combat.turn / 100}`;
 
 try {
     if (args[0].macroPass === "postDamageRoll") {
+        const targetToken = workflow.hitTargets.first();
+
         // check for duplicate damage rolls
-        if (workflow.hitTargets.size > 0) {
+        if (targetToken) {
             const matchingDice = workflow.damageRoll?.dice.filter(d => d.faces === 8)
                 .flatMap(d => d.results.map(r => r.result))
                 .filter((v, i, a) => a.indexOf(v) !== i);
 
-            // Let the caster know to use the leap activity
+            // Let the caster pick the next target
             if (matchingDice.length > 0) {
-                await showReminder(workflow.castData.castLevel);
+                let leapAllowed = true;
+                const castLevel = workflow.castData.castLevel;
+                let leaps = 0;
+
+                let flag = actor.getFlag(_flagGroup, _flagName);
+                if (flag) {
+                    leaps = flag.leapCount;
+
+                    // check turn cast
+                    if (flag.lastUsed && flag.lastUsed === combatTime && leaps >= castLevel) {
+                        leapAllowed = false;
+                    }
+                }
+
+                if (leapAllowed) {
+                    await leapAttack(token, macroItem, targetToken, castLevel, leaps);
+                }
             }
         }
     }
@@ -32,25 +53,25 @@ try {
 } catch (err) {
     console.error(`${optionName}: ${version}`, err);
 }
+async function leapAttack(casterToken, spellItem, primaryTargetToken, castLevel, leaps) {
+    const potentialTargets = await MidiQOL.findNearby([0, 1], primaryTargetToken, 30, {canSee: true});
+    if (potentialTargets.length === 0) {
+        console.warn(`${optionName}: No potential leap target.`);
+        return;
+    }
 
-async function showReminder(spellLevel) {
-    let content = `<div class="flexcol">
-                            <div class="flexrow"><p>Your damage qualifies for a leap to another target. Use the <strong>Orb Leap</strong> activity to target another creature within 30 feet of the last target.</p></div>
-                            <div class="flexrow" style="margin-bottom: 10px;"><sub>(no duplicate targets this turn and maximum leaps: ${spellLevel})</sub></div>
-                        </div>`;
+    const secondaryTarget = await HomebrewHelpers.pickTarget(potentialTargets, `${optionName} - select leap target:`)
+    if (secondaryTarget) {
+        const newLeaps = leaps + 1;
+        await casterToken.actor.setFlag(_flagGroup, _flagName, {
+            leapCount : newLeaps,
+            lastUsed : combatTime
+        });
 
-    await foundry.applications.api.DialogV2.wait({
-        window: {
-            title: "Chromatic Orb Leap",
-        },
-        position: {
-            width: 400,
-            height: "auto",
-        },
-        content: content,
-        rejectClose: false,
-        buttons: [
-            {action: "ok", label: "OK"}
-        ],
-    });
+        let activity = spellItem.system.activities.getName("Orb Leap");
+        if (activity) {
+            const targetUuids = [secondaryTarget.document.uuid];
+            await MidiQOL.completeActivityUse(activity, { midiOptions: { targetUuids } });
+        }
+    }
 }
