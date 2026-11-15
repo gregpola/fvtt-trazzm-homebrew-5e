@@ -160,9 +160,21 @@
 * Updated Cosmic Omen Circle of the Stars feature
 * Updated Savage Attacker to only trigger on hits and to prompt the player
 * Updated Chromatic Orb to automate the leap targets
-* Updated the Cleric class to improve the implementations of Channel Divinity and Seer Undead. As part of this update, the following subclass features had to be updated to reference the new Channel Divinity:
+* Updated the Cleric class to improve the implementations of Channel Divinity and Sear Undead. As part of this update, the following subclass features had to be updated to reference the new Channel Divinity:
   * Preserve Life of Life Domain
   * Radiance of Dawn of Light Domain
   * Destructive Wrath of Tempest Domain
   * Invoke Duplicity of Trickery Domain
   * Guided Strike, War God's Blessing of War Domain
+
+# 14.5.13
+* Added the Grasping Vine and Primal Savagery spells
+* Added the Goblin species
+* Updated Cloudkill to use new Boss Loot animations
+* Updated Steel Wind Strike to better match RAW with the after attacks teleport
+* Updated True Strike to log a chat message to show it was used
+* Updated Life Domain Cleric's Supreme Healing feature to automate the maximum healing
+* Updated the metamagic option Extended Spell to provide concentration advantage
+* Fixed Rage of the Wilds - Wolf feature
+* Fixed Bugbear Fey Ancestry and Surprise Attack features
+* Fixed the Life Domain Cleric's Preserve Life feature

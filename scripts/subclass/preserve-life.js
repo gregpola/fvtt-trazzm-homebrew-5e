@@ -5,7 +5,7 @@
     creature to no more than half its Hit Point maximum.
  */
 const optionName = "Preserve Life";
-const version = "12.4.0";
+const version = "14.5.0";
 
 try {
     if (args[0].macroPass === "postActiveEffects") {
@@ -16,17 +16,15 @@ try {
             // filter targets by bloodied condition before asking heal amounts
             let rows = "";
             for (let targetToken of workflow.targets) {
-                if (targetToken.actor.statuses.has("bloodied")) {
-                    let half = Math.ceil(targetToken.actor.system.attributes.hp.max / 2);
-                    let eligible = ((half > targetToken.actor.system.attributes.hp.value) ? (half - targetToken.actor.system.attributes.hp.value) : 0);
-                    let recipientMax = Math.min(totalHealing, eligible);
+                let half = Math.ceil(targetToken.actor.system.attributes.hp.max / 2);
+                let eligible = ((half > targetToken.actor.system.attributes.hp.value) ? (half - targetToken.actor.system.attributes.hp.value) : 0);
+                let recipientMax = Math.min(totalHealing, eligible);
 
-                    let row = `<div class="flexrow" style="margin-bottom: 5px;"><label style="margin-right: 10px;">${targetToken.name}</label>`
-                        + `<input name="target" id="${targetToken.id}" type="number" min="0" max="${recipientMax}" step="1" value="0"/>`
-                        + `<label style="margin-left: 10px;">(max: ${recipientMax})</label>`
-                        + `</div>`;
-                    rows += row;
-                }
+                let row = `<div class="flexrow" style="margin-bottom: 5px;"><label style="margin-right: 10px;">${targetToken.name}</label>`
+                    + `<input name="target" id="${targetToken.id}" type="number" min="0" max="${recipientMax}" step="1" value="0"/>`
+                    + `<label style="margin-left: 10px;">(max: ${recipientMax})</label>`
+                    + `</div>`;
+                rows += row;
             }
 
             if (rows.length > 0) {
@@ -85,6 +83,13 @@ try {
                         });
                     }
                 }
+            }
+            else {
+                ChatMessage.create({
+                    content: `${optionName} failed! None of the targets are below half their hit points.`,
+                    speaker: ChatMessage.getSpeaker({actor: actor})
+                });
+
             }
         }
     }

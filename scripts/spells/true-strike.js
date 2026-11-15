@@ -7,7 +7,7 @@
     damage when you reach levels 5 (1d6), 11 (2d6), and 17 (3d6).
 */
 const optionName = "True Strike";
-const version = "14.5.0";
+const version = "14.5.1";
 const timeFlag = "last-true-strike";
 
 try {
@@ -29,6 +29,10 @@ try {
                 await HomebrewHelpers.setUsedThisTurn(actor, timeFlag);
                 workflow.activity.attack.ability = actor.system.attributes.spellcasting;
                 await applyTrueStrikeEffect(actor, choice, extraDamageDice);
+                ChatMessage.create({
+                    content: `${optionName} applied to the weapon attack`,
+                    speaker: ChatMessage.getSpeaker({actor: actor})
+                });
             }
         }
     }

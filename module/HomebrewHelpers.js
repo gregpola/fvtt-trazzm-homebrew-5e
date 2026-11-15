@@ -248,6 +248,10 @@ class HomebrewHelpers {
         return false;
     }
 
+    static isHugeOrSmaller(target) {
+        return ["tiny", "sm", "med", "lg", "huge"].includes(target.actor.system.traits.size);
+    }
+
     static isLargeOrSmaller(target) {
         return ["tiny", "sm", "med", "lg"].includes(target.actor.system.traits.size);
     }
@@ -1370,4 +1374,21 @@ class HomebrewHelpers {
         }
     }
 
+    static isChannelDivinityActivity(activity) {
+        if (activity) {
+            const channelDivinityItem = activity.actor.items.getName("Channel Divinity");
+
+            if (channelDivinityItem) {
+                const consumptionTargets = activity.consumption?.targets;
+                if(consumptionTargets.length > 0) {
+                    const usesChannelDivinity = consumptionTargets.find(t => t.target === channelDivinityItem.id);
+                    if (usesChannelDivinity) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
 }

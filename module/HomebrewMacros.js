@@ -117,7 +117,8 @@ class HomebrewMacros {
      */
     static async pullTargetTowardsSelf(selfToken, targetToken, maxDistance, optionName) {
         // get the distance
-        const tokenDistance = MidiQOL.computeDistance(selfToken, targetToken, {wallsBlock: true, includeCover: true});
+        let tokenDistance = MidiQOL.computeDistance(selfToken, targetToken, {wallsBlock: true, includeCover: true});
+        tokenDistance = Math.round(tokenDistance / 5) * 5;
         let maxMovement = (tokenDistance / 5) * 5;
 
         // alter for token size

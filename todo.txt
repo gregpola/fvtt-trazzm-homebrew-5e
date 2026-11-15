@@ -1,11 +1,7 @@
+Spells:
+
+
 Twilight Domain
-
-Spells: Grasping Vine
-
-Supreme Healing - Life Domain
-Extended spell???
-
-
 Add break free, extinguish, etc... item and grant when applying appropriate effects
 Test D&D Store Generator
 Gnoll Vampire
@@ -37,7 +33,6 @@ LONG TERM
 ========================================================================================================================
 
 Fork Combat Carousel
-Recover ammunition logic
 Prompt for corruption
 options for initiative bonuses in module hook -- need support from the carousel
 Critical effects table

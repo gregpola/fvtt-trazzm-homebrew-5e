@@ -3,7 +3,7 @@
     can see within range. Make a melee spell attack against each target. On a hit, a target takes 6d10 Force damage.
 */
 const optionName = "Steel Wind Strike";
-const version = "14.5.0";
+const version = "14.5.1";
 
 try {
     if (args[0].macroPass === "postActiveEffects") {
@@ -32,6 +32,13 @@ try {
                 await MidiQOL.completeActivityUse(activity, options, {}, {});
             }
         }
+
+        await new Portal()
+            .color("#ff0000")
+            .texture(token.document.texture.src)
+            .origin(token)
+            .range(40)
+            .teleport();
     }
 
 } catch (err) {
