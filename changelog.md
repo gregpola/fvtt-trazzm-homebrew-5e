@@ -178,3 +178,7 @@
 * Fixed Rage of the Wilds - Wolf feature
 * Fixed Bugbear Fey Ancestry and Surprise Attack features
 * Fixed the Life Domain Cleric's Preserve Life feature
+
+# 14.5.14
+* Added the Twilight Domain
+* Added Aura of Vitality and Circle of Power spells

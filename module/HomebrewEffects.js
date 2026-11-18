@@ -87,6 +87,16 @@ class HomebrewEffects {
         }
     };
 
+    static async removeCondition(actor, condition) {
+        const correctCondition = condition.toLowerCase();
+        const matchingEffects = HomebrewEffects.filterEffectsByConditions(actor, [correctCondition]);
+        if (matchingEffects.length > 0) {
+            const effectIdList = matchingEffects.map(obj => obj.id);
+            await MidiQOL.socket().executeAsGM("removeEffects", {actorUuid: actor.uuid, effects: effectIdList});
+        }
+        await actor.toggleStatusEffect(correctCondition, {active: false});
+    }
+
     static async removeEffectByName(actor, effectName) {
         const effect = HomebrewEffects.findEffect(actor, effectName);
         if (effect) {
