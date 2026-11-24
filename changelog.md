@@ -182,3 +182,7 @@
 # 14.5.14
 * Added the Twilight Domain
 * Added Aura of Vitality and Circle of Power spells
+
+# 14.5.15
+* Bumped compatibility to 14.370 Foundry
+* Bumped compatibility to 6.1.99 DND5E for migration to DND5E 6.1

@@ -275,7 +275,7 @@
   ],
   "compatibility": {
     "minimum": "14",
-    "verified": "14.369",
+    "verified": "14.370",
     "maximum": "14.999"
   },
   "relationships": {
@@ -326,6 +326,11 @@
       },
       {
         "id": "blfx-assets-pack01",
+        "type": "module",
+        "compatibility": {}
+      },
+      {
+        "id": "blfx-assets-pack02",
         "type": "module",
         "compatibility": {}
       },
@@ -381,7 +386,7 @@
         "type": "system",
         "compatibility": {
           "minimum": "5.0.0",
-          "maximum": "6.0.99",
+          "maximum": "6.1.99",
           "verified": "5.3.3"
         }
       }

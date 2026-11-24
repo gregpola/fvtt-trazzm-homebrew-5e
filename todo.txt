@@ -6,7 +6,6 @@ Oath of the Noble Genies
 Spells:
 
 
-Twilight Domain
 Add break free, extinguish, etc... item and grant when applying appropriate effects
 Test D&D Store Generator
 Gnoll Vampire

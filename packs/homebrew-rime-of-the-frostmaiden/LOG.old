@@ -1,3 +1,7 @@
-2026/11/16-18:53:44.986 ceac Recovering log #3805
-2026/11/16-18:53:44.992 ceac Delete type=0 #3805
-2026/11/16-18:53:44.992 ceac Delete type=3 #3803
+2026/11/24-10:44:31.708 c5c4 Recovering log #3823
+2026/11/24-10:44:31.720 c5c4 Delete type=0 #3823
+2026/11/24-10:44:31.720 c5c4 Delete type=3 #3821
+2026/11/24-10:46:33.651 a2f4 Level-0 table #3828: started
+2026/11/24-10:46:33.651 a2f4 Level-0 table #3828: 0 bytes OK
+2026/11/24-10:46:33.654 a2f4 Delete type=0 #3826
+2026/11/24-10:46:33.654 a2f4 Manual compaction at level-0 from '!items!DZ1o4bxYS8QAsYFw' @ 72057594037927935 : 1 .. '!items.effects!xAF1eKjuWvM0LBJp.08WsANtIHUVzML1w' @ 0 : 0; will stop at (end)

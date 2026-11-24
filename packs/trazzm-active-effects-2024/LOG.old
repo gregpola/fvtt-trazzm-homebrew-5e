@@ -1,3 +1,7 @@
-2026/11/16-18:53:45.154 ceac Recovering log #984
-2026/11/16-18:53:45.160 ceac Delete type=0 #984
-2026/11/16-18:53:45.160 ceac Delete type=3 #982
+2026/11/24-10:44:31.961 b88c Recovering log #1002
+2026/11/24-10:44:31.967 b88c Delete type=0 #1002
+2026/11/24-10:44:31.967 b88c Delete type=3 #1000
+2026/11/24-10:46:33.689 a2f4 Level-0 table #1007: started
+2026/11/24-10:46:33.689 a2f4 Level-0 table #1007: 0 bytes OK
+2026/11/24-10:46:33.692 a2f4 Delete type=0 #1005
+2026/11/24-10:46:33.692 a2f4 Manual compaction at level-0 from '!folders!8ORCRFXUCsHuJfhX' @ 72057594037927935 : 1 .. '!folders!jdDRm62h1OKJm4NP' @ 0 : 0; will stop at (end)
